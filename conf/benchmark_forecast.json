@@ -1,0 +1,122 @@
+{
+  "ARIMA": {"alias": "Arima"},
+  "Arima": {
+    "config": {
+      "default": {
+        "order": [30, 0, 10]
+      }
+    }
+  },
+
+  "SARIMA": {"alias": "Sarima"},
+  "Sarima": {
+    "config": {
+      "default": {
+        "order": [15, 1, 5],
+        "seasonal_order": [2, 0, 1, 30]
+      }
+    }
+  },
+
+  "AutoSARIMA": {"alias": "AutoSarima"},
+  "AutoSarima": {
+    "model_type": "SeasonalityLayer",
+    "config": {
+      "default": {
+        "model": {"name": "AutoSarima"},
+        "periodicity_strategy": "min"
+      }
+    }
+  },
+
+  "ETS": {
+    "config": {
+      "default": {
+        "damped_trend": true
+      }
+    }
+  },
+
+  "MSES": {
+    "config": {
+      "default": {
+        "max_forecast_steps": 100
+      }
+    }
+  },
+
+  "Prophet": {
+    "config": {
+      "default": {
+        "uncertainty_samples": 0,
+        "add_seasonality": null
+      }
+    }
+  },
+
+  "AutoProphet": {
+    "model_type": "Prophet",
+    "config": {
+      "default": {
+        "uncertainty_samples": 0,
+        "add_seasonality": "auto"
+      }
+    }
+  },
+
+  "Var": {"alias":  "VectorAR"},
+  "VAR": {"alias":  "VectorAR"},
+  "VectorAR" : {
+    "config": {
+      "default": {
+        "target_seq_index": 0,
+        "maxlags": 168,
+        "max_forecast_steps": 3
+      }
+    },
+    "dataset": {}
+  },
+  "RandomForestForecaster" : {
+    "config": {
+      "default": {
+          "target_seq_index": 0,
+          "maxlags": 21,
+          "max_forecast_steps": 3,
+          "n_estimators": 100,
+          "max_depth": 9,
+          "sampling_mode": "normal",
+          "prediction_stride": 1
+      },
+      "dataset": {}
+    }
+  },
+  "ExtraTreesForecaster" : {
+    "config": {
+      "default": {
+          "target_seq_index": 0,
+          "maxlags": 21,
+          "max_forecast_steps": 3,
+          "n_estimators": 100,
+          "max_depth": 9,
+          "sampling_mode": "normal",
+          "prediction_stride": 1
+      },
+      "dataset": {}
+    }
+  },
+  "LGBMForecaster" : {
+    "config": {
+      "default": {
+          "target_seq_index": 0,
+          "maxlags": 21,
+          "max_forecast_steps": 3,
+          "learning_rate": 0.1,
+          "n_estimators": 100,
+          "max_depth": 7,
+          "sampling_mode": "normal",
+          "prediction_stride": 1
+      },
+      "dataset": {}
+    }
+  }
+}

@@ -1,0 +1,6 @@
+ipykernel
+nbsphinx
+pandoc
+sphinx
+sphinx_autodoc_typehints
+sphinx_rtd_theme
