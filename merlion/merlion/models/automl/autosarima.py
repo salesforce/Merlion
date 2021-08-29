@@ -8,7 +8,8 @@ from merlion.models.automl.forecasting_layer_base import ForecasterAutoMLBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.models.forecast.sarima import SarimaConfig, Sarima
 from merlion.transform.resample import TemporalResample
-from merlion.utils import TimeSeries, autosarima_utils
+from merlion.utils import TimeSeries, autosarima_utils, UnivariateTimeSeries
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
@@ -16,20 +17,18 @@ logger = logging.getLogger(__name__)
 class AutoSarimaConfig(SarimaConfig):
     _default_transform = TemporalResample()
 
-    def __init__(
-        self,
-        max_forecast_steps: int = None,
-        target_seq_index: int = None,
-        order=("auto", "auto", "auto"),
-        seasonal_order=("auto", "auto", "auto", "auto"),
-        periodicity_strategy: str = "max",
-        maxiter: int = 50,
-        max_k: int = 100,
-        max_dur: float = 3600,
-        approximation: bool = None,
-        approx_iter: int = None,
-        **kwargs,
-    ):
+    def __init__(self,
+                 max_forecast_steps: int = None,
+                 target_seq_index: int = None,
+                 order=("auto", "auto", "auto"),
+                 seasonal_order=("auto", "auto", "auto", "auto"),
+                 periodicity_strategy: str = 'max',
+                 maxiter: int = None,
+                 max_k: int = 100,
+                 max_dur: float = 3600,
+                 approximation: bool = None,
+                 approx_iter: int = None,
+                 **kwargs):
         """
         Configuration class for AutoSarima.
         For order and seasonal_order, 'auto' indicates automatically select the parameter.
@@ -63,11 +62,7 @@ class AutoSarimaConfig(SarimaConfig):
             the length off the period is too high (``periodicity > 12``).
         :param approx_iter: The number of iterations to perform in approximation mode
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.order = order
         self.seasonal_order = seasonal_order
         self.periodicity_strategy = periodicity_strategy
@@ -102,11 +97,11 @@ class AutoSarima(ForecasterAutoMLBase):
         max_dur = self.config.max_dur
 
         # These should be set in config
-        periodicity_strategy = "min"
+        periodicity_strategy = 'min'
         stationary = False
-        seasonal_test = "seas"
-        method = "lbfgs"
-        test = "kpss"
+        seasonal_test = 'seas'
+        method = 'lbfgs'
+        test = 'kpss'
         stepwise = True
         max_d = 2
         start_p = 2
@@ -120,7 +115,7 @@ class AutoSarima(ForecasterAutoMLBase):
         max_Q = 2
         relative_improve = 0
         trend = None
-        information_criterion = "aic"
+        information_criterion = 'aic'
 
         n_samples = y.shape[0]
         if n_samples <= 3:
@@ -162,11 +157,7 @@ class AutoSarima(ForecasterAutoMLBase):
 
         #  set the differencing order by estimating the number of orders
         #  it would take in order to make the time series stationary
-        d = (
-            order[1]
-            if order[1] != "auto"
-            else autosarima_utils.ndiffs(dx, alpha=0.05, max_d=max_d, test=test)
-        )
+        d = order[1] if order[1] != "auto" else autosarima_utils.ndiffs(dx, alpha=0.05, max_d=max_d, test=test)
         if stationary:
             d = 0
         if d > 0:
@@ -176,12 +167,8 @@ class AutoSarima(ForecasterAutoMLBase):
         # pqPQ is an indicator about whether need to automatically select
         # AR, MA, seasonal AR and seasonal MA parameters
         pqPQ = None
-        if (
-            order[0] != "auto"
-            and order[2] != "auto"
-            and seasonal_order[0] != "auto"
-            and seasonal_order[2] != "auto"
-        ):
+        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" \
+                and seasonal_order[2] != "auto":
             pqPQ = True
 
         # automatically detect whether to use approximation method and the periodicity
@@ -199,7 +186,7 @@ class AutoSarima(ForecasterAutoMLBase):
             if max_Q > 0:
                 max_q = min(max_q, m - 1)
         if (d + D) in (0, 1):
-            trend = "c"
+            trend = 'c'
 
         if n_samples < 10:
             start_p = min(start_p, 1)
@@ -244,7 +231,7 @@ class AutoSarima(ForecasterAutoMLBase):
             refititer=refititer,
             stepwise=stepwise,
             order=order,
-            seasonal_order=seasonal_order,
+            seasonal_order=seasonal_order
         )
         return return_dict
 
@@ -271,7 +258,7 @@ class AutoSarima(ForecasterAutoMLBase):
             seasonal_order[3] = m
             if m == 1:
                 seasonal_order = [0, 0, 0, m]
-            return iter([[order, seasonal_order, None]])
+            return iter([["pdPQ",[order, seasonal_order, None]]])
 
         if np.max(dx) == np.min(dx):
             ssn = (0, 0, 0, m) if m == 1 else (0, D, 0, m)
@@ -280,98 +267,117 @@ class AutoSarima(ForecasterAutoMLBase):
         if stepwise:
             return iter([["stepwise"]])
 
-    def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None
-    ) -> Tuple[
-        Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]
-    ]:
+    def evaluate_theta(self, thetas: Iterator, train_data: TimeSeries, train_config=None) -> Tuple[
+        Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
         theta_value = thetas.__next__()
+
+        # preprocess
+        train_config = train_config if train_config is not None else {}
+        if "enforce_stationarity" not in train_config:
+            train_config["enforce_stationarity"] = False
+        if "enforce_invertibility" not in train_config:
+            train_config["enforce_invertibility"] = False
+        val_dict = self._generate_sarima_parameters(train_data)
+        y = val_dict["y"]
+        X = val_dict["X"]
+        p = val_dict["p"]
+        d = val_dict["d"]
+        q = val_dict["q"]
+        P = val_dict["P"]
+        D = val_dict["D"]
+        Q = val_dict["Q"]
+        m = val_dict["m"]
+        max_p = val_dict["max_p"]
+        max_q = val_dict["max_q"]
+        max_P = val_dict["max_P"]
+        max_Q = val_dict["max_Q"]
+        trend = val_dict["trend"]
+        method = val_dict["method"]
+        maxiter = val_dict["maxiter"]
+        information_criterion = val_dict["information_criterion"]
+        approximation = val_dict["approximation"]
+        refititer = val_dict["refititer"]
+        relative_improve = val_dict["relative_improve"]
+        max_k = val_dict["max_k"]
+        max_dur = val_dict["max_dur"]
+        approx_iter = val_dict["approx_iter"]
+
+        # use zero model to automatically detect the optimal maxiter
+        if maxiter is None:
+            maxiter = autosarima_utils.detect_maxiter_sarima_model(y=y, X=X, d=d, D=D, m=m,
+                                                                   method=method,
+                                                                   information_criterion=information_criterion)
+
         if theta_value[0] == "stepwise":
+            refititer = maxiter
+            if approximation:
+                if approx_iter is None:
+                    maxiter = max(int(maxiter / 5), 1)
+                else:
+                    maxiter = approx_iter
+                logger.info(f"Fitting models using approximations(approx_iter is {str(maxiter)}) to speed things up")
+
             # stepwise search
-
-            val_dict = self._generate_sarima_parameters(train_data)
-            y = val_dict["y"]
-            X = val_dict["X"]
-            p = val_dict["p"]
-            d = val_dict["d"]
-            q = val_dict["q"]
-            P = val_dict["P"]
-            D = val_dict["D"]
-            Q = val_dict["Q"]
-            m = val_dict["m"]
-            max_p = val_dict["max_p"]
-            max_q = val_dict["max_q"]
-            max_P = val_dict["max_P"]
-            max_Q = val_dict["max_Q"]
-            trend = val_dict["trend"]
-            method = val_dict["method"]
-            maxiter = val_dict["maxiter"]
-            information_criterion = val_dict["information_criterion"]
-            approximation = val_dict["approximation"]
-            refititer = val_dict["refititer"]
-            relative_improve = val_dict["relative_improve"]
-            max_k = val_dict["max_k"]
-            max_dur = val_dict["max_dur"]
-
             stepwise_search = autosarima_utils._StepwiseFitWrapper(
-                y=y,
-                X=X,
-                p=p,
-                d=d,
-                q=q,
-                P=P,
-                D=D,
-                Q=Q,
-                m=m,
-                max_p=max_p,
-                max_q=max_q,
-                max_P=max_P,
-                max_Q=max_Q,
-                trend=trend,
-                method=method,
-                maxiter=maxiter,
+                y=y, X=X, p=p, d=d, q=q, P=P, D=D, Q=Q, m=m,
+                max_p=max_p, max_q=max_q, max_P=max_P, max_Q=max_Q,
+                trend=trend, method=method, maxiter=maxiter,
                 information_criterion=information_criterion,
-                relative_improve=relative_improve,
-                max_k=max_k,
-                max_dur=max_dur,
-            )
+                relative_improve=relative_improve, max_k=max_k, max_dur=max_dur, **train_config)
             filtered_models_ics = stepwise_search.stepwisesearch()
 
             if approximation:
-                logger.debug(
-                    f"Now re-fitting the best model(s) without approximations..."
-                )
+                logger.debug(f"Now re-fitting the best model(s) without approximations...")
                 if len(filtered_models_ics) > 0:
                     best_model_theta = filtered_models_ics[0][1]
                     best_model_fit = autosarima_utils._refit_sarima_model(
-                        filtered_models_ics[0][0],
-                        filtered_models_ics[0][2],
-                        method,
-                        maxiter,
-                        refititer,
-                        information_criterion,
-                    )
-                    logger.info(
-                        f"Best model: {autosarima_utils._model_name(best_model_fit.model)}"
-                    )
+                        filtered_models_ics[0][0], filtered_models_ics[0][2],
+                        method, maxiter, refititer, information_criterion)
+                    logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
             else:
                 if len(filtered_models_ics) > 0:
                     best_model_fit = filtered_models_ics[0][0]
                     best_model_theta = filtered_models_ics[0][1]
-                    logger.info(
-                        f"Best model: {autosarima_utils._model_name(best_model_fit.model)}"
-                    )
+                    logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
-
-            return best_model_theta, None, None
+        elif theta_value[0] == "pdPQ":
+            best_model_theta = theta_value[1]
+            order = theta_value[1][0]
+            seasonal_order = theta_value[1][1]
+            trend = theta_value[1][2]
+            if seasonal_order[3] == 1:
+                seasonal_order = [0, 0, 0, 0]
+            best_model_fit, fit_time, ic = autosarima_utils._fit_sarima_model(
+                y=y, X=X, order=order, seasonal_order=seasonal_order, trend=trend,
+                method=method, maxiter=maxiter, information_criterion=information_criterion,
+                **train_config)
         else:
             return theta_value, None, None
+
+        model = deepcopy(self.model)
+        model.reset()
+        self.set_theta(model, best_model_theta, train_data)
+
+        model.train_pre_process(
+            train_data, require_even_sampling=True, require_univariate=False)
+        model.model = best_model_fit
+        name = model.target_name
+        train_data = train_data.univariates[name].to_pd()
+        times = train_data.index
+        yhat = model.model.fittedvalues
+        err = [np.sqrt(model.model.params[-1])] * len(train_data)
+        train_result = (UnivariateTimeSeries(times, yhat, name).to_ts(), \
+                        UnivariateTimeSeries(times, err, f"{name}_err").to_ts())
+
+        return best_model_theta, model, train_result
+
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         order, seasonal_order, trend = theta
         model.config.order = order
         model.config.seasonal_order = seasonal_order
+
