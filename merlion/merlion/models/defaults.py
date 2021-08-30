@@ -139,7 +139,7 @@ class DefaultForecasterConfig(ForecasterConfig, DefaultModelConfig):
     """
 
     def __init__(
-        self, granularity=None, max_forecast_steps=1000, target_seq_index=None, **kwargs
+        self, granularity=None, max_forecast_steps=100, target_seq_index=None, **kwargs
     ):
         """
         :param granularity: the granularity at which the input time series should

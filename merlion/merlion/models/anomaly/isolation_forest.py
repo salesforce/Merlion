@@ -44,7 +44,6 @@ class IsolationForest(DetectorBase):
     """
 
     config_class = IsolationForestConfig
-    _default_post_rule_train_config = dict(metric=TSADMetric.F1, unsup_quantile=0.999)
 
     def __init__(self, config: IsolationForestConfig):
         super().__init__(config)

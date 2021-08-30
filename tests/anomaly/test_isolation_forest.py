@@ -44,7 +44,7 @@ class TestIsolationForest(unittest.TestCase):
         )
         print()
         logger.info("Training model...\n")
-        self.model.train(self.vals_train)
+        self.model.train(self.vals_train, post_rule_train_config={"unsup_quantile": 0.999})
 
     def test_score(self):
         # score function returns the raw anomaly scores

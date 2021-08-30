@@ -384,11 +384,6 @@ def train_model(
                 retrain_kwargs=train_kwargs,
             )
 
-            if getattr(model, "target_seq_index", None) is not None:
-                test_vals = test_vals.univariates[
-                    test_vals.names[model.target_seq_index]
-                ].to_ts()
-
             rmses = evaluator.evaluate(
                 ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.RMSE
             )

@@ -46,6 +46,25 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 f"detectors, but got a {type(model).__name__}."
             )
 
+    def train_pre_process(
+        self,
+        train_data: TimeSeries,
+        require_even_sampling: bool,
+        require_univariate: bool,
+    ) -> TimeSeries:
+        idxs = [model.target_seq_index for model in self.models]
+        if any(i is not None for i in idxs):
+            self.config.target_seq_index = [i for i in idxs if i is not None][0]
+            assert all(i in [None, self.target_seq_index] for i in idxs), (
+                f"All individual forecasters must have the same target_seq_index "
+                f"to be used in a ForecasterEnsemble, but got the following "
+                f"target_seq_idx values: {idxs}"
+            )
+        return super().train_pre_process(
+            train_data=train_data,
+            require_even_sampling=require_even_sampling,
+            require_univariate=require_univariate)
+
     def train(
         self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:
@@ -87,11 +106,12 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         # Train the combiner on the validation data
         try:
             if train is valid:
-                combined = self.train_combiner(preds, train)
+                k = train.names[self.target_seq_index]
+                combined = self.train_combiner(preds, train.univariates[k].to_ts())
             else:
+                valid = valid.univariates[valid.names[self.target_seq_index]].to_ts()
                 valid = self.truncate_valid_data(valid)
-                ts = valid.univariates[valid.names[0]].time_stamps
-                preds = [model.forecast(ts)[0] for model in self.models]
+                preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
                 combined = self.train_combiner(preds, valid)
         except AssertionError as e:
             if "None of `all_model_outs` can be `None`" in str(e):

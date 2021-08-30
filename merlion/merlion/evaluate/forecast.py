@@ -364,8 +364,11 @@ class ForecastEvaluator(EvaluatorBase):
         time_series_prev: TimeSeries,
         return_err: bool = False,
     ) -> Union[Tuple[TimeSeries, TimeSeries], TimeSeries]:
-        name = time_series.names[0]
-        time_stamps = time_series.univariates[name].time_stamps
+        if self.model.target_seq_index is not None:
+            name = time_series.names[self.model.target_seq_index]
+            time_stamps = time_series.univariates[name].time_stamps
+        else:
+            time_stamps = time_series.time_stamps
         forecast, err = self.model.forecast(time_stamps, time_series_prev)
         return (forecast, err) if return_err else forecast
 
@@ -380,6 +383,9 @@ class ForecastEvaluator(EvaluatorBase):
         :param predict: the series of predicted values
         :param metric: the evaluation metric.
         """
+        if self.model.target_seq_index is not None:
+            name = ground_truth.names[self.model.target_seq_index]
+            ground_truth = ground_truth.univariates[name].to_ts()
         if isinstance(predict, TimeSeries):
             if metric is not None:
                 return metric.value(ground_truth, predict)

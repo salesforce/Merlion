@@ -84,7 +84,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
     def from_dict(cls, state):
         state = copy.copy(state)
         state.pop("name", None)
-        n_models = state.pop("n_models")
+        n_models = state.pop("n_models", None)
         ret = cls(**state)
         ret.n_models = n_models
         return ret
@@ -224,17 +224,33 @@ class Median(CombinerBase):
             new_vals = np.median([var.np_values for var in non_none], axis=0)
         return UnivariateTimeSeries(v.time_stamps, new_vals, v.name)
 
+class Max(CombinerBase):
+    """
+    Combines multiple models by taking their max prediction.
+    """
+    def _combine_univariates(
+        self, univariates: List[UnivariateTimeSeries]
+    ) -> UnivariateTimeSeries:
+        non_none = [var for var in univariates if var is not None]
+        v = non_none[0]
+        if self.abs_score and sum(self.models_used) > 1:
+            signs = np.median(np.sign([var.np_values for var in non_none]), axis=0)
+            signs[signs == 0] = -1
+            new_vals = signs * np.median(
+                [np.abs(var.np_values) for var in non_none], axis=0
+            )
+        else:
+            new_vals = np.max([var.np_values for var in non_none], axis=0)
+        return UnivariateTimeSeries(v.time_stamps, new_vals, v.name)
+
 
 class ModelSelector(Mean):
     """
     Takes the mean of the best models, where the models are ranked according to
     the value of an evaluation metric.
     """
-
-    _valid_metric_cls = [TSADMetric, ForecastMetric]
-
     def __init__(
-        self, metric: Union[TSADMetric, ForecastMetric], invert, abs_score=False
+        self, metric: Union[str, TSADMetric, ForecastMetric], invert, abs_score=False
     ):
         """
         :param metric: the evaluation metric to use
@@ -244,6 +260,10 @@ class ModelSelector(Mean):
             outputs. Useful for anomaly detection.
         """
         super().__init__(abs_score=abs_score)
+        if isinstance(metric, str):
+            metric_cls, name = metric.split(".", maxsplit=1)
+            metric_cls = {c.__name__: c for c in [ForecastMetric, TSADMetric]}[metric_cls]
+            metric = metric_cls[name]
         self.metric = metric
         self.invert = invert
         self.metric_values = None
@@ -260,13 +280,8 @@ class ModelSelector(Mean):
 
     @classmethod
     def from_dict(cls, state):
-        # Set metric to enum value in the state
-        metric_cls, name = state.pop("metric").split(".", maxsplit=1)
-        metric_cls = {c.__name__: c for c in cls._valid_metric_cls}[metric_cls]
-        state["metric"] = metric_cls[name]
-
         # Extract the metric values from the state (to set manually later)
-        metric_values = state.pop("metric_values")
+        metric_values = state.pop("metric_values", None)
         ret = super().from_dict(state)
         ret.metric_values = metric_values
         return ret
@@ -327,7 +342,7 @@ class CombinerFactory(object):
     def create(cls, name: str, **kwargs) -> CombinerBase:
         alias = {
             cls.__name__: cls
-            for cls in [Mean, Median, ModelSelector, MetricWeightedMean]
+            for cls in [Mean, Median, Max, ModelSelector, MetricWeightedMean]
         }
         combiner_class = alias[name]
         return combiner_class.from_dict(kwargs)

@@ -791,7 +791,6 @@ class TestAutoSarima(unittest.TestCase):
             )
         )
 
-    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast(self):
         # sMAPE = 3.4491
         train_pred, train_err = self.model.train(
