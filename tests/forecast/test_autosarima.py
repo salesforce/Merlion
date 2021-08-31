@@ -784,7 +784,8 @@ class TestAutoSarima(unittest.TestCase):
         self.model = SeasonalityLayer(
             model=AutoSarima(
                 model=Sarima(
-                    AutoSarimaConfig(
+                    AutoSarimaConfig(order=(15, "auto", 5),
+                           seasonal_order=(2, "auto", 1, "auto"),
                         max_forecast_steps=self.max_forecast_steps, maxiter=5
                     )
                 )
@@ -792,7 +793,7 @@ class TestAutoSarima(unittest.TestCase):
         )
 
     def test_forecast(self):
-        # sMAPE = 3.4491
+        # sMAPE = 3.1810 with pqPQ
         train_pred, train_err = self.model.train(
             self.train_data,
             train_config={

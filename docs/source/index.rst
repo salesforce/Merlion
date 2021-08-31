@@ -5,9 +5,15 @@
 
 Welcome to Merlion's documentation!
 ===================================
-Merlion consists of two sub-repos: :py:mod:`merlion`, which is a repo for time series analysis, focusing on
-anomaly detection and forecasting, and :py:mod:`ts_datasets`, a repo which implements data loaders for multiple time
-series datasets, which loads time series as ``pandas.DataFrame`` s with accompanying metadata.
+Merlion is a Python library for time series intelligence. It provides an end-to-end machine
+learning framework that includes loading and transforming data, building and training models,
+post-processing model outputs, and evaluating model performance. It supports various time series
+learning tasks, including forecasting and anomaly detection for both univariate and multivariate
+time series. It also contains ensemble learning and autoML modules.
+
+Merlion consists of two sub-packages: :py:mod:`merlion` implements the library's core time series intelligence features,
+and :py:mod:`ts_datasets` provides standardized data loaders for multiple time series datasets that loads time series as
+``pandas.DataFrame`` s with accompanying metadata.
 
 You can install :py:mod:`merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
 cloning this repo, navigating to the root directory, and calling ``pip install [-e] merlion/``. We recommend
@@ -39,9 +45,9 @@ and `forecasting <examples/forecast/0_ForecastIntro>`.
    :maxdepth: 2
    :caption: Contents:
 
-   tutorials
    merlion
    ts_datasets
+   tutorials
 
 
 Indices and tables

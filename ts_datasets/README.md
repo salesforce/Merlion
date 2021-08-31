@@ -1,21 +1,21 @@
 # ts_datasets
 This library implements Python classes that manipulate numerous time series datasets
-into standardized `pandas` DataFrames. The sub-modules are `datasets.anomaly` for time series anoamly detection, and
-`datasets.forecast` for time series forecasting. Simply install the package by calling `pip install -e .` from the
+into standardized `pandas` DataFrames. The sub-modules are `ts_datasets.anomaly` for time series anomaly detection, and
+`ts_datasets.forecast` for time series forecasting. Simply install the package by calling `pip install -e .` from the
 command line. Then, you can load a dataset (e.g. the "realAWSCloudwatch" split of the Numenta Anomaly Benchmark) by
 calling
 ```python
 from ts_datasets.anomaly import NAB
-dataset = NAB(subset="realAWSCloudwatch", rootdir=<your_rootdir>)
+dataset = NAB(subset="realAWSCloudwatch", rootdir=path_to_NAB)
 ```
 Note that if you have installed this package in editable mode (i.e. by specifying `-e`), the root directory
 need not be specified.
 
 Each dataset supports the following features: 
 1.  ``__getitem__``: you may call ``ts, metadata = dataset[i]``. ``ts`` is a time-indexed ``pandas`` DataFrame, with
-    each column representing a different variable (in the case of multivariate time series). ``metadata`` is a
-    ``pandas`` DataFrame with the same index as ``ts``, with different columns indicating different dataset-specific
-    metadata (train/test split, anomaly labels, etc.) for each timestamp. 
+    each column representing a different variable (in the case of multivariate time series). ``metadata`` is a dict or
+    ``pd.DataFrame`` with the same index as ``ts``, with different keys indicating different dataset-specific
+    metadata (train/test split, anomaly labels, etc.) for each timestamp.
 2.  ``__len__``:  Calling ``len(dataset)`` will return the number of time series in the dataset.
 3.  ``__iter__``: You may iterate over the `pandas` representations of the time series in the dataset with
     ``for ts, metadata in dataset: ...``

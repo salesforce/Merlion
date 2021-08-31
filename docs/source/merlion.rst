@@ -1,10 +1,10 @@
-merlion package
-===============
-:py:mod:`merlion` is a repo for time series anomaly detection and forecasting. We support the following key features,
+merlion: Time Series Intelligence
+=================================
+:py:mod:`merlion` is a Python library for time series intelligence. We support the following key features,
 each associated with its own sub-package:
 
 -   :py:mod:`merlion.models`: A library of models unified under a single shared interface, with specializations
-    for anomaly detection and forecasting, respectively. More specifically, we have
+    for anomaly detection and forecasting. More specifically, we have
 
     -   :py:mod:`merlion.models.anomaly`: Anomaly detection models
     -   :py:mod:`merlion.models.forecast`: Forecasting models

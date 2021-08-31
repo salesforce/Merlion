@@ -11,8 +11,8 @@ _extra_note = """
 
 .. note::
 
-    For each time series, the ``metadata`` data frame has a ``bool`` column
-    ``anomaly``, indicating whether each timestamp is anomalous.
+    For each time series, the ``metadata`` will always have the key ``anomaly``, which is a 
+    ``pd.Series`` of ``bool`` indicating whether each timestamp is anomalous.
 """
 
 

@@ -6,22 +6,19 @@ _intro_docstr = "Base dataset class for storing time series as ``pd.DataFrame``Â
 _main_fns_docstr = """
 Each dataset supports the following features:
 
-1.  ``__getitem__``: you may call ``ts, metadata = dataset[i]``. ``ts`` is a
-    time-indexed ``pd.DataFrame``, with each column representing a different
-    variable (in the case of multivariate time series). ``metadata`` is a
-    ``pandas`` DataFrame with the same index as ``ts``, with different columns
-    indicating different dataset-specific metadata (train/test split, anomaly
-    labels, etc.) for each timestamp. 
-2.  ``__len__``:  Calling ``len(dataset)`` will return the number of time series
-    in the dataset.
-3.  ``__iter__``: You may iterate over the ``pandas`` representations of the
-    time series in the dataset with ``for ts, metadata in dataset: ...``
+1.  ``__getitem__``: you may call ``ts, metadata = dataset[i]``. ``ts`` is a time-indexed ``pandas`` DataFrame, with
+    each column representing a different variable (in the case of multivariate time series). ``metadata`` is a dict or
+    ``pd.DataFrame`` with the same index as ``ts``, with different keys indicating different dataset-specific
+    metadata (train/test split, anomaly labels, etc.) for each timestamp.
+2.  ``__len__``:  Calling ``len(dataset)`` will return the number of time series in the dataset.
+3.  ``__iter__``: You may iterate over the ``pandas`` representations of the time series in the dataset with
+    ``for ts, metadata in dataset: ...``
 
 .. note::
 
-    For each time series, the ``metadata`` data frame has a ``bool`` column
-    ``trainval``, indicating whether each timestamp is for training/validation
-    (if ``True``) or for testing (if ``False``).
+    For each time series, the ``metadata`` will always have the key ``trainval``, which is a 
+    ``pd.Series`` of ``bool`` indicating whether each timestamp of the time series should be
+    training/validation (if ``True``) or testing (if ``False``). 
 """
 
 

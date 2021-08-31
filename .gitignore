@@ -16,5 +16,4 @@ Icon?
 # build files
 docs/build/*
 .ipynb_checkpoints
-
 venv/
