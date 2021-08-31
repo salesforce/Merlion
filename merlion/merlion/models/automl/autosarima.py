@@ -236,7 +236,10 @@ class AutoSarima(ForecasterAutoMLBase):
         return return_dict
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
-
+        """
+        generate theta which is an indicator for stepwise seach (stepwsie) of
+        p, q, P, Q, trend parameters or use a predefined parameter combination (pdPQ)
+        """
         val_dict = self._generate_sarima_parameters(train_data)
         y = val_dict["y"]
         pqPQ = val_dict["pqPQ"]
@@ -258,7 +261,7 @@ class AutoSarima(ForecasterAutoMLBase):
             seasonal_order[3] = m
             if m == 1:
                 seasonal_order = [0, 0, 0, m]
-            return iter([["pdPQ",[order, seasonal_order, None]]])
+            return iter([["pqPQ",[order, seasonal_order, None]]])
 
         if np.max(dx) == np.min(dx):
             ssn = (0, 0, 0, m) if m == 1 else (0, D, 0, m)
@@ -344,7 +347,7 @@ class AutoSarima(ForecasterAutoMLBase):
                     logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
-        elif theta_value[0] == "pdPQ":
+        elif theta_value[0] == "pqPQ":
             best_model_theta = theta_value[1]
             order = theta_value[1][0]
             seasonal_order = theta_value[1][1]
