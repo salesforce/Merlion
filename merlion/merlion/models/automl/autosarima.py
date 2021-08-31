@@ -238,7 +238,7 @@ class AutoSarima(ForecasterAutoMLBase):
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         """
         generate theta which is an indicator for stepwise seach (stepwsie) of
-        p, q, P, Q, trend parameters or use a predefined parameter combination (pdPQ)
+        p, q, P, Q, trend parameters or use a predefined parameter combination (pqPQ)
         """
         val_dict = self._generate_sarima_parameters(train_data)
         y = val_dict["y"]
