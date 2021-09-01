@@ -1,4 +1,4 @@
-# Merlion
+# Merlion: A Machine Learning Framework for Time Series Intelligence
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -28,24 +28,23 @@ Key Features
 - Standardized data loading & benchmarking for a wide range of anomaly detection and forecasting datasets
 
 Read the [Installation](#installation) section of this document to set up the repo, and check out the
-[example Jupyter notebooks](examples) to get a practical overview of the repo's main features (follow the instructions
-[here](examples/README.md) on how to navigate the examples.)
+[example Jupyter notebooks](https://github.com/salesforce/Merlion/tree/main/examples) to get a practical
+overview of the repo's main features (we provide a guided overview of these examples
+[here](https://salesforce.github.io/Merlion/tutorials.html)).
 
 ## Installation
 
-Merlion consists of two sub-repos: `merlion`, which is a repo for time series analysis, focusing on
-anomaly detection and forecasting, and `ts_datasets`, a repo which implements data loaders for multiple time
-series datasets, which loads time series as ``pandas.DataFrame`` s with accompanying metadata.
+Merlion consists of two sub-repos: `merlion` implements the library's core time series intelligence features,
+and `ts_datasets` provides standardized data loaders for multiple time series datasets that loads time series as
+``pandas.DataFrame`` s with accompanying metadata.
 
 You can install `merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
-cloning this repo, navigating to the root directory, and calling ``pip install [-e] merlion/``. We recommend
-installing in editable mode (i.e. specifying ``-e``) so you can pull new changes & run them without having 
-to reinstall the package. You may install additional dependencies for plotting & visualization via
-``pip install sfdc-merlion[plot]``, or by calling ``pip install [-e] merlion/[plot]`` from the root directory of
-this repo.
+cloning this repo, navigating to the root directory, and calling ``pip install [-e] merlion/``. You may install
+additional dependencies for plotting & visualization via ``pip install sfdc-merlion[plot]``, or by calling
+``pip install [-e] merlion/[plot]`` from the root directory of this repo.
 
 To install the data loading package `ts_datasets`, clone this repo, navigate to its root directory, and call
-``pip install -e ts_datasets/``. Note that this package must be installed in editable mode if you don't want
+``pip install -e ts_datasets/``. This package must be installed in editable mode if you don't want
 to manually specify the root directory of every dataset when initializing its data loader.
 
 Note the following external dependencies:
@@ -61,15 +60,13 @@ Note the following external dependencies:
 
 ## Documentation
 
-For example code and an introduction to Merlion, see the Jupyter notebooks in [`examples`](examples).
-and the guided walkthrough [`examples/README.MD`](examples/README.md). For detailed
-API documentation,  navigate to the [`docs`](docs) directory and follow the  instructions in
-[`docs/README.md`](docs/README.md). If you are interested in contributing to the repo, follow
-the instructions in [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-You can find a discussion on various evaluation metrics for time series anomaly detection in the technical report
-(we favor revised point-adjusted metrics), and you can find performance benchmarks for Merlion's models and datasets
-[here](results). TODO: link to technical report
+For example code and an introduction to Merlion, see the Jupyter notebooks in
+[`examples`](https://github.com/salesforce/Merlion/tree/main/examples), and the guided walkthrough
+[here](https://salesforce.github.io/Merlion/tutorials.html). You may find detailed API documentation (including the
+example code) [here](https://salesforce.github.io/Merlion/index.html). The
+[technical report](TODO) outlines Merlion's overall architecture
+and presents experimental results on time series anomaly detection & forecasting for both univariate and multivariate
+time series.
 
 ## Getting Started
 Here, we provide some minimal examples using Merlion default models, 
@@ -182,4 +179,7 @@ will evaluate the anomaly detection performance of the `IsolationForest` (retrai
 ```shell script
 python benchmark_forecast.py --dataset M4_Hourly --model ETS
 ```
-will evaluate the batch forecasting performance (i.e. no retraining) of `ETS` on the "Hourly" subset of the M4 dataset.
+will evaluate the batch forecasting performance (i.e. no retraining) of `ETS` on the "Hourly" subset of the M4 dataset. 
+You can find the results produced by running these scripts
+[here](https://github.com/salesforce/Merlion/tree/main/results).
+and in the [technical report](TODO).
