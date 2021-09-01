@@ -183,11 +183,3 @@ will evaluate the anomaly detection performance of the `IsolationForest` (retrai
 python benchmark_forecast.py --dataset M4_Hourly --model ETS
 ```
 will evaluate the batch forecasting performance (i.e. no retraining) of `ETS` on the "Hourly" subset of the M4 dataset.
-
-The results of these benchmarking runs will be written to summary CSV files in [`results/anomaly`](results/anomaly)
-and [`results/forecast`](results/forecast), respectively (one summary per dataset, one CSV line per model). You may
-then use these tables of results to directly compare model performance on the datasets that are most relevant
-to your applications. Moreover, adding support for your own custom dataset is as straightforward as implementing a 
-new data loader in [`ts_datasets`](ts_datasets), and updating the `get_dataset()` function of the relevant
-benchmarking script. See [`ts_datasets/README.md`](ts_datasets/README.md) and 
-[`CONTRIBUTING.md`](CONTRIBUTING.md#datasets) for details on how to do this.

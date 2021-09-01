@@ -14,7 +14,8 @@ setup(
     "Amrita Saha, Huan Wang, Steven Hoi, Arun Jagota, Yingbo Zhou, Caiming Xiong, "
     "Gokulakrishnan Gopalakrishnan, Manpreet Singh, K C Krithika, Sukumar Maddineni, "
     "Daeki Cho, Bo Zong, Silvio Savarese",
-    description="Merlion: A Time Series Analytics Repo",
+    description="Merlion: A Machine Learning Framework for Time Series Intelligence",
+    long_description=open("README.md", "r", encoding="utf-8").read(),
     keywords="Time Series Anomaly Detection Forecast Visualization",
     url="https://github.com/salesforce/Merlion",
     license="3-Clause BSD",
