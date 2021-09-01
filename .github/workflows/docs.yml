@@ -20,7 +20,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         sudo apt-get install openjdk-11-jdk
         sudo apt-get install pandoc
-        pip install merlion/[plot]
+        pip install .[plot]
         pip install -e ts_datasets/
     - name: Build Sphinx docs
       run: |

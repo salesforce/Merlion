@@ -17,8 +17,8 @@ and :py:mod:`ts_datasets` provides standardized data loaders for multiple time s
 
 You can install :py:mod:`merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
 cloning the `repo <https://github.com/salesforce/Merlion>`_, navigating to the root directory, and calling
-``pip install [-e] merlion/``. You may install additional dependencies for plotting & visualization via
-``pip install sfdc-merlion[plot]``, or by calling ``pip install [-e] merlion/[plot]`` from the root directory of
+``pip install [-e] .``. You may install additional dependencies for plotting & visualization via
+``pip install sfdc-merlion[plot]``, or by calling ``pip install [-e] .[plot]`` from the root directory of
 the repo if installing from source.
 
 To install the data loading package :py:mod:`ts_datasets`, simply clone the Merlion

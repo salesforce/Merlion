@@ -39,9 +39,9 @@ and `ts_datasets` provides standardized data loaders for multiple time series da
 ``pandas.DataFrame`` s with accompanying metadata.
 
 You can install `merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
-cloning this repo, navigating to the root directory, and calling ``pip install [-e] merlion/``. You may install
+cloning this repo, navigating to the root directory, and calling ``pip install [-e] .``. You may install
 additional dependencies for plotting & visualization via ``pip install sfdc-merlion[plot]``, or by calling
-``pip install [-e] merlion/[plot]`` from the root directory of this repo.
+``pip install [-e] .[plot]`` from the root directory of this repo.
 
 To install the data loading package `ts_datasets`, clone this repo, navigate to its root directory, and call
 ``pip install -e ts_datasets/``. This package must be installed in editable mode if you don't want
