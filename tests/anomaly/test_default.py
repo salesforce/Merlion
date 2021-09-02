@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 
 from merlion.models.defaults import DefaultDetector, DefaultDetectorConfig
+from merlion.plot import plot_anoms_plotly
 from merlion.post_process.threshold import AggregateAlarms, Threshold
 from merlion.utils import TimeSeries
 from ts_datasets.anomaly import *
@@ -35,7 +36,7 @@ def set_random_seeds():
 def get_train_test_splits(df: pd.DataFrame, metadata: pd.DataFrame, n: int) -> (pd.DataFrame, pd.DataFrame, np.ndarray):
     train_df = df[metadata.trainval]
     test_df = df[~metadata.trainval]
-    test_labels = metadata[~metadata.trainval].anomaly.values
+    test_labels = pd.DataFrame(metadata[~metadata.trainval].anomaly)
     return train_df.tail(n), test_df.head(n), test_labels[:n]
 
 
@@ -111,6 +112,7 @@ class Mixin(ABC):
             fig = self.model.plot_anomaly_plotly(
                 time_series=test_ts, time_series_prev=train_ts, plot_time_series_prev=True
             )
+            plot_anoms_plotly(fig, TimeSeries.from_pd(self.test_labels))
             try:
                 import kaleido
 
@@ -148,8 +150,9 @@ class TestUnivariate(unittest.TestCase, Mixin):
         df = df.set_index("timestamp")
 
         # Get training & testing splits
-        self.train_df = df.iloc[: -len(df) // 2, 0:1]
-        self.test_df = df.iloc[-len(df) // 2 :, 0:1]
+        self.train_df = df.iloc[: -len(df) // 2, :1]
+        self.test_df = df.iloc[-len(df) // 2 :, :1]
+        self.test_labels = df.iloc[-len(df) // 2 :, -1:]
 
 
 class TestMultivariate(unittest.TestCase, Mixin):

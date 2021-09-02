@@ -14,6 +14,7 @@ import unittest
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
+from merlion.plot import plot_anoms, plot_anoms_plotly
 from merlion.utils.time_series import ts_csv_load
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,9 @@ class TestPlot(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.csv_name = join(rootdir, "data", "example.csv")
-        self.data = TemporalResample("15min")(ts_csv_load(self.csv_name, n_vars=1))
+        data = ts_csv_load(self.csv_name)
+        self.data = TemporalResample("15min")(data.univariates[data.names[0]].to_ts())
+        self.labels = data.univariates[data.names[1]].to_ts()
         logger.info(f"Data looks like:\n{self.data[:5]}")
 
         # Test Prophet
@@ -44,19 +47,20 @@ class TestPlot(unittest.TestCase):
         os.makedirs(figdir, exist_ok=True)
 
         # Test various plots with matplotlib
-        fig, _ = self.model.plot_anomaly(
+        fig, ax = self.model.plot_anomaly(
             time_series=self.vals_test, filter_scores=False, plot_forecast=True, plot_forecast_uncertainty=True
         )
+        plot_anoms(ax, self.labels)
         fig.savefig(join(figdir, "prophet_anom_raw.png"))
 
-        fig, _ = self.model.plot_anomaly(
+        fig, ax = self.model.plot_anomaly(
             time_series=self.vals_test, filter_scores=True, plot_forecast=True, plot_forecast_uncertainty=True
         )
+        plot_anoms(ax, self.labels)
         fig.savefig(join(figdir, "prophet_anom_filtered.png"))
 
-        var = self.vals_test.univariates[self.vals_test.names[0]]
         fig, _ = self.model.plot_forecast(
-            time_stamps=var.time_stamps,
+            time_stamps=self.vals_test.time_stamps,
             time_series_prev=self.vals_train,
             plot_time_series_prev=True,
             plot_forecast_uncertainty=True,
@@ -74,6 +78,7 @@ class TestPlot(unittest.TestCase):
                 plot_forecast_uncertainty=True,
                 plot_time_series_prev=True,
             )
+            plot_anoms_plotly(fig, self.labels)
             try:
                 import kaleido
 

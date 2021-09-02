@@ -20,6 +20,7 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 try:
+    import plotly
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except ImportError:
@@ -28,7 +29,7 @@ except ImportError:
 
 def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
     """
-    Plots anomalies as pink windows on the graph ``ax``.
+    Plots anomalies as pink windows on the matplotlib ``Axes`` object ``ax``.
     """
     anomaly_labels = anomaly_labels.to_pd()
     t, y = anomaly_labels.index, anomaly_labels.values
@@ -37,6 +38,19 @@ def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
     for k in range(len(splits) - 1):
         if y[splits[k]]:  # If splits[k] is anomalous
             ax.axvspan(t[splits[k]], t[splits[k + 1]], color="#e07070", alpha=0.5)
+
+
+def plot_anoms_plotly(fig: go.Figure, anomaly_labels: TimeSeries):
+    """
+    Plots anomalies as pink windows on the plotly ``Figure`` object ``fig``.
+    """
+    anomaly_labels = anomaly_labels.to_pd()
+    t, y = anomaly_labels.index, anomaly_labels.values
+    splits = np.where(y[1:] != y[:-1])[0] + 1
+    splits = np.concatenate(([0], splits, [len(y) - 1]))
+    for k in range(len(splits) - 1):
+        if y[splits[k]]:  # If splits[k] is anomalous
+            fig.add_vrect(t[splits[k]], t[splits[k + 1]], line_width=0, fillcolor="#e07070", opacity=0.4)
 
 
 class Figure:
@@ -334,21 +348,6 @@ class Figure:
                 line=dict(color=anom_color, width=line_width),
             )
 
-        t_split = self.t_split
-        if t_split is not None:
-            max_y, min_y = max(y.np_values), min(y.np_values)
-            max_y = max_y + 0.3 * (max_y - min_y)
-            min_y = min_y - 0.3 * (max_y - min_y)
-            traces.append(
-                go.Scatter(
-                    x=[t_split, t_split],
-                    y=[max_y, min_y],
-                    hoverinfo="skip",
-                    line=dict(color="black", width=2, dash="dot"),
-                    showlegend=False,
-                )
-            )
-
         layout = dict(
             showlegend=True,
             width=figsize[0],
@@ -377,6 +376,8 @@ class Figure:
         fig = make_subplots(
             specs=[[{"secondary_y": anom_trace is not None}]], figure=go.Figure(data=traces, layout=layout)
         )
+        if self.t_split is not None:
+            fig.add_vline(x=self.t_split, line_dash="dot", line_color="black", line_width=2)
         if anom_trace is not None:
             fig.add_trace(anom_trace, secondary_y=True)
             minval, maxval = min(self.anom.np_values), max(self.anom.np_values)
@@ -517,12 +518,12 @@ class MTSFigure:
         yhat = self.get_yhat()
         lb, ub = self.get_yhat_iqr()
 
-        min_y, max_y = [], []
-        for name in y.names:
+        color_list = plotly.colors.qualitative.Dark24
+        valid_idx = [i for i in range(len(color_list)) if i not in [3, 12]]  # exclude red to make anom trace clearer
+        for i, name in enumerate(y.names):
             v = y.univariates[name]
-            min_y.append(v.np_values.min())
-            max_y.append(v.np_values.max())
-            traces.append(go.Scatter(name=name, x=v.index, y=v.np_values, mode="lines"))
+            color = color_list[valid_idx[i % len(valid_idx)]]
+            traces.append(go.Scatter(name=name, x=v.index, y=v.np_values, mode="lines", line=dict(color=color)))
             if lb is not None and name in lb.names:
                 v = lb.univariates[name]
                 traces.append(
@@ -566,24 +567,8 @@ class MTSFigure:
                 name="Anomaly Score", x=v.index, y=v.np_values, mode="lines", line=dict(color=anom_color)
             )
 
-        t_split = self.t_split
-        if t_split is not None:
-            max_y, min_y = max(max_y), min(min_y)
-            max_y = max_y + 0.3 * (max_y - min_y)
-            min_y = min_y - 0.3 * (max_y - min_y)
-            traces.append(
-                go.Scatter(
-                    x=[t_split, t_split],
-                    y=[max_y, min_y],
-                    hoverinfo="skip",
-                    line=dict(color="black", width=2, dash="dot"),
-                    showlegend=False,
-                )
-            )
-
         fig = make_subplots(
-            specs=[[{"secondary_y": anom_trace is not None}]],
-            figure=go.Figure(data=traces, layout=self._get_layout(title, figsize)),
+            specs=[[{"secondary_y": anom_trace is not None}]], figure=go.Figure(layout=self._get_layout(title, figsize))
         )
         if anom_trace is not None:
             fig.add_trace(anom_trace, secondary_y=True)
@@ -595,4 +580,8 @@ class MTSFigure:
             else:
                 minval, maxval = minval - 1 / 30, maxval + 1
             fig.update_yaxes(title_text="Anomaly Score", range=[minval, maxval], secondary_y=True)
+        for trace in traces:
+            fig.add_trace(trace)
+        if self.t_split is not None:
+            fig.add_vline(x=self.t_split, line_dash="dot", line_color="black", line_width=2)
         return fig
