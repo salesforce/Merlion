@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Metrics and utilities for evaluating time series anomaly detection models.
 """
@@ -81,9 +87,7 @@ class TSADScoreAccumulator:
         elif score_type is ScoreType.RevisedPointAdjusted:
             tp, fp = self.num_tp_anom, self.num_fp
         else:
-            raise NotImplementedError(
-                f"Cannot compute precision for score_type={score_type.name}"
-            )
+            raise NotImplementedError(f"Cannot compute precision for score_type={score_type.name}")
         return 0.0 if tp + fp == 0 else tp / (tp + fp)
 
     def recall(self, score_type: ScoreType = ScoreType.RevisedPointAdjusted):
@@ -94,9 +98,7 @@ class TSADScoreAccumulator:
         elif score_type is ScoreType.RevisedPointAdjusted:
             tp, fn = self.num_tp_anom, self.num_fn_anom
         else:
-            raise NotImplementedError(
-                f"Cannot compute recall for score_type={score_type.name}"
-            )
+            raise NotImplementedError(f"Cannot compute recall for score_type={score_type.name}")
         return 0.0 if tp + fn == 0 else tp / (tp + fn)
 
     def f1(self, score_type: ScoreType = ScoreType.RevisedPointAdjusted):
@@ -115,9 +117,7 @@ class TSADScoreAccumulator:
             prec_score_type = rec_score_type = score_type
         p = self.precision(prec_score_type)
         r = self.recall(rec_score_type)
-        return (
-            0.0 if p == 0 or r == 0 else (1 + beta ** 2) * p * r / (beta ** 2 * p + r)
-        )
+        return 0.0 if p == 0 or r == 0 else (1 + beta ** 2) * p * r / (beta ** 2 * p + r)
 
     def mean_time_to_detect(self):
         t = np.mean(self.tp_detection_delays) if self.tp_detection_delays else 0
@@ -163,20 +163,12 @@ class TSADScoreAccumulator:
         # perfect: detect all anomalies as early as possible, no false positives
         perfect_score = (self.num_tp_anom + self.num_fn_anom) * tp_weight
         # our score is based on our model's performance
-        score = (
-            self.tp_score * tp_weight
-            - self.fp_score * fp_weight
-            - self.num_fn_anom * fn_weight
-        )
+        score = self.tp_score * tp_weight - self.fp_score * fp_weight - self.num_fn_anom * fn_weight
         return (score - null_score) / (perfect_score - null_score + 1e-8)
 
 
 def accumulate_tsad_score(
-    ground_truth: TimeSeries,
-    predict: TimeSeries,
-    max_early_sec=None,
-    max_delay_sec=None,
-    metric=None,
+    ground_truth: TimeSeries, predict: TimeSeries, max_early_sec=None, max_delay_sec=None, metric=None
 ) -> Union[TSADScoreAccumulator, float]:
     """
     Computes the components required to compute multiple different types of
@@ -200,8 +192,7 @@ def accumulate_tsad_score(
         ``metric`` is ``None``.
     """
     assert ground_truth.dim == 1 and predict.dim == 1, (
-        "Can only evaluate anomaly scores when ground truth and prediction "
-        "are single-variable time series."
+        "Can only evaluate anomaly scores when ground truth and prediction " "are single-variable time series."
     )
     ground_truth = ground_truth.univariates[ground_truth.names[0]]
     ts = ground_truth.np_time_stamps
@@ -305,87 +296,54 @@ class TSADMetric(Enum):
     function of form ``f(ground_truth, predicted, **kwargs)``
     """
 
-    MeanTimeToDetect = partial(
-        accumulate_tsad_score, metric=TSADScoreAccumulator.mean_time_to_detect
-    )
+    MeanTimeToDetect = partial(accumulate_tsad_score, metric=TSADScoreAccumulator.mean_time_to_detect)
 
     # Revised point-adjusted metrics (default)
     F1 = partial(
-        accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.f1, score_type=ScoreType.RevisedPointAdjusted
-        ),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.f1, score_type=ScoreType.RevisedPointAdjusted)
     )
     Precision = partial(
-        accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.precision, score_type=ScoreType.RevisedPointAdjusted
-        ),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.precision, score_type=ScoreType.RevisedPointAdjusted)
     )
     Recall = partial(
-        accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.recall, score_type=ScoreType.RevisedPointAdjusted
-        ),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.recall, score_type=ScoreType.RevisedPointAdjusted)
     )
 
     # Pointwise metrics
     PointwiseF1 = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.f1, score_type=ScoreType.Pointwise),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.f1, score_type=ScoreType.Pointwise)
     )
     PointwisePrecision = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.precision, score_type=ScoreType.Pointwise),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.precision, score_type=ScoreType.Pointwise)
     )
     PointwiseRecall = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.recall, score_type=ScoreType.Pointwise),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.recall, score_type=ScoreType.Pointwise)
     )
 
     # Point-adjusted metrics
     PointAdjustedF1 = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.f1, score_type=ScoreType.PointAdjusted),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.f1, score_type=ScoreType.PointAdjusted)
     )
     PointAdjustedPrecision = partial(
-        accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.precision, score_type=ScoreType.PointAdjusted
-        ),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.precision, score_type=ScoreType.PointAdjusted)
     )
     PointAdjustedRecall = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.recall, score_type=ScoreType.PointAdjusted),
+        accumulate_tsad_score, metric=partial(TSADScoreAccumulator.recall, score_type=ScoreType.PointAdjusted)
     )
 
     # NAB scores
     NABScore = partial(accumulate_tsad_score, metric=TSADScoreAccumulator.nab_score)
-    NABScoreLowFN = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.nab_score, fn_weight=2.0),
-    )
-    NABScoreLowFP = partial(
-        accumulate_tsad_score,
-        metric=partial(TSADScoreAccumulator.nab_score, fp_weight=0.22),
-    )
+    NABScoreLowFN = partial(accumulate_tsad_score, metric=partial(TSADScoreAccumulator.nab_score, fn_weight=2.0))
+    NABScoreLowFP = partial(accumulate_tsad_score, metric=partial(TSADScoreAccumulator.nab_score, fp_weight=0.22))
 
     # Argus metrics
     F2 = partial(
         accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.f_beta,
-            score_type=ScoreType.RevisedPointAdjusted,
-            beta=2.0,
-        ),
+        metric=partial(TSADScoreAccumulator.f_beta, score_type=ScoreType.RevisedPointAdjusted, beta=2.0),
     )
     F5 = partial(
         accumulate_tsad_score,
-        metric=partial(
-            TSADScoreAccumulator.f_beta,
-            score_type=ScoreType.RevisedPointAdjusted,
-            beta=5.0,
-        ),
+        metric=partial(TSADScoreAccumulator.f_beta, score_type=ScoreType.RevisedPointAdjusted, beta=5.0),
     )
 
 
@@ -394,9 +352,7 @@ class TSADEvaluatorConfig(EvaluatorConfig):
     Configuration class for a `TSADEvaluator`.
     """
 
-    def __init__(
-        self, max_early_sec: float = None, max_delay_sec: float = None, **kwargs
-    ):
+    def __init__(self, max_early_sec: float = None, max_delay_sec: float = None, **kwargs):
         """
         :param max_early_sec: the maximum number of seconds we allow an anomaly
             to be detected early.
@@ -429,9 +385,7 @@ class TSADEvaluator(EvaluatorBase):
     def max_delay_sec(self):
         return self.config.max_delay_sec
 
-    def _call_model(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries
-    ) -> TimeSeries:
+    def _call_model(self, time_series: TimeSeries, time_series_prev: TimeSeries) -> TimeSeries:
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
     def default_retrain_kwargs(self) -> dict:
@@ -441,8 +395,7 @@ class TSADEvaluator(EvaluatorBase):
         if isinstance(self.model, DetectorEnsemble):
             return {
                 "post_rule_train_config": no_train,
-                "per_model_post_rule_train_configs": [no_train]
-                * len(self.model.models),
+                "per_model_post_rule_train_configs": [no_train] * len(self.model.models),
             }
         return {"post_rule_train_config": no_train}
 
@@ -478,10 +431,7 @@ class TSADEvaluator(EvaluatorBase):
             `TimeSeries` of the model's anomaly scores on ``test_vals``.
         """
         train_result, result = super().get_predict(
-            train_vals=train_vals,
-            test_vals=test_vals,
-            train_kwargs=train_kwargs,
-            retrain_kwargs=retrain_kwargs,
+            train_vals=train_vals, test_vals=test_vals, train_kwargs=train_kwargs, retrain_kwargs=retrain_kwargs
         )
         if post_process:
             train_result = self.model.post_rule(train_result)
@@ -502,10 +452,7 @@ class TSADEvaluator(EvaluatorBase):
         if metric is not None:
             assert isinstance(metric, TSADMetric)
             return metric.value(
-                ground_truth,
-                predict,
-                max_early_sec=self.max_early_sec,
-                max_delay_sec=self.max_delay_sec,
+                ground_truth, predict, max_early_sec=self.max_early_sec, max_delay_sec=self.max_delay_sec
             )
 
         return accumulate_tsad_score(

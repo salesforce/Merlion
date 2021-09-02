@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from abc import abstractmethod
 from typing import List
 from math import sqrt
@@ -118,9 +124,7 @@ class Variance(IStat):
 
     mean_class = Mean
 
-    def __init__(
-        self, ex_value: float = None, ex2_value: float = None, n: int = 0, ddof: int = 1
-    ):
+    def __init__(self, ex_value: float = None, ex2_value: float = None, n: int = 0, ddof: int = 1):
         """
         :param ex_value: Initial value of the first moment (mean).
         :param ex2_value: Initial value of the second moment.

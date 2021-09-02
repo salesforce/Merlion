@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -8,10 +14,7 @@ import pandas as pd
 import torch
 
 from merlion.evaluate.anomaly import TSADMetric
-from merlion.models.anomaly.deep_point_anomaly_detector import (
-    DeepPointAnomalyDetector,
-    DeepPointAnomalyDetectorConfig,
-)
+from merlion.models.anomaly.deep_point_anomaly_detector import DeepPointAnomalyDetector, DeepPointAnomalyDetectorConfig
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.resample import Shingle, TemporalResample
 from merlion.transform.sequence import TransformSequence
@@ -28,9 +31,7 @@ class TestDPAD(unittest.TestCase):
         # We test training with labels here to also test the AdaptiveThreshold
         # post-rule
         torch.manual_seed(12345)
-        df = pd.read_csv(
-            join(rootdir, "data", "synthetic_anomaly", "horizontal_spike_anomaly.csv")
-        )
+        df = pd.read_csv(join(rootdir, "data", "synthetic_anomaly", "horizontal_spike_anomaly.csv"))
         df.timestamp = pd.to_datetime(df.timestamp, unit="s")
         df = df.set_index("timestamp")
 
@@ -47,11 +48,7 @@ class TestDPAD(unittest.TestCase):
         self.model = DeepPointAnomalyDetector(
             DeepPointAnomalyDetectorConfig(
                 transform=TransformSequence(
-                    [
-                        TemporalResample("15min"),
-                        Shingle(size=3, stride=2),
-                        DifferenceTransform(),
-                    ]
+                    [TemporalResample("15min"), Shingle(size=3, stride=2), DifferenceTransform()]
                 )
             )
         )
@@ -80,9 +77,7 @@ class TestDPAD(unittest.TestCase):
 
         # Serialization/deserialization
         self.model.save(dirname=join(rootdir, "tmp", "dpad"))
-        loaded_model = DeepPointAnomalyDetector.load(
-            dirname=join(rootdir, "tmp", "dpad")
-        )
+        loaded_model = DeepPointAnomalyDetector.load(dirname=join(rootdir, "tmp", "dpad"))
         loaded_alarms = loaded_model.get_anomaly_label(self.test_data)
         n_loaded_alarms = sum(loaded_alarms.to_pd().values != 0)
         self.assertAlmostEqual(n_loaded_alarms, n_alarms, delta=1)
@@ -96,8 +91,6 @@ class TestDPAD(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

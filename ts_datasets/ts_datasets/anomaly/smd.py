@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import os
 import sys
 import logging
@@ -38,9 +44,7 @@ class SMD(TSADBaseDataset):
         if subset == "all":
             subset = self.valid_subsets
         elif type(subset) == str:
-            assert (
-                subset in self.valid_subsets
-            ), f"subset should be in {self.valid_subsets}, but got {subset}"
+            assert subset in self.valid_subsets, f"subset should be in {self.valid_subsets}, but got {subset}"
             subset = [subset]
 
         if rootdir is None:
@@ -53,9 +57,7 @@ class SMD(TSADBaseDataset):
         for s in subset:
             # Load training/test datasets
             df, metadata = combine_train_test_datasets(
-                *SMD._load_data(
-                    directory=os.path.join(rootdir, SMD.filename), sequence_name=s
-                )
+                *SMD._load_data(directory=os.path.join(rootdir, SMD.filename), sequence_name=s)
             )
             self.time_series.append(df)
             self.metadata.append(metadata)
@@ -68,11 +70,7 @@ class SMD(TSADBaseDataset):
             test_labels = np.genfromtxt(f, dtype=np.float32, delimiter=",")
         with open(os.path.join(directory, f"train/{sequence_name}.txt"), "r") as f:
             train_data = np.genfromtxt(f, dtype=np.float32, delimiter=",")
-        return (
-            pd.DataFrame(train_data),
-            pd.DataFrame(test_data),
-            test_labels.astype(int),
-        )
+        return (pd.DataFrame(train_data), pd.DataFrame(test_data), test_labels.astype(int))
 
 
 def combine_train_test_datasets(train_df, test_df, test_labels):
@@ -88,9 +86,7 @@ def combine_train_test_datasets(train_df, test_df, test_labels):
     metadata = pd.DataFrame(
         {
             "trainval": df.index < df.index[train_df.shape[0]],
-            "anomaly": np.concatenate(
-                [np.zeros(train_df.shape[0], dtype=int), test_labels]
-            ),
+            "anomaly": np.concatenate([np.zeros(train_df.shape[0], dtype=int), test_labels]),
         },
         index=df.index,
     )

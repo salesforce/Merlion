@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -66,11 +72,7 @@ class FeedForward(nn.Module):
     def __init__(self, dim, hidden_dim, dropout=0.0):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(dim, hidden_dim),
-            nn.GELU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, dim),
-            nn.Dropout(dropout),
+            nn.Linear(dim, hidden_dim), nn.GELU(), nn.Dropout(dropout), nn.Linear(hidden_dim, dim), nn.Dropout(dropout)
         )
 
     def forward(self, x):
@@ -128,17 +130,8 @@ class TransformerLayer(nn.Module):
             self.layers.append(
                 nn.ModuleList(
                     [
-                        Residual(
-                            PreNorm(
-                                dim,
-                                Attention(
-                                    dim, heads=heads, dim_head=dim_head, dropout=dropout
-                                ),
-                            )
-                        ),
-                        Residual(
-                            PreNorm(dim, FeedForward(dim, mlp_dim, dropout=dropout))
-                        ),
+                        Residual(PreNorm(dim, Attention(dim, heads=heads, dim_head=dim_head, dropout=dropout))),
+                        Residual(PreNorm(dim, FeedForward(dim, mlp_dim, dropout=dropout))),
                     ]
                 )
             )
@@ -183,16 +176,13 @@ class TransformerModel(nn.Module):
         self.cls_token = nn.Parameter(torch.randn(1, 1, hid_dim))
         self.dropout = nn.Dropout(emb_dropout)
 
-        self.transformer = TransformerLayer(
-            hid_dim, depth, heads, dim_head, mlp_dim, dropout
-        )
+        self.transformer = TransformerLayer(hid_dim, depth, heads, dim_head, mlp_dim, dropout)
 
         self.pool = pool
         self.to_latent = nn.Identity()
 
         self.mlp_head = nn.Sequential(
-            nn.LayerNorm(hid_dim),
-            nn.Linear(hid_dim, (nexperts + nfree_experts) * output_dim),
+            nn.LayerNorm(hid_dim), nn.Linear(hid_dim, (nexperts + nfree_experts) * output_dim)
         )
         if nfree_experts > 0:
             self.expert_val = nn.Parameter(torch.randn(nfree_experts, output_dim))
@@ -220,9 +210,7 @@ class TransformerModel(nn.Module):
         x = self.to_latent(x)
 
         logits = self.mlp_head(x)
-        logits = logits.reshape(
-            logits.size(0), -1, self.output_dim
-        )  # B x total num experts x forecast len
+        logits = logits.reshape(logits.size(0), -1, self.output_dim)  # B x total num experts x forecast len
         return (logits, self.expert_val) if self.nfree_experts > 0 else (logits, None)
 
     def drop_inp(self, x, p):
@@ -242,9 +230,7 @@ class LRScheduler:
     def step(self):
         self.step_ += 1
         if self.step_ <= self.nsteps:
-            self.lr = (
-                self.lr_i + (self.lr_f - self.lr_i) * float(self.step_) / self.nsteps
-            )
+            self.lr = self.lr_i + (self.lr_f - self.lr_i) * float(self.step_) / self.nsteps
         else:
             self.lr = self.lr_f
         for param_group in self.optimizer.param_groups:

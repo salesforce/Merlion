@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Base class for anomaly detectors.
 """
@@ -28,12 +34,7 @@ class DetectorConfig(Config):
     _default_threshold = AggregateAlarms(alm_threshold=3.0)
 
     def __init__(
-        self,
-        max_score: float = 1000,
-        threshold=None,
-        enable_calibrator=True,
-        enable_threshold=True,
-        **kwargs,
+        self, max_score: float = 1000, threshold=None, enable_calibrator=True, enable_threshold=True, **kwargs
     ):
         """
         Base class of the object used to configure an anomaly detection model.
@@ -72,15 +73,11 @@ class DetectorConfig(Config):
         return PostRuleSequence(rules)
 
     @classmethod
-    def from_dict(
-        cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs
-    ):
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
         # Get the calibrator, but we will set it manually after the constructor
         config_dict = copy(config_dict)
         calibrator_config = config_dict.pop("calibrator", None)
-        config, kwargs = super().from_dict(
-            config_dict, return_unused_kwargs=True, **kwargs
-        )
+        config, kwargs = super().from_dict(config_dict, return_unused_kwargs=True, **kwargs)
         if calibrator_config is not None:
             config.calibrator = PostRuleFactory.create(**calibrator_config)
 
@@ -112,8 +109,7 @@ class NoCalibrationDetectorConfig(DetectorConfig):
     def enable_calibrator(self, e):
         if e is not False:
             logger.warning(
-                f"Tried to set enable_calibrator={e}, but only "
-                f"False supported for {type(self).__name__}."
+                f"Tried to set enable_calibrator={e}, but only " f"False supported for {type(self).__name__}."
             )
 
 
@@ -159,11 +155,7 @@ class DetectorBase(ModelBase):
 
     @abstractmethod
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Trains the anomaly detector (unsupervised) and its post-rule
@@ -184,10 +176,7 @@ class DetectorBase(ModelBase):
         raise NotImplementedError
 
     def train_post_rule(
-        self,
-        anomaly_scores: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        post_rule_train_config=None,
+        self, anomaly_scores: TimeSeries, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ):
         if self.post_rule is not None:
             kwargs = copy(self._default_post_rule_train_config)
@@ -196,14 +185,10 @@ class DetectorBase(ModelBase):
             params = inspect.signature(self.post_rule.train).parameters
             if not any(v.kind.name == "VAR_KEYWORD" for v in params.values()):
                 kwargs = {k: v for k, v in kwargs.items() if k in params}
-            self.post_rule.train(
-                anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, **kwargs
-            )
+            self.post_rule.train(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, **kwargs)
 
     @abstractmethod
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         Returns the model's predicted sequence of anomaly scores.
 
@@ -217,9 +202,7 @@ class DetectorBase(ModelBase):
         """
         raise NotImplementedError
 
-    def get_anomaly_label(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_label(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         Returns the model's predicted sequence of anomaly scores, processed
         by any relevant post-rules (calibration and/or thresholding).

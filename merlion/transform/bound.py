@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transforms that clip the input.
 """
@@ -19,9 +25,7 @@ class LowerUpperClip(TransformBase):
 
     def __init__(self, lower=None, upper=None):
         super().__init__()
-        assert not (
-            lower is None and upper is None
-        ), "Must provide at least one of lower or upper"
+        assert not (lower is None and upper is None), "Must provide at least one of lower or upper"
         if lower is not None and upper is not None:
             assert lower < upper
         self.lower = lower

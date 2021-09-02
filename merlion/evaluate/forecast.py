@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Metrics and utilities for evaluating forecasting models in a continuous sense.
 """
@@ -69,9 +75,7 @@ class ForecastScoreAccumulator:
         """
         self.check_before_eval()
         predict_values = self.predict.univariates[self.predict.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
         return np.mean(np.abs(ground_truth_values - predict_values))
 
     def marre(self):
@@ -86,14 +90,10 @@ class ForecastScoreAccumulator:
         """
         self.check_before_eval()
         predict_values = self.predict.univariates[self.predict.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
         assert ground_truth_values.max() > ground_truth_values.min()
         true_range = ground_truth_values.max() - ground_truth_values.min()
-        return 100.0 * np.mean(
-            np.abs((ground_truth_values - predict_values) / true_range)
-        )
+        return 100.0 * np.mean(np.abs((ground_truth_values - predict_values) / true_range))
 
     def rmse(self):
         """
@@ -106,9 +106,7 @@ class ForecastScoreAccumulator:
         """
         self.check_before_eval()
         predict_values = self.predict.univariates[self.predict.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
         return np.sqrt(np.mean((ground_truth_values - predict_values) ** 2))
 
     def smape(self):
@@ -123,19 +121,14 @@ class ForecastScoreAccumulator:
         """
         self.check_before_eval()
         predict_values = self.predict.univariates[self.predict.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
 
         errors = np.abs(ground_truth_values - predict_values)
         scale = np.abs(ground_truth_values) + np.abs(predict_values)
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn(
-                "Some values very close to 0, sMAPE might not be "
-                "estimated accurately."
-            )
+            warnings.warn("Some values very close to 0, sMAPE might not be " "estimated accurately.")
         return np.mean(200.0 * errors / (scale + 1e-8))
 
     def mase(self):
@@ -153,23 +146,13 @@ class ForecastScoreAccumulator:
         assert self.insample.dim == 1
         insample_values = self.insample.univariates[self.insample.names[0]].np_values
         predict_values = self.predict.univariates[self.predict.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
         errors = np.abs(ground_truth_values - predict_values)
-        scale = np.mean(
-            np.abs(
-                insample_values[self.periodicity :]
-                - insample_values[: -self.periodicity]
-            )
-        )
+        scale = np.mean(np.abs(insample_values[self.periodicity :] - insample_values[: -self.periodicity]))
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn(
-                "Some values very close to 0, MASE might not be "
-                "estimated accurately."
-            )
+            warnings.warn("Some values very close to 0, MASE might not be " "estimated accurately.")
         return np.mean(errors / (scale + 1e-8))
 
     def msis(self):
@@ -190,29 +173,17 @@ class ForecastScoreAccumulator:
         insample_values = self.insample.univariates[self.insample.names[0]].np_values
         lb_values = self.lb.univariates[self.lb.names[0]].np_values
         ub_values = self.ub.univariates[self.ub.names[0]].np_values
-        ground_truth_values = self.ground_truth.univariates[
-            self.ground_truth.names[0]
-        ].np_values
+        ground_truth_values = self.ground_truth.univariates[self.ground_truth.names[0]].np_values
         errors = (
             np.sum(ub_values - lb_values)
-            + 100
-            * np.sum((lb_values - ground_truth_values)[lb_values > ground_truth_values])
-            + 100
-            * np.sum((ground_truth_values - ub_values)[ground_truth_values > ub_values])
+            + 100 * np.sum((lb_values - ground_truth_values)[lb_values > ground_truth_values])
+            + 100 * np.sum((ground_truth_values - ub_values)[ground_truth_values > ub_values])
         )
-        scale = np.mean(
-            np.abs(
-                insample_values[self.periodicity :]
-                - insample_values[: -self.periodicity]
-            )
-        )
+        scale = np.mean(np.abs(insample_values[self.periodicity :] - insample_values[: -self.periodicity]))
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn(
-                "Some values very close to 0, MSIS might not be "
-                "estimated accurately."
-            )
+            warnings.warn("Some values very close to 0, MSIS might not be " "estimated accurately.")
         return errors / (scale + 1e-8) / len(ground_truth_values)
 
 
@@ -226,12 +197,7 @@ def accumulate_forecast_score(
     metric=None,
 ) -> Union[ForecastScoreAccumulator, float]:
     acc = ForecastScoreAccumulator(
-        ground_truth=ground_truth,
-        predict=predict,
-        insample=insample,
-        periodicity=periodicity,
-        ub=ub,
-        lb=lb,
+        ground_truth=ground_truth, predict=predict, insample=insample, periodicity=periodicity, ub=ub, lb=lb
     )
     return acc if metric is None else metric(acc)
 
@@ -359,10 +325,7 @@ class ForecastEvaluator(EvaluatorBase):
         return self.config.cadence
 
     def _call_model(
-        self,
-        time_series: TimeSeries,
-        time_series_prev: TimeSeries,
-        return_err: bool = False,
+        self, time_series: TimeSeries, time_series_prev: TimeSeries, return_err: bool = False
     ) -> Union[Tuple[TimeSeries, TimeSeries], TimeSeries]:
         if self.model.target_seq_index is not None:
             name = time_series.names[self.model.target_seq_index]
@@ -393,12 +356,6 @@ class ForecastEvaluator(EvaluatorBase):
         else:
             if metric is not None:
                 weights = np.asarray([len(p) for p in predict if not p.is_empty()])
-                vals = [
-                    metric.value(ground_truth, p) for p in predict if not p.is_empty()
-                ]
+                vals = [metric.value(ground_truth, p) for p in predict if not p.is_empty()]
                 return np.dot(weights / weights.sum(), vals)
-            return [
-                accumulate_forecast_score(ground_truth, p)
-                for p in predict
-                if not p.is_empty()
-            ]
+            return [accumulate_forecast_score(ground_truth, p) for p in predict if not p.is_empty()]

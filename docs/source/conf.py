@@ -11,18 +11,19 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import pkg_resources
 import sys
-import merlion
-sys.path.insert(0, os.path.abspath('..'))
+
+sys.path.insert(0, os.path.abspath(".."))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'Merlion'
-copyright = '2021, Salesforce'
+project = "Merlion"
+copyright = "2021, salesforce.com, inc."
 
 # The full version, including alpha/beta/rc tags
-release = merlion.__version__
+release = pkg_resources.get_distribution("sfdc-merlion").version
 
 default_role = "any"
 
@@ -32,10 +33,7 @@ default_role = "any"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['nbsphinx',
-              'sphinx.ext.autodoc',
-              'sphinx.ext.autosummary',
-              'sphinx_autodoc_typehints']
+extensions = ["nbsphinx", "sphinx.ext.autodoc", "sphinx.ext.autosummary", "sphinx_autodoc_typehints"]
 
 autoclass_content = "both"  # include both class docstring and __init__
 autodoc_default_options = {
@@ -43,13 +41,13 @@ autodoc_default_options = {
     "members": True,
     "undoc-members": True,
     "inherited-members": False,
-    "show-inheritance": True
+    "show-inheritance": True,
 }
 autodoc_member_order = "bysource"
 autosummary_generate = True  # Make _autosummary files and include them
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -62,8 +60,6 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
-html_theme_options = {
-    'navigation_depth': -1,
-}
+html_theme_options = {"navigation_depth": -1}

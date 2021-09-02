@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Multi-Scale Exponential Smoother for univariate time series forecasting.
 """
@@ -10,11 +16,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
-from merlion.utils.time_series import (
-    TimeSeries,
-    UnivariateTimeSeries,
-    assert_equal_timedeltas,
-)
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
 from merlion.utils.resample import to_pd_datetime
 from merlion.transform.moving_average import LagTransform
@@ -83,11 +85,7 @@ class MSESConfig(ForecasterConfig):
             errors of the estimated velocities over the models; inflation=1 is equivalent
             to using the softmax function.
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         assert 0.0 <= rho <= 1.0
         assert 1.0 <= phi
         self.max_backstep = max_forecast_steps if max_backstep is None else max_backstep
@@ -201,17 +199,13 @@ class MSES(ForecasterBase):
     def max_horizon(self):
         return self.max_forecast_steps * self.timedelta
 
-    def train(
-        self, train_data: TimeSeries, train_config: MSESTrainConfig = None
-    ) -> Tuple[Optional[TimeSeries], None]:
+    def train(self, train_data: TimeSeries, train_config: MSESTrainConfig = None) -> Tuple[Optional[TimeSeries], None]:
         if train_config is None:
             train_config = deepcopy(self._default_train_config)
             if isinstance(train_config, dict):
                 train_config = MSESTrainConfig(**train_config)
 
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
         name = self.target_name
         train_data = train_data.univariates[name]
 
@@ -249,9 +243,7 @@ class MSES(ForecasterBase):
 
         return train_forecast, train_err
 
-    def _incremental_train(
-        self, train_data, train_cadence, process_losses, tune_recency_weights
-    ):
+    def _incremental_train(self, train_data, train_cadence, process_losses, tune_recency_weights):
         # train incrementally
         t, tf = train_data.t0, train_data.tf
         train_forecast, train_err = [], []
@@ -268,12 +260,8 @@ class MSES(ForecasterBase):
             if len(train_batch) > 0:
                 # forecast & process losses
                 if process_losses:
-                    scale_losses, (forecast, err) = self._compute_losses(
-                        train_batch, return_forecast=True
-                    )
-                    self.delta_estimator.process_losses(
-                        scale_losses, tune_recency_weights
-                    )
+                    scale_losses, (forecast, err) = self._compute_losses(train_batch, return_forecast=True)
+                    self.delta_estimator.process_losses(scale_losses, tune_recency_weights)
                 else:
                     forecast, err = self.forecast(train_batch.time_stamps)
                 # store forecast results
@@ -284,16 +272,11 @@ class MSES(ForecasterBase):
                 self.last_train_time = train_batch.tf
             # increment time
             t = t_next
-        train_forecast, train_err = [
-            sum(v[1:], v[0]) for v in (train_forecast, train_err)
-        ]
+        train_forecast, train_err = [sum(v[1:], v[0]) for v in (train_forecast, train_err)]
         return train_forecast, train_err
 
     def update(
-        self,
-        new_data: TimeSeries,
-        tune_recency_weights: bool = True,
-        train_cadence=None,
+        self, new_data: TimeSeries, tune_recency_weights: bool = True, train_cadence=None
     ) -> Tuple[TimeSeries, TimeSeries]:
         """
         Updates the MSES model with new data that has been acquired since the model's
@@ -340,10 +323,7 @@ class MSES(ForecasterBase):
         )
 
     def _compute_losses(
-        self,
-        data: UnivariateTimeSeries,
-        return_forecast: bool = False,
-        return_iqr: bool = False,
+        self, data: UnivariateTimeSeries, return_forecast: bool = False, return_iqr: bool = False
     ) -> Union[Dict[int, List[float]], Tuple[Dict[int, List[float]], TimeSeries]]:
         """
         Computes forecast losses at every point possible in data for every backstep, and
@@ -373,9 +353,7 @@ class MSES(ForecasterBase):
 
         # generate forecast
         name = self.target_name
-        forecast = [
-            self.marginalize_xhat_h(i + 1, xhat_h) for i, xhat_h in enumerate(xhat_hb)
-        ]
+        forecast = [self.marginalize_xhat_h(i + 1, xhat_h) for i, xhat_h in enumerate(xhat_hb)]
         xhat, neg_err, pos_err = [[f[i] for f in forecast] for i in (0, 1, 2)]
 
         if not return_iqr:
@@ -384,22 +362,16 @@ class MSES(ForecasterBase):
                 name=f"{name}_err",
                 values=(np.abs(pos_err) + np.abs(neg_err)) / 2,
             ).to_ts()
-            xhat = UnivariateTimeSeries(
-                time_stamps=forecastable_data.time_stamps, values=xhat, name=name
-            ).to_ts()
+            xhat = UnivariateTimeSeries(time_stamps=forecastable_data.time_stamps, values=xhat, name=name).to_ts()
             return losses, (xhat, err)
 
         # return forecast with iqr
         t = forecastable_data.time_stamps
         lb = UnivariateTimeSeries(
-            name=f"{name}_lower",
-            time_stamps=t,
-            values=xhat + norm.ppf(0.75) * np.asarray(neg_err),
+            name=f"{name}_lower", time_stamps=t, values=xhat + norm.ppf(0.75) * np.asarray(neg_err)
         ).to_ts()
         ub = UnivariateTimeSeries(
-            name=f"{name}_upper",
-            time_stamps=t,
-            values=xhat + norm.ppf(0.75) * np.asarray(pos_err),
+            name=f"{name}_upper", time_stamps=t, values=xhat + norm.ppf(0.75) * np.asarray(pos_err)
         ).to_ts()
         xhat = UnivariateTimeSeries(t, xhat, name).to_ts()
         return losses, (xhat, lb, ub)
@@ -423,16 +395,11 @@ class MSES(ForecasterBase):
             prev_x = prev.values
 
         # forecast
-        forecast = [
-            self.marginalize_xhat_h(h, self.xhat_h(h))
-            for h in range(1, len(time_stamps) + 1)
-        ]
+        forecast = [self.marginalize_xhat_h(h, self.xhat_h(h)) for h in range(1, len(time_stamps) + 1)]
         xhat, neg_err, pos_err = [[f[i] for f in forecast] for i in (0, 1, 2)]
 
         if return_prev and time_series_prev is not None:
-            assert not return_iqr, (
-                "MSES does not yet support uncertainty " "for previous time series"
-            )
+            assert not return_iqr, "MSES does not yet support uncertainty " "for previous time series"
             xhat = prev_x + xhat
             time_stamps = prev_t + time_stamps
             orig_t = None if orig_t is None else prev_t + orig_t
@@ -441,39 +408,25 @@ class MSES(ForecasterBase):
         if return_iqr:
             lb = (
                 UnivariateTimeSeries(
-                    name=f"{name}_lower",
-                    time_stamps=time_stamps,
-                    values=xhat + norm.ppf(0.75) * np.asarray(neg_err),
+                    name=f"{name}_lower", time_stamps=time_stamps, values=xhat + norm.ppf(0.75) * np.asarray(neg_err)
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
             ub = (
                 UnivariateTimeSeries(
-                    name=f"{name}_upper",
-                    time_stamps=time_stamps,
-                    values=xhat + norm.ppf(0.75) * np.asarray(pos_err),
+                    name=f"{name}_upper", time_stamps=time_stamps, values=xhat + norm.ppf(0.75) * np.asarray(pos_err)
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
-            xhat = (
-                UnivariateTimeSeries(time_stamps, xhat, name)
-                .to_ts()
-                .align(reference=orig_t)
-            )
+            xhat = UnivariateTimeSeries(time_stamps, xhat, name).to_ts().align(reference=orig_t)
             return xhat, lb, ub
 
-        xhat = (
-            UnivariateTimeSeries(time_stamps, xhat, name)
-            .to_ts()
-            .align(reference=orig_t)
-        )
+        xhat = UnivariateTimeSeries(time_stamps, xhat, name).to_ts().align(reference=orig_t)
         err = (
             UnivariateTimeSeries(
-                time_stamps=time_stamps,
-                name=f"{name}_err",
-                values=(np.abs(pos_err) + np.abs(neg_err)) / 2,
+                time_stamps=time_stamps, name=f"{name}_err", values=(np.abs(pos_err) + np.abs(neg_err)) / 2
             )
             .to_ts()
             .align(reference=orig_t)
@@ -554,9 +507,7 @@ class MSES(ForecasterBase):
         q = q / q.sum()
 
         # compute estimate with lower and upper bounds
-        xhat, neg_err, pos_err = [
-            np.sum(q * v).item() for v in (xhat_h, neg_err_h, pos_err_h)
-        ]
+        xhat, neg_err, pos_err = [np.sum(q * v).item() for v in (xhat_h, neg_err_h, pos_err_h)]
         return xhat, neg_err, pos_err
 
 
@@ -576,12 +527,8 @@ class DeltaStats:
         self.loss = ExponentialMovingAverage(recency_weight, value=1, n=1)
         self.pos_err = ExponentialMovingAverage(recency_weight, value=1, n=1)
         self.neg_err = ExponentialMovingAverage(recency_weight, value=-1, n=1)
-        self.vel_var = RecencyWeightedVariance(
-            recency_weight, ex_value=0, ex2_value=0, n=1
-        )
-        self.loss_var = RecencyWeightedVariance(
-            recency_weight, ex_value=1, ex2_value=1, n=1
-        )
+        self.vel_var = RecencyWeightedVariance(recency_weight, ex_value=0, ex2_value=0, n=1)
+        self.loss_var = RecencyWeightedVariance(recency_weight, ex_value=1, ex2_value=1, n=1)
         self.scale = scale
         self.recency_weight = recency_weight
 
@@ -622,9 +569,7 @@ class DeltaStats:
         """
         if self.velocity.n == 1:
             return
-        tune_stats = [self.velocity, self.vel_var] + [self.acceleration] * (
-            self.acceleration.n > 1
-        )
+        tune_stats = [self.velocity, self.vel_var] + [self.acceleration] * (self.acceleration.n > 1)
         for loss in losses:
             nerr = np.tanh(eta * loss)
             for stat in tune_stats:
@@ -744,9 +689,7 @@ class DeltaEstimator:
         # update data to retain for future updates
         self.data = needed_data
 
-    def process_losses(
-        self, scale_losses: Dict[int, List[float]], tune_recency_weights: bool = False
-    ):
+    def process_losses(self, scale_losses: Dict[int, List[float]], tune_recency_weights: bool = False):
         """
         Uses recent forecast errors to improve the delta estimator. This is done by updating
         the recency_weight that is used by delta stats at particular scales.

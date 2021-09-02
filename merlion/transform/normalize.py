@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transforms that rescale the input or otherwise normalize it.
 """
@@ -32,8 +38,7 @@ class AbsVal(TransformBase):
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         return TimeSeries(
             OrderedDict(
-                (name, UnivariateTimeSeries(var.index, np.abs(var.np_values)))
-                for name, var in time_series.items()
+                (name, UnivariateTimeSeries(var.index, np.abs(var.np_values))) for name, var in time_series.items()
             )
         )
 
@@ -66,9 +71,7 @@ class Rescale(InvertibleTransformBase):
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         if not self.is_trained:
-            raise RuntimeError(
-                f"Cannot use {type(self).__name__} without " f"training it first!"
-            )
+            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
 
         d = time_series.dim
         bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
@@ -92,9 +95,7 @@ class Rescale(InvertibleTransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         if not self.is_trained:
-            raise RuntimeError(
-                f"Cannot use {type(self).__name__} without " f"training it first!"
-            )
+            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
         d = time_series.dim
         bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
         scale = self.scale if isinstance(self.scale, Iterable) else [self.scale] * d
@@ -122,9 +123,7 @@ class MeanVarNormalize(Rescale):
     zero mean and unit variance.
     """
 
-    def __init__(
-        self, bias=None, scale=None, normalize_bias=True, normalize_scale=True
-    ):
+    def __init__(self, bias=None, scale=None, normalize_bias=True, normalize_scale=True):
         super().__init__(bias, scale, normalize_bias, normalize_scale)
 
     def train(self, time_series: TimeSeries):
@@ -143,9 +142,7 @@ class MinMaxNormalize(Rescale):
     between zero and one.
     """
 
-    def __init__(
-        self, bias=None, scale=None, normalize_bias=True, normalize_scale=True
-    ):
+    def __init__(self, bias=None, scale=None, normalize_bias=True, normalize_scale=True):
         super().__init__(bias, scale, normalize_bias, normalize_scale)
 
     def train(self, time_series: TimeSeries):

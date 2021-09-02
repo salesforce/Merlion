@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 The classic isolation forest model for anomaly detection.
 """
@@ -17,9 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class IsolationForestConfig(DetectorConfig):
-    _default_transform = TransformSequence(
-        [DifferenceTransform(), Shingle(size=2, stride=1)]
-    )
+    _default_transform = TransformSequence([DifferenceTransform(), Shingle(size=2, stride=1)])
 
     def __init__(self, max_n_samples: int = None, n_estimators: int = 100, **kwargs):
         """
@@ -48,39 +52,25 @@ class IsolationForest(DetectorBase):
     def __init__(self, config: IsolationForestConfig):
         super().__init__(config)
         self.model = skl_IsolationForest(
-            max_samples=config.max_n_samples,
-            n_estimators=config.n_estimators,
-            random_state=0,
+            max_samples=config.max_n_samples, n_estimators=config.n_estimators, random_state=0
         )
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         times, train_values = zip(*train_data)
         train_values = np.asarray(train_values)
 
         self.model.fit(train_values)
         train_scores = -self.model.score_samples(train_values)
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(times, train_scores)}
-        )
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         time_stamps, values = zip(*time_series)
         values = np.asarray(values)

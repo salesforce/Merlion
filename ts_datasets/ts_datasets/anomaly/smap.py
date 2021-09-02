@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import os
 import sys
 import csv
@@ -38,9 +44,7 @@ class SMAP(TSADBaseDataset):
         download(_logger, rootdir, SMAP.url, "SMAP")
         preprocess(_logger, os.path.join(rootdir, "SMAP"), dataset="SMAP")
         # Load training/test datasets
-        df, metadata = combine_train_test_datasets(
-            *load_data(os.path.join(rootdir, "SMAP"), "SMAP")
-        )
+        df, metadata = combine_train_test_datasets(*load_data(os.path.join(rootdir, "SMAP"), "SMAP"))
         self.time_series.append(df)
         self.metadata.append(metadata)
 

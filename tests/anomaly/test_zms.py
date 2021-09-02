@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -20,13 +26,7 @@ class TestZMS(unittest.TestCase):
         logger.info(f"Data looks like: {self.data[:5]}")
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
-        self.model = ZMS(
-            ZMSConfig(
-                lag_inflation=1.0,
-                enable_calibrator=True,
-                threshold=AggregateAlarms(3.5),
-            )
-        )
+        self.model = ZMS(ZMSConfig(lag_inflation=1.0, enable_calibrator=True, threshold=AggregateAlarms(3.5)))
         print()
 
     def test_lag_inflation(self):
@@ -37,10 +37,7 @@ class TestZMS(unittest.TestCase):
         self.model.train(self.vals_train)
         model = ZMS(ZMSConfig(lag_inflation=0.0))
         model.train(self.vals_train)
-        scores1, scores2 = [
-            m.get_anomaly_score(self.vals_test).to_pd().values
-            for m in (model, self.model)
-        ]
+        scores1, scores2 = [m.get_anomaly_score(self.vals_test).to_pd().values for m in (model, self.model)]
         self.assertNotEqual(list(scores1), list(scores2))
 
     def test_score(self):
@@ -87,8 +84,6 @@ class TestZMS(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

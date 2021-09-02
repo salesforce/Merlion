@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import sys
 import unittest
@@ -5,10 +11,7 @@ from os.path import join, dirname, abspath
 
 import numpy as np
 
-from merlion.models.anomaly.spectral_residual import (
-    SpectralResidual,
-    SpectralResidualConfig,
-)
+from merlion.models.anomaly.spectral_residual import SpectralResidual, SpectralResidualConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.time_series import ts_csv_load
 
@@ -65,9 +68,7 @@ class TestSpectralResidual(unittest.TestCase):
         print("-" * 80)
         logger.info("test_save_load\n" + "-" * 80 + "\n")
         self.model.save(dirname=join(rootdir, "tmp", "spectral_residual"))
-        loaded_model = SpectralResidual.load(
-            dirname=join(rootdir, "tmp", "spectral_residual")
-        )
+        loaded_model = SpectralResidual.load(dirname=join(rootdir, "tmp", "spectral_residual"))
 
         scores = self.model.get_anomaly_score(self.vals_test)
         loaded_model_scores = loaded_model.get_anomaly_score(self.vals_test)
@@ -80,8 +81,6 @@ class TestSpectralResidual(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

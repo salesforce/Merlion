@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import argparse
 from collections import OrderedDict
 import glob
@@ -14,21 +20,9 @@ import numpy as np
 import pandas as pd
 import tqdm
 
-from merlion.evaluate.forecast import (
-    ForecastEvaluator,
-    ForecastMetric,
-    ForecastEvaluatorConfig,
-)
-from merlion.models.ensemble.combine import (
-    CombinerBase,
-    Mean,
-    ModelSelector,
-    MetricWeightedMean,
-)
-from merlion.models.ensemble.forecast import (
-    ForecasterEnsembleConfig,
-    ForecasterEnsemble,
-)
+from merlion.evaluate.forecast import ForecastEvaluator, ForecastMetric, ForecastEvaluatorConfig
+from merlion.models.ensemble.combine import CombinerBase, Mean, ModelSelector, MetricWeightedMean
+from merlion.models.ensemble.forecast import ForecasterEnsembleConfig, ForecasterEnsemble
 from merlion.models.factory import ModelFactory
 from merlion.models.forecast.base import ForecasterBase
 from merlion.transform.resample import TemporalResample
@@ -96,15 +90,9 @@ def parse_args():
         help="Name of retrain type, should be one of the three "
         "types, without_retrain, sliding_window_retrain"
         "or expanding_window_retrain.",
-        choices=[
-            "without_retrain",
-            "sliding_window_retrain",
-            "expanding_window_retrain",
-        ],
+        choices=["without_retrain", "sliding_window_retrain", "expanding_window_retrain"],
     )
-    parser.add_argument(
-        "--n_retrain", type=int, default=0, help="Specify the number of retrain times."
-    )
+    parser.add_argument("--n_retrain", type=int, default=0, help="Specify the number of retrain times.")
     parser.add_argument(
         "--load_checkpoint",
         action="store_true",
@@ -113,12 +101,7 @@ def parse_args():
         "training your model on a dataset from a "
         "checkpoint, instead of restarting from scratch.",
     )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        default=False,
-        help="Whether to set logging level to debug.",
-    )
+    parser.add_argument("--debug", action="store_true", default=False, help="Whether to set logging level to debug.")
     parser.add_argument(
         "--visualize",
         action="store_true",
@@ -166,8 +149,7 @@ def resolve_model_name(model_name: str):
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid "
-            f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -183,8 +165,7 @@ def get_model(model_name: str, dataset: BaseDataset, **kwargs) -> ForecasterBase
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid "
-            f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -289,27 +270,18 @@ def train_model(
         train_vals, test_vals = vals.bisect(t, t_in_left=False)
 
         # Compute train_window_len and test_window_len
-        train_start_timestamp = train_vals.univariates[train_vals.names[0]].time_stamps[
-            0
-        ]
+        train_start_timestamp = train_vals.univariates[train_vals.names[0]].time_stamps[0]
         test_start_timestamp = test_vals.univariates[test_vals.names[0]].time_stamps[0]
         train_window_len = test_start_timestamp - train_start_timestamp
 
-        train_end_timestamp = train_vals.univariates[train_vals.names[0]].time_stamps[
-            -1
-        ]
+        train_end_timestamp = train_vals.univariates[train_vals.names[0]].time_stamps[-1]
         test_end_timestamp = test_vals.univariates[test_vals.names[0]].time_stamps[-1]
         test_window_len = test_end_timestamp - train_end_timestamp
 
         # Get all the horizon conditions we want to evaluate from metadata
         if any("condition" in k and isinstance(v, list) for k, v in md.items()):
-            conditions = sum(
-                [v for k, v in md.items() if "condition" in k and isinstance(v, list)],
-                [],
-            )
-            logger.debug(
-                "\n" + "=" * 80 + "\n" + df.columns[0] + "\n" + "=" * 80 + "\n"
-            )
+            conditions = sum([v for k, v in md.items() if "condition" in k and isinstance(v, list)], [])
+            logger.debug("\n" + "=" * 80 + "\n" + df.columns[0] + "\n" + "=" * 80 + "\n")
             horizons = set()
             for condition in conditions:
                 horizons.update([v for k, v in condition.items() if "horizon" in k])
@@ -327,8 +299,7 @@ def train_model(
             horizon = granularity_str_to_seconds(horizon)
             max_forecast_steps = math.ceil(horizon / dt.total_seconds())
             logger.debug(
-                f"horizon is {pd.Timedelta(seconds=horizon)} "
-                f"and max_forecast_steps is {max_forecast_steps}"
+                f"horizon is {pd.Timedelta(seconds=horizon)} " f"and max_forecast_steps is {max_forecast_steps}"
             )
             if retrain_type == "without_retrain":
                 retrain_freq = None
@@ -342,15 +313,11 @@ def train_model(
                 train_window = None
             else:
                 raise ValueError(
-                    "the retrain_type should be without_retrain"
-                    "sliding_window_retrain or expanding_window_retrain"
+                    "the retrain_type should be without_retrain" "sliding_window_retrain or expanding_window_retrain"
                 )
 
             # Get Model
-            models = [
-                get_model(m, dataset, max_forecast_steps=max_forecast_steps)
-                for m in model_names
-            ]
+            models = [get_model(m, dataset, max_forecast_steps=max_forecast_steps) for m in model_names]
             if len(models) == 1:
                 model = models[0]
             else:
@@ -359,44 +326,25 @@ def train_model(
 
             evaluator = ForecastEvaluator(
                 model=model,
-                config=ForecastEvaluatorConfig(
-                    train_window=train_window,
-                    horizon=horizon,
-                    retrain_freq=retrain_freq,
-                ),
+                config=ForecastEvaluatorConfig(train_window=train_window, horizon=horizon, retrain_freq=retrain_freq),
             )
 
             # Initialize train config
             train_kwargs = {}
             if type(model).__name__ == "AutoSarima":
-                train_kwargs = {
-                    "train_config": {
-                        "enforce_stationarity": True,
-                        "enforce_invertibility": True,
-                    }
-                }
+                train_kwargs = {"train_config": {"enforce_stationarity": True, "enforce_invertibility": True}}
 
             # Get Evaluate Results
             train_result, test_pred = evaluator.get_predict(
-                train_vals=train_vals,
-                test_vals=test_vals,
-                train_kwargs=train_kwargs,
-                retrain_kwargs=train_kwargs,
+                train_vals=train_vals, test_vals=test_vals, train_kwargs=train_kwargs, retrain_kwargs=train_kwargs
             )
 
-            rmses = evaluator.evaluate(
-                ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.RMSE
-            )
-            smapes = evaluator.evaluate(
-                ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.sMAPE
-            )
+            rmses = evaluator.evaluate(ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.RMSE)
+            smapes = evaluator.evaluate(ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.sMAPE)
 
             # Log relevant info to the CSV
             with open(csv, "a") as f:
-                f.write(
-                    f"{i},{df.columns[0]},{horizon},{retrain_type},{n_retrain},"
-                    f"{rmses},{smapes}\n"
-                )
+                f.write(f"{i},{df.columns[0]},{horizon},{retrain_type},{n_retrain}," f"{rmses},{smapes}\n")
 
             # generate comparison plot
             if visualize:
@@ -409,19 +357,8 @@ def train_model(
                 if train_result[0] is not None:
                     train_pred = train_result[0]
                 else:
-                    train_pred = TimeSeries(
-                        {name: UnivariateTimeSeries(train_time_stamps, None)}
-                    )
-                fig_name = (
-                    dirname
-                    + "_"
-                    + retrain_type
-                    + str(n_retrain)
-                    + "_"
-                    + "horizon"
-                    + str(int(horizon))
-                    + ".png"
-                )
+                    train_pred = TimeSeries({name: UnivariateTimeSeries(train_time_stamps, None)})
+                fig_name = dirname + "_" + retrain_type + str(n_retrain) + "_" + "horizon" + str(int(horizon)) + ".png"
                 plot_unrolled_compare(
                     train_vals,
                     test_vals,
@@ -447,15 +384,10 @@ def train_model(
 
 
 def get_code_version_info():
-    return dict(
-        time=str(pd.Timestamp.now()),
-        commit=git.Repo(search_parent_directories=True).head.object.hexsha,
-    )
+    return dict(time=str(pd.Timestamp.now()), commit=git.Repo(search_parent_directories=True).head.object.hexsha)
 
 
-def plot_unrolled_compare(
-    train_vals, test_vals, train_pred, test_pred, outputpath, title
-):
+def plot_unrolled_compare(train_vals, test_vals, train_pred, test_pred, outputpath, title):
     truth_pd = (train_vals + test_vals).to_pd()
     truth_pd.columns = ["ground_truth"]
     pred_pd = (train_pred + test_pred).to_pd()
@@ -483,20 +415,14 @@ def join_dfs(name2df: Dict[str, pd.DataFrame]) -> pd.DataFrame:
         if full_df is None:
             full_df = df
         else:
-            full_df = full_df.merge(
-                df, how="outer", left_on=shared_cols, right_on=shared_cols
-            )
+            full_df = full_df.merge(df, how="outer", left_on=shared_cols, right_on=shared_cols)
     unique_cols = [c for c in full_df.columns if c not in shared_cols]
     return full_df[shared_cols + unique_cols]
 
 
 def summarize_full_df(full_df: pd.DataFrame) -> pd.DataFrame:
     # Get the names of all algorithms which have full results
-    algs = [
-        col[len("sMAPE") :]
-        for col in full_df.columns
-        if col.startswith("sMAPE") and not full_df[col].isna().any()
-    ]
+    algs = [col[len("sMAPE") :] for col in full_df.columns if col.startswith("sMAPE") and not full_df[col].isna().any()]
 
     summary_df = pd.DataFrame({alg.lstrip("_"): [] for alg in algs})
 
@@ -583,15 +509,11 @@ def main():
         )
     for csv in sorted(csvs):
         model_name = os.path.basename(os.path.dirname(csv))
-        suffix = re.search(
-            f"(?<={dataset_name}).*(?=\\.csv)", os.path.basename(csv)
-        ).group(0)
+        suffix = re.search(f"(?<={dataset_name}).*(?=\\.csv)", os.path.basename(csv)).group(0)
         try:
             name2df[model_name + suffix] = pd.read_csv(csv)
         except Exception as e:
-            logger.warning(
-                f'Caught {type(e).__name__}: "{e}". Skipping csv file {csv}.'
-            )
+            logger.warning(f'Caught {type(e).__name__}: "{e}". Skipping csv file {csv}.')
             continue
 
     # Join all the dataframes into one

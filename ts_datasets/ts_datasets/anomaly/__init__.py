@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Datasets for time series anomaly detection (TSAD). All the time series in these
 datasets have anomaly labels.
@@ -11,16 +17,7 @@ from ts_datasets.anomaly.smd import SMD
 from ts_datasets.anomaly.smap import SMAP
 from ts_datasets.anomaly.msl import MSL
 
-__all__ = [
-    "get_dataset",
-    "TSADBaseDataset",
-    "IOpsCompetition",
-    "NAB",
-    "Synthetic",
-    "SMD",
-    "SMAP",
-    "MSL",
-]
+__all__ = ["get_dataset", "TSADBaseDataset", "IOpsCompetition", "NAB", "Synthetic", "SMD", "SMAP", "MSL"]
 
 
 def get_dataset(dataset_name: str, rootdir: str = None) -> TSADBaseDataset:

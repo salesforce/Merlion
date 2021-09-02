@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Dynamic Baseline anomaly detection model for time series with daily, weekly or monthly trends.
 """
@@ -53,11 +59,7 @@ class DynamicBaselineConfig(DetectorConfig):
         self.wind_sz = wind_sz
         if not xor(fixed_period is None, train_window is None):
             fixed_period = None
-            train_window = (
-                train_window
-                if train_window is not None
-                else self.determine_train_window()
-            )
+            train_window = train_window if train_window is not None else self.determine_train_window()
         self.fixed_period = fixed_period
         self.train_window = train_window
 
@@ -79,8 +81,7 @@ class DynamicBaselineConfig(DetectorConfig):
     @trends.setter
     def trends(self, trends: List[str]):
         assert all(t.lower() in Trend.__members__ for t in trends), (
-            f"Encountered a trend that is unsupported. Supported "
-            f"trend types include: {Trend.__members__.keys()}"
+            f"Encountered a trend that is unsupported. Supported " f"trend types include: {Trend.__members__.keys()}"
         )
         self._trends = [Trend[t.lower()] for t in trends]
 
@@ -161,11 +162,7 @@ class DynamicBaseline(DetectorBase):
         return data.window(t0=t0, tf=tf, include_tf=True)
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         :param train_data: train_data[t] = (timestamp_t, value_t)
@@ -175,9 +172,7 @@ class DynamicBaseline(DetectorBase):
 
         :return: anomaly scores of training data
         """
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=True
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=True)
 
         self.last_train_time = -np.inf
         train_data = train_data.squeeze()
@@ -192,16 +187,12 @@ class DynamicBaseline(DetectorBase):
             self.segmenter.add(t, x)
 
         # only keep data for rolling case
-        self.data = (
-            UnivariateTimeSeries.empty() if self.has_fixed_period else rel_train_data
-        )
+        self.data = UnivariateTimeSeries.empty() if self.has_fixed_period else rel_train_data
         train_scores = self.get_anomaly_score(train_data.to_ts())
         self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         :param time_series: a list of (timestamps, score) pairs
         :param time_series_prev: ignored
@@ -210,20 +201,14 @@ class DynamicBaseline(DetectorBase):
         self.check_dim(time_series)
 
         scores = [self.segmenter.score(t, x) for t, (x,) in time_series]
-        return UnivariateTimeSeries(
-            time_series.time_stamps, scores, "anom_score"
-        ).to_ts()
+        return UnivariateTimeSeries(time_series.time_stamps, scores, "anom_score").to_ts()
 
-    def get_baseline(
-        self, time_stamps: List[float]
-    ) -> Tuple[UnivariateTimeSeries, UnivariateTimeSeries]:
+    def get_baseline(self, time_stamps: List[float]) -> Tuple[UnivariateTimeSeries, UnivariateTimeSeries]:
         """
         Returns the dynamic baselines corresponding to the time stamps
         :param time_stamps: a list of timestamps
         """
-        baselines, err = np.array(
-            [self.segmenter.get_baseline(t) for t in time_stamps]
-        ).T
+        baselines, err = np.array([self.segmenter.get_baseline(t) for t in time_stamps]).T
         return (
             UnivariateTimeSeries(time_stamps, baselines.tolist(), "baseline").to_ts(),
             UnivariateTimeSeries(time_stamps, err.tolist(), "err").to_ts(),
@@ -237,9 +222,7 @@ class DynamicBaseline(DetectorBase):
         )
 
     def update(self, new_data: TimeSeries):
-        assert (
-            self.last_train_time is not None
-        ), "The model must be initially trained before it can be updated"
+        assert self.last_train_time is not None, "The model must be initially trained before it can be updated"
 
         self.check_dim(new_data)
         new_data = self.transform(new_data).squeeze()
@@ -277,18 +260,14 @@ class DynamicBaseline(DetectorBase):
     ) -> Figure:
         time_stamps = time_series.time_stamps
         if jitter_time_stamps:
-            time_stamps = list(
-                chain.from_iterable([t - 0.001, t, t + 0.001] for t in time_stamps)
-            )[1:-1]
+            time_stamps = list(chain.from_iterable([t - 0.001, t, t + 0.001] for t in time_stamps))[1:-1]
         # get baselines and errors
         baseline, err = self.get_baseline(time_stamps)
         ub = UnivariateTimeSeries(
-            time_stamps=err.time_stamps,
-            values=baseline.squeeze().np_values + 2 * err.squeeze().np_values,
+            time_stamps=err.time_stamps, values=baseline.squeeze().np_values + 2 * err.squeeze().np_values
         )
         lb = UnivariateTimeSeries(
-            time_stamps=err.time_stamps,
-            values=baseline.squeeze().np_values - 2 * err.squeeze().np_values,
+            time_stamps=err.time_stamps, values=baseline.squeeze().np_values - 2 * err.squeeze().np_values
         )
         baseline = baseline.squeeze()
 
@@ -304,13 +283,7 @@ class DynamicBaseline(DetectorBase):
                 time_series_prev = time_series_prev.univariates[k]
             elif not plot_time_series_prev:
                 time_series_prev = None
-            fig = Figure(
-                y=time_series,
-                y_prev=time_series_prev,
-                yhat=baseline,
-                yhat_lb=lb,
-                yhat_ub=ub,
-            )
+            fig = Figure(y=time_series, y_prev=time_series_prev, yhat=baseline, yhat_lb=lb, yhat_ub=ub)
         else:
             if fig.y is None:
                 fig.y = time_series
@@ -394,9 +367,7 @@ class Segmenter:
             trend in trends for trend in (Trend.daily, Trend.weekly, Trend.monthly)
         ]
         # update segments
-        windows = (
-            range(ceil(self.day_delta / self.wind_delta)) if self.has_daily else [None]
-        )
+        windows = range(ceil(self.day_delta / self.wind_delta)) if self.has_daily else [None]
         weekdays = range(7) if self.has_weekly else [None]
         days = range(1, 32) if self.has_monthly else [None]
         self.segments = {k: Segment(k) for k in product(days, weekdays, windows)}

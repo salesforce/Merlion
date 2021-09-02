@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -25,9 +31,7 @@ class TestWindStats(unittest.TestCase):
         self.model = WindStats(
             WindStatsConfig(
                 wind_sz=30,
-                threshold=AggregateAlarms(
-                    alm_threshold=3.5, alm_window_minutes=30, alm_suppress_minutes=300
-                ),
+                threshold=AggregateAlarms(alm_threshold=3.5, alm_window_minutes=30, alm_suppress_minutes=300),
             )
         )
         print()
@@ -81,8 +85,6 @@ class TestWindStats(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

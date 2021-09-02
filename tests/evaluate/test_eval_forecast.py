@@ -1,19 +1,18 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
 import unittest
 
 
-from merlion.evaluate.forecast import (
-    ForecastEvaluator,
-    ForecastEvaluatorConfig,
-    ForecastMetric,
-)
+from merlion.evaluate.forecast import ForecastEvaluator, ForecastEvaluatorConfig, ForecastMetric
 from merlion.models.ensemble.combine import MetricWeightedMean
-from merlion.models.ensemble.forecast import (
-    ForecasterEnsemble,
-    ForecasterEnsembleConfig,
-)
+from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
 from merlion.models.forecast.arima import ArimaConfig, Arima
 from merlion.transform.base import Identity
 from merlion.utils.time_series import UnivariateTimeSeries, ts_csv_load
@@ -50,19 +49,14 @@ class TestEvaluateForecast(unittest.TestCase):
 
         logger.info("Training model using an evaluator...")
         evaluator = ForecastEvaluator(
-            model=self.model,
-            config=ForecastEvaluatorConfig(retrain_freq="30d", train_window="30d"),
+            model=self.model, config=ForecastEvaluatorConfig(retrain_freq="30d", train_window="30d")
         )
 
         # Get pred
-        _, pred = evaluator.get_predict(
-            train_vals=self.train_data, test_vals=self.test_data
-        )
+        _, pred = evaluator.get_predict(train_vals=self.train_data, test_vals=self.test_data)
 
         # Calculate evaluation metric
-        smape = evaluator.evaluate(
-            ground_truth=self.test_data, predict=pred, metric=ForecastMetric.sMAPE
-        )
+        smape = evaluator.evaluate(ground_truth=self.test_data, predict=pred, metric=ForecastMetric.sMAPE)
         self.assertAlmostEqual(smape, 9.823, delta=0.001)
 
     def test_ensemble(self):
@@ -81,18 +75,14 @@ class TestEvaluateForecast(unittest.TestCase):
         model1 = Arima(ArimaConfig(order=(20, 0, 0), **kwargs))
         model2 = Arima(ArimaConfig(order=(6, 2, 1), **kwargs))
         ensemble = ForecasterEnsemble(
-            config=ForecasterEnsembleConfig(
-                combiner=MetricWeightedMean(metric=ForecastMetric.sMAPE, invert=True)
-            ),
+            config=ForecasterEnsembleConfig(combiner=MetricWeightedMean(metric=ForecastMetric.sMAPE, invert=True)),
             models=[model0, model1, model2],
         )
 
         # Set up evaluator & run it on the data
         evaluator = ForecastEvaluator(
             model=ensemble,
-            config=ForecastEvaluatorConfig(
-                retrain_freq="7d", horizon="5d", cadence=0, train_window=None
-            ),
+            config=ForecastEvaluatorConfig(retrain_freq="7d", horizon="5d", cadence=0, train_window=None),
         )
 
         _, pred = evaluator.get_predict(train_vals=train, test_vals=test)
@@ -100,9 +90,7 @@ class TestEvaluateForecast(unittest.TestCase):
         self.assertEqual(len(pred), len(test))
 
         # Compute ensemble's sMAPE
-        smape = evaluator.evaluate(
-            ground_truth=test, predict=pred, metric=ForecastMetric.sMAPE
-        )
+        smape = evaluator.evaluate(ground_truth=test, predict=pred, metric=ForecastMetric.sMAPE)
         logger.info(f"Ensemble sMAPE: {smape}")
 
         # Do a quick test of save/load
@@ -112,8 +100,6 @@ class TestEvaluateForecast(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.INFO,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 The VAE-based anomaly detector for multivariate time series
 """
@@ -103,12 +109,7 @@ class VAE(DetectorBase):
         self.data_dim = X.shape[1]
 
         input_data = InputData(X, self.k)
-        train_data = DataLoader(
-            input_data,
-            batch_size=self.batch_size,
-            shuffle=True,
-            collate_fn=InputData.collate_func,
-        )
+        train_data = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         loss_func = nn.MSELoss()
         bar = ProgressBar(total=self.num_epochs)
@@ -121,29 +122,21 @@ class VAE(DetectorBase):
                 x = torch.flatten(x, start_dim=1)
                 recon_x, mu, log_var, _ = self.model(x, None)
                 recon_loss = loss_func(x, recon_x)
-                kld_loss = -0.5 * torch.mean(
-                    torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0
-                )
+                kld_loss = -0.5 * torch.mean(torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
                 loss = recon_loss + kld_loss * self.kld_weight
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
                 total_loss += loss
             if bar is not None:
-                bar.print(
-                    epoch + 1,
-                    prefix="",
-                    suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)),
-                )
+                bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
 
     def _detect(self, X):
         """
         :param X: The input time series, a numpy array.
         """
         self.model.eval()
-        y = torch.FloatTensor(
-            [X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]
-        ).to(self.device)
+        y = torch.FloatTensor([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]).to(self.device)
         y = torch.flatten(y, start_dim=1)
 
         r = np.zeros(y.shape)
@@ -162,11 +155,7 @@ class VAE(DetectorBase):
         return self.k
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
@@ -183,45 +172,29 @@ class VAE(DetectorBase):
         :return: A `TimeSeries` of the model's anomaly scores on the training
             data.
         """
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
         train_df = train_data.to_pd()
         self._train(train_df.values)
         scores = batch_detect(self, train_df.values)
 
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)}
-        )
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         :param time_series: The `TimeSeries` we wish to predict anomaly scores for.
         :param time_series_prev: A `TimeSeries` immediately preceding ``time_series``.
         :return: A univariate `TimeSeries` of anomaly scores
         """
-        time_series, time_series_prev = self.transform_time_series(
-            time_series, time_series_prev
-        )
-        ts = (
-            time_series_prev + time_series
-            if time_series_prev is not None
-            else time_series
-        )
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        ts = time_series_prev + time_series if time_series_prev is not None else time_series
         scores = batch_detect(self, ts.to_pd().values)
         timestamps = time_series.time_stamps
-        return TimeSeries(
-            {"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])}
-        )
+        return TimeSeries({"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])})
 
 
 class CVAE(nn.Module):
@@ -255,12 +228,8 @@ class CVAE(nn.Module):
         :param activation: The activation functions for the hidden layers
         """
         super().__init__()
-        self.encoder = Encoder(
-            x_dim, c_dim, encoder_hidden_sizes, latent_size, dropout_rate, activation
-        )
-        self.decoder = Decoder(
-            x_dim, c_dim, decoder_hidden_sizes, latent_size, dropout_rate, activation
-        )
+        self.encoder = Encoder(x_dim, c_dim, encoder_hidden_sizes, latent_size, dropout_rate, activation)
+        self.decoder = Decoder(x_dim, c_dim, decoder_hidden_sizes, latent_size, dropout_rate, activation)
 
     def forward(self, x, c):
         means, log_var = self.encoder(x, c)
@@ -284,9 +253,7 @@ class Encoder(nn.Module):
     :meta private:
     """
 
-    def __init__(
-        self, x_dim, c_dim, hidden_sizes, latent_size, dropout_rate, activation
-    ):
+    def __init__(self, x_dim, c_dim, hidden_sizes, latent_size, dropout_rate, activation):
         """
         :param x_dim: The input variable dimension
         :param c_dim: The conditioned variable dimension
@@ -297,9 +264,7 @@ class Encoder(nn.Module):
         """
         super().__init__()
         assert len(hidden_sizes) > 0, "hidden sizes cannot be empty"
-        self.mlp = build_hidden_layers(
-            x_dim + c_dim, hidden_sizes, dropout_rate, activation
-        )
+        self.mlp = build_hidden_layers(x_dim + c_dim, hidden_sizes, dropout_rate, activation)
         self.linear_means = nn.Linear(hidden_sizes[-1], latent_size)
         self.linear_vars = nn.Linear(hidden_sizes[-1], latent_size)
         self._init_log_var_weights()
@@ -324,9 +289,7 @@ class Decoder(nn.Module):
     :meta private:
     """
 
-    def __init__(
-        self, x_dim, c_dim, hidden_sizes, latent_size, dropout_rate, activation
-    ):
+    def __init__(self, x_dim, c_dim, hidden_sizes, latent_size, dropout_rate, activation):
         """
         :param x_dim: The input variable dimension
         :param c_dim: The conditioned variable dimension
@@ -337,9 +300,7 @@ class Decoder(nn.Module):
         """
         super().__init__()
         assert len(hidden_sizes) > 0, "hidden sizes cannot be empty"
-        self.mlp = build_hidden_layers(
-            latent_size + c_dim, hidden_sizes, dropout_rate, activation
-        )
+        self.mlp = build_hidden_layers(latent_size + c_dim, hidden_sizes, dropout_rate, activation)
         self.output_layer = nn.Linear(hidden_sizes[-1], x_dim)
 
     def forward(self, z, c):

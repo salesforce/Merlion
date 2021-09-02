@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -112,12 +118,7 @@ class TestETS(unittest.TestCase):
         logger.info(f"RMSE = {rmse:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse, 6.5, delta=1)
         msis = ForecastMetric.MSIS.value(
-            ground_truth=self.test_data,
-            predict=forecast,
-            insample=self.train_data,
-            periodicity=4,
-            ub=ub,
-            lb=lb,
+            ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
         )
         logger.info(f"MSIS = {msis:.4f}")
         self.assertLessEqual(np.abs(msis - 101.6), 10)
@@ -135,9 +136,7 @@ class TestETS(unittest.TestCase):
             forecast_results += forecast
             t += self.model.timedelta
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results)
-        logger.info(
-            f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting"
-        )
+        logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse_onestep, 2.4, delta=1)
 
         # streaming forecasting performs better than batch forecasting
@@ -151,8 +150,6 @@ class TestETS(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

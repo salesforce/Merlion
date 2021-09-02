@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Base class for anomaly detectors based on forecasting models.
 """
@@ -27,10 +33,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
         return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def forecast_to_anom_score(
-        self,
-        time_series: TimeSeries,
-        forecast: TimeSeries,
-        stderr: Optional[TimeSeries],
+        self, time_series: TimeSeries, forecast: TimeSeries, stderr: Optional[TimeSeries]
     ) -> TimeSeries:
         """
         Compare a model's forecast to a ground truth time series, in order to
@@ -55,9 +58,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
         y = time_series.np_values
         yhat = forecast.univariates[forecast.names[0]].np_values
         if stderr is None:
-            return UnivariateTimeSeries(
-                time_stamps=times, values=(y - yhat), name="anom_score"
-            ).to_ts()
+            return UnivariateTimeSeries(time_stamps=times, values=(y - yhat), name="anom_score").to_ts()
         else:
             sigma = stderr.univariates[stderr.names[0]].np_values
             if np.isnan(sigma).all():
@@ -69,11 +70,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
             ).to_ts()
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Trains the underlying forecaster (unsupervised) on the training data.
@@ -93,34 +90,25 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
             data.
         """
         forecast, err = super().train(train_data, train_config)
-        anomaly_scores = self.forecast_to_anom_score(
-            self.transform(train_data), forecast, err
-        )
+        anomaly_scores = self.forecast_to_anom_score(self.transform(train_data), forecast, err)
 
         self.train_post_rule(
-            anomaly_scores=anomaly_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return anomaly_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         name = time_series.names[self.target_seq_index]
         time_stamps = time_series.univariates[name].time_stamps
-        forecast, err = self.forecast(
-            time_stamps, time_series_prev, return_iqr=False, return_prev=False
-        )
+        forecast, err = self.forecast(time_stamps, time_series_prev, return_iqr=False, return_prev=False)
 
         assert err is None or len(forecast) == len(err), (
             f"Expected forecast & standard error of forecast to have the same "
             f"length, but len(forecast) = {len(forecast)}, len(err) = {len(err)}"
         )
         assert len(forecast) == len(time_series), (
-            f"forecast() returned a forecast with length {len(forecast)}, "
-            f"but expected length {len(time_series)}"
+            f"forecast() returned a forecast with length {len(forecast)}, " f"but expected length {len(time_series)}"
         )
 
         return self.forecast_to_anom_score(time_series, forecast, err)

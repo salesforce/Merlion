@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import os
 import sys
 import logging
@@ -34,8 +40,6 @@ class MSL(TSADBaseDataset):
         download(_logger, rootdir, MSL.url, "SMAP")
         preprocess(_logger, os.path.join(rootdir, "SMAP"), dataset="MSL")
         # Load training/test datasets
-        df, metadata = combine_train_test_datasets(
-            *load_data(os.path.join(rootdir, "SMAP"), "MSL")
-        )
+        df, metadata = combine_train_test_datasets(*load_data(os.path.join(rootdir, "SMAP"), "MSL"))
         self.time_series.append(df)
         self.metadata.append(metadata)

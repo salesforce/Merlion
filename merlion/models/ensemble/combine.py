@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Rules for combining the outputs of multiple time series models.
 """
@@ -17,36 +23,19 @@ from merlion.utils.misc import AutodocABCMeta
 logger = logging.getLogger(__name__)
 
 
-def _align_outputs(
-    all_model_outs: List[TimeSeries], target: TimeSeries
-) -> List[Optional[TimeSeries]]:
+def _align_outputs(all_model_outs: List[TimeSeries], target: TimeSeries) -> List[Optional[TimeSeries]]:
     """
     Aligns the outputs of each model to the time series ``target``.
     """
     if all(out is None for out in all_model_outs):
         return [None for _ in all_model_outs]
     if target is None:
-        time_stamps = np.unique(
-            np.concatenate(
-                [out.to_pd().index for out in all_model_outs if out is not None]
-            )
-        )
+        time_stamps = np.unique(np.concatenate([out.to_pd().index for out in all_model_outs if out is not None]))
     else:
-        t0 = min(
-            min(v.index[0] for v in out.univariates)
-            for out in all_model_outs
-            if out is not None
-        )
-        tf = max(
-            max(v.index[-1] for v in out.univariates)
-            for out in all_model_outs
-            if out is not None
-        )
+        t0 = min(min(v.index[0] for v in out.univariates) for out in all_model_outs if out is not None)
+        tf = max(max(v.index[-1] for v in out.univariates) for out in all_model_outs if out is not None)
         time_stamps = target.to_pd()[t0:tf].index
-    return [
-        None if out is None else out.align(reference=time_stamps)
-        for out in all_model_outs
-    ]
+    return [None if out is None else out.align(reference=time_stamps) for out in all_model_outs]
 
 
 class CombinerBase(metaclass=AutodocABCMeta):
@@ -72,11 +61,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
 
     def to_dict(self, _skipped_keys=None):
         skipped_keys = set() if _skipped_keys is None else _skipped_keys
-        state = {
-            k: copy.deepcopy(v)
-            for k, v in self.__dict__.items()
-            if k not in skipped_keys
-        }
+        state = {k: copy.deepcopy(v) for k, v in self.__dict__.items() if k not in skipped_keys}
         state["name"] = type(self).__name__
         return state
 
@@ -104,14 +89,10 @@ class CombinerBase(metaclass=AutodocABCMeta):
         """
         :return: which models are actually used to make predictions.
         """
-        assert (
-            self.n_models is not None
-        ), "Combiner must be trained to determine which models are used"
+        assert self.n_models is not None, "Combiner must be trained to determine which models are used"
         return [True] * self.n_models
 
-    def train(
-        self, all_model_outs: List[TimeSeries], target: TimeSeries = None
-    ) -> TimeSeries:
+    def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None) -> TimeSeries:
         """
         Trains the model combination rule.
 
@@ -124,9 +105,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
         self.n_models = len(all_model_outs)
         return self(all_model_outs, target, _check_dim=False)
 
-    def __call__(
-        self, all_model_outs: List[TimeSeries], target: TimeSeries, _check_dim=True
-    ) -> TimeSeries:
+    def __call__(self, all_model_outs: List[TimeSeries], target: TimeSeries, _check_dim=True) -> TimeSeries:
         """
         Applies the model combination rule to combine multiple model outputs.
 
@@ -139,11 +118,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
         js = [j for j, out in enumerate(all_model_outs) if out is not None]
         assert len(js) > 0, "`all_model_outs` cannot all be `None`"
         j = js[0]
-        assert all(
-            out.dim == all_model_outs[j].dim
-            for out in all_model_outs
-            if out is not None
-        )
+        assert all(out.dim == all_model_outs[j].dim for out in all_model_outs if out is not None)
         if self.n_models is None:
             self.n_models = len(all_model_outs)
 
@@ -165,10 +140,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
         combined = OrderedDict()
         for i in range(all_model_outs[j].dim):
             name = all_model_outs[j].names[i]
-            all_i = [
-                None if ts is None else ts.univariates[ts.names[i]]
-                for ts in all_model_outs
-            ]
+            all_i = [None if ts is None else ts.univariates[ts.names[i]] for ts in all_model_outs]
             combined[name] = self._combine_univariates(all_i)
 
         return TimeSeries(combined)
@@ -184,21 +156,15 @@ class Mean(CombinerBase):
         n = sum(self.models_used)
         return np.full(shape=n, fill_value=1 / n)
 
-    def _combine_univariates(
-        self, univariates: List[UnivariateTimeSeries]
-    ) -> UnivariateTimeSeries:
+    def _combine_univariates(self, univariates: List[UnivariateTimeSeries]) -> UnivariateTimeSeries:
         non_none = [var for var in univariates if var is not None]
-        weights = np.asarray(
-            [w for w, var in zip(self.weights, univariates) if var is not None]
-        )
+        weights = np.asarray([w for w, var in zip(self.weights, univariates) if var is not None])
         weights = weights / weights.sum()
         v = non_none[0]
         if self.abs_score and sum(self.models_used) > 1:
             signs = np.median(np.sign([var.np_values for var in non_none]), axis=0)
             signs[signs == 0] = -1
-            new_vals = signs * np.dot(
-                weights, [np.abs(var.np_values) for var in non_none]
-            )
+            new_vals = signs * np.dot(weights, [np.abs(var.np_values) for var in non_none])
         else:
             new_vals = np.dot(weights, [var.np_values for var in non_none])
         return UnivariateTimeSeries(v.time_stamps, new_vals, v.name)
@@ -209,36 +175,30 @@ class Median(CombinerBase):
     Combines multiple models by taking their median prediction.
     """
 
-    def _combine_univariates(
-        self, univariates: List[UnivariateTimeSeries]
-    ) -> UnivariateTimeSeries:
+    def _combine_univariates(self, univariates: List[UnivariateTimeSeries]) -> UnivariateTimeSeries:
         non_none = [var for var in univariates if var is not None]
         v = non_none[0]
         if self.abs_score and sum(self.models_used) > 1:
             signs = np.median(np.sign([var.np_values for var in non_none]), axis=0)
             signs[signs == 0] = -1
-            new_vals = signs * np.median(
-                [np.abs(var.np_values) for var in non_none], axis=0
-            )
+            new_vals = signs * np.median([np.abs(var.np_values) for var in non_none], axis=0)
         else:
             new_vals = np.median([var.np_values for var in non_none], axis=0)
         return UnivariateTimeSeries(v.time_stamps, new_vals, v.name)
+
 
 class Max(CombinerBase):
     """
     Combines multiple models by taking their max prediction.
     """
-    def _combine_univariates(
-        self, univariates: List[UnivariateTimeSeries]
-    ) -> UnivariateTimeSeries:
+
+    def _combine_univariates(self, univariates: List[UnivariateTimeSeries]) -> UnivariateTimeSeries:
         non_none = [var for var in univariates if var is not None]
         v = non_none[0]
         if self.abs_score and sum(self.models_used) > 1:
             signs = np.median(np.sign([var.np_values for var in non_none]), axis=0)
             signs[signs == 0] = -1
-            new_vals = signs * np.median(
-                [np.abs(var.np_values) for var in non_none], axis=0
-            )
+            new_vals = signs * np.median([np.abs(var.np_values) for var in non_none], axis=0)
         else:
             new_vals = np.max([var.np_values for var in non_none], axis=0)
         return UnivariateTimeSeries(v.time_stamps, new_vals, v.name)
@@ -249,9 +209,8 @@ class ModelSelector(Mean):
     Takes the mean of the best models, where the models are ranked according to
     the value of an evaluation metric.
     """
-    def __init__(
-        self, metric: Union[str, TSADMetric, ForecastMetric], invert, abs_score=False
-    ):
+
+    def __init__(self, metric: Union[str, TSADMetric, ForecastMetric], invert, abs_score=False):
         """
         :param metric: the evaluation metric to use
         :param invert: if ``False``, a larger metric value is better (e.g. F1).
@@ -288,28 +247,20 @@ class ModelSelector(Mean):
 
     @property
     def models_used(self) -> List[bool]:
-        assert (
-            self.n_models is not None
-        ), "Combiner must be trained to determine which models are used"
+        assert self.n_models is not None, "Combiner must be trained to determine which models are used"
         metric_values = np.asarray(self.metric_values)
         val = np.min(metric_values) if self.invert else np.max(metric_values)
         return (metric_values == val).tolist()
 
-    def train(
-        self, all_model_outs: List[TimeSeries], target: TimeSeries = None, **kwargs
-    ) -> TimeSeries:
+    def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None, **kwargs) -> TimeSeries:
         metric_values = []
-        assert all(
-            x is not None for x in all_model_outs
-        ), f"None of `all_model_outs` can be `None`"
+        assert all(x is not None for x in all_model_outs), f"None of `all_model_outs` can be `None`"
         self.n_models = len(all_model_outs)
         for model_out in all_model_outs:
             if target is None and self.metric_values is None:
                 metric_values.append(1)
             elif target is not None:
-                metric_values.append(
-                    self.metric.value(ground_truth=target, predict=model_out, **kwargs)
-                )
+                metric_values.append(self.metric.value(ground_truth=target, predict=model_out, **kwargs))
 
         if len(metric_values) == len(all_model_outs):
             self.metric_values = metric_values
@@ -340,9 +291,6 @@ class CombinerFactory(object):
 
     @classmethod
     def create(cls, name: str, **kwargs) -> CombinerBase:
-        alias = {
-            cls.__name__: cls
-            for cls in [Mean, Median, Max, ModelSelector, MetricWeightedMean]
-        }
+        alias = {cls.__name__: cls for cls in [Mean, Median, Max, ModelSelector, MetricWeightedMean]}
         combiner_class = alias[name]
         return combiner_class.from_dict(kwargs)

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import numpy as np
 from merlion.utils.time_series import TimeSeries
@@ -34,9 +40,7 @@ class MultiVariateAutoRegressionMixin:
 
     """
 
-    def autoregression_train(
-        self, data: TimeSeries, maxlags: int, sampling_mode: str = "normal"
-    ):
+    def autoregression_train(self, data: TimeSeries, maxlags: int, sampling_mode: str = "normal"):
         """
         :param data: input data
         :param maxlags: Max # of lags for forecasting
@@ -58,12 +62,9 @@ class MultiVariateAutoRegressionMixin:
         assert self.dim == data.dim
         assert self.dim > 1
 
-        (
-            inputs_train,
-            labels_train,
-            labels_train_ts,
-            stats_train,
-        ) = seq_ar_common.process_regressive_train_data(data, maxlags, sampling_mode)
+        (inputs_train, labels_train, labels_train_ts, stats_train) = seq_ar_common.process_regressive_train_data(
+            data, maxlags, sampling_mode
+        )
         if sampling_mode == "stats":
             self.model.fit(stats_train, labels_train)
             prior_stats = stats_train[-1]
@@ -78,21 +79,13 @@ class MultiVariateAutoRegressionMixin:
         if sampling_mode == "stats":
             stats_train = np.atleast_2d(stats_train)
         pred = self._autoregressive_forecast(
-            inputs_train,
-            stats_train,
-            maxlags=maxlags,
-            steps=None,
-            sampling_mode=sampling_mode,
+            inputs_train, stats_train, maxlags=maxlags, steps=None, sampling_mode=sampling_mode
         )
         pred = pred[:, 0].reshape(-1)
         return prior_forecast, labels_train_ts, pred
 
     def autoregression_forecast(
-        self,
-        time_series_prev: TimeSeries,
-        maxlags: int,
-        forecast_steps: int,
-        sampling_mode: str = "normal",
+        self, time_series_prev: TimeSeries, maxlags: int, forecast_steps: int, sampling_mode: str = "normal"
     ):
         """
         :param data: input data
@@ -115,29 +108,15 @@ class MultiVariateAutoRegressionMixin:
         assert self.dim == time_series_prev.dim
         assert self.dim > 1
 
-        (
-            time_series_prev_no_ts,
-            stats_prev_no_ts,
-        ) = seq_ar_common.process_one_step_prior_for_autoregression(
+        (time_series_prev_no_ts, stats_prev_no_ts) = seq_ar_common.process_one_step_prior_for_autoregression(
             time_series_prev, maxlags, sampling_mode
         )
         yhat = self._autoregressive_forecast(
-            time_series_prev_no_ts,
-            stats_prev_no_ts,
-            maxlags=maxlags,
-            steps=forecast_steps,
-            sampling_mode=sampling_mode,
+            time_series_prev_no_ts, stats_prev_no_ts, maxlags=maxlags, steps=forecast_steps, sampling_mode=sampling_mode
         ).reshape(-1)
         return yhat
 
-    def _autoregressive_forecast(
-        self,
-        inputs,
-        stats,
-        maxlags: int,
-        steps: [int, None],
-        sampling_mode: str = "normal",
-    ):
+    def _autoregressive_forecast(self, inputs, stats, maxlags: int, steps: [int, None], sampling_mode: str = "normal"):
         """
          1-step auto-regression method for multivariate data, each regression step updates one data point for each sequence
 
@@ -166,7 +145,5 @@ class MultiVariateAutoRegressionMixin:
             pred[:, i] = next_forecast[:, self.target_seq_index]
             if i == steps - 1:
                 break
-            inputs, stats = seq_ar_common.update_prior_nd(
-                inputs, next_forecast, self.dim, maxlags, sampling_mode
-            )
+            inputs, stats = seq_ar_common.update_prior_nd(inputs, next_forecast, self.dim, maxlags, sampling_mode)
         return pred

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -10,10 +16,7 @@ from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.models.forecast.baggingtrees import (
-    RandomForestForecaster,
-    RandomForestForecasterConfig,
-)
+from merlion.models.forecast.baggingtrees import RandomForestForecaster, RandomForestForecasterConfig
 from merlion.models.forecast.seq_ar_common import gen_next_seq_label_pairs
 
 logger = logging.getLogger(__name__)
@@ -43,11 +46,7 @@ class TestRandomForestForecaster(unittest.TestCase):
         t = int(d[md["trainval"]].index[-1].to_pydatetime().timestamp())
         data = TimeSeries.from_pd(d)
         cleanup_transform = TransformSequence(
-            [
-                TemporalResample(missing_value_policy="FFill"),
-                LowerUpperClip(upper=300),
-                DifferenceTransform(),
-            ]
+            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
         )
         cleanup_transform.train(data)
         data = cleanup_transform(data)
@@ -61,11 +60,7 @@ class TestRandomForestForecaster(unittest.TestCase):
 
         data_uni = TimeSeries.from_pd(d_uni)
         cleanup_transform = TransformSequence(
-            [
-                TemporalResample(missing_value_policy="FFill"),
-                LowerUpperClip(upper=300),
-                DifferenceTransform(),
-            ]
+            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
         )
         cleanup_transform.train(data_uni)
         data_uni = cleanup_transform(data_uni)
@@ -96,9 +91,7 @@ class TestRandomForestForecaster(unittest.TestCase):
         self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
         self.assertEqual(len(self.model._forecast), self.max_forecast_steps)
         self.assertAlmostEqual(self.model._forecast.mean(), 0.50, 1)
-        testing_data_gen = gen_next_seq_label_pairs(
-            self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps
-        )
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         self.assertEqual(len(pred), self.max_forecast_steps)
@@ -107,9 +100,7 @@ class TestRandomForestForecaster(unittest.TestCase):
 
         # save and load
         self.model.save(dirname=join(rootdir, "tmp", "randomforestforecaster"))
-        loaded_model = RandomForestForecaster.load(
-            dirname=join(rootdir, "tmp", "randomforestforecaster")
-        )
+        loaded_model = RandomForestForecaster.load(dirname=join(rootdir, "tmp", "randomforestforecaster"))
         new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
         self.assertEqual(len(new_pred), self.max_forecast_steps)
         new_pred = new_pred.univariates[name].np_values
@@ -136,8 +127,6 @@ class TestRandomForestForecaster(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

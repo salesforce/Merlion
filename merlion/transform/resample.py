@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transforms that resample the input in time, or stack adjacent observations
 into vectors.
@@ -84,10 +90,7 @@ class TemporalResample(TransformBase):
         if isinstance(agg, str):
             valid = set(AggregationPolicy.__members__.keys())
             if agg not in valid:
-                raise KeyError(
-                    f"{agg} is not a valid aggregation policy. "
-                    f"Valid aggregation policies are: {valid}"
-                )
+                raise KeyError(f"{agg} is not a valid aggregation policy. " f"Valid aggregation policies are: {valid}")
             agg = AggregationPolicy[agg]
         self._aggregation_policy = agg
 
@@ -100,18 +103,13 @@ class TemporalResample(TransformBase):
         if isinstance(mv, str):
             valid = set(MissingValuePolicy.__members__.keys())
             if mv not in valid:
-                raise KeyError(
-                    f"{mv} is not a valid missing value policy. "
-                    f"Valid aggregation policies are: {valid}"
-                )
+                raise KeyError(f"{mv} is not a valid missing value policy. " f"Valid aggregation policies are: {valid}")
             mv = MissingValuePolicy[mv]
         self._missing_value_policy = mv
 
     def train(self, time_series: TimeSeries):
         if self.trainable_granularity:
-            self.granularity = get_gcd_timedelta(
-                *[var.time_stamps for var in time_series.univariates]
-            )
+            self.granularity = get_gcd_timedelta(*[var.time_stamps for var in time_series.univariates])
 
         if self.trainable_granularity or self.origin is None:
             t0, tf = time_series.t0, time_series.tf
@@ -211,19 +209,12 @@ class Shingle(InvertibleTransformBase):
             # and apply any striding desired
             i0 = (len(var) - 1) % self.stride
             times = var.index[i0 :: self.stride]
-            all_vals = np.stack(
-                [vals[i : len(vals) - self.size + i + 1] for i in range(self.size)]
-            )
+            all_vals = np.stack([vals[i : len(vals) - self.size + i + 1] for i in range(self.size)])
             all_vals = all_vals[:, i0 :: self.stride]
 
             # Convert the stacked values into UnivariateTimeSeries objects
             new_vars.update(
-                OrderedDict(
-                    [
-                        (f"{name}_{i}", UnivariateTimeSeries(times, x))
-                        for i, x in enumerate(all_vals)
-                    ]
-                )
+                OrderedDict([(f"{name}_{i}", UnivariateTimeSeries(times, x)) for i, x in enumerate(all_vals)])
             )
 
         # The inversion state is just the timestamps of the univariates before
@@ -241,17 +232,14 @@ class Shingle(InvertibleTransformBase):
             vals = []
             expected_src_names = [f"{name}_{i}" for i in range(self.size)]
             src_names = time_series.names[i * self.size : (i + 1) * self.size]
-            src = TimeSeries(
-                OrderedDict([(k, time_series.univariates[k]) for k in src_names])
-            )
+            src = TimeSeries(OrderedDict([(k, time_series.univariates[k]) for k in src_names]))
             assert src.is_aligned and src.dim == self.size, (
                 f"{self} should convert a univariate time series into an "
                 f"aligned multivariate time series of dim {self.size}, but "
                 f"something went wrong."
             )
             assert src.names == expected_src_names, (
-                f"Expected univariates named {expected_src_names}, "
-                f"but got {src.names}"
+                f"Expected univariates named {expected_src_names}, " f"but got {src.names}"
             )
 
             for j, (t, val_vec) in enumerate(src[::-1]):

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 from os.path import abspath, dirname, join
@@ -30,10 +36,7 @@ class TestMSES(unittest.TestCase):
     def test_online(self):
         self.model = MSESDetector(
             MSESDetectorConfig(
-                max_forecast_steps=100,
-                online_updates=True,
-                enable_calibrator=True,
-                transform=TemporalResample("2h"),
+                max_forecast_steps=100, online_updates=True, enable_calibrator=True, transform=TemporalResample("2h")
             )
         )
         print("-" * 80)
@@ -54,10 +57,7 @@ class TestMSES(unittest.TestCase):
     def test_offline(self):
         self.model = MSESDetector(
             MSESDetectorConfig(
-                max_forecast_steps=100,
-                online_updates=False,
-                enable_calibrator=False,
-                transform=TemporalResample("2h"),
+                max_forecast_steps=100, online_updates=False, enable_calibrator=False, transform=TemporalResample("2h")
             )
         )
 
@@ -103,9 +103,7 @@ class TestMSES(unittest.TestCase):
         loaded_model_scores = loaded_model.get_anomaly_score(self.vals_test)
         loaded_model_scores = loaded_model_scores.to_pd().values.flatten()
         self.assertAlmostEqual(np.max(np.abs(scores - scoresv2)), 0, delta=1e-4)
-        self.assertAlmostEqual(
-            np.max(np.abs(scores - loaded_model_scores)), 0, delta=1e-4
-        )
+        self.assertAlmostEqual(np.max(np.abs(scores - loaded_model_scores)), 0, delta=1e-4)
 
         # alarm function returns the post-rule processed anomaly scores
         alarms = self.model.get_anomaly_label(self.vals_test)
@@ -119,8 +117,6 @@ class TestMSES(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

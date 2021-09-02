@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """Mixture of Expert forecasters."""
 __author__ = "Devansh Arpit"
 import json
@@ -13,11 +19,7 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from merlion.models.base import NormalizingConfig
-from merlion.models.ensemble.base import (
-    EnsembleConfig,
-    EnsembleTrainConfig,
-    EnsembleBase,
-)
+from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.models.ensemble.MoE_networks import TransformerModel, LRScheduler
@@ -29,9 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class myDataset(Dataset):
-    def __init__(
-        self, data, lookback, forecast=1, target_seq_index=0, include_ts=False
-    ):
+    def __init__(self, data, lookback, forecast=1, target_seq_index=0, include_ts=False):
         """
         Creates a pytorch dataset.
 
@@ -79,9 +79,7 @@ class myDataset(Dataset):
         pred_timestamps_full = self.timestamps[start_idx:end_idx]
         pred_timestamps = pred_timestamps_full[self.lookback :]
         x = data[: self.lookback]
-        y = data[
-            self.lookback :, self.target_seq_index
-        ]  # - data.univariates[data.names[0]][self.lookback-1:-1]
+        y = data[self.lookback :, self.target_seq_index]  # - data.univariates[data.names[0]][self.lookback-1:-1]
 
         if self.include_ts:
             x_ts = self.data_ts[start_idx : start_idx + self.lookback]
@@ -160,14 +158,11 @@ def smape_f1_loss(output, std, target, thres=0.1):
     target = target.reshape(-1)
     idx = torch.le((std / (torch.abs(output) + 1e-7)), thres)
 
-    vanilla_smape = 200.0 * torch.mean(
-        torch.abs((target - output)) / (torch.abs(target) + torch.abs(output) + 1e-7)
-    )
+    vanilla_smape = 200.0 * torch.mean(torch.abs((target - output)) / (torch.abs(target) + torch.abs(output) + 1e-7))
 
     if idx.sum() > 0:
         smape_conf = 200.0 * torch.mean(
-            torch.abs((target[idx] - output[idx]))
-            / (torch.abs(target[idx]) + torch.abs(output[idx]) + 1e-7)
+            torch.abs((target[idx] - output[idx])) / (torch.abs(target[idx]) + torch.abs(output[idx]) + 1e-7)
         )
         recall = idx.type("torch.FloatTensor").sum() / output.size(0)
     else:
@@ -176,8 +171,7 @@ def smape_f1_loss(output, std, target, thres=0.1):
     idx = torch.gt((std / (torch.abs(output) + 1e-7)), thres)
     if idx.sum() > 0:
         smape_notconf = 200.0 * torch.mean(
-            torch.abs((target[idx] - output[idx]))
-            / (torch.abs(target[idx]) + torch.abs(output[idx]) + 1e-7)
+            torch.abs((target[idx] - output[idx])) / (torch.abs(target[idx]) + torch.abs(output[idx]) + 1e-7)
         )
     else:
         smape_notconf = None
@@ -217,11 +211,7 @@ class MoE_ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig, Normalizing
         :param target_seq_index: index of time series to forecast. Integer value.
         :param use_gpu: Bool. Use True if GPU available for faster speed.
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.batch_size = batch_size
         self.epoch_max = epoch_max
         self.nfree_experts = nfree_experts
@@ -260,10 +250,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
     _default_train_config = EnsembleTrainConfig(valid_frac=0.5)
 
     def __init__(
-        self,
-        config: MoE_ForecasterEnsembleConfig = None,
-        models: List[ForecasterBase] = None,
-        moe_model=None,
+        self, config: MoE_ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None, moe_model=None
     ):
         """
         :param models: list of external expert models (E.g. Sarima, Arima). Can be an empty list if nfree_experts>0 is
@@ -286,15 +273,8 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
         self.moe_model = moe_model
         if self.moe_model is not None:
-            self.optimiser = torch.optim.Adam(
-                self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000
-            )
-            self.lr_sch = LRScheduler(
-                lr_i=0.0000,
-                lr_f=self.lr,
-                nsteps=self.warmup_steps,
-                optimizer=self.optimiser,
-            )
+            self.optimiser = torch.optim.Adam(self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000)
+            self.lr_sch = LRScheduler(lr_i=0.0000, lr_f=self.lr, nsteps=self.warmup_steps, optimizer=self.optimiser)
 
         self.nexperts = len(models)
 
@@ -341,19 +321,13 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         if self.nexperts > 0:
             t0 = min(v.np_time_stamps[0] for v in full_train.univariates)
             tf = max(v.np_time_stamps[-1] for v in full_train.univariates)
-            train, valid = full_train.bisect(
-                t0 + (tf - t0) * (1.0 - train_config.valid_frac)
-            )
+            train, valid = full_train.bisect(t0 + (tf - t0) * (1.0 - train_config.valid_frac))
         else:
             valid = full_train
 
         # store transform mean and std as torch tensors for future use
-        self.mn = torch.tensor(np.array(self.transform.transforms[-1].bias)).type(
-            torch.FloatTensor
-        )
-        self.std = torch.tensor(np.array(self.transform.transforms[-1].scale)).type(
-            torch.FloatTensor
-        )
+        self.mn = torch.tensor(np.array(self.transform.transforms[-1].bias)).type(torch.FloatTensor)
+        self.std = torch.tensor(np.array(self.transform.transforms[-1].scale)).type(torch.FloatTensor)
         if self.use_gpu:
             self.mn, self.std = self.mn.cuda(), self.std.cuda()
         # mn and std have dim = (timeseries input dim)
@@ -373,15 +347,8 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 dim_dropout=0,
                 time_step_dropout=0,
             )
-            self.optimiser = torch.optim.Adam(
-                self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000
-            )
-            self.lr_sch = LRScheduler(
-                lr_i=0.0000,
-                lr_f=self.lr,
-                nsteps=self.warmup_steps,
-                optimizer=self.optimiser,
-            )
+            self.optimiser = torch.optim.Adam(self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000)
+            self.lr_sch = LRScheduler(lr_i=0.0000, lr_f=self.lr, nsteps=self.warmup_steps, optimizer=self.optimiser)
         ## End of: make sure Pytorch model and optimizer are properly defined
 
         # Train individual models on the training data
@@ -431,11 +398,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             target_seq_index=self.target_seq_index,
         )
         dataloader = torch.utils.data.DataLoader(
-            dataset,
-            batch_size=self.batch_size,
-            shuffle=True,
-            num_workers=4,
-            collate_fn=collate,
+            dataset, batch_size=self.batch_size, shuffle=True, num_workers=4, collate_fn=collate
         )
 
         pbar = tqdm(dataloader)
@@ -451,10 +414,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 logger.info(f"Getting model {i+1}/{len(self.models)} predictions...")
                 try:
                     pred, _ = model.batch_forecast(pred_timestamps, x_ts)
-                    pred = [
-                        (idx, pred_i.to_pd().values)
-                        for idx, pred_i in zip(sample_idx, pred)
-                    ]
+                    pred = [(idx, pred_i.to_pd().values) for idx, pred_i in zip(sample_idx, pred)]
                     expert_preds[i].extend(pred)
                 except TypeError as e:
                     if "'NoneType' object is not subscriptable" in str(e):
@@ -477,9 +437,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             final_expert_preds.append(sorted_preds(expert_preds_i))
         return final_expert_preds
 
-    def finetune(
-        self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
-    ):
+    def finetune(self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None):
         """
         This function expects the external experts to be already trained. This function extracts the predictions
         of external experts (if any) and stores them. It then uses them along with the training data to train the
@@ -499,11 +457,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             target_seq_index=self.target_seq_index,
         )
         dataloader = torch.utils.data.DataLoader(
-            dataset,
-            batch_size=self.batch_size,
-            shuffle=True,
-            num_workers=4,
-            collate_fn=collate,
+            dataset, batch_size=self.batch_size, shuffle=True, num_workers=4, collate_fn=collate
         )
         optimiser = self.optimiser
         lr_sch = self.lr_sch
@@ -516,20 +470,14 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             loss_epoch = []
             for d in pbar:
                 sample_idx, pred_timestamps, x, y = list(zip(*d))
-                x = torch.tensor(np.array(x)).type(
-                    torch.FloatTensor
-                )  # B x lookback_len x dim
-                y = torch.tensor(np.array(y)).type(
-                    torch.FloatTensor
-                )  # B x max_forecast_steps
+                x = torch.tensor(np.array(x)).type(torch.FloatTensor)  # B x lookback_len x dim
+                y = torch.tensor(np.array(y)).type(torch.FloatTensor)  # B x max_forecast_steps
 
                 if self.use_gpu:
                     x, y = x.cuda(), y.cuda()
 
                 if self.nfree_experts > 0:
-                    y = y - x[:, -1, self.target_seq_index].unsqueeze(
-                        -1
-                    )  # make y the increment from last x time step
+                    y = y - x[:, -1, self.target_seq_index].unsqueeze(-1)  # make y the increment from last x time step
 
                 sample_idx = list(sample_idx)
 
@@ -537,16 +485,11 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 expert_preds = []
                 if len(self.models) > 0:
                     for i in range(len(self.models)):
-                        minibatch_expert_preds = [
-                            final_expert_preds[i][idx] for idx in sample_idx
-                        ]
+                        minibatch_expert_preds = [final_expert_preds[i][idx] for idx in sample_idx]
                         expert_preds.append(minibatch_expert_preds)
 
                     expert_preds = (
-                        torch.tensor(np.stack(expert_preds))
-                        .permute(1, 0, 2, 3)
-                        .squeeze(3)
-                        .type(torch.FloatTensor)
+                        torch.tensor(np.stack(expert_preds)).permute(1, 0, 2, 3).squeeze(3).type(torch.FloatTensor)
                     )
                     # expert_preds: B x nexperts x max_forecast_steps
                     if self.use_gpu:
@@ -555,17 +498,11 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 logits, free_expert_vals = self.moe_model(x)
 
                 # expert_preds is [] or torch.tensor; free_expert_vals is None or torch.tensor
-                CE, regression_loss, _ = get_expert_regression_loss(
-                    logits, expert_preds, free_expert_vals, y
-                )
+                CE, regression_loss, _ = get_expert_regression_loss(logits, expert_preds, free_expert_vals, y)
                 loss = CE + regression_loss
 
                 loss_epoch.append(loss.item())
-                pbar.set_description(
-                    "Epoch {} Loss: {:.6f}".format(
-                        epoch, sum(loss_epoch) / len(loss_epoch)
-                    )
-                )
+                pbar.set_description("Epoch {} Loss: {:.6f}".format(epoch, sum(loss_epoch) / len(loss_epoch)))
 
                 optimiser.zero_grad()
                 loss.backward()
@@ -574,9 +511,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             self.loss_list.append(sum(loss_epoch) / len(loss_epoch))
         return self.loss_list
 
-    def _get_expert_prediction(
-        self, time_stamps: List[int], time_series_prev: TimeSeries, use_gpu=False
-    ):
+    def _get_expert_prediction(self, time_stamps: List[int], time_series_prev: TimeSeries, use_gpu=False):
         """
         this function is used by the batch_forecast function of this class
 
@@ -586,11 +521,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         expert_preds = []
         if len(self.models) > 0:
             for model in self.models:
-                expert_preds.append(
-                    model.forecast(
-                        time_stamps=time_stamps, time_series_prev=time_series_prev
-                    )[0]
-                )
+                expert_preds.append(model.forecast(time_stamps=time_stamps, time_series_prev=time_series_prev)[0])
             expert_preds = [pred_i.to_pd().values for pred_i in expert_preds]
             expert_preds = torch.tensor(np.stack(expert_preds)).unsqueeze(0).squeeze(3)
             # expert_preds: B=1 x nexperts x max_forecast_steps
@@ -655,9 +586,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
               of size (B x nexperts x max_forecast_steps), sum of probs is 1 along dim 1
         """
         self.moe_model.eval()
-        time_series_prev_array = torch.from_numpy(time_series_prev_array).type(
-            torch.FloatTensor
-        )
+        time_series_prev_array = torch.from_numpy(time_series_prev_array).type(torch.FloatTensor)
         if use_gpu:
             self.mn = self.mn.cuda()
             self.std = self.std.cuda()
@@ -673,19 +602,12 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
         if expert_idx is not None and len(self.models) > 0:
             if apply_transform:
-                time_series_prev_list = [
-                    self.transform(time_series_prev)
-                    for time_series_prev in time_series_prev_list
-                ]
+                time_series_prev_list = [self.transform(time_series_prev) for time_series_prev in time_series_prev_list]
             expert_vals = []
-            for time_stamps, time_series_prev in zip(
-                time_stamps_list, time_series_prev_list
-            ):
+            for time_stamps, time_series_prev in zip(time_stamps_list, time_series_prev_list):
                 forecast = (
                     self.models[expert_idx]
-                    .forecast(
-                        time_stamps=time_stamps, time_series_prev=time_series_prev
-                    )[0]
+                    .forecast(time_stamps=time_stamps, time_series_prev=time_series_prev)[0]
                     .to_pd()
                     .values.reshape(-1)
                 )
@@ -697,29 +619,16 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
             s = forecast.shape[0]
 
-            prob = np.ones(
-                (
-                    len(time_series_prev_list),
-                    1,
-                    s,
-                )
-            )
+            prob = np.ones((len(time_series_prev_list), 1, s))
             # prob: B x nexpert=1 x forecast len
             return expert_vals, prob
 
         expert_preds = []
         if len(self.models) > 0:
             if apply_transform:
-                time_series_prev_list = [
-                    self.transform(time_series_prev)
-                    for time_series_prev in time_series_prev_list
-                ]
-            for time_stamps, time_series_prev in zip(
-                time_stamps_list, time_series_prev_list
-            ):
-                expert_preds_i = self._get_expert_prediction(
-                    time_stamps, time_series_prev
-                )
+                time_series_prev_list = [self.transform(time_series_prev) for time_series_prev in time_series_prev_list]
+            for time_stamps, time_series_prev in zip(time_stamps_list, time_series_prev_list):
+                expert_preds_i = self._get_expert_prediction(time_stamps, time_series_prev)
 
                 if len(expert_preds) == 0:
                     expert_preds = expert_preds_i
@@ -732,9 +641,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         # x: B x lookback_len x input_dim
 
         logits, free_expert_vals = self.moe_model(x)
-        probs = (
-            nn.Softmax(dim=1)(logits).data.cpu().numpy()
-        )  # B x nexperts x forecast len
+        probs = nn.Softmax(dim=1)(logits).data.cpu().numpy()  # B x nexperts x forecast len
 
         batch_size = logits.size(0)
         expert_vals = get_expert_output(expert_preds, free_expert_vals)
@@ -742,9 +649,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
         if self.nfree_experts > 0:
             # invert y from being the increment from last x time step
-            expert_vals = expert_vals + x[:, -1, self.target_seq_index].unsqueeze(
-                -1
-            ).unsqueeze(-1)
+            expert_vals = expert_vals + x[:, -1, self.target_seq_index].unsqueeze(-1).unsqueeze(-1)
         # expert_vals: B x nexperts x max_forecast_steps
 
         expert_vals = expert_vals * scale + bias
@@ -778,17 +683,9 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         # forecast: 1 x nexperts x max_forecast_steps
         # prob: 1 x nexperts x max_forecast_steps
         y_pred, std = self.expert_prediction(forecast, prob, mode=mode, use_gpu=use_gpu)
-        se = (
-            std / np.sqrt(self.nexperts)
-            if self.nexperts > 0
-            else std / np.sqrt(self.nfree_experts)
-        )
-        forecast = UnivariateTimeSeries(
-            name=f"{self.target_name}", time_stamps=time_stamps, values=y_pred[0]
-        ).to_ts()
-        se = UnivariateTimeSeries(
-            name=f"{self.target_name}_err", time_stamps=time_stamps, values=se[0]
-        ).to_ts()
+        se = std / np.sqrt(self.nexperts) if self.nexperts > 0 else std / np.sqrt(self.nfree_experts)
+        forecast = UnivariateTimeSeries(name=f"{self.target_name}", time_stamps=time_stamps, values=y_pred[0]).to_ts()
+        se = UnivariateTimeSeries(name=f"{self.target_name}_err", time_stamps=time_stamps, values=se[0]).to_ts()
         return forecast, se
 
     def batch_forecast(
@@ -825,10 +722,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
               of size (B x nexperts x max_forecast_steps), sum of probs is 1 along dim 1
         """
         time_series_prev_array = np.stack(
-            [
-                time_series_prev.to_pd().values
-                for time_series_prev in time_series_prev_list
-            ]
+            [time_series_prev.to_pd().values for time_series_prev in time_series_prev_list]
         )
         # time_series_prev_array: numpy array form of size (B x lookback_len x dim)
 
@@ -841,27 +735,17 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             use_gpu=use_gpu,
         )
 
-        y_pred, std = self.expert_prediction(
-            expert_vals, probs, mode=mode, use_gpu=use_gpu
-        )
-        se = (
-            std / np.sqrt(self.nexperts)
-            if self.nexperts > 0
-            else std / np.sqrt(self.nfree_experts)
-        )
+        y_pred, std = self.expert_prediction(expert_vals, probs, mode=mode, use_gpu=use_gpu)
+        se = std / np.sqrt(self.nexperts) if self.nexperts > 0 else std / np.sqrt(self.nfree_experts)
         forecast = [
             UnivariateTimeSeries(
-                name=f"{self.target_name}_{i}",
-                time_stamps=time_stamps_list[i],
-                values=y_pred[i],
+                name=f"{self.target_name}_{i}", time_stamps=time_stamps_list[i], values=y_pred[i]
             ).to_ts()
             for i in range(y_pred.shape[0])
         ]
         se = [
             UnivariateTimeSeries(
-                name=f"{self.target_name}_err_{i}",
-                time_stamps=time_stamps_list[i],
-                values=se[i],
+                name=f"{self.target_name}_err_{i}", time_stamps=time_stamps_list[i], values=se[i]
             ).to_ts()
             for i in range(y_pred.shape[0])
         ]
@@ -898,17 +782,11 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             y_pred = mean_pred  # B x max_forecast_steps
         elif mode == "max":
             prob_ = probs.permute(1, 0, 2).reshape(probs.size(1), -1)
-            expert_vals_ = expert_preds.permute(1, 0, 2).reshape(
-                expert_preds.size(1), -1
-            )
+            expert_vals_ = expert_preds.permute(1, 0, 2).reshape(expert_preds.size(1), -1)
             _, idx = prob_.max(0)
             expert_vals_o = expert_vals_[idx, range(expert_vals_.size(1))]
-            y_pred = expert_vals_o.reshape(
-                expert_preds.size(0), expert_preds.size(2)
-            )  # B x max_forecast_steps
-        std = (probs * (expert_preds - mean_pred.unsqueeze(1)) ** 2).sum(
-            1
-        )  # B x max_forecast_steps
+            y_pred = expert_vals_o.reshape(expert_preds.size(0), expert_preds.size(2))  # B x max_forecast_steps
+        std = (probs * (expert_preds - mean_pred.unsqueeze(1)) ** 2).sum(1)  # B x max_forecast_steps
 
         if not use_gpu:
             y_pred = y_pred.data.numpy()
@@ -916,14 +794,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         return y_pred, std
 
     def evaluate(
-        self,
-        data,
-        mode="mean",
-        expert_idx=None,
-        use_gpu=True,
-        use_batch_forecast=True,
-        bs=64,
-        confidence_thres=0.1,
+        self, data, mode="mean", expert_idx=None, use_gpu=True, use_batch_forecast=True, bs=64, confidence_thres=0.1
     ):
         """
         this function takes a timeseries data and performs an overall evaluation using sMAPE metric on it.
@@ -956,20 +827,11 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             target_seq_index=self.target_seq_index,
         )
         dataloader = torch.utils.data.DataLoader(
-            myDataset_,
-            batch_size=bs,
-            shuffle=False,
-            num_workers=0,
-            collate_fn=lambda x: x,
+            myDataset_, batch_size=bs, shuffle=False, num_workers=0, collate_fn=lambda x: x
         )
 
         pbar = tqdm(dataloader)
-        sMAPE_conf_list, sMAPE_not_conf_list, recall_list, overall_sMAPE_list = (
-            [],
-            [],
-            [],
-            [],
-        )
+        sMAPE_conf_list, sMAPE_not_conf_list, recall_list, overall_sMAPE_list = ([], [], [], [])
 
         y_pred_all = None
         y_all = None
@@ -990,25 +852,14 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
             if use_batch_forecast:
                 forecasts, probs = self._batch_forecast(
-                    pred_timestamps,
-                    x,
-                    x_ts,
-                    expert_idx=expert_idx,
-                    apply_transform=False,
-                    use_gpu=use_gpu,
+                    pred_timestamps, x, x_ts, expert_idx=expert_idx, apply_transform=False, use_gpu=use_gpu
                 )
             else:
                 forecasts, probs = self._forecast(
-                    pred_timestamps[0],
-                    x_ts[0],
-                    expert_idx=expert_idx,
-                    apply_transform=False,
-                    use_gpu=use_gpu,
+                    pred_timestamps[0], x_ts[0], expert_idx=expert_idx, apply_transform=False, use_gpu=use_gpu
                 )
 
-                forecasts, probs = np.expand_dims(forecasts, axis=0), np.expand_dims(
-                    probs, axis=0
-                )
+                forecasts, probs = np.expand_dims(forecasts, axis=0), np.expand_dims(probs, axis=0)
 
             # the reason why scale and bias are set here is that self.mn, self.std are properly set
             # in self._batch_forecast
@@ -1043,15 +894,11 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                     y_all = y.data.cpu().numpy()
                     std_all = std.data.cpu().numpy()
                 else:
-                    y_pred_all = np.concatenate(
-                        [y_pred_all, y_pred.data.cpu().numpy()], axis=0
-                    )
+                    y_pred_all = np.concatenate([y_pred_all, y_pred.data.cpu().numpy()], axis=0)
                     y_all = np.concatenate([y_all, y.data.cpu().numpy()], axis=0)
                     std_all = np.concatenate([std_all, std.data.cpu().numpy()], axis=0)
 
-            vanilla_loss, loss, loss2, recall = smape_f1_loss(
-                y_pred, std, y, confidence_thres
-            )
+            vanilla_loss, loss, loss2, recall = smape_f1_loss(y_pred, std, y, confidence_thres)
             overall_sMAPE_list.append(vanilla_loss.item())
 
             if loss is not None:
@@ -1073,15 +920,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         sMAPE_not_conf = sum(sMAPE_not_conf_list) / (len(sMAPE_not_conf_list) + 1e-7)
         recall = sum(recall_list) / (len(recall_list) + 1e-7)
         overall_sMAPE = sum(overall_sMAPE_list) / (len(overall_sMAPE_list) + 1e-7)
-        return (
-            y_pred_all,
-            std_all,
-            y_all,
-            sMAPE_conf,
-            sMAPE_not_conf,
-            recall,
-            overall_sMAPE,
-        )
+        return (y_pred_all, std_all, y_all, sMAPE_conf, sMAPE_not_conf, recall, overall_sMAPE)
 
     def save(self, dirname: str, **save_config):
         """
@@ -1090,16 +929,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         """
         state_dict = self.__getstate__()
         # remove items that should not be saved
-        for key in [
-            "config",
-            "train_data",
-            "models",
-            "moe_model",
-            "mn",
-            "std",
-            "optimiser",
-            "lr_sch",
-        ]:
+        for key in ["config", "train_data", "models", "moe_model", "mn", "std", "optimiser", "lr_sch"]:
             state_dict.pop(key)
 
         config_dict = self.config.to_dict()
@@ -1113,9 +943,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             model.save(path)
 
         # Add model paths to the config dict, and save it
-        config_dict["model_paths"] = [
-            (type(m).__name__, p) for m, p in zip(self.models, paths)
-        ]
+        config_dict["model_paths"] = [(type(m).__name__, p) for m, p in zip(self.models, paths)]
         with open(os.path.join(dirname, self.config.filename), "w") as f:
             json.dump(config_dict, f, indent=2, sort_keys=True)
 
@@ -1152,9 +980,7 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         config_dict.pop("max_forecast_steps")
         # Load all the models from the config dict
         model_paths = config_dict.pop("model_paths")
-        models = [
-            ModelFactory.load(name=name, model_path=path) for name, path in model_paths
-        ]
+        models = [ModelFactory.load(name=name, model_path=path) for name, path in model_paths]
 
         config = MoE_ForecasterEnsembleConfig.from_dict(config_dict)
 
@@ -1177,17 +1003,12 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
         loaded_ensemble = cls(config=config, models=models, moe_model=moe_model)
 
-        state = torch.load(
-            dirname + "/torch_params.pth.tar",
-            map_location="cuda:0" if config.use_gpu else "cpu",
-        )
+        state = torch.load(dirname + "/torch_params.pth.tar", map_location="cuda:0" if config.use_gpu else "cpu")
         try:
             loaded_ensemble.moe_model.load_state_dict(state["model_params"])
             loaded_ensemble.optimiser.load_state_dict(state["optimiser"])
         except TypeError as e:
-            raise RuntimeError(
-                f"Found error while loading parameter states/optimizer states of the moe_model: {e}"
-            )
+            raise RuntimeError(f"Found error while loading parameter states/optimizer states of the moe_model: {e}")
         loaded_ensemble.mn = state["mean"]
         loaded_ensemble.std = state["std"]
 

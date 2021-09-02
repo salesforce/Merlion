@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from enum import Enum
 from functools import partial
 from typing import Iterable, Sequence, Union
@@ -41,15 +47,9 @@ class MissingValuePolicy(Enum):
     """Fill gap with the first value before the gap."""
     BFill = partial(lambda df, *args, **kwargs: getattr(df, "bfill")(*args, **kwargs))
     """Fill gap with the first value after the gap."""
-    Nearest = partial(
-        lambda df, *args, **kwargs: getattr(df, "interpolate")(*args, **kwargs),
-        method="nearest",
-    )
+    Nearest = partial(lambda df, *args, **kwargs: getattr(df, "interpolate")(*args, **kwargs), method="nearest")
     """Replace missing value with the value closest to it."""
-    Interpolate = partial(
-        lambda df, *args, **kwargs: getattr(df, "interpolate")(*args, **kwargs),
-        method="time",
-    )
+    Interpolate = partial(lambda df, *args, **kwargs: getattr(df, "interpolate")(*args, **kwargs), method="time")
     """Fill in missing values by linear interpolation."""
 
 
@@ -62,16 +62,12 @@ def to_pd_datetime(timestamp):
         return timestamp
     elif isinstance(timestamp, (int, float)):
         return pd.to_datetime(int(timestamp * 1000), unit="ms")
-    elif isinstance(timestamp, Iterable) and all(
-        isinstance(t, (int, float)) for t in timestamp
-    ):
+    elif isinstance(timestamp, Iterable) and all(isinstance(t, (int, float)) for t in timestamp):
         timestamp = pd.to_datetime(np.asarray(timestamp) * 1000, unit="ms")
     return pd.to_datetime(timestamp)
 
 
-def granularity_str_to_seconds(
-    granularity: Union[str, float, int, None]
-) -> Union[float, None]:
+def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Union[float, None]:
     """
     Converts a string/float/int granularity (representing a timedelta) to the
     number of seconds it represents, truncated at the millisecond.
@@ -81,9 +77,7 @@ def granularity_str_to_seconds(
     if isinstance(granularity, (float, int)):
         ms = np.floor(granularity * 1000)
     else:
-        ms = np.floor(
-            pd.tseries.frequencies.to_offset(pd.Timedelta(granularity)).nanos / 1e6
-        )
+        ms = np.floor(pd.tseries.frequencies.to_offset(pd.Timedelta(granularity)).nanos / 1e6)
     return ms / 1000
 
 
@@ -101,9 +95,7 @@ def get_gcd_timedelta(*time_stamp_lists):
 
 
 def reindex_df(
-    df: Union[pd.Series, pd.DataFrame],
-    reference: Sequence[Union[int, float]],
-    missing_value_policy: MissingValuePolicy,
+    df: Union[pd.Series, pd.DataFrame], reference: Sequence[Union[int, float]], missing_value_policy: MissingValuePolicy
 ):
     """
     Reindexes a Datetime-indexed dataframe ``df`` to have the same time stamps

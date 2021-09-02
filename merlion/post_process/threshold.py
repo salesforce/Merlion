@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Rules that use a threshold to sparsify a sequence of anomaly scores.
 """
@@ -30,14 +36,10 @@ class Threshold(PostRuleBase):
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         assert time_series.dim == 1, (
-            f"{type(self).__name__} post-rule can only be applied on "
-            f"single-variable time series"
+            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
         )
         if self.alm_threshold is None:
-            raise RuntimeError(
-                f"alm_threshold is None. Please train the "
-                f"post-rule before attempting to use it."
-            )
+            raise RuntimeError(f"alm_threshold is None. Please train the " f"post-rule before attempting to use it.")
         k = time_series.names[0]
         times = time_series.univariates[k].index
         scores = time_series.univariates[k].np_values
@@ -79,11 +81,8 @@ class Threshold(PostRuleBase):
             metric, we retain with the current (default) threshold.
         """
         metric = TSADMetric[metric] if isinstance(metric, str) else metric
-        assert anomaly_scores.dim == 1 and (
-            anomaly_labels is None or anomaly_labels.dim == 1
-        ), (
-            f"{type(self).__name__} post-rule can only be applied on "
-            f"single-variable time series"
+        assert anomaly_scores.dim == 1 and (anomaly_labels is None or anomaly_labels.dim == 1), (
+            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
         )
 
         k = anomaly_scores.names[0]
@@ -101,10 +100,7 @@ class Threshold(PostRuleBase):
             if unsup_quantile is not None:
                 percentiles.append(unsup_quantile * 100)
             candidates = np.concatenate(
-                (
-                    np.percentile(scores, percentiles),
-                    np.linspace(min(scores), max(scores), num=11),
-                )
+                (np.percentile(scores, percentiles), np.linspace(min(scores), max(scores), num=11))
             )
             if self.alm_threshold is not None:
                 candidates = np.concatenate(([self.alm_threshold], candidates))
@@ -119,10 +115,7 @@ class Threshold(PostRuleBase):
                     max_early_sec=max_early_sec,
                     max_delay_sec=max_delay_sec,
                 )
-                logger.debug(
-                    f"threshold={threshold:6.2f} --> "
-                    f"{metric.name}={thresh2score[threshold]:.4f}"
-                )
+                logger.debug(f"threshold={threshold:6.2f} --> " f"{metric.name}={thresh2score[threshold]:.4f}")
 
             # The threshold is the one which achieves the highest metric value.
             # However, we stick with the default score if the best one achieves
@@ -133,9 +126,7 @@ class Threshold(PostRuleBase):
             elif thresh2score[t] == thresh2score[default]:
                 t = default
             self.alm_threshold = t
-            logger.info(
-                f"Threshold {t:.4f} achieves " f"{metric.name}={thresh2score[t]:.4f}."
-            )
+            logger.info(f"Threshold {t:.4f} achieves " f"{metric.name}={thresh2score[t]:.4f}.")
 
         elif unsup_quantile is not None:
             self.alm_threshold = np.percentile(scores, unsup_quantile * 100)
@@ -280,21 +271,14 @@ class AdaptiveThreshold(Threshold):
     Zeroes all anomaly scores whose absolute value is less than the threshold.
     """
 
-    def __init__(
-        self,
-        alm_threshold: float = None,
-        abs_score=True,
-        bin_sz=10,
-        default_hist_gap_thres=1.2,
-    ):
+    def __init__(self, alm_threshold: float = None, abs_score=True, bin_sz=10, default_hist_gap_thres=1.2):
         super().__init__(alm_threshold, abs_score)
         self.bin_sz = bin_sz
         self.default_hist_gap_thres = default_hist_gap_thres
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         assert time_series.dim == 1, (
-            f"{type(self).__name__} post-rule can only be applied on "
-            f"single-variable time series"
+            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
         )
         k = time_series.names[0]
         times = time_series.univariates[k].time_stamps
@@ -310,9 +294,7 @@ class AdaptiveThreshold(Threshold):
                 f"{self.default_hist_gap_thres}."
             )
             alm_threshold = get_adaptive_thres(
-                np.asarray(scores),
-                hist_gap_thres=self.default_hist_gap_thres,
-                bin_sz=self.bin_sz,
+                np.asarray(scores), hist_gap_thres=self.default_hist_gap_thres, bin_sz=self.bin_sz
             )[1]
         else:
             alm_threshold = self.alm_threshold
@@ -331,11 +313,8 @@ class AdaptiveThreshold(Threshold):
     ) -> TimeSeries:
 
         metric = TSADMetric[metric] if isinstance(metric, str) else metric
-        assert anomaly_scores.dim == 1 and (
-            anomaly_labels is None or anomaly_labels.dim == 1
-        ), (
-            f"{type(self).__name__} post-rule can only be applied on "
-            f"single-variable time series"
+        assert anomaly_scores.dim == 1 and (anomaly_labels is None or anomaly_labels.dim == 1), (
+            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
         )
 
         k = anomaly_scores.names[0]
@@ -349,9 +328,9 @@ class AdaptiveThreshold(Threshold):
             thresh2score = {}
             for bin_sz in sorted(bin_sz_cand):
                 for hist_gap in sorted(candidates):
-                    self.alm_threshold = get_adaptive_thres(
-                        np.asarray(scores), hist_gap_thres=hist_gap, bin_sz=bin_sz
-                    )[1]
+                    self.alm_threshold = get_adaptive_thres(np.asarray(scores), hist_gap_thres=hist_gap, bin_sz=bin_sz)[
+                        1
+                    ]
                     score = metric.value(
                         ground_truth=anomaly_labels,
                         predict=self(anomaly_scores),
@@ -359,23 +338,13 @@ class AdaptiveThreshold(Threshold):
                         max_delay_sec=max_delay_sec,
                     )
                     thresh2score[(self.alm_threshold, bin_sz)] = score
-                    logger.debug(
-                        f"hist gap threshold={hist_gap:6.2f}, "
-                        f"bin_sz={bin_sz:2} --> score={score:.4f}"
-                    )
+                    logger.debug(f"hist gap threshold={hist_gap:6.2f}, " f"bin_sz={bin_sz:2} --> score={score:.4f}")
 
             # The threshold is the one which achieves the highest metric value
-            best_cand = sorted(thresh2score.keys(), key=lambda t: (thresh2score[t], t))[
-                -1
-            ]
-            if (
-                min_allowed_score is None
-                or thresh2score[best_cand] >= min_allowed_score
-            ):
+            best_cand = sorted(thresh2score.keys(), key=lambda t: (thresh2score[t], t))[-1]
+            if min_allowed_score is None or thresh2score[best_cand] >= min_allowed_score:
                 self.alm_threshold, self.bin_sz = best_cand
-                self.alm_threshold, self.bin_sz = float(self.alm_threshold), int(
-                    self.bin_sz
-                )
+                self.alm_threshold, self.bin_sz = float(self.alm_threshold), int(self.bin_sz)
                 logger.info(
                     f"Threshold {self.alm_threshold:.4f} and "
                     f"bin_sz {self.bin_sz:d} achieves a metric "

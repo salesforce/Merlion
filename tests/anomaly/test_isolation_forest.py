@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -5,10 +11,7 @@ import unittest
 
 import numpy as np
 
-from merlion.models.anomaly.isolation_forest import (
-    IsolationForest,
-    IsolationForestConfig,
-)
+from merlion.models.anomaly.isolation_forest import IsolationForest, IsolationForestConfig
 from merlion.transform.moving_average import MovingAverage, ExponentialMovingAverage
 from merlion.transform.resample import Shingle
 from merlion.transform.sequence import TransformSequence
@@ -83,8 +86,6 @@ class TestIsolationForest(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

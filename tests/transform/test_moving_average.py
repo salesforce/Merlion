@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import numpy as np
 import unittest
 
@@ -50,15 +56,11 @@ class TestMovingAverage(unittest.TestCase):
         self.assertEqual(expected_ts, transformed_ts)
 
         transformed_ts = MovingPercentile(n_steps=6, q=0)(ts)
-        expected_ts = UnivariateTimeSeries(
-            range(n), [0] * 6 + list(range(1, 14 + 1))
-        ).to_ts()
+        expected_ts = UnivariateTimeSeries(range(n), [0] * 6 + list(range(1, 14 + 1))).to_ts()
         self.assertEqual(expected_ts, transformed_ts)
 
         transformed_ts = MovingPercentile(n_steps=3, q=50)(ts)
-        expected_ts = UnivariateTimeSeries(
-            range(n), [0, 0.5] + list(range(1, 18 + 1))
-        ).to_ts()
+        expected_ts = UnivariateTimeSeries(range(n), [0, 0.5] + list(range(1, 18 + 1))).to_ts()
         self.assertEqual(expected_ts, transformed_ts)
 
     def test_exponential_moving_average_ci(self):
@@ -69,9 +71,7 @@ class TestMovingAverage(unittest.TestCase):
         y = ema.univariates[name]
         lb = ema.univariates[f"{name}_lb"]
         ub = ema.univariates[f"{name}_ub"]
-        self.assertTrue(
-            all(l <= x <= u for (l, x, u) in zip(lb.values, y.values, ub.values))
-        )
+        self.assertTrue(all(l <= x <= u for (l, x, u) in zip(lb.values, y.values, ub.values)))
 
 
 if __name__ == "__main__":

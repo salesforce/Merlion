@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Window Statistics anomaly detection model for data with weekly seasonality.
 """
@@ -21,10 +27,7 @@ class WindStatsConfig(DetectorConfig):
     def _default_threshold(self):
         t = 3.0 if self.enable_calibrator else 8.8
         return AggregateAlarms(
-            alm_threshold=t,
-            alm_window_minutes=self.wind_sz,
-            alm_suppress_minutes=120,
-            min_alm_in_window=1,
+            alm_threshold=t, alm_window_minutes=self.wind_sz, alm_suppress_minutes=120, min_alm_in_window=1
         )
 
     def __init__(self, wind_sz=30, max_day=4, **kwargs):
@@ -64,9 +67,7 @@ class WindStats(DetectorBase):
         super().__init__(WindStatsConfig() if config is None else config)
         self.table = {}
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         assert time_series.dim == 1, (
             f"{type(self).__name__} model only accepts univariate time "
@@ -93,25 +94,15 @@ class WindStats(DetectorBase):
         return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         # first build a hashtable with (weekday, yearofday, and window id of the day) as key.
         # the value is a list of metrics
         table = {}
-        train_data = self.train_pre_process(
-            train_data, require_univariate=True, require_even_sampling=False
-        )
+        train_data = self.train_pre_process(train_data, require_univariate=True, require_even_sampling=False)
         for timestamp, (x,) in train_data:
             t = datetime.datetime.utcfromtimestamp(timestamp).timetuple()
-            code = (
-                t.tm_wday,
-                t.tm_yday,
-                (t.tm_hour * 60 + t.tm_min) // self.config.wind_sz,
-            )
+            code = (t.tm_wday, t.tm_yday, (t.tm_hour * 60 + t.tm_min) // self.config.wind_sz)
             if code in table:
                 table[code].append(x)
             else:
@@ -137,8 +128,6 @@ class WindStats(DetectorBase):
 
         train_scores = self.get_anomaly_score(train_data)
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores

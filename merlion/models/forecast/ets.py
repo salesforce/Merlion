@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 ETS (Error, Trend, Seasonal) forecasting model.
 """
@@ -53,11 +59,7 @@ class ETSConfig(ForecasterConfig):
             indicates automatically select the seasonality cycle. If no
             seasonality exists, change ``seasonal`` to ``None``.
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.error = error
         self.trend = trend
         self.damped_trend = damped_trend
@@ -101,9 +103,7 @@ class ETS(ForecasterBase):
 
     def train(self, train_data: TimeSeries, train_config=None):
         # Train the transform & transform the training data
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
 
         # train model
         name = self.target_name
@@ -136,9 +136,7 @@ class ETS(ForecasterBase):
         # to match the minimum data size requirement when refitting new data
         last_train_window_size = 10
         if self.seasonal_periods is not None:
-            last_train_window_size = max(
-                10, 10 + 2 * (self.seasonal_periods // 2), 2 * self.seasonal_periods
-            )
+            last_train_window_size = max(10, 10 + 2 * (self.seasonal_periods // 2), 2 * self.seasonal_periods)
             last_train_window_size = min(last_train_window_size, train_data.shape[0])
         self.last_train_window = train_data[-last_train_window_size:]
 
@@ -160,9 +158,7 @@ class ETS(ForecasterBase):
         return_iqr=False,
         return_prev=False,
         refit=True,
-    ) -> Union[
-        Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]
-    ]:
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         # Make sure the timestamps are valid (spaced at the right timedelta)
         # If time_series_prev is None, i0 is the first index of the pre-computed
         # forecast, which we'd like to start returning a forecast from
@@ -172,18 +168,14 @@ class ETS(ForecasterBase):
         # transform time_series_prev if relevant (before making the prediction)
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
-            _, new_data = time_series_prev.bisect(
-                self.last_train_time + self.timedelta, t_in_left=False
-            )
+            _, new_data = time_series_prev.bisect(self.last_train_time + self.timedelta, t_in_left=False)
             # if time_series_prev does not contain new data w.r.t. train_data, we skip it
             if new_data.is_empty():
                 time_series_prev = None
 
         if time_series_prev is None:
             forecast_result = self.model.get_prediction(
-                start=self._n_train,
-                end=self._n_train + len(time_stamps) - 1,
-                method="simulated",
+                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="simulated"
             )
             forecast = forecast_result.predicted_mean
             err = forecast_result._results.simulation_results.std(axis=1)
@@ -214,9 +206,7 @@ class ETS(ForecasterBase):
                 self.last_train_window = time_series_prev_pd[-last_train_window_size:]
             else:
                 mask = self.last_train_window.index < time_series_prev_pd.index[0]
-                val_prev = pd.concat(
-                    [self.last_train_window[mask], time_series_prev_pd]
-                )[-last_train_window_size:]
+                val_prev = pd.concat([self.last_train_window[mask], time_series_prev_pd])[-last_train_window_size:]
                 self.last_train_window = val_prev
             new_model = ETSModel(
                 val_prev,
@@ -235,9 +225,7 @@ class ETS(ForecasterBase):
             else:
                 self.model = new_model.smooth(params=self.model.params)
             forecast_result = self.model.get_prediction(
-                start=val_prev.shape[0],
-                end=val_prev.shape[0] + len(time_stamps) - 1,
-                method="simulated",
+                start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1, method="simulated"
             )
             forecast = forecast_result.predicted_mean
             err = forecast_result._results.simulation_results.std(axis=1)
@@ -249,11 +237,7 @@ class ETS(ForecasterBase):
                 err_prev = self.model.standardized_forecasts_error.tolist()
                 forecast = np.concatenate((yhat_prev, forecast))
                 err = np.concatenate((err_prev, err))
-                t_prev = (
-                    self.last_train_window.index.values.astype("datetime64[s]")
-                    .astype(np.int64)
-                    .tolist()
-                )
+                t_prev = self.last_train_window.index.values.astype("datetime64[s]").astype(np.int64).tolist()
                 time_stamps = t_prev + time_stamps
                 orig_t = None if orig_t is None else t_prev + orig_t
 
@@ -262,26 +246,20 @@ class ETS(ForecasterBase):
         if return_iqr:
             lb = (
                 UnivariateTimeSeries(
-                    name=f"{name}_lower",
-                    time_stamps=time_stamps,
-                    values=forecast + norm.ppf(0.25) * err,
+                    name=f"{name}_lower", time_stamps=time_stamps, values=forecast + norm.ppf(0.25) * err
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
             ub = (
                 UnivariateTimeSeries(
-                    name=f"{name}_upper",
-                    time_stamps=time_stamps,
-                    values=forecast + norm.ppf(0.75) * err,
+                    name=f"{name}_upper", time_stamps=time_stamps, values=forecast + norm.ppf(0.75) * err
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
             forecast = (
-                UnivariateTimeSeries(
-                    name=name, time_stamps=time_stamps, values=forecast
-                )
+                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
                 .to_ts()
                 .align(reference=orig_t)
             )
@@ -290,16 +268,12 @@ class ETS(ForecasterBase):
         # Otherwise, just return the forecast & its standard error
         else:
             forecast = (
-                UnivariateTimeSeries(
-                    name=name, time_stamps=time_stamps, values=forecast
-                )
+                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
                 .to_ts()
                 .align(reference=orig_t)
             )
             err = (
-                UnivariateTimeSeries(
-                    name=f"{name}_err", time_stamps=time_stamps, values=err
-                )
+                UnivariateTimeSeries(name=f"{name}_err", time_stamps=time_stamps, values=err)
                 .to_ts()
                 .align(reference=orig_t)
             )

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import time
 import numpy as np
 import statsmodels.api as sm
@@ -24,9 +30,7 @@ def _model_name(model_spec):
         D=D,
         Q=Q,
         m=m,
-        constant_trend="   with constant"
-        if model_spec.trend is not None
-        else "without constant",
+        constant_trend="   with constant" if model_spec.trend is not None else "without constant",
     )
 
 
@@ -81,9 +85,7 @@ def _root_test(model_fit, ic):
     return ic
 
 
-def _fit_sarima_model(
-    y, X, order, seasonal_order, trend, method, maxiter, information_criterion, **kwargs
-):
+def _fit_sarima_model(y, X, order, seasonal_order, trend, method, maxiter, information_criterion, **kwargs):
     """
     Train a sarima model with the given time-series and hyperparamteres tuple.
     Return the trained model, training time and information criterion
@@ -92,13 +94,7 @@ def _fit_sarima_model(
     ic = np.inf
     model_fit = None
     model_spec = sm.tsa.SARIMAX(
-        endog=y,
-        exog=X,
-        order=order,
-        seasonal_order=seasonal_order,
-        trend=trend,
-        validate_specification=False,
-        **kwargs,
+        endog=y, exog=X, order=order, seasonal_order=seasonal_order, trend=trend, validate_specification=False, **kwargs
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -112,18 +108,13 @@ def _fit_sarima_model(
         fit_time = time.time() - start
         logger.debug(
             "{model}   : {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
-                model=_model_name(model_spec),
-                ic_name=information_criterion.upper(),
-                ic=ic,
-                time=fit_time,
+                model=_model_name(model_spec), ic_name=information_criterion.upper(), ic=ic, time=fit_time
             )
         )
     return model_fit, fit_time, ic
 
 
-def _refit_sarima_model(
-    model_fitted, approx_ic, method, inititer, maxiter, information_criterion
-):
+def _refit_sarima_model(model_fitted, approx_ic, method, inititer, maxiter, information_criterion):
     """
     Re-train the the approximated sarima model which is used in approximation mode.
     Take the approximated model as initialization, fine tune with (maxiter - initier)
@@ -138,10 +129,7 @@ def _refit_sarima_model(
         ic = approx_ic
         logger.debug(
             "Initial Model: {model} Iter={iter:d}, {ic_name}={ic:.3f}".format(
-                model=_model_name(model_fitted.model),
-                iter=inititer,
-                ic_name=information_criterion.upper(),
-                ic=ic,
+                model=_model_name(model_fitted.model), iter=inititer, ic_name=information_criterion.upper(), ic=ic
             )
         )
         for cur_iter in range(inititer + 1, maxiter + 1):
@@ -189,12 +177,7 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
     maxiter = 10
     ic = np.inf
     model_spec = sm.tsa.SARIMAX(
-        endog=y,
-        exog=X,
-        order=order,
-        seasonal_order=seasonal_order,
-        trend="c",
-        validate_specification=False,
+        endog=y, exog=X, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -209,9 +192,7 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
 
         for cur_iter in range(maxiter + 1, 51):
             try:
-                model_fit = model_fit.model.fit(
-                    method=method, maxiter=1, disp=0, start_params=model_fit.params
-                )
+                model_fit = model_fit.model.fit(method=method, maxiter=1, disp=0, start_params=model_fit.params)
             except (LinAlgError, ValueError) as v:
                 logger.warning(f"Caught exception {type(v).__name__}: {str(v)}")
             else:
@@ -268,21 +249,14 @@ def periodicity_detection(x, max_lag=None, m=None):
                 candidates_filter = np.append(candidates_filter, candidates[i])
         candidates = candidates_filter
     xacf = xacf[1:]
-    clim = (
-        tcrit
-        / np.sqrt(x.shape[0])
-        * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-    )
+    clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
     if m is not None:
         if m not in candidates:
             return False, m
         candidates = [m]
     # statistical test if acf is significant w.r.t a normal distribution
     for candidate in candidates:
-        if (
-            np.abs(xacf[candidate - 1]) > clim[candidate - 1]
-            and candidate * 3 < x.shape[0]
-        ):
+        if np.abs(xacf[candidate - 1]) > clim[candidate - 1] and candidate * 3 < x.shape[0]:
             return True, candidate
     return False, 0
 
@@ -312,19 +286,12 @@ def multiperiodicity_detection(x, max_lag=None):
         candidates = candidates[np.insert(argrelmax(xacf[candidates])[0], 0, 0)]
 
     xacf = xacf[1:]
-    clim = (
-        tcrit
-        / np.sqrt(x.shape[0])
-        * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-    )
+    clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
 
     # statistical test if acf is significant w.r.t a normal distribution
     candidate_filter = []
     for candidate in candidates:
-        if (
-            np.abs(xacf[candidate - 1]) > clim[candidate - 1]
-            and candidate * 3 < x.shape[0]
-        ):
+        if np.abs(xacf[candidate - 1]) > clim[candidate - 1] and candidate * 3 < x.shape[0]:
             candidate_filter.append(candidate)
     return candidate_filter
 
@@ -382,9 +349,7 @@ def KPSS_stationaritytest(xx, alpha=0.05):
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        results = sm.tsa.stattools.kpss(
-            xx, regression="ct", nlags=round(3 * np.sqrt(len(xx)) / 13)
-        )
+        results = sm.tsa.stattools.kpss(xx, regression="ct", nlags=round(3 * np.sqrt(len(xx)) / 13))
     yout = results[1]
     return yout, yout < alpha
 
@@ -403,14 +368,10 @@ def ndiffs(x, alpha=0.05, max_d=2, test="kpss"):
     if max_d <= 0:
         raise ValueError("max_d must be a positive integer")
     if alpha < 0.01:
-        warnings.warn(
-            "Specified alpha value is less than the minimum, setting alpha=0.01"
-        )
+        warnings.warn("Specified alpha value is less than the minimum, setting alpha=0.01")
         alpha = 0.01
     if alpha > 0.1:
-        warnings.warn(
-            "Specified alpha value is larger than the maximum, setting alpha=0.1"
-        )
+        warnings.warn("Specified alpha value is larger than the maximum, setting alpha=0.1")
         alpha = 0.1
     if np.max(x) == np.min(x):
         return d
@@ -508,9 +469,7 @@ class _StepwiseFitWrapper:
         constant = 0 if trend is None else 1
         if (order, seasonal_order, constant) not in self.results_dict:
             self.k += 1
-            fit, fit_time, new_ic = self._fit_arima(
-                order=order, seasonal_order=seasonal_order, trend=trend
-            )
+            fit, fit_time, new_ic = self._fit_arima(order=order, seasonal_order=seasonal_order, trend=trend)
             self.results_dict[(order, seasonal_order, constant)] = fit
             self.ic_dict[(order, seasonal_order, constant)] = new_ic
             self.fit_time_dict[(order, seasonal_order, constant)] = fit_time
@@ -523,9 +482,7 @@ class _StepwiseFitWrapper:
                 return True
             current_ic = self.ic_dict[self.bestfit_key]
             if new_ic < current_ic:
-                logger.debug(
-                    "New best model found (%.3f < %.3f)" % (new_ic, current_ic)
-                )
+                logger.debug("New best model found (%.3f < %.3f)" % (new_ic, current_ic))
                 self.bestfit = fit
                 self.bestfit_key = (order, seasonal_order, constant)
                 if new_ic < current_ic * (1 - self.relative_improve):
@@ -543,9 +500,7 @@ class _StepwiseFitWrapper:
         P, D, Q, m = self.P, self.D, self.Q, self.m
         max_p, max_q = self.max_p, self.max_q
         max_P, max_Q = self.max_P, self.max_Q
-        logger.debug(
-            "Performing stepwise search to minimize %s" % self.information_criterion
-        )
+        logger.debug("Performing stepwise search to minimize %s" % self.information_criterion)
 
         # We try four possible models to start with:
         # 1. SARIMA(2; d; 2)(1; D; 1) / ARIMA(2; d; 2)
@@ -608,38 +563,22 @@ class _StepwiseFitWrapper:
                 continue
 
             # where P and Q both vary by +-1 from the current model
-            if (
-                Q > 0
-                and P > 0
-                and self._do_fit((p, d, q), (P - 1, D, Q - 1, m), self.trend)
-            ):
+            if Q > 0 and P > 0 and self._do_fit((p, d, q), (P - 1, D, Q - 1, m), self.trend):
                 Q -= 1
                 P -= 1
                 continue
 
-            if (
-                Q < max_Q
-                and P > 0
-                and self._do_fit((p, d, q), (P - 1, D, Q + 1, m), self.trend)
-            ):
+            if Q < max_Q and P > 0 and self._do_fit((p, d, q), (P - 1, D, Q + 1, m), self.trend):
                 Q += 1
                 P -= 1
                 continue
 
-            if (
-                Q > 0
-                and P < max_P
-                and self._do_fit((p, d, q), (P + 1, D, Q - 1, m), self.trend)
-            ):
+            if Q > 0 and P < max_P and self._do_fit((p, d, q), (P + 1, D, Q - 1, m), self.trend):
                 Q -= 1
                 P += 1
                 continue
 
-            if (
-                Q < max_Q
-                and P < max_P
-                and self._do_fit((p, d, q), (P + 1, D, Q + 1, m), self.trend)
-            ):
+            if Q < max_Q and P < max_P and self._do_fit((p, d, q), (P + 1, D, Q + 1, m), self.trend):
                 Q += 1
                 P += 1
                 continue
@@ -659,53 +598,32 @@ class _StepwiseFitWrapper:
                 continue
 
             # where P and Q both vary by +-1 from the current model
-            if (
-                q > 0
-                and p > 0
-                and self._do_fit((p - 1, d, q - 1), (P, D, Q, m), self.trend)
-            ):
+            if q > 0 and p > 0 and self._do_fit((p - 1, d, q - 1), (P, D, Q, m), self.trend):
                 q -= 1
                 p -= 1
                 continue
-            if (
-                q < max_q
-                and p > 0
-                and self._do_fit((p - 1, d, q + 1), (P, D, Q, m), self.trend)
-            ):
+            if q < max_q and p > 0 and self._do_fit((p - 1, d, q + 1), (P, D, Q, m), self.trend):
                 q += 1
                 p -= 1
                 continue
-            if (
-                q > 0
-                and p < max_p
-                and self._do_fit((p + 1, d, q - 1), (P, D, Q, m), self.trend)
-            ):
+            if q > 0 and p < max_p and self._do_fit((p + 1, d, q - 1), (P, D, Q, m), self.trend):
                 q -= 1
                 p += 1
                 continue
-            if (
-                q < max_q
-                and p < max_p
-                and self._do_fit((p + 1, d, q + 1), (P, D, Q, m), self.trend)
-            ):
+            if q < max_q and p < max_p and self._do_fit((p + 1, d, q + 1), (P, D, Q, m), self.trend):
                 q += 1
                 p += 1
                 continue
 
             # where the constant trend is included if the current model has trend = None
             # or excluded if the current model has trend = 'c'
-            if self._do_fit(
-                (p, d, q), (P, D, Q, m), trend=None if self.trend is not None else "c"
-            ):
+            if self._do_fit((p, d, q), (P, D, Q, m), trend=None if self.trend is not None else "c"):
                 self.trend = None if self.trend is not None else "c"
                 continue
 
         # check if the search has been ended after max_steps
         if self.k >= self.max_k:
-            warnings.warn(
-                "stepwise search has reached the maximum number "
-                "of tries to find the best fit model"
-            )
+            warnings.warn("stepwise search has reached the maximum number " "of tries to find the best fit model")
         filtered_models_ics = sorted(
             [
                 (v, k, self.ic_dict[k])

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -30,15 +36,11 @@ class TestMedianAnomEnsemble(unittest.TestCase):
 
         # build windowed statistics detector with window size = 30min
         # and data resampled once every 5min
-        model0 = WindStats(
-            WindStatsConfig(wind_sz=30, transform=TemporalResample("5min"))
-        )
+        model0 = WindStats(WindStatsConfig(wind_sz=30, transform=TemporalResample("5min")))
 
         # build windowed statistics detector with window size = 120min
         # and data resampled once every 30min
-        model1 = WindStats(
-            WindStatsConfig(wind_sz=120, transform=TemporalResample("30min"))
-        )
+        model1 = WindStats(WindStatsConfig(wind_sz=120, transform=TemporalResample("30min")))
 
         # build windowed statistics detector with window size = 15min
         # and no data resampling
@@ -95,19 +97,11 @@ class TestMeanAnomEnsemble(unittest.TestCase):
 
         # build windowed statistics detector with window size = 30min
         # and data resampled once every 5min
-        model0 = WindStats(
-            WindStatsConfig(
-                wind_sz=30, transform=TemporalResample("5min"), enable_calibrator=True
-            )
-        )
+        model0 = WindStats(WindStatsConfig(wind_sz=30, transform=TemporalResample("5min"), enable_calibrator=True))
 
         # build windowed statistics detector with window size = 120min
         # and data resampled once every 30min
-        model1 = WindStats(
-            WindStatsConfig(
-                wind_sz=120, transform=TemporalResample("30min"), enable_calibrator=True
-            )
-        )
+        model1 = WindStats(WindStatsConfig(wind_sz=120, transform=TemporalResample("30min"), enable_calibrator=True))
 
         # build windowed statistics detector with window size = 15min
         # and no data resampling
@@ -156,8 +150,6 @@ class TestMeanAnomEnsemble(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Ensembles of anomaly detectors.
 """
@@ -7,11 +13,7 @@ from typing import List
 
 from merlion.evaluate.anomaly import TSADMetric
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
-from merlion.models.ensemble.base import (
-    EnsembleConfig,
-    EnsembleTrainConfig,
-    EnsembleBase,
-)
+from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean, Median
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils import TimeSeries
@@ -57,9 +59,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
     config_class = DetectorEnsembleConfig
     _default_train_config = EnsembleTrainConfig(valid_frac=0.0)
 
-    def __init__(
-        self, config: DetectorEnsembleConfig = None, models: List[DetectorBase] = None
-    ):
+    def __init__(self, config: DetectorEnsembleConfig = None, models: List[DetectorBase] = None):
         super().__init__(config, models)
         for model in self.models:
             assert isinstance(model, DetectorBase), (
@@ -107,15 +107,10 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         """
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         train, valid = self.train_valid_split(full_train, train_config)
         if train is not valid:
-            logger.warning(
-                "Using a train/validation split to train a "
-                "DetectorEnsemble is not recommended!"
-            )
+            logger.warning("Using a train/validation split to train a " "DetectorEnsemble is not recommended!")
 
         per_model_train_configs = train_config.per_model_train_configs
         if per_model_train_configs is None:
@@ -135,14 +130,9 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
             f"post-rule train configs for an ensemble with {len(self.models)} models."
         )
         all_train_scores = []
-        for model, cfg, pr_cfg in zip(
-            self.models, per_model_train_configs, per_model_post_rule_train_configs
-        ):
+        for model, cfg, pr_cfg in zip(self.models, per_model_train_configs, per_model_post_rule_train_configs):
             train_scores = model.train(
-                train_data=train,
-                anomaly_labels=anomaly_labels,
-                train_config=cfg,
-                post_rule_train_config=pr_cfg,
+                train_data=train, anomaly_labels=anomaly_labels, train_config=cfg, post_rule_train_config=pr_cfg
             )
             train_scores = model.post_rule(train_scores)
             all_train_scores.append(train_scores)
@@ -161,9 +151,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
             for model, cfg in zip(self.models, per_model_post_rule_train_configs):
                 model.reset()
                 train_scores = model.train(
-                    train_data=full_train,
-                    anomaly_labels=anomaly_labels,
-                    post_rule_train_config=cfg,
+                    train_data=full_train, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
                 )
                 train_scores = model.post_rule(train_scores)
                 all_train_scores.append(train_scores)
@@ -173,12 +161,8 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         self.train_post_rule(combined, anomaly_labels, post_rule_train_config)
         return combined
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(
-            time_series, time_series_prev
-        )
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
 
         y = [
             model.get_anomaly_label(time_series, time_series_prev)

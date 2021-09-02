@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from abc import ABC
 from typing import Iterator, Tuple, Optional, Any
 
@@ -35,9 +41,7 @@ class SeasonalityLayer(ForecasterAutoMLBase, ABC):
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
-    ) -> Tuple[
-        Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]
-    ]:
+    ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         # assume only one seasonality is returned in this case
         return next(thetas), None, None
 

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 The autoencoder-based anomaly detector for multivariate time series
 """
@@ -72,11 +78,7 @@ class AutoEncoder(DetectorBase):
         self.data_dim = None
 
     def _build_model(self, dim):
-        model = AEModule(
-            input_size=dim * self.k,
-            hidden_size=self.hidden_size,
-            layer_sizes=self.layer_sizes,
-        )
+        model = AEModule(input_size=dim * self.k, hidden_size=self.hidden_size, layer_sizes=self.layer_sizes)
         return model
 
     def _train(self, X):
@@ -87,12 +89,7 @@ class AutoEncoder(DetectorBase):
         self.data_dim = X.shape[1]
 
         input_data = InputData(X, self.k)
-        train_data = DataLoader(
-            input_data,
-            batch_size=self.batch_size,
-            shuffle=True,
-            collate_fn=InputData.collate_func,
-        )
+        train_data = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         bar = ProgressBar(total=self.num_epochs)
 
@@ -107,20 +104,16 @@ class AutoEncoder(DetectorBase):
                 optimizer.step()
                 total_loss += loss
             if bar is not None:
-                bar.print(
-                    epoch + 1,
-                    prefix="",
-                    suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)),
-                )
+                bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
 
     def _detect(self, X):
         """
         :param X: The input time series, a numpy array.
         """
         self.model.eval()
-        test_data = torch.FloatTensor(
-            [X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]
-        ).to(self.device)
+        test_data = torch.FloatTensor([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]).to(
+            self.device
+        )
 
         scores = np.zeros((X.shape[0],), dtype=np.float)
         test_scores = self.model(test_data).cpu().data.numpy()
@@ -132,11 +125,7 @@ class AutoEncoder(DetectorBase):
         return self.k
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
@@ -153,45 +142,29 @@ class AutoEncoder(DetectorBase):
         :return: A `TimeSeries` of the model's anomaly scores on the training
             data.
         """
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
         train_df = train_data.to_pd()
         self._train(train_df.values)
         scores = batch_detect(self, train_df.values)
 
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)}
-        )
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         :param time_series: The `TimeSeries` we wish to predict anomaly scores for.
         :param time_series_prev: A `TimeSeries` immediately preceding ``time_series``.
         :return: A univariate `TimeSeries` of anomaly scores
         """
-        time_series, time_series_prev = self.transform_time_series(
-            time_series, time_series_prev
-        )
-        ts = (
-            time_series_prev + time_series
-            if time_series_prev is not None
-            else time_series
-        )
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        ts = time_series_prev + time_series if time_series_prev is not None else time_series
         scores = batch_detect(self, ts.to_pd().values)
         timestamps = time_series.time_stamps
-        return TimeSeries(
-            {"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])}
-        )
+        return TimeSeries({"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])})
 
 
 class AEModule(nn.Module):
@@ -201,9 +174,7 @@ class AEModule(nn.Module):
     :meta private:
     """
 
-    def __init__(
-        self, input_size, hidden_size, layer_sizes, activation=nn.ReLU, dropout_prob=0.0
-    ):
+    def __init__(self, input_size, hidden_size, layer_sizes, activation=nn.ReLU, dropout_prob=0.0):
         """
         :param input_size: The input dimension
         :param hidden_size: The latent size of the autoencoder
@@ -249,15 +220,7 @@ class MLP(nn.Module):
     :meta private:
     """
 
-    def __init__(
-        self,
-        input_size,
-        output_size,
-        layer_sizes,
-        activation,
-        last_layer_activation,
-        dropout_prob,
-    ):
+    def __init__(self, input_size, output_size, layer_sizes, activation, last_layer_activation, dropout_prob):
         """
         :param input_size: The input dimension
         :param output_size: The output dimension

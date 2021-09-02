@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Vector AutoRegressive model for multivariate time series forecasting.
 """
@@ -23,13 +29,7 @@ class VectorARConfig(ForecasterConfig):
     Configuration class for Vector AutoRegressive model.
     """
 
-    def __init__(
-        self,
-        max_forecast_steps: int,
-        maxlags: int,
-        target_seq_index: int = None,
-        **kwargs,
-    ):
+    def __init__(self, max_forecast_steps: int, maxlags: int, target_seq_index: int = None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param maxlags: Max # of lags for AR
@@ -38,11 +38,7 @@ class VectorARConfig(ForecasterConfig):
             would like to forecast.
         :param maxlags: Max # of lags for AR
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
 
 
@@ -64,12 +60,8 @@ class VectorAR(ForecasterBase):
     def maxlags(self) -> int:
         return self.config.maxlags
 
-    def train(
-        self, train_data: TimeSeries, train_config=None
-    ) -> Tuple[TimeSeries, TimeSeries]:
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False
-        )
+    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, TimeSeries]:
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
 
         i = self.target_seq_index
         times = train_data.univariates[self.target_name].time_stamps
@@ -116,9 +108,7 @@ class VectorAR(ForecasterBase):
         time_series_prev: TimeSeries = None,
         return_iqr=False,
         return_prev=False,
-    ) -> Union[
-        Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]
-    ]:
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
 
         orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
         t = self.resample_time_stamps(time_stamps, time_series_prev)
@@ -137,9 +127,7 @@ class VectorAR(ForecasterBase):
                 f"{len(time_series_prev)} that is shorter than the maxlags "
                 f"for the model"
             )
-            assert (
-                not return_prev
-            ), "VectorAR.forecast() does not support return_prev=True"
+            assert not return_prev, "VectorAR.forecast() does not support return_prev=True"
 
         if time_series_prev is None:
             yhat = self._forecast[: len(t)]
@@ -148,9 +136,7 @@ class VectorAR(ForecasterBase):
         else:
             df = time_series_prev.to_pd()
             if self.dim == 1:
-                new_state = self.model.apply(
-                    df.iloc[-self.maxlags :, 0].values, validate_specification=False
-                )
+                new_state = self.model.apply(df.iloc[-self.maxlags :, 0].values, validate_specification=False)
                 forecast_result = new_state.get_forecast(steps=len(t))
                 yhat = forecast_result.predicted_mean
                 err = forecast_result.se_mean
@@ -166,20 +152,12 @@ class VectorAR(ForecasterBase):
         name = self.target_name
         if return_iqr:
             lb = (
-                UnivariateTimeSeries(
-                    time_stamps=t,
-                    values=yhat + norm.ppf(0.25) * err,
-                    name=f"{name}_lower",
-                )
+                UnivariateTimeSeries(time_stamps=t, values=yhat + norm.ppf(0.25) * err, name=f"{name}_lower")
                 .to_ts()
                 .align(reference=orig_t)
             )
             ub = (
-                UnivariateTimeSeries(
-                    time_stamps=t,
-                    values=yhat + norm.ppf(0.75) * err,
-                    name=f"{name}_upper",
-                )
+                UnivariateTimeSeries(time_stamps=t, values=yhat + norm.ppf(0.75) * err, name=f"{name}_upper")
                 .to_ts()
                 .align(reference=orig_t)
             )
@@ -188,16 +166,8 @@ class VectorAR(ForecasterBase):
 
         # Otherwise, just return the forecast & its standard error
         else:
-            forecast = (
-                UnivariateTimeSeries(name=name, time_stamps=t, values=yhat)
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            err = (
-                UnivariateTimeSeries(name=f"{name}_err", time_stamps=t, values=err)
-                .to_ts()
-                .align(reference=orig_t)
-            )
+            forecast = UnivariateTimeSeries(name=name, time_stamps=t, values=yhat).to_ts().align(reference=orig_t)
+            err = UnivariateTimeSeries(name=f"{name}_err", time_stamps=t, values=err).to_ts().align(reference=orig_t)
             return forecast, err
 
     def set_data_already_transformed(self):
@@ -207,9 +177,7 @@ class VectorAR(ForecasterBase):
         self._input_already_transformed = False
 
 
-def gen_next_seq_label_pairs(
-    data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int
-):
+def gen_next_seq_label_pairs(data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int):
     """
     Customized helper function to yield
     ``(multivariates_sequences, multisteps_labels)`` tuple pair

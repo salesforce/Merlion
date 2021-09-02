@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import glob
 import logging
 import os
@@ -26,13 +32,10 @@ class SeattleTrail(BaseDataset):
         if rootdir is None:
             fdir = os.path.dirname(os.path.abspath(__file__))
             merlion_root = os.path.abspath(os.path.join(fdir, "..", "..", ".."))
-            rootdir = os.path.join(
-                merlion_root, "data", "multivariate", "seattle_trail"
-            )
+            rootdir = os.path.join(merlion_root, "data", "multivariate", "seattle_trail")
 
         assert "seattle_trail" in rootdir.split("/")[-1], (
-            "seattle_trail should be found as the last level"
-            " of the directory for this dataset"
+            "seattle_trail should be found as the last level" " of the directory for this dataset"
         )
 
         dsetdirs = [rootdir]
@@ -50,10 +53,5 @@ class SeattleTrail(BaseDataset):
 
             self.time_series.append(df)
             self.metadata.append(
-                {
-                    "trainval": pd.Series(
-                        df.index <= "2019-01-01 00:00:00", index=df.index
-                    ),
-                    "quantile_clip": 300,
-                }
+                {"trainval": pd.Series(df.index <= "2019-01-01 00:00:00", index=df.index), "quantile_clip": 300}
             )

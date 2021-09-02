@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Post-rule to transform anomaly scores to follow a standard normal distribution.
 """
@@ -21,12 +27,7 @@ class AnomScoreCalibrator(PostRuleBase):
     many diverse models interpretable as z-scores.
     """
 
-    def __init__(
-        self,
-        max_score: float,
-        abs_score: bool = True,
-        anchors: List[Tuple[float, float]] = None,
-    ):
+    def __init__(self, max_score: float, abs_score: bool = True, anchors: List[Tuple[float, float]] = None):
         """
         :param max_score: the maximum possible uncalibrated score
         :param abs_score: whether to consider the absolute values of the
@@ -120,14 +121,10 @@ class AnomScoreCalibrator(PostRuleBase):
             idx = np.abs(x) > b
             if idx.any():
                 sub = x[idx]
-                vals[idx] = np.sign(sub) * (
-                    (np.abs(sub) - b) * m + self.interpolator(b)
-                )
+                vals[idx] = np.sign(sub) * ((np.abs(sub) - b) * m + self.interpolator(b))
         else:
             vals = self.interpolator(x)
             idx = x > b
             if idx.any():
                 vals[idx] = (x[idx] - b) * m + self.interpolator(b)
-        return UnivariateTimeSeries(
-            anomaly_scores.time_stamps, vals, anomaly_scores.names[0]
-        ).to_ts()
+        return UnivariateTimeSeries(anomaly_scores.time_stamps, vals, anomaly_scores.names[0]).to_ts()

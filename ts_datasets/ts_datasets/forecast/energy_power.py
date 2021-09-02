@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import glob
 import logging
 import os
@@ -28,8 +34,7 @@ class EnergyPower(BaseDataset):
             rootdir = os.path.join(merlion_root, "data", "multivariate", "energy_power")
 
         assert "energy_power" in rootdir.split("/")[-1], (
-            "energy_power should be found as the last level"
-            " of the directory for this dataset"
+            "energy_power should be found as the last level" " of the directory for this dataset"
         )
 
         dsetdirs = [rootdir]
@@ -50,9 +55,7 @@ class EnergyPower(BaseDataset):
             self.time_series.append(df)
             self.metadata.append(
                 {
-                    "trainval": pd.Series(
-                        df.index <= "2018-01-01 00:00:00", index=df.index
-                    ),
+                    "trainval": pd.Series(df.index <= "2018-01-01 00:00:00", index=df.index),
                     "start_timestamp": start_timestamp,
                 }
             )

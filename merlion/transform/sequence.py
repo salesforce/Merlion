@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Classes to compose (`TransformSequence`) or stack (`TransformStack`) multiple transforms.
 """
@@ -23,8 +29,7 @@ class TransformSequence(InvertibleTransformBase):
         self.transforms = []
         for t in transforms:
             assert isinstance(t, (TransformBase, dict)), (
-                f"Expected all transforms to be instances of TransformBase, "
-                f"or dict, but got {transforms}"
+                f"Expected all transforms to be instances of TransformBase, " f"or dict, but got {transforms}"
             )
             if isinstance(t, dict):
                 t = TransformFactory.create(**t)
@@ -46,10 +51,7 @@ class TransformSequence(InvertibleTransformBase):
         return False
 
     def to_dict(self):
-        return {
-            "name": type(self).__name__,
-            "transforms": [f.to_dict() for f in self.transforms],
-        }
+        return {"name": type(self).__name__, "transforms": [f.to_dict() for f in self.transforms]}
 
     def append(self, transform):
         assert isinstance(transform, TransformBase)
@@ -69,27 +71,20 @@ class TransformSequence(InvertibleTransformBase):
             time_series = f(time_series)
         return time_series
 
-    def invert(
-        self, time_series: TimeSeries, retain_inversion_state=False
-    ) -> TimeSeries:
+    def invert(self, time_series: TimeSeries, retain_inversion_state=False) -> TimeSeries:
         for f in self.transforms[-1::-1]:
             time_series = f.invert(time_series, retain_inversion_state)
         return time_series
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         logger.warning(
-            f"_invert() should not be called by a transform of type "
-            f"{type(self).__name__}. Applying the identity.",
+            f"_invert() should not be called by a transform of type " f"{type(self).__name__}. Applying the identity.",
             stack_info=True,
         )
         return time_series
 
     def __repr__(self):
-        return (
-            "TransformSequence(\n "
-            + ",\n ".join([repr(f) for f in self.transforms])
-            + "\n)"
-        )
+        return "TransformSequence(\n " + ",\n ".join([repr(f) for f in self.transforms]) + "\n)"
 
 
 class TransformStack(TransformSequence):
@@ -140,9 +135,7 @@ class TransformStack(TransformSequence):
 
         return TimeSeries.from_ts_list(ts_list, check_aligned=self.check_aligned)
 
-    def invert(
-        self, time_series: TimeSeries, retain_inversion_state=False
-    ) -> TimeSeries:
+    def invert(self, time_series: TimeSeries, retain_inversion_state=False) -> TimeSeries:
 
         if self.inversion_state is None:
             raise RuntimeError(
@@ -153,24 +146,14 @@ class TransformStack(TransformSequence):
             )
 
         idx, d0, df, names = self.inversion_state
-        ts = TimeSeries(
-            OrderedDict(
-                (n, time_series.univariates[n]) for n in time_series.names[d0:df]
-            )
-        )
+        ts = TimeSeries(OrderedDict((n, time_series.univariates[n]) for n in time_series.names[d0:df]))
         inverted = self.transforms[idx].invert(ts, retain_inversion_state)
         assert inverted.dim == len(names)
-        inverted = TimeSeries(
-            OrderedDict((name, var) for name, var in zip(names, inverted.univariates))
-        )
+        inverted = TimeSeries(OrderedDict((name, var) for name, var in zip(names, inverted.univariates)))
 
         if not retain_inversion_state:
             self.inversion_state = None
         return inverted
 
     def __repr__(self):
-        return (
-            "TransformStack(\n "
-            + ",\n ".join([repr(f) for f in self.transforms])
-            + "\n)"
-        )
+        return "TransformStack(\n " + ",\n ".join([repr(f) for f in self.transforms]) + "\n)"

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import glob
 import os
 
@@ -25,9 +31,7 @@ class Synthetic(TSADBaseDataset):
     def __init__(self, subset="anomaly", rootdir=None):
         super().__init__()
 
-        assert (
-            subset in self.valid_subsets
-        ), f"subset should be in {self.valid_subsets}, but got {subset}"
+        assert subset in self.valid_subsets, f"subset should be in {self.valid_subsets}, but got {subset}"
         self.subset = subset
 
         if rootdir is None:
@@ -51,9 +55,7 @@ class Synthetic(TSADBaseDataset):
             ts = df[df.columns[0:1]]
             metadata = pd.DataFrame(
                 {
-                    "anomaly": df["anomaly"].astype(bool)
-                    if df.shape[1] > 1
-                    else [False] * len(df),
+                    "anomaly": df["anomaly"].astype(bool) if df.shape[1] > 1 else [False] * len(df),
                     "trainval": [j < len(df) * 0.5 for j in range(len(df))],
                 },
                 index=df.index,

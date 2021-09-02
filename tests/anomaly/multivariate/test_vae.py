@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import sys
 import logging
 import unittest
@@ -20,9 +26,7 @@ def set_random_seeds():
     np.random.seed(12345)
 
 
-def get_train_test_splits(
-    df: pd.DataFrame, metadata: pd.DataFrame, n: int
-) -> (pd.DataFrame, pd.DataFrame, np.ndarray):
+def get_train_test_splits(df: pd.DataFrame, metadata: pd.DataFrame, n: int) -> (pd.DataFrame, pd.DataFrame, np.ndarray):
     train_df = df[metadata.trainval]
     test_df = df[~metadata.trainval]
     test_labels = metadata[~metadata.trainval].anomaly.values
@@ -37,9 +41,7 @@ class TestVAE(unittest.TestCase):
         self.model = VAE(config=VAE.config_class(num_epochs=5))
         self.dataset = MSL(rootdir=join(rootdir, "data", "smap"))
         df, metadata = self.dataset[0]
-        self.train_df, self.test_df, self.test_labels = get_train_test_splits(
-            df, metadata, 5000
-        )
+        self.train_df, self.test_df, self.test_labels = get_train_test_splits(df, metadata, 5000)
 
         logger.info("Training model...\n")
         train_ts = TimeSeries.from_pd(self.train_df)
@@ -82,8 +84,6 @@ class TestVAE(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

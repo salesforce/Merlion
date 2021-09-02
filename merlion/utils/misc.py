@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from abc import ABCMeta
 from collections import OrderedDict
 import importlib
@@ -78,9 +84,7 @@ def initializer(func):
 
 
 class ProgressBar:
-    def __init__(
-        self, total: int, length: int = 40, decimals: int = 1, fill: str = "█"
-    ):
+    def __init__(self, total: int, length: int = 40, decimals: int = 1, fill: str = "█"):
         """
         :param total: total iterations
         :param length: character length of bar
@@ -99,9 +103,7 @@ class ProgressBar:
         :param suffix: suffix string
         :param end: end character (e.g. ``"\\r"``, ``"\\r\\n"``)
         """
-        percent = ("{0:." + str(self.decimals) + "f}").format(
-            100 * (iteration / float(self.total))
-        )
+        percent = ("{0:." + str(self.decimals) + "f}").format(100 * (iteration / float(self.total)))
         fill_len = self.length * iteration // self.total
         bar = self.fill * fill_len + "-" * (self.length - fill_len)
         print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=end)

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """Default models for anomaly detection & forecasting that balance speed and performance."""
 import logging
 from typing import List, Optional, Tuple, Union
@@ -34,12 +40,7 @@ class DefaultDetectorConfig(DetectorConfig, DefaultModelConfig):
             threshold in units of z-score.
         :param n_threads: the number of parallel threads to use for relevant models
         """
-        super().__init__(
-            granularity=granularity,
-            threshold=threshold,
-            enable_threshold=True,
-            enable_calibrator=False,
-        )
+        super().__init__(granularity=granularity, threshold=threshold, enable_threshold=True, enable_calibrator=False)
         self.n_threads = n_threads
 
 
@@ -61,19 +62,13 @@ class DefaultDetector(ModelWrapper, DetectorBase):
         return self.config.granularity
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
 
         # Multivariate model is LSTM encoder/decoder
         if train_data.dim > 1:
-            self.model = ModelFactory.create(
-                "LSTMED", transform=transform_dict, enable_threshold=False
-            )
+            self.model = ModelFactory.create("LSTMED", transform=transform_dict, enable_threshold=False)
 
         # Univariate model is ETS/RCF/WindStats/ZMS ensemble
         else:
@@ -85,10 +80,7 @@ class DefaultDetector(ModelWrapper, DetectorBase):
                 enable_threshold=False,
                 models=[
                     ModelFactory.create(
-                        "ETSDetector",
-                        damped_trend=True,
-                        max_forecast_steps=None,
-                        transform=ets_transform,
+                        "ETSDetector", damped_trend=True, max_forecast_steps=None, transform=ets_transform
                     ),
                     ModelFactory.create(
                         "RandomCutForest",
@@ -111,25 +103,17 @@ class DefaultDetector(ModelWrapper, DetectorBase):
             post_rule_train_config=post_rule_train_config,
         )
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         # we use get_anomaly_label() because the underlying model's calibration is
         # enabled, but its threshold is enabled
-        time_series, time_series_prev = self.transform_time_series(
-            time_series, time_series_prev
-        )
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_label(time_series, time_series_prev)
 
-    def get_anomaly_label(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_label(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         return super().get_anomaly_label(time_series, time_series_prev)
 
 
@@ -138,9 +122,7 @@ class DefaultForecasterConfig(ForecasterConfig, DefaultModelConfig):
     Config object for default forecasting model.
     """
 
-    def __init__(
-        self, granularity=None, max_forecast_steps=100, target_seq_index=None, **kwargs
-    ):
+    def __init__(self, granularity=None, max_forecast_steps=100, target_seq_index=None, **kwargs):
         """
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
@@ -149,9 +131,7 @@ class DefaultForecasterConfig(ForecasterConfig, DefaultModelConfig):
             univariate whose value you wish to forecast.
         """
         super().__init__(
-            granularity=granularity,
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
+            granularity=granularity, max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index
         )
 
 
@@ -166,14 +146,10 @@ class DefaultForecaster(ModelWrapper, ForecasterBase):
     def granularity(self):
         return self.config.granularity
 
-    def train(
-        self, train_data: TimeSeries, train_config=None
-    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
         kwargs = dict(
-            transform=transform_dict,
-            max_forecast_steps=self.max_forecast_steps,
-            target_seq_index=self.target_seq_index,
+            transform=transform_dict, max_forecast_steps=self.max_forecast_steps, target_seq_index=self.target_seq_index
         )
 
         # LGBM forecaster for multivariate data
@@ -201,10 +177,7 @@ class DefaultForecaster(ModelWrapper, ForecasterBase):
         time_series_prev: TimeSeries = None,
         return_iqr: bool = False,
         return_prev: bool = False,
-    ) -> Union[
-        Tuple[TimeSeries, Optional[TimeSeries]],
-        Tuple[TimeSeries, TimeSeries, TimeSeries],
-    ]:
+    ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         """
         Returns the model's forecast on the timestamps given.
 
@@ -232,8 +205,5 @@ class DefaultForecaster(ModelWrapper, ForecasterBase):
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
         return self.model.forecast(
-            time_stamps=time_stamps,
-            time_series_prev=time_series_prev,
-            return_iqr=return_iqr,
-            return_prev=return_prev,
+            time_stamps=time_stamps, time_series_prev=time_series_prev, return_iqr=return_iqr, return_prev=return_prev
         )

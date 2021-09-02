@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import os
 import requests
@@ -29,9 +35,7 @@ class M4(BaseDataset):
     def __init__(self, subset="Hourly", rootdir=None):
         super().__init__()
         self.subset = subset
-        assert (
-            subset in self.valid_subsets
-        ), f"subset should be in {self.valid_subsets}, but got {subset}"
+        assert subset in self.valid_subsets, f"subset should be in {self.valid_subsets}, but got {subset}"
 
         if rootdir is None:
             fdir = os.path.dirname(os.path.abspath(__file__))
@@ -47,9 +51,7 @@ class M4(BaseDataset):
             download(rootdir, self.url, "M4-info")
 
         # extract starting date from meta-information of dataset
-        info_dataset = pd.read_csv(
-            os.path.join(rootdir, "M4-info.csv"), delimiter=","
-        ).set_index("M4id")
+        info_dataset = pd.read_csv(os.path.join(rootdir, "M4-info.csv"), delimiter=",").set_index("M4id")
 
         if subset == "Yearly":
             logger.warning(
@@ -66,9 +68,7 @@ class M4(BaseDataset):
 
         train_csv = os.path.join(rootdir, f"train/{subset}-train.csv")
         if not os.path.isfile(train_csv):
-            download(
-                os.path.join(rootdir, "train"), self.url, f"{subset}-train", "Train"
-            )
+            download(os.path.join(rootdir, "train"), self.url, f"{subset}-train", "Train")
         test_csv = os.path.join(rootdir, f"test/{subset}-test.csv")
         if not os.path.isfile(test_csv):
             download(os.path.join(rootdir, "test"), self.url, f"{subset}-test", "Test")
@@ -77,20 +77,13 @@ class M4(BaseDataset):
         test_set = pd.read_csv(test_csv).set_index("V1")
         for i in tqdm(range(train_set.shape[0])):
             ntrain = train_set.iloc[i, :].dropna().shape[0]
-            sequence = pd.concat(
-                (train_set.iloc[i, :].dropna(), test_set.iloc[i, :].dropna())
-            )
+            sequence = pd.concat((train_set.iloc[i, :].dropna(), test_set.iloc[i, :].dropna()))
             # raw data do not follow consistent timestamp format
             startingdate = (pd.Timestamp.min + pd.to_timedelta(1, unit="W")).round("D")
-            sequence.index = pd.date_range(
-                start=startingdate, periods=sequence.shape[0], freq=freq
-            )
+            sequence.index = pd.date_range(start=startingdate, periods=sequence.shape[0], freq=freq)
             sequence = sequence.to_frame()
 
-            metadata = pd.DataFrame(
-                {"trainval": sequence.index < sequence.index[ntrain]},
-                index=sequence.index,
-            )
+            metadata = pd.DataFrame({"trainval": sequence.index < sequence.index[ntrain]}, index=sequence.index)
 
             self.metadata.append(metadata)
             self.time_series.append(sequence)

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """Ensembles of forecasters."""
 import copy
 import logging
@@ -5,11 +11,7 @@ from typing import List, Optional, Tuple, Union
 
 from scipy.stats import norm
 
-from merlion.models.ensemble.base import (
-    EnsembleConfig,
-    EnsembleTrainConfig,
-    EnsembleBase,
-)
+from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils import TimeSeries, UnivariateTimeSeries
@@ -34,11 +36,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
     _default_train_config = EnsembleTrainConfig(valid_frac=0.2)
 
-    def __init__(
-        self,
-        config: ForecasterEnsembleConfig = None,
-        models: List[ForecasterBase] = None,
-    ):
+    def __init__(self, config: ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None):
         super().__init__(config, models)
         for model in self.models:
             assert isinstance(model, ForecasterBase), (
@@ -47,10 +45,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             )
 
     def train_pre_process(
-        self,
-        train_data: TimeSeries,
-        require_even_sampling: bool,
-        require_univariate: bool,
+        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
         idxs = [model.target_seq_index for model in self.models]
         if any(i is not None for i in idxs):
@@ -61,18 +56,15 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 f"target_seq_idx values: {idxs}"
             )
         return super().train_pre_process(
-            train_data=train_data,
-            require_even_sampling=require_even_sampling,
-            require_univariate=require_univariate)
+            train_data=train_data, require_even_sampling=require_even_sampling, require_univariate=require_univariate
+        )
 
     def train(
         self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         train, valid = self.train_valid_split(full_train, train_config)
 
         per_model_train_configs = train_config.per_model_train_configs
@@ -138,11 +130,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             pred, err = model.train(full_train, cfg)
             full_preds.append(pred)
             full_errs.append(err)
-        err = (
-            None
-            if any(e is None for e in full_errs)
-            else self.combiner(full_errs, None)
-        )
+        err = None if any(e is None for e in full_errs) else self.combiner(full_errs, None)
         return self.combiner(full_preds, None), err
 
     def forecast(
@@ -151,10 +139,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         time_series_prev: TimeSeries = None,
         return_iqr: bool = False,
         return_prev: bool = False,
-    ) -> Union[
-        Tuple[TimeSeries, Union[TimeSeries, None]],
-        Tuple[TimeSeries, TimeSeries, TimeSeries],
-    ]:
+    ) -> Union[Tuple[TimeSeries, Union[TimeSeries, None]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
 
@@ -182,14 +167,10 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             yhat = pred.univariates[name].to_pd()
             err = err.univariates[err.names[0]].to_pd()
             lb = UnivariateTimeSeries(
-                name=f"{name}_lower",
-                time_stamps=time_stamps,
-                values=yhat + norm.ppf(0.25) * err,
+                name=f"{name}_lower", time_stamps=time_stamps, values=yhat + norm.ppf(0.25) * err
             ).to_ts()
             ub = UnivariateTimeSeries(
-                name=f"{name}_upper",
-                time_stamps=time_stamps,
-                values=yhat + norm.ppf(0.75) * err,
+                name=f"{name}_upper", time_stamps=time_stamps, values=yhat + norm.ppf(0.75) * err
             ).to_ts()
             return pred, lb, ub
 

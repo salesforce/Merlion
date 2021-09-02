@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname
 import sys
@@ -17,27 +23,18 @@ class TestAnomalize(unittest.TestCase):
         super().__init__(*args, **kwargs)
         logger.info("Generating Data...\n")
         np.random.seed(111)
-        self.ts = TimeSeriesGenerator(
-            f=lambda x: x ** 1.6, n=200, name="metric"
-        ).generate(return_ts=True)
+        self.ts = TimeSeriesGenerator(f=lambda x: x ** 1.6, n=200, name="metric").generate(return_ts=True)
 
     def test_shock(self):
         print("-" * 80)
         logger.info("test_shock\n" + "-" * 80 + "\n")
 
         # test anomalies are statistically deviant from preceding values
-        shock = Shock(
-            anom_prob=0.2, pos_prob=0.5, sd_range=(5, 5), anom_width_range=(1, 3)
-        )
+        shock = Shock(anom_prob=0.2, pos_prob=0.5, sd_range=(5, 5), anom_width_range=(1, 3))
         anom_ts = shock(self.ts)
         vals = anom_ts.univariates["metric"].values
         labs = anom_ts.univariates["anomaly"].values
-        ems = (
-            self.ts.univariates["metric"]
-            .to_pd()
-            .ewm(alpha=shock.alpha, adjust=False)
-            .std(bias=True)
-        )
+        ems = self.ts.univariates["metric"].to_pd().ewm(alpha=shock.alpha, adjust=False).std(bias=True)
 
         for i, (x, is_anom, sd) in enumerate(zip(vals, labs, ems)):
             if is_anom == 1.0 and labs[i - 1] == 0.0:
@@ -51,22 +48,12 @@ class TestAnomalize(unittest.TestCase):
         # test strictly positive trend changes
         trend = TrendChange(anom_prob=0.2, pos_prob=1.0, scale_range=(2, 3))
         anom_ts = trend(self.ts)
-        self.assertTrue(
-            all(
-                self.ts.univariates["metric"].np_values
-                <= anom_ts.univariates["metric"].np_values
-            )
-        )
+        self.assertTrue(all(self.ts.univariates["metric"].np_values <= anom_ts.univariates["metric"].np_values))
 
         # test strictly negative trend changes
         trend = TrendChange(anom_prob=0.2, pos_prob=0.0, scale_range=(2, 3))
         anom_ts = trend(self.ts)
-        self.assertTrue(
-            all(
-                self.ts.univariates["metric"].np_values
-                >= anom_ts.univariates["metric"].np_values
-            )
-        )
+        self.assertTrue(all(self.ts.univariates["metric"].np_values >= anom_ts.univariates["metric"].np_values))
 
     def test_natural_bounds(self):
         print("-" * 80)
@@ -74,9 +61,7 @@ class TestAnomalize(unittest.TestCase):
 
         # generate data
         np.random.seed(111)
-        ts = TimeSeriesGenerator(f=np.sin, n=200, name="metric").generate(
-            return_ts=True
-        )
+        ts = TimeSeriesGenerator(f=np.sin, n=200, name="metric").generate(return_ts=True)
 
         shock = Shock(anom_prob=0.5, sd_range=(5, 5), natural_bounds=(-1, 1))
         anom_vals = shock(ts).univariates["metric"].values
@@ -89,16 +74,12 @@ class TestAnomalize(unittest.TestCase):
         # test no anoms when anom_prob is 0
         for anomaly in (Shock(anom_prob=0.0), TrendChange(anom_prob=0.0)):
             anom_ts = anomaly(self.ts)
-            self.assertEqual(
-                self.ts.univariates["metric"], anom_ts.univariates["metric"]
-            )
+            self.assertEqual(self.ts.univariates["metric"], anom_ts.univariates["metric"])
             self.assertTrue(all(0.0 == anom_ts.univariates["anomaly"].np_values))
 
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

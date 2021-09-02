@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from collections import Iterator
 from typing import Tuple, Any, Optional
@@ -17,18 +23,20 @@ logger = logging.getLogger(__name__)
 class AutoSarimaConfig(SarimaConfig):
     _default_transform = TemporalResample()
 
-    def __init__(self,
-                 max_forecast_steps: int = None,
-                 target_seq_index: int = None,
-                 order=("auto", "auto", "auto"),
-                 seasonal_order=("auto", "auto", "auto", "auto"),
-                 periodicity_strategy: str = 'max',
-                 maxiter: int = None,
-                 max_k: int = 100,
-                 max_dur: float = 3600,
-                 approximation: bool = None,
-                 approx_iter: int = None,
-                 **kwargs):
+    def __init__(
+        self,
+        max_forecast_steps: int = None,
+        target_seq_index: int = None,
+        order=("auto", "auto", "auto"),
+        seasonal_order=("auto", "auto", "auto", "auto"),
+        periodicity_strategy: str = "max",
+        maxiter: int = None,
+        max_k: int = 100,
+        max_dur: float = 3600,
+        approximation: bool = None,
+        approx_iter: int = None,
+        **kwargs,
+    ):
         """
         Configuration class for AutoSarima.
         For order and seasonal_order, 'auto' indicates automatically select the parameter.
@@ -97,11 +105,11 @@ class AutoSarima(ForecasterAutoMLBase):
         max_dur = self.config.max_dur
 
         # These should be set in config
-        periodicity_strategy = 'min'
+        periodicity_strategy = "min"
         stationary = False
-        seasonal_test = 'seas'
-        method = 'lbfgs'
-        test = 'kpss'
+        seasonal_test = "seas"
+        method = "lbfgs"
+        test = "kpss"
         stepwise = True
         max_d = 2
         start_p = 2
@@ -115,7 +123,7 @@ class AutoSarima(ForecasterAutoMLBase):
         max_Q = 2
         relative_improve = 0
         trend = None
-        information_criterion = 'aic'
+        information_criterion = "aic"
 
         n_samples = y.shape[0]
         if n_samples <= 3:
@@ -167,8 +175,7 @@ class AutoSarima(ForecasterAutoMLBase):
         # pqPQ is an indicator about whether need to automatically select
         # AR, MA, seasonal AR and seasonal MA parameters
         pqPQ = None
-        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" \
-                and seasonal_order[2] != "auto":
+        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" and seasonal_order[2] != "auto":
             pqPQ = True
 
         # automatically detect whether to use approximation method and the periodicity
@@ -186,7 +193,7 @@ class AutoSarima(ForecasterAutoMLBase):
             if max_Q > 0:
                 max_q = min(max_q, m - 1)
         if (d + D) in (0, 1):
-            trend = 'c'
+            trend = "c"
 
         if n_samples < 10:
             start_p = min(start_p, 1)
@@ -231,7 +238,7 @@ class AutoSarima(ForecasterAutoMLBase):
             refititer=refititer,
             stepwise=stepwise,
             order=order,
-            seasonal_order=seasonal_order
+            seasonal_order=seasonal_order,
         )
         return return_dict
 
@@ -241,7 +248,6 @@ class AutoSarima(ForecasterAutoMLBase):
         p, q, P, Q, trend parameters or use a predefined parameter combination (pqPQ)
         theta is a list of parameter combination [order, seasonal_order, trend]
         """
-
 
         val_dict = self._generate_sarima_parameters(train_data)
         y = val_dict["y"]
@@ -276,8 +282,9 @@ class AutoSarima(ForecasterAutoMLBase):
 
         return iter([{"action": action, "theta": [order, seasonal_order, trend]}])
 
-    def evaluate_theta(self, thetas: Iterator, train_data: TimeSeries, train_config=None) -> Tuple[
-        Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
+    def evaluate_theta(
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None
+    ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
         theta_value = thetas.__next__()
 
@@ -314,11 +321,11 @@ class AutoSarima(ForecasterAutoMLBase):
 
         # use zero model to automatically detect the optimal maxiter
         if maxiter is None:
-            maxiter = autosarima_utils.detect_maxiter_sarima_model(y=y, X=X, d=d, D=D, m=m,
-                                                                   method=method,
-                                                                   information_criterion=information_criterion)
+            maxiter = autosarima_utils.detect_maxiter_sarima_model(
+                y=y, X=X, d=d, D=D, m=m, method=method, information_criterion=information_criterion
+            )
 
-        if theta_value['action'] == "stepwise":
+        if theta_value["action"] == "stepwise":
             refititer = maxiter
             if approximation:
                 if approx_iter is None:
@@ -329,11 +336,28 @@ class AutoSarima(ForecasterAutoMLBase):
 
             # stepwise search
             stepwise_search = autosarima_utils._StepwiseFitWrapper(
-                y=y, X=X, p=p, d=d, q=q, P=P, D=D, Q=Q, m=m,
-                max_p=max_p, max_q=max_q, max_P=max_P, max_Q=max_Q,
-                trend=trend, method=method, maxiter=maxiter,
+                y=y,
+                X=X,
+                p=p,
+                d=d,
+                q=q,
+                P=P,
+                D=D,
+                Q=Q,
+                m=m,
+                max_p=max_p,
+                max_q=max_q,
+                max_P=max_P,
+                max_Q=max_Q,
+                trend=trend,
+                method=method,
+                maxiter=maxiter,
                 information_criterion=information_criterion,
-                relative_improve=relative_improve, max_k=max_k, max_dur=max_dur, **train_config)
+                relative_improve=relative_improve,
+                max_k=max_k,
+                max_dur=max_dur,
+                **train_config,
+            )
             filtered_models_ics = stepwise_search.stepwisesearch()
 
             if approximation:
@@ -341,8 +365,13 @@ class AutoSarima(ForecasterAutoMLBase):
                 if len(filtered_models_ics) > 0:
                     best_model_theta = filtered_models_ics[0][1]
                     best_model_fit = autosarima_utils._refit_sarima_model(
-                        filtered_models_ics[0][0], filtered_models_ics[0][2],
-                        method, maxiter, refititer, information_criterion)
+                        filtered_models_ics[0][0],
+                        filtered_models_ics[0][2],
+                        method,
+                        maxiter,
+                        refititer,
+                        information_criterion,
+                    )
                     logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
@@ -353,17 +382,24 @@ class AutoSarima(ForecasterAutoMLBase):
                     logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
-        elif theta_value['action'] == "pqPQ":
-            best_model_theta = theta_value['theta']
-            order = theta_value['theta'][0]
-            seasonal_order = theta_value['theta'][1]
-            trend = theta_value['theta'][2]
+        elif theta_value["action"] == "pqPQ":
+            best_model_theta = theta_value["theta"]
+            order = theta_value["theta"][0]
+            seasonal_order = theta_value["theta"][1]
+            trend = theta_value["theta"][2]
             if seasonal_order[3] == 1:
                 seasonal_order = [0, 0, 0, 0]
             best_model_fit, fit_time, ic = autosarima_utils._fit_sarima_model(
-                y=y, X=X, order=order, seasonal_order=seasonal_order, trend=trend,
-                method=method, maxiter=maxiter, information_criterion=information_criterion,
-                **train_config)
+                y=y,
+                X=X,
+                order=order,
+                seasonal_order=seasonal_order,
+                trend=trend,
+                method=method,
+                maxiter=maxiter,
+                information_criterion=information_criterion,
+                **train_config,
+            )
         else:
             return theta_value, None, None
 
@@ -371,22 +407,21 @@ class AutoSarima(ForecasterAutoMLBase):
         model.reset()
         self.set_theta(model, best_model_theta, train_data)
 
-        model.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False)
+        model.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
         model.model = best_model_fit
         name = model.target_name
         train_data = train_data.univariates[name].to_pd()
         times = train_data.index
         yhat = model.model.fittedvalues
         err = [np.sqrt(model.model.params[-1])] * len(train_data)
-        train_result = (UnivariateTimeSeries(times, yhat, name).to_ts(), \
-                        UnivariateTimeSeries(times, err, f"{name}_err").to_ts())
+        train_result = (
+            UnivariateTimeSeries(times, yhat, name).to_ts(),
+            UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
+        )
 
         return best_model_theta, model, train_result
-
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         order, seasonal_order, trend = theta
         model.config.order = order
         model.config.seasonal_order = seasonal_order
-

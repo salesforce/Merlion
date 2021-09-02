@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Deep Point Anomaly Detector algorithm.
 """
@@ -89,9 +95,7 @@ def get_dnn_loss_as_anomaly_score(tensor_x, tensor_y, use_cuda=True):
     LR = 0.001
     max_epochs = 20
 
-    model = MLPNet(
-        dim_inp=1, dim_out=tensor_y.size(1), nhiddens=[400, 400, 400], bn=True
-    )
+    model = MLPNet(dim_inp=1, dim_out=tensor_y.size(1), nhiddens=[400, 400, 400], bn=True)
     if use_cuda:
         model = model.cuda()
     epoch = 0
@@ -100,9 +104,7 @@ def get_dnn_loss_as_anomaly_score(tensor_x, tensor_y, use_cuda=True):
     optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-3)
 
     my_dataset = data.TensorDataset(tensor_x, tensor_y)  # create your datset
-    my_dataloader = data.DataLoader(
-        my_dataset, batch_size=BS, shuffle=False, num_workers=0, pin_memory=True
-    )
+    my_dataloader = data.DataLoader(my_dataset, batch_size=BS, shuffle=False, num_workers=0, pin_memory=True)
 
     # with tqdm.tqdm(total=max_epochs) as pbar:
     while epoch < max_epochs:
@@ -178,43 +180,25 @@ class DeepPointAnomalyDetector(DetectorBase):
         return x
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
         times, train_values = zip(*train_data)
-        processed_times, train_values = self._preprocess(times), self._preprocess(
-            train_values
-        )
+        processed_times, train_values = self._preprocess(times), self._preprocess(train_values)
         # train an MLP on with (processed_times, train_values) as (input, target)
         # and report the loss vector corresponding to these points as anomaly scores
-        train_scores = get_dnn_loss_as_anomaly_score(
-            processed_times, train_values, use_cuda=self.use_cuda
-        )
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(times, train_scores)}
-        )
+        train_scores = get_dnn_loss_as_anomaly_score(processed_times, train_values, use_cuda=self.use_cuda)
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         times, values = zip(*time_series)
         processed_times, values = self._preprocess(times), self._preprocess(values)
 
-        scores = get_dnn_loss_as_anomaly_score(
-            processed_times, values, use_cuda=self.use_cuda
-        )
+        scores = get_dnn_loss_as_anomaly_score(processed_times, values, use_cuda=self.use_cuda)
         return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 from os.path import abspath, dirname, join
@@ -6,10 +12,7 @@ import unittest
 
 import numpy as np
 
-from merlion.models.anomaly.forecast_based.sarima import (
-    SarimaDetector,
-    SarimaDetectorConfig,
-)
+from merlion.models.anomaly.forecast_based.sarima import SarimaDetector, SarimaDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -30,9 +33,7 @@ class TestSarima(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
         self.model = SarimaDetector(
             SarimaDetectorConfig(
-                order=(2, 0, 2),
-                seasonal_order=(2, 0, 2, 24),  # daily seasonality
-                max_forecast_steps=self.test_len,
+                order=(2, 0, 2), seasonal_order=(2, 0, 2, 24), max_forecast_steps=self.test_len  # daily seasonality
             )
         )
 
@@ -79,9 +80,7 @@ class TestSarima(unittest.TestCase):
         loaded_model_scores = loaded_model.get_anomaly_score(self.vals_test)
         loaded_model_scores = loaded_model_scores.to_pd().values.flatten()
         self.assertAlmostEqual(np.max(np.abs(scores - scoresv2)), 0, delta=1e-4)
-        self.assertAlmostEqual(
-            np.max(np.abs(scores - loaded_model_scores)), 0, delta=1e-4
-        )
+        self.assertAlmostEqual(np.max(np.abs(scores - loaded_model_scores)), 0, delta=1e-4)
 
         # alarm function returns the post-rule processed anomaly scores
         alarms = self.model.get_anomaly_label(self.vals_test)
@@ -95,8 +94,6 @@ class TestSarima(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

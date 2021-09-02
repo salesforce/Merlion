@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 import os
@@ -7,10 +13,7 @@ import unittest
 
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
-from merlion.models.anomaly.forecast_based.prophet import (
-    ProphetDetector,
-    ProphetDetectorConfig,
-)
+from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.time_series import ts_csv_load
 
 logger = logging.getLogger(__name__)
@@ -29,9 +32,7 @@ class TestPlot(unittest.TestCase):
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
-        self.model = ProphetDetector(
-            ProphetDetectorConfig(transform=Identity(), uncertainty_samples=1000)
-        )
+        self.model = ProphetDetector(ProphetDetectorConfig(transform=Identity(), uncertainty_samples=1000))
 
     def test_plot(self):
         print("-" * 80)
@@ -44,18 +45,12 @@ class TestPlot(unittest.TestCase):
 
         # Test various plots with matplotlib
         fig, _ = self.model.plot_anomaly(
-            time_series=self.vals_test,
-            filter_scores=False,
-            plot_forecast=True,
-            plot_forecast_uncertainty=True,
+            time_series=self.vals_test, filter_scores=False, plot_forecast=True, plot_forecast_uncertainty=True
         )
         fig.savefig(join(figdir, "prophet_anom_raw.png"))
 
         fig, _ = self.model.plot_anomaly(
-            time_series=self.vals_test,
-            filter_scores=True,
-            plot_forecast=True,
-            plot_forecast_uncertainty=True,
+            time_series=self.vals_test, filter_scores=True, plot_forecast=True, plot_forecast_uncertainty=True
         )
         fig.savefig(join(figdir, "prophet_anom_filtered.png"))
 
@@ -91,8 +86,6 @@ class TestPlot(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.INFO,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

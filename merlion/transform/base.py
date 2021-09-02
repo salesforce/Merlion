@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transform base classes and the `Identity` transform.
 """
@@ -90,9 +96,7 @@ class TransformBase(metaclass=AutodocABCMeta):
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         raise NotImplementedError
 
-    def invert(
-        self, time_series: TimeSeries, retain_inversion_state=False
-    ) -> TimeSeries:
+    def invert(self, time_series: TimeSeries, retain_inversion_state=False) -> TimeSeries:
         """
         Applies the inverse of this transform on the time series.
 

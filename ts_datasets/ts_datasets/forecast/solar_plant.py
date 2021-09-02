@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import glob
 import logging
 import os
@@ -34,8 +40,7 @@ class SolarPlant(BaseDataset):
             rootdir = os.path.join(merlion_root, "data", "multivariate", "solar_plant")
 
         assert "solar_plant" in rootdir.split("/")[-1], (
-            "solar_plant should be found as the last level "
-            "of the directory for this dataset"
+            "solar_plant should be found as the last level " "of the directory for this dataset"
         )
 
         # Get all filenames, extracting the zipfile if needed
@@ -61,9 +66,7 @@ class SolarPlant(BaseDataset):
             self.time_series.append(df)
             self.metadata.append(
                 {
-                    "trainval": pd.Series(
-                        df.index <= "2006-10-01 00:00:00", index=df.index
-                    ),
+                    "trainval": pd.Series(df.index <= "2006-10-01 00:00:00", index=df.index),
                     "granularity": "30min",
                     "aggregation": "Sum",
                 }

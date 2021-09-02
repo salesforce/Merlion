@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Contains the base classes for all models.
 """
@@ -81,9 +87,7 @@ class Config(object):
         return config_dict
 
     @classmethod
-    def from_dict(
-        cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs
-    ):
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
         """
         Constructs a `Config` from a Python dictionary of parameters.
 
@@ -95,10 +99,7 @@ class Config(object):
         """
         config = cls(**config_dict)
         return override_config(
-            config=config,
-            config_dict=config_dict,
-            return_unused_kwargs=return_unused_kwargs,
-            **kwargs,
+            config=config, config_dict=config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs
         )
 
     def __copy__(self):
@@ -196,10 +197,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.config.transform = transform
 
     def train_pre_process(
-        self,
-        train_data: TimeSeries,
-        require_even_sampling: bool,
-        require_univariate: bool,
+        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
         """
         Applies pre-processing steps common for training most models.
@@ -249,9 +247,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         t0 = time_series.t0
         if time_series_prev is not None:
             time_series = time_series_prev + time_series
-            time_series_prev, time_series = self.transform(time_series).bisect(
-                t0, t_in_left=False
-            )
+            time_series_prev, time_series = self.transform(time_series).bisect(t0, t_in_left=False)
         else:
             time_series = self.transform(time_series)
         return time_series, time_series_prev
@@ -267,9 +263,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         """
         raise NotImplementedError
 
-    def _save_state(
-        self, state_dict: Dict[str, Any], filename: str = None, **save_config
-    ) -> Dict[str, Any]:
+    def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         """
         Saves the model's state to the the specified file. If you override this
         method, please also override _load_state(). By default, the model's state
@@ -356,9 +350,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param kwargs: config params to override manually
         :return: `ModelBase` object loaded from file
         """
-        config, model_kwargs = cls.config_class.from_dict(
-            config_dict, return_unused_kwargs=True, **kwargs
-        )
+        config, model_kwargs = cls.config_class.from_dict(config_dict, return_unused_kwargs=True, **kwargs)
         model = cls(config)
         model._load_state(state_dict, **model_kwargs)
 
@@ -450,9 +442,5 @@ class ModelWrapper(ModelBase, metaclass=AutodocABCMeta):
         from merlion.models.factory import ModelFactory
 
         class_name, config_dict, model_tuple = dill.loads(obj)
-        model = [
-            ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(
-                *model_tuple[1:]
-            )
-        ]
+        model = [ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])]
         return cls._from_config_state_dicts(config_dict, model, **kwargs)

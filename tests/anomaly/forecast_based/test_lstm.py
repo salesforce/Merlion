@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import datetime
 import logging
 import math
@@ -8,11 +14,7 @@ import unittest
 import numpy as np
 
 from merlion.transform.resample import TemporalResample
-from merlion.models.anomaly.forecast_based.lstm import (
-    LSTMDetector,
-    LSTMTrainConfig,
-    LSTMDetectorConfig,
-)
+from merlion.models.anomaly.forecast_based.lstm import LSTMDetector, LSTMTrainConfig, LSTMDetectorConfig
 from merlion.models.forecast.lstm import auto_stride
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.time_series import ts_csv_load, TimeSeries
@@ -40,11 +42,7 @@ class TestLSTM(unittest.TestCase):
         self.assertGreater(forecast_steps, 1, "sequence is not long enough")
 
         model = LSTMDetector(
-            LSTMDetectorConfig(
-                max_forecast_steps=forecast_steps,
-                nhid=256,
-                threshold=AggregateAlarms(2, 1, 60, 300),
-            )
+            LSTMDetectorConfig(max_forecast_steps=forecast_steps, nhid=256, threshold=AggregateAlarms(2, 1, 60, 300))
         )
         train_config = LSTMTrainConfig(
             data_stride=stride,
@@ -102,8 +100,6 @@ class TestLSTM(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

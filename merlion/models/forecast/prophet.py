@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Wrapper around Facebook's popular Prophet model for time series forecasting.
 """
@@ -9,12 +15,7 @@ import numpy as np
 import pandas as pd
 
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
-from merlion.utils import (
-    TimeSeries,
-    UnivariateTimeSeries,
-    to_pd_datetime,
-    autosarima_utils,
-)
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, autosarima_utils
 
 logger = logging.getLogger(__name__)
 
@@ -56,11 +57,7 @@ class ProphetConfig(ForecasterConfig):
         :param uncertainty_samples: The number of posterior samples to draw in
             order to calibrate the anomaly scores.
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.yearly_seasonality = yearly_seasonality
         self.weekly_seasonality = weekly_seasonality
         self.daily_seasonality = daily_seasonality
@@ -119,9 +116,7 @@ class Prophet(ForecasterBase):
         return self.config.uncertainty_samples
 
     def train(self, train_data: TimeSeries, train_config=None):
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         series = train_data.univariates[self.target_name]
         df = pd.DataFrame({"ds": series.index, "y": series.np_values})
 
@@ -134,9 +129,7 @@ class Prophet(ForecasterBase):
             if max_periodicty > 1:
                 logger.info(f"Add seasonality {str(max_periodicty)}")
                 self.model.add_seasonality(
-                    name="extra_season",
-                    period=max_periodicty * self.timedelta / 86400,
-                    fourier_order=max_periodicty,
+                    name="extra_season", period=max_periodicty * self.timedelta / 86400, fourier_order=max_periodicty
                 )
 
         self.model.fit(df)
@@ -149,9 +142,7 @@ class Prophet(ForecasterBase):
         samples = samples - np.expand_dims(forecast, -1)
 
         yhat = UnivariateTimeSeries(df.ds, forecast, self.target_name).to_ts()
-        err = UnivariateTimeSeries(
-            df.ds, np.std(samples, axis=-1), f"{self.target_name}_err"
-        ).to_ts()
+        err = UnivariateTimeSeries(df.ds, np.std(samples, axis=-1), f"{self.target_name}_err").to_ts()
         return yhat, err
 
     def forecast(
@@ -160,14 +151,9 @@ class Prophet(ForecasterBase):
         time_series_prev: TimeSeries = None,
         return_iqr=False,
         return_prev=False,
-    ) -> Union[
-        Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]
-    ]:
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if isinstance(time_stamps, (int, float)):
-            time_stamps = [
-                self.last_train_time + (i + 1) * self.timedelta
-                for i in range(int(time_stamps))
-            ]
+            time_stamps = [self.last_train_time + (i + 1) * self.timedelta for i in range(int(time_stamps))]
         times = to_pd_datetime(time_stamps)
 
         # Construct data frame for fbprophet
@@ -211,20 +197,14 @@ class Prophet(ForecasterBase):
         name = self.target_name
         if return_iqr:
             lb = UnivariateTimeSeries(
-                name=f"{name}_lower",
-                time_stamps=t,
-                values=yhat + np.percentile(samples, 25, axis=-1),
+                name=f"{name}_lower", time_stamps=t, values=yhat + np.percentile(samples, 25, axis=-1)
             ).to_ts()
             ub = UnivariateTimeSeries(
-                name=f"{name}_upper",
-                time_stamps=t,
-                values=yhat + np.percentile(samples, 75, axis=-1),
+                name=f"{name}_upper", time_stamps=t, values=yhat + np.percentile(samples, 75, axis=-1)
             ).to_ts()
             yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
             return yhat, ub, lb
         else:
             yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
-            err = UnivariateTimeSeries(
-                t, np.std(samples, axis=-1), f"{name}_err"
-            ).to_ts()
+            err = UnivariateTimeSeries(t, np.std(samples, axis=-1), f"{name}_err").to_ts()
             return yhat, err

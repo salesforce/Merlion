@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import argparse
 import copy
 import json
@@ -93,8 +99,7 @@ def parse_args():
         type=str,
         default="PointAdjustedF1",
         choices=list(TSADMetric.__members__.keys()),
-        help="Final metric to optimize for when evaluating "
-        "point-adjusted performance",
+        help="Final metric to optimize for when evaluating " "point-adjusted performance",
     )
     parser.add_argument(
         "--pointwise_metric",
@@ -129,12 +134,7 @@ def parse_args():
         "the model training phase, and simply evaluate "
         "on partial saved results.",
     )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        default=False,
-        help="Whether to enable INFO-level logs.",
-    )
+    parser.add_argument("--debug", action="store_true", default=False, help="Whether to enable INFO-level logs.")
     parser.add_argument(
         "--visualize",
         action="store_true",
@@ -193,33 +193,25 @@ def resolve_model_name(model_name: str):
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid "
-            f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
-        assert (
-            model_name != config_dict[model_name]["alias"]
-        ), "Alias name cannot be the same as the model name"
+        assert model_name != config_dict[model_name]["alias"], "Alias name cannot be the same as the model name"
         model_name = config_dict[model_name]["alias"]
 
     return model_name
 
 
 def get_model(
-    model_name: str,
-    dataset: TSADBaseDataset,
-    metric: TSADMetric,
-    tune_on_test=False,
-    unsupervised=False,
+    model_name: str, dataset: TSADBaseDataset, metric: TSADMetric, tune_on_test=False, unsupervised=False
 ) -> Tuple[DetectorBase, dict]:
     with open(CONFIG_JSON, "r") as f:
         config_dict = json.load(f)
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid "
-            f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -241,9 +233,7 @@ def get_model(
     if len(d) == 0:
         d = copy.copy(model._default_post_rule_train_config)
     d["metric"] = None if unsupervised else metric
-    d.update(
-        {"max_early_sec": dataset.max_lead_sec, "max_delay_sec": dataset.max_lag_sec}
-    )
+    d.update({"max_early_sec": dataset.max_lead_sec, "max_delay_sec": dataset.max_lag_sec})
 
     t = dataset_to_threshold(dataset, tune_on_test)
     model.threshold.alm_threshold = t
@@ -251,9 +241,7 @@ def get_model(
     return model, d
 
 
-def df_to_merlion(
-    df: pd.DataFrame, md: pd.DataFrame, get_ground_truth=False, transform=None
-) -> TimeSeries:
+def df_to_merlion(df: pd.DataFrame, md: pd.DataFrame, get_ground_truth=False, transform=None) -> TimeSeries:
     """Converts a pandas dataframe time series to the Merlion format."""
     if get_ground_truth:
         if False and "changepoint" in md.keys():
@@ -315,31 +303,13 @@ def train_model(
 
         # Reload model & get the train / test split for this time series
         model, post_rule_train_config = get_model(
-            model_name=model_name,
-            dataset=dataset,
-            metric=metric,
-            tune_on_test=tune_on_test,
-            unsupervised=unsupervised,
+            model_name=model_name, dataset=dataset, metric=metric, tune_on_test=tune_on_test, unsupervised=unsupervised
         )
         delay = post_rule_train_config["max_early_sec"]
-        train_vals = df_to_merlion(
-            df[md.trainval],
-            md[md.trainval],
-            get_ground_truth=False,
-            transform=resampler,
-        )
-        test_vals = df_to_merlion(
-            df[~md.trainval],
-            md[~md.trainval],
-            get_ground_truth=False,
-            transform=resampler,
-        )
-        train_anom = df_to_merlion(
-            df[md.trainval], md[md.trainval], get_ground_truth=True
-        )
-        test_anom = df_to_merlion(
-            df[~md.trainval], md[~md.trainval], get_ground_truth=True
-        )
+        train_vals = df_to_merlion(df[md.trainval], md[md.trainval], get_ground_truth=False, transform=resampler)
+        test_vals = df_to_merlion(df[~md.trainval], md[~md.trainval], get_ground_truth=False, transform=resampler)
+        train_anom = df_to_merlion(df[md.trainval], md[md.trainval], get_ground_truth=True)
+        test_anom = df_to_merlion(df[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
         # Set up an evaluator & get predictions
         evaluator = TSADEvaluator(
@@ -355,10 +325,7 @@ def train_model(
             train_vals=train_vals,
             test_vals=test_vals,
             post_process=False,
-            train_kwargs={
-                "anomaly_labels": train_anom,
-                "post_rule_train_config": post_rule_train_config,
-            },
+            train_kwargs={"anomaly_labels": train_anom, "post_rule_train_config": post_rule_train_config},
         )
 
         # Write the model's predictions to the csv file, starting a new one
@@ -376,9 +343,7 @@ def train_model(
             ts_df = train_scores.to_pd().append(test_scores.to_pd())
             ts_df.columns = ["y"]
             ts_df.loc[:, "timestamp"] = ts_df.index.astype(int) // 1e9
-            ts_df.loc[:, "trainval"] = [
-                j < len(train_scores) for j in range(len(ts_df))
-            ]
+            ts_df.loc[:, "trainval"] = [j < len(train_scores) for j in range(len(ts_df))]
             ts_df.loc[:, "idx"] = i
             df = df.append(ts_df, ignore_index=True)
             df.to_csv(csv, index=False)
@@ -392,77 +357,43 @@ def train_model(
             score = test_scores if tune_on_test else train_scores
             label = test_anom if tune_on_test else train_anom
             model.train_post_rule(
-                anomaly_scores=score,
-                anomaly_labels=label,
-                post_rule_train_config=post_rule_train_config,
+                anomaly_scores=score, anomaly_labels=label, post_rule_train_config=post_rule_train_config
             )
 
             # Log (many) evaluation metrics for the time series
-            score_acc = evaluator.evaluate(
-                ground_truth=test_anom, predict=model.threshold(test_scores)
-            )
+            score_acc = evaluator.evaluate(ground_truth=test_anom, predict=model.threshold(test_scores))
             mttd = score_acc.mean_time_to_detect()
             if mttd < pd.to_timedelta(0):
                 mttd = f"-{-mttd}"
             logger.info(f"\nPerformance on time series {i+1}/{len(dataset)}")
             logger.info("Revised Point-Adjusted Metrics")
-            logger.info(
-                f"F1 Score:  {score_acc.f1(score_type=ScoreType.RevisedPointAdjusted):.4f}"
-            )
-            logger.info(
-                f"Precision: {score_acc.precision(score_type=ScoreType.RevisedPointAdjusted):.4f}"
-            )
-            logger.info(
-                f"Recall:    {score_acc.recall(score_type=ScoreType.RevisedPointAdjusted):.4f}\n"
-            )
+            logger.info(f"F1 Score:  {score_acc.f1(score_type=ScoreType.RevisedPointAdjusted):.4f}")
+            logger.info(f"Precision: {score_acc.precision(score_type=ScoreType.RevisedPointAdjusted):.4f}")
+            logger.info(f"Recall:    {score_acc.recall(score_type=ScoreType.RevisedPointAdjusted):.4f}\n")
             logger.info(f"Mean Time To Detect Anomalies:  {mttd}")
-            logger.info(
-                f"Mean Detected Anomaly Duration: {score_acc.mean_detected_anomaly_duration()}"
-            )
-            logger.info(
-                f"Mean Anomaly Duration:          {score_acc.mean_anomaly_duration()}\n"
-            )
+            logger.info(f"Mean Detected Anomaly Duration: {score_acc.mean_detected_anomaly_duration()}")
+            logger.info(f"Mean Anomaly Duration:          {score_acc.mean_anomaly_duration()}\n")
 
             if debug:
                 logger.info(f"Pointwise metrics")
-                logger.info(
-                    f"F1 Score:  {score_acc.f1(score_type=ScoreType.Pointwise):.4f}"
-                )
-                logger.info(
-                    f"Precision: {score_acc.precision(score_type=ScoreType.Pointwise):.4f}"
-                )
-                logger.info(
-                    f"Recall:    {score_acc.recall(score_type=ScoreType.Pointwise):.4f}\n"
-                )
+                logger.info(f"F1 Score:  {score_acc.f1(score_type=ScoreType.Pointwise):.4f}")
+                logger.info(f"Precision: {score_acc.precision(score_type=ScoreType.Pointwise):.4f}")
+                logger.info(f"Recall:    {score_acc.recall(score_type=ScoreType.Pointwise):.4f}\n")
 
                 logger.info("Point-Adjusted Metrics")
-                logger.info(
-                    f"F1 Score:  {score_acc.f1(score_type=ScoreType.PointAdjusted):.4f}"
-                )
-                logger.info(
-                    f"Precision: {score_acc.precision(score_type=ScoreType.PointAdjusted):.4f}"
-                )
-                logger.info(
-                    f"Recall:    {score_acc.recall(score_type=ScoreType.PointAdjusted):.4f}\n"
-                )
+                logger.info(f"F1 Score:  {score_acc.f1(score_type=ScoreType.PointAdjusted):.4f}")
+                logger.info(f"Precision: {score_acc.precision(score_type=ScoreType.PointAdjusted):.4f}")
+                logger.info(f"Recall:    {score_acc.recall(score_type=ScoreType.PointAdjusted):.4f}\n")
 
                 logger.info(f"NAB Scores")
                 logger.info(f"NAB score (balanced): {score_acc.nab_score():.4f}")
-                logger.info(
-                    f"NAB score (low FP):   {score_acc.nab_score(fp_weight=0.22):.4f}"
-                )
-                logger.info(
-                    f"NAB score (low FN):   {score_acc.nab_score(fn_weight=2.0):.4f}\n"
-                )
+                logger.info(f"NAB score (low FP):   {score_acc.nab_score(fp_weight=0.22):.4f}")
+                logger.info(f"NAB score (low FN):   {score_acc.nab_score(fn_weight=2.0):.4f}\n")
 
             if visualize:
                 # Make a plot
                 alarms = model.threshold(test_scores)
-                fig = model.get_figure(
-                    time_series=test_vals,
-                    time_series_prev=train_vals,
-                    plot_time_series_prev=True,
-                )
+                fig = model.get_figure(time_series=test_vals, time_series_prev=train_vals, plot_time_series_prev=True)
                 fig.anom = alarms.univariates[alarms.names[0]]
                 fig, ax = fig.plot(figsize=(1800, 600))
 
@@ -472,11 +403,7 @@ def train_model(
                 y = np.asarray(y).flatten()
                 splits = np.where(y[1:] != y[:-1])[0] + 1
                 splits = np.concatenate(([0], splits, [len(y) - 1]))
-                anom_windows = [
-                    (splits[k], splits[k + 1])
-                    for k in range(len(splits) - 1)
-                    if y[splits[k]]
-                ]
+                anom_windows = [(splits[k], splits[k + 1]) for k in range(len(splits) - 1) if y[splits[k]]]
                 for i_0, i_f in anom_windows:
                     t_0 = to_pd_datetime(t[i_0])
                     t_f = to_pd_datetime(t[i_f])
@@ -497,10 +424,7 @@ def train_model(
 
 
 def get_code_version_info():
-    return dict(
-        time=str(pd.Timestamp.now()),
-        commit=git.Repo(search_parent_directories=True).head.object.hexsha,
-    )
+    return dict(time=str(pd.Timestamp.now()), commit=git.Repo(search_parent_directories=True).head.object.hexsha)
 
 
 def read_model_predictions(dataset: TSADBaseDataset, model_dir: str):
@@ -508,15 +432,10 @@ def read_model_predictions(dataset: TSADBaseDataset, model_dir: str):
     Returns a list of lists all_preds, where all_preds[i] is the model's raw
     anomaly scores for time series i in the dataset.
     """
-    csv = os.path.join(
-        "results", "anomaly", model_dir, f"pred_{dataset_to_name(dataset)}.csv.gz"
-    )
+    csv = os.path.join("results", "anomaly", model_dir, f"pred_{dataset_to_name(dataset)}.csv.gz")
     preds = pd.read_csv(csv, dtype={"trainval": bool, "idx": int})
     preds["timestamp"] = to_pd_datetime(preds["timestamp"])
-    return [
-        preds[preds["idx"] == i].set_index("timestamp")
-        for i in sorted(preds["idx"].unique())
-    ]
+    return [preds[preds["idx"] == i].set_index("timestamp") for i in sorted(preds["idx"].unique())]
 
 
 def evaluate_predictions(
@@ -536,9 +455,7 @@ def evaluate_predictions(
         # Get time series for the train & test splits of the ground truth
         idx = ~md.trainval if tune_on_test else md.trainval
         true_train = df_to_merlion(true[idx], md[idx], get_ground_truth=True)
-        true_test = df_to_merlion(
-            true[~md.trainval], md[~md.trainval], get_ground_truth=True
-        )
+        true_test = df_to_merlion(true[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
         for simple_threshold, opt_metric, scores in [
             (False, metric, score_rpa),
@@ -551,9 +468,7 @@ def evaluate_predictions(
             if i >= min(len(p) for p in all_model_preds):
                 break
             pred = [model_preds[i] for model_preds in all_model_preds]
-            pred_train = [
-                p[~p["trainval"]] if tune_on_test else p[p["trainval"]] for p in pred
-            ]
+            pred_train = [p[~p["trainval"]] if tune_on_test else p[p["trainval"]] for p in pred]
             pred_train = [TimeSeries.from_pd(p["y"]) for p in pred_train]
             pred_test = [p[~p["trainval"]] for p in pred]
             pred_test = [TimeSeries.from_pd(p["y"]) for p in pred_test]
@@ -571,11 +486,7 @@ def evaluate_predictions(
                 m.config.enable_threshold = len(model_names) == 1
                 if simple_threshold:
                     m.threshold = m.threshold.to_simple_threshold()
-                m.train_post_rule(
-                    anomaly_scores=train,
-                    anomaly_labels=true_train,
-                    post_rule_train_config=prtc,
-                )
+                m.train_post_rule(anomaly_scores=train, anomaly_labels=true_train, post_rule_train_config=prtc)
                 models.append(m)
 
             # Get the lead & lag time for the dataset
@@ -603,27 +514,17 @@ def evaluate_predictions(
                 # Train the ensemble and its post-rule on the current time series
                 model = DetectorEnsemble(models=models)
                 use_m = [len(p) > 1 for p in zip(models, pred_train)]
-                pred_train = [
-                    m.post_rule(p)
-                    for m, p, use in zip(models, pred_train, use_m)
-                    if use
-                ]
-                pred_test = [
-                    m.post_rule(p) for m, p, use in zip(models, pred_test, use_m) if use
-                ]
+                pred_train = [m.post_rule(p) for m, p, use in zip(models, pred_train, use_m) if use]
+                pred_test = [m.post_rule(p) for m, p, use in zip(models, pred_test, use_m) if use]
                 pred_train = model.train_combiner(pred_train, true_train)
                 if simple_threshold:
                     model.threshold = model.threshold.to_simple_threshold()
                 model.threshold.alm_threshold = threshold
-                model.train_post_rule(
-                    pred_train, true_train, ensemble_threshold_train_config
-                )
+                model.train_post_rule(pred_train, true_train, ensemble_threshold_train_config)
                 pred_test = model.post_rule(model.combiner(pred_test, true_test))
 
             # Compute the individual components comprising various scores
-            score = accumulate_tsad_score(
-                true_test, pred_test, max_early_sec=early, max_delay_sec=delay
-            )
+            score = accumulate_tsad_score(true_test, pred_test, max_early_sec=early, max_delay_sec=delay)
             scores.append(score)
 
     # Report F1, precision, and recall
@@ -667,23 +568,15 @@ def main():
     args = parse_args()
     level = logging.INFO if args.debug or args.visualize else logging.WARNING
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=level,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=level
     )
     dataset = get_dataset(args.dataset)
     retrain_freq, train_window = args.retrain_freq, args.train_window
     if dataset[0][0].shape[1] > 1:
         if retrain_freq is not None:
-            logger.warning(
-                f"Setting retrain_freq = None for multivariate "
-                f"dataset {type(dataset).__name__}"
-            )
+            logger.warning(f"Setting retrain_freq = None for multivariate " f"dataset {type(dataset).__name__}")
         if train_window is not None:
-            logger.warning(
-                f"Setting train_window = None for multivariate "
-                f"dataset {type(dataset).__name__}"
-            )
+            logger.warning(f"Setting train_window = None for multivariate " f"dataset {type(dataset).__name__}")
         retrain_freq, train_window = None, None
 
     for model_name in args.models:
@@ -707,14 +600,8 @@ def main():
         logger.info("Skipping evaluation because --visualize flag was given.")
     else:
         model_names = [resolve_model_name(name) for name in args.models]
-        model_dirs = [
-            name if retrain_freq is None else f"{name}_{retrain_freq}"
-            for name in model_names
-        ]
-        all_model_preds = [
-            read_model_predictions(dataset=dataset, model_dir=model_dir)
-            for model_dir in model_dirs
-        ]
+        model_dirs = [name if retrain_freq is None else f"{name}_{retrain_freq}" for name in model_names]
+        all_model_preds = [read_model_predictions(dataset=dataset, model_dir=model_dir) for model_dir in model_dirs]
         score_acc, pw_score_acc, pa_score_acc = evaluate_predictions(
             model_names=args.models,
             dataset=dataset,
@@ -728,9 +615,7 @@ def main():
         )
 
         model_name = "+".join(sorted(resolve_model_name(m) for m in args.models))
-        summary = os.path.join(
-            "results", "anomaly", f"{dataset_to_name(dataset)}_summary.csv"
-        )
+        summary = os.path.join("results", "anomaly", f"{dataset_to_name(dataset)}_summary.csv")
         if os.path.exists(summary):
             df = pd.read_csv(summary, index_col=0)
         else:
@@ -741,15 +626,11 @@ def main():
             model_name += " (Unsupervised)"
         if args.tune_on_test:
             model_name += " (Use Test Data)"
-        df.loc[model_name, "Precision"] = score_acc.precision(
-            ScoreType.RevisedPointAdjusted
-        )
+        df.loc[model_name, "Precision"] = score_acc.precision(ScoreType.RevisedPointAdjusted)
         df.loc[model_name, "Recall"] = score_acc.recall(ScoreType.RevisedPointAdjusted)
         df.loc[model_name, "F1"] = score_acc.f1(ScoreType.RevisedPointAdjusted)
         df.loc[model_name, "Mean Time to Detect"] = score_acc.mean_time_to_detect()
-        df.loc[model_name, "PA Precision"] = pa_score_acc.precision(
-            ScoreType.PointAdjusted
-        )
+        df.loc[model_name, "PA Precision"] = pa_score_acc.precision(ScoreType.PointAdjusted)
         df.loc[model_name, "PA Recall"] = pa_score_acc.recall(ScoreType.PointAdjusted)
         df.loc[model_name, "PA F1"] = pa_score_acc.f1(ScoreType.PointAdjusted)
         df.loc[model_name, "PW Precision"] = pw_score_acc.precision(ScoreType.Pointwise)

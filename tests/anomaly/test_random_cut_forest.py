@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 from os.path import abspath, dirname, join
@@ -7,10 +13,7 @@ import unittest
 
 import numpy as np
 
-from merlion.models.anomaly.random_cut_forest import (
-    RandomCutForest,
-    RandomCutForestConfig,
-)
+from merlion.models.anomaly.random_cut_forest import RandomCutForest, RandomCutForestConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.normalize import MeanVarNormalize
@@ -115,8 +118,6 @@ class TestRandomCutForest(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

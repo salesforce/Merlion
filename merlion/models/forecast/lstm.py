@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 A forecaster based on a LSTM neural net.
 """
@@ -20,11 +26,7 @@ from merlion.transform.normalize import MeanVarNormalize
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.resample import TemporalResample
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import (
-    assert_equal_timedeltas,
-    TimeSeries,
-    UnivariateTimeSeries,
-)
+from merlion.utils.time_series import assert_equal_timedeltas, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +40,7 @@ class LSTMConfig(ForecasterConfig):
         ]
     )
 
-    def __init__(
-        self,
-        max_forecast_steps: int,
-        target_seq_index: int = None,
-        nhid=1024,
-        model_strides=(1,),
-        **kwargs,
-    ):
+    def __init__(self, max_forecast_steps: int, target_seq_index: int = None, nhid=1024, model_strides=(1,), **kwargs):
         """
         Configuration class for `LSTM`.
 
@@ -196,14 +191,10 @@ class _LSTMMultiScale(nn.Module):
         :param future: number of future steps for forecasting
         :return: the predicted values including both 1-step predictions and the future step predictions
         """
-        outputs = [
-            rnn(input[:, ::stride]) for stride, rnn in zip(self.strides, self.rnns)
-        ]
+        outputs = [rnn(input[:, ::stride]) for stride, rnn in zip(self.strides, self.rnns)]
         batch_sz, dim = outputs[0].shape
         preds = [
-            output.view(batch_sz, -1, 1)
-            .repeat(1, 1, stride)
-            .view(batch_sz, -1)[:, :dim]
+            output.view(batch_sz, -1, 1).repeat(1, 1, stride).view(batch_sz, -1)[:, :dim]
             for output, stride in zip(outputs, self.strides)
         ]
 
@@ -263,16 +254,12 @@ class LSTM(ForecasterBase):
         self.seq_len = None
         self._forecast = [0.0 for _ in range(self.max_forecast_steps)]
 
-    def train(
-        self, train_data: TimeSeries, train_config: LSTMTrainConfig = None
-    ) -> Tuple[TimeSeries, None]:
+    def train(self, train_data: TimeSeries, train_config: LSTMTrainConfig = None) -> Tuple[TimeSeries, None]:
         if train_config is None:
             train_config = deepcopy(self._default_train_config)
 
         orig_train_data = train_data
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
         train_data = train_data.univariates[self.target_name]
         train_values = train_data.np_values
 
@@ -290,23 +277,17 @@ class LSTM(ForecasterBase):
         #############
         train_scores = train_values[:-valid_len]
         _train_data = Corpus(sequence=train_scores, seq_len=self.seq_len, stride=stride)
-        train_dataloader = DataLoader(
-            _train_data, batch_size=train_config.batch_size, shuffle=True
-        )
+        train_dataloader = DataLoader(_train_data, batch_size=train_config.batch_size, shuffle=True)
 
         ###############
         valid_scores = train_values[-valid_len:]
         _valid_data = Corpus(sequence=valid_scores, seq_len=self.seq_len, stride=stride)
-        valid_dataloader = DataLoader(
-            _valid_data, batch_size=train_config.batch_size, shuffle=False
-        )
+        valid_dataloader = DataLoader(_valid_data, batch_size=train_config.batch_size, shuffle=False)
 
         ################
         no_progress_count = 0
         loss_best = 1e20
-        self.optimizer = torch.optim.RMSprop(
-            self.model.parameters(), lr=train_config.lr, momentum=0.9
-        )
+        self.optimizer = torch.optim.RMSprop(self.model.parameters(), lr=train_config.lr, momentum=0.9)
 
         for epoch in range(1, train_config.epochs + 1):
             self.model.train()
@@ -316,10 +297,7 @@ class LSTM(ForecasterBase):
                     if torch.cuda.is_available():
                         batch = batch.cuda()
                     self.optimizer.zero_grad()
-                    out = self.model(
-                        batch[:, : -(self.max_forecast_steps + 1)],
-                        future=self.max_forecast_steps,
-                    )
+                    out = self.model(batch[:, : -(self.max_forecast_steps + 1)], future=self.max_forecast_steps)
                     loss = F.l1_loss(out, batch[:, 1:])
                     loss.backward()
 
@@ -361,9 +339,7 @@ class LSTM(ForecasterBase):
                 self.optimizer.param_groups[0]["lr"] /= 10.0
                 no_progress_count = 0
 
-        state_dict = torch.load(
-            train_config.checkpoint_file, map_location=lambda storage, loc: storage
-        )
+        state_dict = torch.load(train_config.checkpoint_file, map_location=lambda storage, loc: storage)
         os.remove(train_config.checkpoint_file)
         self.model: _LSTMMultiScale
         self.model.load_state_dict(state_dict)
@@ -385,9 +361,7 @@ class LSTM(ForecasterBase):
         if not done:
             self.transform.append(
                 TemporalResample(
-                    granularity=self.timedelta,
-                    origin=train_data.np_time_stamps[i0],
-                    trainable_granularity=False,
+                    granularity=self.timedelta, origin=train_data.np_time_stamps[i0], trainable_granularity=False
                 )
             )
 

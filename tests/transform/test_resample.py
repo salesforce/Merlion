@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import numpy as np
 import unittest
@@ -24,10 +30,7 @@ class TestShingle(unittest.TestCase):
         shingle = Shingle(size=3, stride=1)
         transformed_ts = shingle(ts)
         expected_ts = TimeSeries(
-            [
-                UnivariateTimeSeries(times, np.append(np.repeat(0, k), range(n - k)))
-                for k in reversed(range(3))
-            ]
+            [UnivariateTimeSeries(times, np.append(np.repeat(0, k), range(n - k))) for k in reversed(range(3))]
         )
         self.assertEqual(expected_ts, transformed_ts)
 

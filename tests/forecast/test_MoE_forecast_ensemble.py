@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -828,9 +834,7 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
         model2 = Arima(Arima.config_class.from_dict(config_arima))
         models = [model1, model2]
 
-        self.ensemble = MoE_ForecasterEnsemble(
-            config=config_ensemble, models=models, moe_model=None
-        )
+        self.ensemble = MoE_ForecasterEnsemble(config=config_ensemble, models=models, moe_model=None)
 
     def test_full(self):
         print("-" * 80)
@@ -843,9 +847,7 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
         start_idx = 0
         end_idx = sample_length
 
-        timestamps = self.test_data.univariates[self.test_data.names[0]].time_stamps[
-            start_idx:end_idx
-        ]
+        timestamps = self.test_data.univariates[self.test_data.names[0]].time_stamps[start_idx:end_idx]
         data = self.test_data.to_pd().values
         data = data[start_idx:end_idx]
 
@@ -859,11 +861,7 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
         # this will return an aggregated alarms from all the models inside the ensemble
         logger.info("Performing single forecast:\n")
         forecast, se = self.ensemble.forecast(
-            time_stamps=timestamps,
-            time_series_prev=x_ts,
-            expert_idx=None,
-            mode="max",
-            use_gpu=self.use_gpu,
+            time_stamps=timestamps, time_series_prev=x_ts, expert_idx=None, mode="max", use_gpu=self.use_gpu
         )
         logger.info("forecast looks like\n" + str(forecast[:3]) + "\n")
         self.assertEqual(len(forecast), self.max_forecast_steps)
@@ -876,32 +874,16 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
         # check if forecast of trained model and the saved model match
         logger.info("Testing save/load...\n")
         self.ensemble.save(join(rootdir, "tmp", "MoE_forecast_ensemble"))
-        ensemble_loaded = MoE_ForecasterEnsemble.load(
-            join(rootdir, "tmp", "MoE_forecast_ensemble")
-        )
+        ensemble_loaded = MoE_ForecasterEnsemble.load(join(rootdir, "tmp", "MoE_forecast_ensemble"))
         forecast_loaded, _ = ensemble_loaded.forecast(
-            time_stamps=timestamps,
-            time_series_prev=x_ts,
-            expert_idx=None,
-            mode="max",
-            use_gpu=self.use_gpu,
+            time_stamps=timestamps, time_series_prev=x_ts, expert_idx=None, mode="max", use_gpu=self.use_gpu
         )
-        forecast_loaded = forecast_loaded.univariates[
-            forecast_loaded.names[0]
-        ].np_values
+        forecast_loaded = forecast_loaded.univariates[forecast_loaded.names[0]].np_values
         self.assertSequenceEqual(list(forecast), list(forecast_loaded))
 
         # evaluate on test set using sMAPE and confirm it is close to expected value
         logger.info("Testset evaluation...\n")
-        (
-            y_pred_list,
-            std_list,
-            y_list,
-            sMAPE_conf,
-            sMAPE_not_conf,
-            recall,
-            overall_sMAPE,
-        ) = ensemble_loaded.evaluate(
+        (y_pred_list, std_list, y_list, sMAPE_conf, sMAPE_not_conf, recall, overall_sMAPE) = ensemble_loaded.evaluate(
             self.test_data,
             mode="max",
             expert_idx=None,
@@ -914,8 +896,6 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

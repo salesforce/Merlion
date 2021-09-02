@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Base class for forecasting models.
 """
@@ -19,12 +25,7 @@ class ForecasterConfig(Config):
     Config object used to define a forecaster model.
     """
 
-    def __init__(
-        self,
-        max_forecast_steps: Union[int, None],
-        target_seq_index: int = None,
-        **kwargs,
-    ):
+    def __init__(self, max_forecast_steps: Union[int, None], target_seq_index: int = None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
             Required for some models which pre-compute a forecast, like ARIMA,
@@ -39,9 +40,7 @@ class ForecasterConfig(Config):
         self.dim = None
 
     @classmethod
-    def from_dict(
-        cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs
-    ):
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
         config_dict = copy.copy(config_dict)
         dim = config_dict.pop("dim", None)
         if "dim" not in kwargs:
@@ -101,9 +100,7 @@ class ForecasterBase(ModelBase):
     def dim(self):
         return self.config.dim
 
-    def resample_time_stamps(
-        self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None
-    ):
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
             "train() must be called before you can call forecast(). "
             "If you have already called train(), make sure it sets "
@@ -136,16 +133,11 @@ class ForecasterBase(ModelBase):
         return [t0 + i * dt for i in range(1, n + 1)]
 
     def train_pre_process(
-        self,
-        train_data: TimeSeries,
-        require_even_sampling: bool,
-        require_univariate: bool,
+        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
         self.train_data = train_data
         self.config.dim = train_data.dim
-        train_data = super().train_pre_process(
-            train_data, require_even_sampling, require_univariate
-        )
+        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
         if self.dim == 1:
             self.config.target_seq_index = 0
         elif self.target_seq_index is None:
@@ -163,9 +155,7 @@ class ForecasterBase(ModelBase):
         return train_data
 
     @abstractmethod
-    def train(
-        self, train_data: TimeSeries, train_config=None
-    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
 
@@ -186,10 +176,7 @@ class ForecasterBase(ModelBase):
         time_series_prev: TimeSeries = None,
         return_iqr: bool = False,
         return_prev: bool = False,
-    ) -> Union[
-        Tuple[TimeSeries, Optional[TimeSeries]],
-        Tuple[TimeSeries, TimeSeries, TimeSeries],
-    ]:
+    ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         """
         Returns the model's forecast on the timestamps given. Note that if
         ``self.transform`` is specified in the config, the forecast is a forecast
@@ -257,16 +244,12 @@ class ForecasterBase(ModelBase):
         out_list = []
         if time_series_prev_list is None:
             time_series_prev_list = [None for _ in range(len(time_stamps_list))]
-        for time_stamps, time_series_prev in zip(
-            time_stamps_list, time_series_prev_list
-        ):
+        for time_stamps, time_series_prev in zip(time_stamps_list, time_series_prev_list):
             out = self.forecast(time_stamps, time_series_prev, return_iqr, return_prev)
             out_list.append(out)
         return tuple(zip(*out_list))
 
-    def invert_transform(
-        self, forecast: TimeSeries, time_series_prev: TimeSeries = None
-    ):
+    def invert_transform(self, forecast: TimeSeries, time_series_prev: TimeSeries = None):
         if time_series_prev is None:
             time_series_prev = self.transform(self.train_data)
         t = forecast.np_time_stamps
@@ -311,10 +294,7 @@ class ForecasterBase(ModelBase):
         # Get forecast + bounds if plotting uncertainty
         if plot_forecast_uncertainty:
             yhat, lb, ub = self.forecast(
-                time_stamps,
-                time_series_prev,
-                return_iqr=True,
-                return_prev=plot_time_series_prev,
+                time_stamps, time_series_prev, return_iqr=True, return_prev=plot_time_series_prev
             )
             yhat, lb, ub = [x.univariates[x.names[0]] for x in [yhat, lb, ub]]
 
@@ -322,10 +302,7 @@ class ForecasterBase(ModelBase):
         else:
             lb, ub = None, None
             yhat, err = self.forecast(
-                time_stamps,
-                time_series_prev,
-                return_iqr=False,
-                return_prev=plot_time_series_prev,
+                time_stamps, time_series_prev, return_iqr=False, return_prev=plot_time_series_prev
             )
             yhat = yhat.univariates[yhat.names[0]]
 
@@ -404,9 +381,7 @@ class ForecasterBase(ModelBase):
             plot_time_series_prev=plot_time_series_prev,
         )
         title = f"{type(self).__name__}: Forecast of {self.target_name}"
-        return fig.plot(
-            title=title, metric_name=self.target_name, figsize=figsize, ax=ax
-        )
+        return fig.plot(title=title, metric_name=self.target_name, figsize=figsize, ax=ax)
 
     def plot_forecast_plotly(
         self,
@@ -441,6 +416,4 @@ class ForecasterBase(ModelBase):
             plot_time_series_prev=plot_time_series_prev,
         )
         title = f"{type(self).__name__}: Forecast of {self.target_name}"
-        return fig.plot_plotly(
-            title=title, metric_name=self.target_name, figsize=figsize
-        )
+        return fig.plot_plotly(title=title, metric_name=self.target_name, figsize=figsize)

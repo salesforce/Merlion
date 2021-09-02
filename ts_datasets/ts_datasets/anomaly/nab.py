@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import datetime
 import glob
 import json
@@ -39,9 +45,7 @@ class NAB(TSADBaseDataset):
         :param rootdir: The root directory at which the dataset can be found.
         """
         super().__init__()
-        assert (
-            subset in self.valid_subsets
-        ), f"subset should be in {self.valid_subsets}, but got {subset}"
+        assert subset in self.valid_subsets, f"subset should be in {self.valid_subsets}, but got {subset}"
         self.subset = subset
 
         if rootdir is None:
@@ -75,15 +79,9 @@ class NAB(TSADBaseDataset):
             df = pd.read_csv(csv)
             df.iloc[:, 0] = pd.to_datetime(df.iloc[:, 0])
             df = df.sort_values(by="timestamp")
-            if (
-                len(df["timestamp"][df["timestamp"].diff() == datetime.timedelta(0)])
-                != 0
-            ):
+            if len(df["timestamp"][df["timestamp"].diff() == datetime.timedelta(0)]) != 0:
                 df = df.drop_duplicates(subset="timestamp", keep="first")
-                logger.warning(
-                    f"Time series {csv} (index {i}) has timestamp "
-                    f"duplicates. Kept first values."
-                )
+                logger.warning(f"Time series {csv} (index {i}) has timestamp " f"duplicates. Kept first values.")
 
             all_dt = np.unique(np.diff(df["timestamp"])).astype(int)
             gcd_dt = all_dt[0]
@@ -198,12 +196,7 @@ class NAB(TSADBaseDataset):
                         f.write(chunk)
                         f.flush()
 
-        csvs = [
-            f
-            for f in csvs
-            if not os.path.isfile(os.path.join(rootdir, f))
-            and f.split("/")[0] in subsets
-        ]
+        csvs = [f for f in csvs if not os.path.isfile(os.path.join(rootdir, f)) and f.split("/")[0] in subsets]
         for csv in tqdm.tqdm(csvs, desc="NAB Download", disable=len(csvs) == 0):
             path = os.path.join(rootdir, csv)
             if not os.path.isfile(path):

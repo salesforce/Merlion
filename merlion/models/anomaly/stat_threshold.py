@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Simple static thresholding model for anomaly detection.
 """
@@ -15,24 +21,16 @@ class StatThreshold(DetectorBase):
     config_class = StatThresholdConfig
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=True
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=True)
 
         train_anom_scores = train_data.univariates[train_data.names[0]]
         train_anom_scores = TimeSeries({"anom_score": train_anom_scores})
         self.train_post_rule(train_anom_scores, anomaly_labels, post_rule_train_config)
         return train_anom_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
 
         assert time_series.dim == 1, (

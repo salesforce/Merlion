@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import pytest
@@ -12,11 +18,7 @@ from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.models.forecast.vector_ar import (
-    VectorAR,
-    VectorARConfig,
-    gen_next_seq_label_pairs,
-)
+from merlion.models.forecast.vector_ar import VectorAR, VectorARConfig, gen_next_seq_label_pairs
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -44,11 +46,7 @@ class TestVectorAR(unittest.TestCase):
         t = int(d[md["trainval"]].index[-1].to_pydatetime().timestamp())
         data = TimeSeries.from_pd(d)
         cleanup_transform = TransformSequence(
-            [
-                TemporalResample(missing_value_policy="FFill"),
-                LowerUpperClip(upper=300),
-                DifferenceTransform(),
-            ]
+            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
         )
         cleanup_transform.train(data)
         data = cleanup_transform(data)
@@ -61,11 +59,7 @@ class TestVectorAR(unittest.TestCase):
         self.test_data_norm = minmax_transform(test_data)
 
         self.model = VectorAR(
-            VectorARConfig(
-                max_forecast_steps=self.max_forecast_steps,
-                maxlags=self.maxlags,
-                target_seq_index=self.i,
-            )
+            VectorARConfig(max_forecast_steps=self.max_forecast_steps, maxlags=self.maxlags, target_seq_index=self.i)
         )
 
     def run_test(self, univariate):
@@ -88,9 +82,7 @@ class TestVectorAR(unittest.TestCase):
         self.assertAlmostEqual(np.max(np.abs((y - yhat) - resid)), 0, places=6)
         self.assertEqual(len(self.model._forecast), self.max_forecast_steps)
         self.assertAlmostEqual(self.model._forecast.mean(), 0.5, delta=0.1)
-        testing_data_gen = gen_next_seq_label_pairs(
-            self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps
-        )
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, err = self.model.forecast(testing_label.time_stamps, testing_instance)
         self.assertEqual(len(pred), self.max_forecast_steps)
@@ -117,8 +109,6 @@ class TestVectorAR(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

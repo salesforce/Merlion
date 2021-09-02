@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM)
 """
@@ -82,11 +88,7 @@ class DAGMM(DetectorBase):
     def _build_model(self, dim):
         hidden_size = self.hidden_size + int(dim / 20)
         dagmm = DAGMMModule(
-            autoencoder=AEModule(
-                n_features=dim,
-                sequence_length=self.sequence_length,
-                hidden_size=hidden_size,
-            ),
+            autoencoder=AEModule(n_features=dim, sequence_length=self.sequence_length, hidden_size=hidden_size),
             n_gmm=self.gmm_k,
             latent_dim=hidden_size + 2,
             device=self.device,
@@ -116,10 +118,7 @@ class DAGMM(DetectorBase):
         """
         dataset = InputData(X, k=self.sequence_length)
         data_loader = DataLoader(
-            dataset=dataset,
-            batch_size=self.batch_size,
-            shuffle=True,
-            collate_fn=InputData.collate_func,
+            dataset=dataset, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
         )
         self.dagmm = self._build_model(X.shape[1]).to(self.device)
         self.optimizer = torch.optim.Adam(self.dagmm.parameters(), lr=self.lr)
@@ -166,11 +165,7 @@ class DAGMM(DetectorBase):
         return self.sequence_length
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
@@ -187,45 +182,29 @@ class DAGMM(DetectorBase):
         :return: A `TimeSeries` of the model's anomaly scores on the training
             data.
         """
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
         train_df = train_data.to_pd()
         self._train(train_df.values)
         scores = batch_detect(self, train_df.values)
 
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)}
-        )
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
         :param time_series: The `TimeSeries` we wish to predict anomaly scores for.
         :param time_series_prev: A `TimeSeries` immediately preceding ``time_series``.
         :return: A univariate `TimeSeries` of anomaly scores
         """
-        time_series, time_series_prev = self.transform_time_series(
-            time_series, time_series_prev
-        )
-        ts = (
-            time_series_prev + time_series
-            if time_series_prev is not None
-            else time_series
-        )
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        ts = time_series_prev + time_series if time_series_prev is not None else time_series
         scores = batch_detect(self, ts.to_pd().values)
         timestamps = time_series.time_stamps
-        return TimeSeries(
-            {"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])}
-        )
+        return TimeSeries({"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])})
 
 
 class AEModule(nn.Module):
@@ -244,28 +223,13 @@ class AEModule(nn.Module):
         """
         super().__init__()
         input_length = n_features * sequence_length
-        dec_steps = (
-            2
-            ** np.arange(max(np.ceil(np.log2(hidden_size)), 2), np.log2(input_length))[
-                1:
-            ]
-        )
+        dec_steps = 2 ** np.arange(max(np.ceil(np.log2(hidden_size)), 2), np.log2(input_length))[1:]
         dec_setup = np.concatenate([[hidden_size], dec_steps.repeat(2), [input_length]])
         enc_setup = dec_setup[::-1]
 
-        layers = np.array(
-            [
-                [nn.Linear(int(a), int(b)), activation()]
-                for a, b in enc_setup.reshape(-1, 2)
-            ]
-        )
+        layers = np.array([[nn.Linear(int(a), int(b)), activation()] for a, b in enc_setup.reshape(-1, 2)])
         self.encoder = nn.Sequential(*layers.flatten()[:-1])
-        layers = np.array(
-            [
-                [nn.Linear(int(a), int(b)), activation()]
-                for a, b in dec_setup.reshape(-1, 2)
-            ]
-        )
+        layers = np.array([[nn.Linear(int(a), int(b)), activation()] for a, b in dec_setup.reshape(-1, 2)])
         self.decoder = nn.Sequential(*layers.flatten()[:-1])
 
     def forward(self, x, return_latent=False):
@@ -294,12 +258,7 @@ class DAGMMModule(nn.Module):
         self.device = device
 
         self.estimation = nn.Sequential(
-            *[
-                nn.Linear(latent_dim, 10),
-                nn.Tanh(),
-                nn.Linear(10, n_gmm),
-                nn.Softmax(dim=1),
-            ]
+            *[nn.Linear(latent_dim, 10), nn.Tanh(), nn.Linear(10, n_gmm), nn.Softmax(dim=1)]
         )
         self.register_buffer("phi", torch.zeros(n_gmm))
         self.register_buffer("mu", torch.zeros(n_gmm, latent_dim))
@@ -313,9 +272,7 @@ class DAGMMModule(nn.Module):
         dec, enc = self.autoencoder(x, return_latent=True)
         a, b = x.view(x.shape[0], -1), dec.view(dec.shape[0], -1)
         cos_distance = F.cosine_similarity(a, b, dim=1).unsqueeze(-1)
-        euc_distance = DAGMMModule.relative_euclidean_distance(a, b, dim=1).unsqueeze(
-            -1
-        )
+        euc_distance = DAGMMModule.relative_euclidean_distance(a, b, dim=1).unsqueeze(-1)
         z = torch.cat([enc, euc_distance, cos_distance], dim=1)
         return enc, dec, z, self.estimation(z)
 
@@ -324,21 +281,15 @@ class DAGMMModule(nn.Module):
         sum_gamma = torch.sum(gamma, dim=0)
         phi = sum_gamma / gamma.shape[0]
         # means and covariances
-        mu = torch.sum(
-            gamma.unsqueeze(-1) * z.unsqueeze(1), dim=0
-        ) / sum_gamma.unsqueeze(-1)
+        mu = torch.sum(gamma.unsqueeze(-1) * z.unsqueeze(1), dim=0) / sum_gamma.unsqueeze(-1)
         z_mu = z.unsqueeze(1) - mu.unsqueeze(0)
         z_mu_outer = z_mu.unsqueeze(-1) * z_mu.unsqueeze(-2)
-        cov = torch.sum(
-            gamma.unsqueeze(-1).unsqueeze(-1) * z_mu_outer, dim=0
-        ) / sum_gamma.unsqueeze(-1).unsqueeze(-1)
+        cov = torch.sum(gamma.unsqueeze(-1).unsqueeze(-1) * z_mu_outer, dim=0) / sum_gamma.unsqueeze(-1).unsqueeze(-1)
         # store these values for prediction
         self.phi, self.mu, self.cov = phi.data, mu.data, cov.data
         return phi, mu, cov
 
-    def compute_energy(
-        self, z, phi=None, mu=None, cov=None, size_average=True, eps=1e-6
-    ):
+    def compute_energy(self, z, phi=None, mu=None, cov=None, size_average=True, eps=1e-6):
         phi = self.phi if phi is None else phi
         mu = self.mu if mu is None else mu
         cov = self.cov if cov is None else cov
@@ -346,9 +297,7 @@ class DAGMMModule(nn.Module):
         cov_inv, cov_det, cov_diag = [], [], 0
         for i in range(cov.shape[0]):
             cov_k = cov[i] + torch.eye(cov.shape[1], device=self.device) * eps
-            inv_k = torch.FloatTensor(np.linalg.pinv(cov_k.cpu().data.numpy())).to(
-                self.device
-            )
+            inv_k = torch.FloatTensor(np.linalg.pinv(cov_k.cpu().data.numpy())).to(self.device)
             cov_inv.append(inv_k.unsqueeze(0))
             eigenvalues = np.linalg.eigvals(cov_k.data.cpu().numpy() * (2 * np.pi))
             determinant = np.prod(np.clip(eigenvalues, a_min=eps, a_max=None))
@@ -358,18 +307,12 @@ class DAGMMModule(nn.Module):
         z_mu = z.unsqueeze(1) - mu.unsqueeze(0)
         cov_inv = torch.cat(cov_inv, dim=0)
         cov_det = torch.FloatTensor(cov_det).to(self.device)
-        exp_term_tmp = -0.5 * torch.sum(
-            torch.sum(z_mu.unsqueeze(-1) * cov_inv.unsqueeze(0), dim=-2) * z_mu, dim=-1
-        )
+        exp_term_tmp = -0.5 * torch.sum(torch.sum(z_mu.unsqueeze(-1) * cov_inv.unsqueeze(0), dim=-2) * z_mu, dim=-1)
         max_val = torch.max(exp_term_tmp.clamp(min=0), dim=1, keepdim=True)[0]
         exp_term = torch.exp(exp_term_tmp - max_val)
 
         sample_energy = -max_val.squeeze() - torch.log(
-            torch.sum(
-                phi.unsqueeze(0) * exp_term / (torch.sqrt(cov_det) + eps).unsqueeze(0),
-                dim=1,
-            )
-            + eps
+            torch.sum(phi.unsqueeze(0) * exp_term / (torch.sqrt(cov_det) + eps).unsqueeze(0), dim=1) + eps
         )
         if size_average:
             sample_energy = torch.mean(sample_energy)

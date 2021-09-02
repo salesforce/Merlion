@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Class to compose a sequence of post-rules into a single post-rule.
 """
@@ -27,22 +33,14 @@ class PostRuleSequence(PostRuleBase):
         return anomaly_scores
 
     def to_dict(self):
-        return {
-            "name": type(self).__name__,
-            "post_rules": [p.to_dict() for p in self.post_rules],
-        }
+        return {"name": type(self).__name__, "post_rules": [p.to_dict() for p in self.post_rules]}
 
     @classmethod
     def from_dict(cls, state_dict):
         post_rules = [
-            d if isinstance(d, PostRuleBase) else PostRuleFactory.create(**d)
-            for d in state_dict["post_rules"]
+            d if isinstance(d, PostRuleBase) else PostRuleFactory.create(**d) for d in state_dict["post_rules"]
         ]
         return cls(post_rules)
 
     def __repr__(self):
-        return (
-            "PostRuleSequence(\n "
-            + ",\n ".join([repr(f) for f in self.post_rules])
-            + "\n)"
-        )
+        return "PostRuleSequence(\n " + ",\n ".join([repr(f) for f in self.post_rules]) + "\n)"

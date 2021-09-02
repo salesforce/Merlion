@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Base class for ensembles of models.
 """
@@ -26,10 +32,7 @@ class EnsembleConfig(Config):
     _default_combiner = Mean(abs_score=False)
 
     def __init__(
-        self,
-        model_configs: List[Tuple[str, Union[Config, Dict]]] = None,
-        combiner: CombinerBase = None,
-        **kwargs,
+        self, model_configs: List[Tuple[str, Union[Config, Dict]]] = None, combiner: CombinerBase = None, **kwargs
     ):
         """
         :param model_configs: A list of ``(class_name, config)`` tuples, where
@@ -56,10 +59,7 @@ class EnsembleConfig(Config):
             model_configs = [
                 (name, copy.deepcopy(config))
                 if isinstance(config, Config)
-                else (
-                    name,
-                    ModelFactory.get_model_class(name).config_class.from_dict(config),
-                )
+                else (name, ModelFactory.get_model_class(name).config_class.from_dict(config))
                 for name, config in model_configs
             ]
         self.model_configs = model_configs
@@ -68,9 +68,7 @@ class EnsembleConfig(Config):
         config_dict = super().to_dict(_skipped_keys)
         model_configs = config_dict["model_configs"]
         if model_configs is not None:
-            config_dict["model_configs"] = [
-                (name, config.to_dict()) for name, config in model_configs
-            ]
+            config_dict["model_configs"] = [(name, config.to_dict()) for name, config in model_configs]
         return config_dict
 
 
@@ -119,20 +117,14 @@ class EnsembleBase(ModelBase, ABC):
             raise RuntimeError(f"{msg} Received neither.")
         elif config.model_configs is not None and models is not None:
             logger.warning(
-                f"{msg} Received both. Overriding `model_configs` "
-                f"with the configs belonging to `models`."
+                f"{msg} Received both. Overriding `model_configs` " f"with the configs belonging to `models`."
             )
 
         if models is not None:
             models = [copy.deepcopy(model) for model in models]
-            config.model_configs = [
-                (type(model).__name__, model.config) for model in models
-            ]
+            config.model_configs = [(type(model).__name__, model.config) for model in models]
         else:
-            models = [
-                ModelFactory.create(name, **config.to_dict())
-                for name, config in config.model_configs
-            ]
+            models = [ModelFactory.create(name, **config.to_dict()) for name, config in config.model_configs]
 
         super().__init__(config)
         self.models = models
@@ -162,9 +154,7 @@ class EnsembleBase(ModelBase, ABC):
         tf = min(max_model_tfs)
         return transformed_valid_data.bisect(tf, t_in_left=True)[0]
 
-    def train_combiner(
-        self, all_model_outs: List[TimeSeries], target: TimeSeries
-    ) -> TimeSeries:
+    def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries) -> TimeSeries:
         return self.combiner.train(all_model_outs, target)
 
     @property
@@ -211,19 +201,14 @@ class EnsembleBase(ModelBase, ABC):
                 paths.append(None)
 
         # Add model paths to the config dict, and save it
-        config_dict["model_paths"] = [
-            (type(m).__name__, p) for m, p in zip(self.models, paths)
-        ]
+        config_dict["model_paths"] = [(type(m).__name__, p) for m, p in zip(self.models, paths)]
         with open(os.path.join(dirname, self.config_class.filename), "w") as f:
             json.dump(config_dict, f, indent=2, sort_keys=True)
 
         # Save the remaining ensemble state
         filename = os.path.join(dirname, self.filename)
         self._save_state(
-            state_dict=state_dict,
-            filename=filename,
-            save_only_used_models=save_only_used_models,
-            **save_config,
+            state_dict=state_dict, filename=filename, save_only_used_models=save_only_used_models, **save_config
         )
 
     @classmethod
@@ -235,9 +220,7 @@ class EnsembleBase(ModelBase, ABC):
 
         # Load all the models from the config dict
         model_paths = config_dict.pop("model_paths")
-        models = [
-            ModelFactory.load(name=name, model_path=path) for name, path in model_paths
-        ]
+        models = [ModelFactory.load(name=name, model_path=path) for name, path in model_paths]
 
         # Load the state dict
         with open(os.path.join(dirname, cls.filename), "rb") as f:
@@ -248,9 +231,7 @@ class EnsembleBase(ModelBase, ABC):
     @classmethod
     def _from_config_state_dicts(cls, config_dict, state_dict, models, **kwargs):
         # Use the config to initialize the model & then load it
-        config, model_kwargs = cls.config_class.from_dict(
-            config_dict, return_unused_kwargs=True, **kwargs
-        )
+        config, model_kwargs = cls.config_class.from_dict(config_dict, return_unused_kwargs=True, **kwargs)
         ensemble = cls(config=config, models=models)
         ensemble._load_state(state_dict, **model_kwargs)
 
@@ -290,9 +271,7 @@ class EnsembleBase(ModelBase, ABC):
         """
         name, config_dict, state_dict, model_tuples = dill.loads(obj)
         models = [
-            ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(
-                *model_tuple[1:]
-            )
+            ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])
             for model_tuple in model_tuples
         ]
         return cls._from_config_state_dicts(config_dict, state_dict, models, **kwargs)

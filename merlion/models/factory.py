@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Contains the `ModelFactory`.
 """
@@ -63,9 +69,7 @@ class ModelFactory:
         model_class = cls.get_model_class(name)
         signature = inspect.signature(model_class.__init__)
         if "config" in signature.parameters:
-            config, kwargs = model_class.config_class.from_dict(
-                kwargs, return_unused_kwargs=True
-            )
+            config, kwargs = model_class.config_class.from_dict(kwargs, return_unused_kwargs=True)
             init_kwargs = {k: v for k, v in kwargs.items() if k in signature.parameters}
             model = model_class(config, **init_kwargs)
             model._load_state({k: v for k, v in kwargs.items() if k not in init_kwargs})

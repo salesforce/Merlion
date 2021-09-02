@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import json
 import os
 from abc import ABC
@@ -36,20 +42,14 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
         self.model.reset()
         self.__init__(self.model)
 
-    def train(
-        self, train_data: TimeSeries, train_config=None
-    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         original_train_data = train_data
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
         candidate_thetas = self.generate_theta(train_data)
         # need to call evaluate_theta on original training data since evaluate_theta often trains another model
         # and therefore we might be applying transform twice
-        theta, model, train_result = self.evaluate_theta(
-            candidate_thetas, original_train_data, train_config
-        )
+        theta, model, train_result = self.evaluate_theta(candidate_thetas, original_train_data, train_config)
         if model:
             self.model = model
             return train_result
@@ -66,13 +66,8 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
         time_series_prev: TimeSeries = None,
         return_iqr: bool = False,
         return_prev: bool = False,
-    ) -> Union[
-        Tuple[TimeSeries, Optional[TimeSeries]],
-        Tuple[TimeSeries, TimeSeries, TimeSeries],
-    ]:
-        return self.model.forecast(
-            time_stamps, time_series_prev, return_iqr, return_prev
-        )
+    ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
+        return self.model.forecast(time_stamps, time_series_prev, return_iqr, return_prev)
 
     def save(self, dirname: str, **save_config):
         state_dict = self.__getstate__()
@@ -101,9 +96,7 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
             config_dict = json.load(f)
 
         model_name = config_dict.pop("model_name")
-        model = ModelFactory.load(
-            model_name, os.path.abspath(os.path.join(dirname, "model"))
-        )
+        model = ModelFactory.load(model_name, os.path.abspath(os.path.join(dirname, "model")))
 
         # Load the state dict
         with open(os.path.join(dirname, cls.filename), "rb") as f:
@@ -125,6 +118,4 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
             try:
                 return getattr(self.model.config, attr)
             except AttributeError:
-                raise AttributeError(
-                    f"Attribute {attr} not found in underlying class {type(self.model)}"
-                )
+                raise AttributeError(f"Attribute {attr} not found in underlying class {type(self.model)}")

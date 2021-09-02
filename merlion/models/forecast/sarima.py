@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 A variant of ARIMA with a user-specified Seasonality.
 """
@@ -23,12 +29,7 @@ class SarimaConfig(ForecasterConfig):
     _default_transform = TemporalResample(granularity="1h", trainable_granularity=False)
 
     def __init__(
-        self,
-        max_forecast_steps=None,
-        target_seq_index=None,
-        order=(4, 1, 2),
-        seasonal_order=(2, 0, 1, 24),
-        **kwargs,
+        self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs
     ):
         """
         Configuration class for Sarima.
@@ -45,11 +46,7 @@ class SarimaConfig(ForecasterConfig):
             process, where s is the length of the seasonality cycle (e.g. s=24
             for 24 hours on hourly granularity). P, D, Q are as for ARIMA.
         """
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            **kwargs,
-        )
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.order = order
         self.seasonal_order = seasonal_order
 
@@ -95,9 +92,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
 
     def train(self, train_data: TimeSeries, train_config=None):
         # Train the transform & transform the training data
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=True, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
 
         # train model
         name = self.target_name
@@ -130,9 +125,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
         time_series_prev: TimeSeries = None,
         return_iqr=False,
         return_prev=False,
-    ) -> Union[
-        Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]
-    ]:
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         # Make sure the timestamps are valid (spaced at the right timedelta)
         # If time_series_prev is None, i0 is the first index of the pre-computed
         # forecast, which we'd like to start returning a forecast from
@@ -187,26 +180,20 @@ class Sarima(ForecasterBase, SeasonalityModel):
         if return_iqr:
             lb = (
                 UnivariateTimeSeries(
-                    name=f"{name}_lower",
-                    time_stamps=time_stamps,
-                    values=forecast + norm.ppf(0.25) * err,
+                    name=f"{name}_lower", time_stamps=time_stamps, values=forecast + norm.ppf(0.25) * err
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
             ub = (
                 UnivariateTimeSeries(
-                    name=f"{name}_upper",
-                    time_stamps=time_stamps,
-                    values=forecast + norm.ppf(0.75) * err,
+                    name=f"{name}_upper", time_stamps=time_stamps, values=forecast + norm.ppf(0.75) * err
                 )
                 .to_ts()
                 .align(reference=orig_t)
             )
             forecast = (
-                UnivariateTimeSeries(
-                    name=name, time_stamps=time_stamps, values=forecast
-                )
+                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
                 .to_ts()
                 .align(reference=orig_t)
             )
@@ -215,16 +202,12 @@ class Sarima(ForecasterBase, SeasonalityModel):
         # Otherwise, just return the forecast & its standard error
         else:
             forecast = (
-                UnivariateTimeSeries(
-                    name=name, time_stamps=time_stamps, values=forecast
-                )
+                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
                 .to_ts()
                 .align(reference=orig_t)
             )
             err = (
-                UnivariateTimeSeries(
-                    name=f"{name}_err", time_stamps=time_stamps, values=err
-                )
+                UnivariateTimeSeries(name=f"{name}_err", time_stamps=time_stamps, values=err)
                 .to_ts()
                 .align(reference=orig_t)
             )
@@ -252,12 +235,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
             d = order[1]
         if seasonal_order[1] != "auto":
             D = seasonal_order[1]
-        if (
-            order[0] != "auto"
-            and order[2] != "auto"
-            and seasonal_order[0] != "auto"
-            and seasonal_order[2] != "auto"
-        ):
+        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" and seasonal_order[2] != "auto":
             pqPQ = True
 
         if any(np.isnan(y)):

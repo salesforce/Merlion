@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transforms that compute moving averages and k-step differences.
 """
@@ -60,9 +66,7 @@ class MovingAverage(TransformBase):
         new_vars = OrderedDict()
         for (name, var), y1 in zip(time_series.items(), self.inversion_state):
             t, y0 = var.index, var.np_values
-            x = scipy.signal.deconvolve(np.concatenate((y0, y1)), self.weights[-1::-1])[
-                0
-            ]
+            x = scipy.signal.deconvolve(np.concatenate((y0, y1)), self.weights[-1::-1])[0]
             new_vars[name] = UnivariateTimeSeries(t, x)
 
         ret = TimeSeries(new_vars, check_aligned=False)
@@ -141,9 +145,7 @@ class ExponentialMovingAverage(InvertibleTransformBase):
     "x", "x_lb", "x_ub", "y", "y_lb", "y_ub".
     """
 
-    def __init__(
-        self, alpha: float, normalize: bool = True, p: float = 0.95, ci: bool = False
-    ):
+    def __init__(self, alpha: float, normalize: bool = True, p: float = 0.95, ci: bool = False):
         """
         :param alpha: smoothing factor to use for exponential weighting.
         :param normalize: If True, divide by the decaying adjustment in
@@ -178,12 +180,8 @@ class ExponentialMovingAverage(InvertibleTransformBase):
             if self.ci:
                 ems = emw.std()
                 ems[0] = ems[1]
-                new_vars[f"{name}_lb"] = UnivariateTimeSeries.from_pd(
-                    ema + norm.ppf(0.5 * (1 - self.p)) * ems
-                )
-                new_vars[f"{name}_ub"] = UnivariateTimeSeries.from_pd(
-                    ema + norm.ppf(0.5 * (1 + self.p)) * ems
-                )
+                new_vars[f"{name}_lb"] = UnivariateTimeSeries.from_pd(ema + norm.ppf(0.5 * (1 - self.p)) * ems)
+                new_vars[f"{name}_ub"] = UnivariateTimeSeries.from_pd(ema + norm.ppf(0.5 * (1 + self.p)) * ems)
 
         ret = TimeSeries(new_vars, check_aligned=False)
         ret._is_aligned = time_series.is_aligned
@@ -232,10 +230,7 @@ class DifferenceTransform(InvertibleTransformBase):
         for name, var in time_series.items():
             x0.append(var[0])
             if len(var) <= 1:
-                logger.warning(
-                    f"Cannot apply a difference transform to a time "
-                    f"series of length {len(var)} < 2"
-                )
+                logger.warning(f"Cannot apply a difference transform to a time " f"series of length {len(var)} < 2")
                 new_vars[name] = UnivariateTimeSeries([], [])
             else:
                 new_vars[name] = UnivariateTimeSeries.from_pd(var.diff())[1:]
@@ -290,8 +285,7 @@ class LagTransform(InvertibleTransformBase):
 
             if len(var) <= self.k and not self.pad:
                 logger.warning(
-                    f"Cannot apply a {self.k}-lag transform to a "
-                    f"time series of length {len(var)} <= {self.k}"
+                    f"Cannot apply a {self.k}-lag transform to a " f"time series of length {len(var)} <= {self.k}"
                 )
                 new_vars[name] = UnivariateTimeSeries([], [])
             else:
@@ -311,9 +305,7 @@ class LagTransform(InvertibleTransformBase):
                 y = np.asarray(var.values)
                 y[: len(xk)] = xk
             else:
-                raise RuntimeError(
-                    "Something went wrong: inversion state has unexpected size."
-                )
+                raise RuntimeError("Something went wrong: inversion state has unexpected size.")
 
             x = np.zeros(len(t))
             for i in range(self.k):

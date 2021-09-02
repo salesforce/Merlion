@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -23,9 +29,7 @@ class TestStatThreshold(unittest.TestCase):
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
         self.model = StatThreshold(
-            StatThresholdConfig(
-                enable_calibrator=True, threshold=AggregateAlarms(alm_threshold=3.5)
-            )
+            StatThresholdConfig(enable_calibrator=True, threshold=AggregateAlarms(alm_threshold=3.5))
         )
         print()
         logger.info("Training model...\n")
@@ -60,9 +64,7 @@ class TestStatThreshold(unittest.TestCase):
         print("-" * 80)
         logger.info("test_save_load\n" + "-" * 80 + "\n")
         self.model.save(dirname=join(rootdir, "tmp", "stat_threshold"))
-        loaded_model = StatThreshold.load(
-            dirname=join(rootdir, "tmp", "stat_threshold")
-        )
+        loaded_model = StatThreshold.load(dirname=join(rootdir, "tmp", "stat_threshold"))
 
         scores = self.model.get_anomaly_score(self.vals_test)
         loaded_model_scores = loaded_model.get_anomaly_score(self.vals_test)
@@ -75,8 +77,6 @@ class TestStatThreshold(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

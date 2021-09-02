@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Base class for an automated model evaluation framework.
 """
@@ -22,12 +28,7 @@ class EvaluatorConfig(metaclass=AutodocABCMeta):
 
     _timedelta_keys = ["train_window", "retrain_freq", "cadence"]
 
-    def __init__(
-        self,
-        train_window: float = None,
-        retrain_freq: float = None,
-        cadence: float = None,
-    ):
+    def __init__(self, train_window: float = None, retrain_freq: float = None, cadence: float = None):
         """
         :param train_window: the maximum duration of data we would like to train
             the model on. ``None`` means no limit.
@@ -121,9 +122,7 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         return self.config.horizon
 
     @abstractmethod
-    def _call_model(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries
-    ) -> TimeSeries:
+    def _call_model(self, time_series: TimeSeries, time_series_prev: TimeSeries) -> TimeSeries:
         raise NotImplementedError
 
     def _train_model(self, train_vals: TimeSeries, **train_kwargs) -> TimeSeries:
@@ -145,11 +144,7 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         return self.cadence == self.horizon
 
     def get_predict(
-        self,
-        train_vals: TimeSeries,
-        test_vals: TimeSeries,
-        train_kwargs: dict = None,
-        retrain_kwargs: dict = None,
+        self, train_vals: TimeSeries, test_vals: TimeSeries, train_kwargs: dict = None, retrain_kwargs: dict = None
     ) -> Tuple[Any, Union[TimeSeries, List[TimeSeries]]]:
         """
         Initialize the model by training it on an initial set of train data.

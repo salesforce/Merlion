@@ -1,9 +1,8 @@
 # Contributing to Merlion
 Thank you for your interest in contributing to Merlion! This document will help you get started with your contribution.
-If your contribution adds new dependencies, please document them
-[here](https://docs.google.com/spreadsheets/d/1ycL1cH5_HdWduchHySdbF3BcGwTUo4CSSO3zS8k6BRI/edit?usp=sharing). As a
-general rule, dependencies must be installable via `pip` and should have a permissive license like Apache 2.0, MIT,
-or BSD.
+Before you get started, clone this repo, ``pip install pre-commit``, and run ``pre-commit install`` from the root
+directory of the repo. This will ensure all files are formatted correctly and contain the appropriate
+license headers whenever you make a commit.
 
 ## Table of Contents
 1. [Models](#models)

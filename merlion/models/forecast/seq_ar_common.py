@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import numpy as np
 from merlion.utils.time_series import TimeSeries
 from merlion.transform.base import TransformBase
@@ -25,18 +31,11 @@ def process_one_step_prior(data: TimeSeries, maxlags: int, sampling_mode="normal
         inputs = []
         for uni in data.univariates:
             uni_values = uni.values
-            inputs += [
-                np.max(uni_values),
-                np.min(uni_values),
-                np.std(uni_values, ddof=1),
-                np.median(uni_values),
-            ]
+            inputs += [np.max(uni_values), np.min(uni_values), np.std(uni_values, ddof=1), np.median(uni_values)]
         return np.array(inputs)
 
 
-def process_one_step_prior_for_autoregression(
-    data: TimeSeries, maxlags: int, sampling_mode="normal"
-):
+def process_one_step_prior_for_autoregression(data: TimeSeries, maxlags: int, sampling_mode="normal"):
     """
     regressive window processor for the seq2seq model to consume data, so it
     gives out train in an autoregressive window basis
@@ -61,12 +60,7 @@ def process_one_step_prior_for_autoregression(
         stats = []
         for uni in data.univariates:
             uni_values = uni.values
-            stats += [
-                np.max(uni_values),
-                np.min(uni_values),
-                np.std(uni_values, ddof=1),
-                np.median(uni_values),
-            ]
+            stats += [np.max(uni_values), np.min(uni_values), np.std(uni_values, ddof=1), np.median(uni_values)]
         stats = np.array(stats)
         return inputs, stats
 
@@ -76,11 +70,7 @@ def max_feasible_forecast_steps(data: TimeSeries, maxlags: int):
 
 
 def process_rolling_train_data(
-    data: TimeSeries,
-    target_seq_index: int,
-    maxlags: int,
-    forecast_steps: int,
-    sampling_mode="normal",
+    data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int, sampling_mode="normal"
 ):
     """
     rolling window processor for the sequence2sequence seq2seq model to consume data, so it gives out
@@ -94,15 +84,11 @@ def process_rolling_train_data(
     """
     data = data.align()
     if sampling_mode == "normal":
-        inputs = np.zeros(
-            (len(data) - maxlags - forecast_steps + 1, maxlags * data.dim)
-        )
+        inputs = np.zeros((len(data) - maxlags - forecast_steps + 1, maxlags * data.dim))
         for seq_ind, uni in enumerate(data.univariates):
             uni_data = uni.values
             for i in range(maxlags, len(data) - forecast_steps + 1):
-                inputs[
-                    i - maxlags, seq_ind * maxlags : (seq_ind + 1) * maxlags
-                ] = uni_data[i - maxlags : i]
+                inputs[i - maxlags, seq_ind * maxlags : (seq_ind + 1) * maxlags] = uni_data[i - maxlags : i]
     elif sampling_mode == "stats":
         data_df = data.to_pd()
         inputs = data_df.rolling(window=maxlags, center=False)
@@ -124,9 +110,7 @@ def process_rolling_train_data(
     return inputs, labels, labels_timestamp
 
 
-def process_regressive_train_data(
-    data: TimeSeries, maxlags: int, sampling_mode="normal"
-):
+def process_regressive_train_data(data: TimeSeries, maxlags: int, sampling_mode="normal"):
     """
     regressive window processor for the auto-regression seq2seq model to consume data, so it gives out
     train and label on a regressive basis
@@ -148,9 +132,7 @@ def process_regressive_train_data(
     for seq_ind, uni in enumerate(data.univariates):
         uni_data = uni.values
         for i in range(maxlags, len(data)):
-            inputs[i - maxlags, seq_ind * maxlags : (seq_ind + 1) * maxlags] = uni_data[
-                i - maxlags : i
-            ]
+            inputs[i - maxlags, seq_ind * maxlags : (seq_ind + 1) * maxlags] = uni_data[i - maxlags : i]
             labels[i - maxlags, seq_ind] = uni_data[i]
     if sampling_mode == "normal":
         stats = None
@@ -171,13 +153,7 @@ def process_regressive_train_data(
     return inputs, labels, labels_timestamp, stats
 
 
-def update_prior_nd(
-    prior: np.ndarray,
-    next_forecast: np.ndarray,
-    num_seq: int,
-    maxlags: int,
-    sampling_mode="normal",
-):
+def update_prior_nd(prior: np.ndarray, next_forecast: np.ndarray, num_seq: int, maxlags: int, sampling_mode="normal"):
     """
     regressively update the prior by concatenate prior with next_forecast on the sequence dimension,
     if sampling_mode="stats", also update the stats
@@ -234,9 +210,7 @@ def update_prior_1d(prior: np.ndarray, next_forecast: np.ndarray, maxlags: int):
     return prior.reshape(len(prior), -1)
 
 
-def gen_next_seq_label_pairs(
-    data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int
-):
+def gen_next_seq_label_pairs(data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int):
     """
     Customized helper function to yield
     ``(multivariates_sequences, multisteps_labels)`` tuple pair
@@ -297,9 +271,7 @@ def hybrid_forecast(model, inputs, steps, prediction_stride, maxlags):
     """
     inputs = np.atleast_2d(inputs)
 
-    pred = np.empty(
-        (len(inputs), (int((steps - 1) / prediction_stride) + 1) * prediction_stride)
-    )
+    pred = np.empty((len(inputs), (int((steps - 1) / prediction_stride) + 1) * prediction_stride))
     start = 0
     while True:
         next_forecast = model.predict(inputs)

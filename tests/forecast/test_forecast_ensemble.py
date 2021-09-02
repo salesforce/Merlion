@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import sys
@@ -26,20 +32,8 @@ class TestForecastEnsemble(unittest.TestCase):
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :].univariates[data.names[0]]
 
-        model0 = Arima(
-            ArimaConfig(
-                order=(6, 1, 2),
-                max_forecast_steps=3000,
-                transform=TemporalResample("1h"),
-            )
-        )
-        model1 = Arima(
-            ArimaConfig(
-                order=(24, 1, 0),
-                transform=TemporalResample("10min"),
-                max_forecast_steps=3000,
-            )
-        )
+        model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=3000, transform=TemporalResample("1h")))
+        model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=3000))
         model2 = Prophet(ProphetConfig(transform=Identity()))
         model2.model.logger = None
         self.ensemble = ForecasterEnsemble(models=[model0, model1, model2])
@@ -79,8 +73,6 @@ class TestForecastEnsemble(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

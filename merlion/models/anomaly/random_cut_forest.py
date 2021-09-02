@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Wrapper around AWS's Random Cut Forest anomaly detection model.
 """
@@ -26,20 +32,14 @@ class JVMSingleton:
         import jpype.imports
 
         resource_dir = join(dirname(dirname(dirname(abspath(__file__)))), "resources")
-        jars = [
-            "gson-2.8.6.jar",
-            "randomcutforest-core-1.0.jar",
-            "randomcutforest-serialization-json-1.0.jar",
-        ]
+        jars = ["gson-2.8.6.jar", "randomcutforest-core-1.0.jar", "randomcutforest-serialization-json-1.0.jar"]
         if not JVMSingleton._initialized:
             jpype.startJVM(classpath=[join(resource_dir, jar) for jar in jars])
             JVMSingleton._initialized = True
 
 
 class RandomCutForestConfig(DetectorConfig):
-    _default_transform = TransformSequence(
-        [DifferenceTransform(), Shingle(size=5, stride=1)]
-    )
+    _default_transform = TransformSequence([DifferenceTransform(), Shingle(size=5, stride=1)])
 
     def __init__(
         self,
@@ -93,10 +93,7 @@ class RandomCutForestConfig(DetectorConfig):
             ("randomSeed", self.seed),
             ("sampleSize", self.max_n_samples),
             ("threadPoolSize", self.thread_pool_size if self.parallel else None),
-            (
-                "parallelExecutionEnabled",
-                self.parallel and self.thread_pool_size is not None,
-            ),
+            ("parallelExecutionEnabled", self.parallel and self.thread_pool_size is not None),
         ]
         return {k: v for k, v in items if v is not None}
 
@@ -168,15 +165,9 @@ class RandomCutForest(DetectorBase):
         return np.array(scores)
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         dim = train_data.dim
         times, train_values = zip(*train_data.align())
         train_values = np.asarray(train_values)
@@ -192,23 +183,15 @@ class RandomCutForest(DetectorBase):
         self.forest = forest.build()
 
         train_scores = self._forest_train(train_values)
-        train_scores = TimeSeries(
-            {"anom_score": UnivariateTimeSeries(times, train_scores)}
-        )
+        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
         self.train_post_rule(
-            anomaly_scores=train_scores,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         if self.last_train_time is None:
-            raise RuntimeError(
-                "train() must be called before you can invoke get_anomaly_score()"
-            )
+            raise RuntimeError("train() must be called before you can invoke get_anomaly_score()")
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         times, values = zip(*time_series.align())
         values = np.asarray(values)

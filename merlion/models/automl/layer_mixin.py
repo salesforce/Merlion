@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from abc import ABC
 from collections import Iterator
 from typing import Tuple, Optional, Any
@@ -25,9 +31,7 @@ class LayerMixIn(ModelBase, ABC):
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
-    ) -> Tuple[
-        Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]
-    ]:
+    ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         """
         :param thetas: Iterator of the hyperparameter candidates
         :param train_data: Training data

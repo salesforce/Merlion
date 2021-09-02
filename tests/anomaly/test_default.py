@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from abc import ABC
 import logging
 import os
@@ -26,9 +32,7 @@ def set_random_seeds():
     np.random.seed(12345)
 
 
-def get_train_test_splits(
-    df: pd.DataFrame, metadata: pd.DataFrame, n: int
-) -> (pd.DataFrame, pd.DataFrame, np.ndarray):
+def get_train_test_splits(df: pd.DataFrame, metadata: pd.DataFrame, n: int) -> (pd.DataFrame, pd.DataFrame, np.ndarray):
     train_df = df[metadata.trainval]
     test_df = df[~metadata.trainval]
     test_labels = metadata[~metadata.trainval].anomaly.values
@@ -105,9 +109,7 @@ class Mixin(ABC):
 
             test_ts = TimeSeries.from_pd(self.test_df)
             fig = self.model.plot_anomaly_plotly(
-                time_series=test_ts,
-                time_series_prev=train_ts,
-                plot_time_series_prev=True,
+                time_series=test_ts, time_series_prev=train_ts, plot_time_series_prev=True
             )
             try:
                 import kaleido
@@ -137,15 +139,11 @@ class TestUnivariate(unittest.TestCase, Mixin):
     def run_init(self):
         set_random_seeds()
         self.model = DefaultDetector(
-            DefaultDetectorConfig(
-                granularity="1h", threshold=AggregateAlarms(alm_threshold=1.5)
-            )
+            DefaultDetectorConfig(granularity="1h", threshold=AggregateAlarms(alm_threshold=1.5))
         )
 
         # Time series with anomalies in both train split and test split
-        df = pd.read_csv(
-            join(rootdir, "data", "synthetic_anomaly", "horizontal_spike_anomaly.csv")
-        )
+        df = pd.read_csv(join(rootdir, "data", "synthetic_anomaly", "horizontal_spike_anomaly.csv"))
         df.timestamp = pd.to_datetime(df.timestamp, unit="s")
         df = df.set_index("timestamp")
 
@@ -157,20 +155,14 @@ class TestUnivariate(unittest.TestCase, Mixin):
 class TestMultivariate(unittest.TestCase, Mixin):
     def run_init(self):
         set_random_seeds()
-        self.model = DefaultDetector(
-            DefaultDetectorConfig(threshold=AggregateAlarms(alm_threshold=2))
-        )
+        self.model = DefaultDetector(DefaultDetectorConfig(threshold=AggregateAlarms(alm_threshold=2)))
         self.dataset = MSL(rootdir=join(rootdir, "data", "smap"))
         df, metadata = self.dataset[0]
-        self.train_df, self.test_df, self.test_labels = get_train_test_splits(
-            df, metadata, 2000
-        )
+        self.train_df, self.test_df, self.test_labels = get_train_test_splits(df, metadata, 2000)
 
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

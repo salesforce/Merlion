@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import numpy as np
 import pandas as pd
 
@@ -118,12 +124,7 @@ class GeneratorComposer(TimeSeriesGenerator):
     other TimeSeriesGenerator's.
     """
 
-    def __init__(
-        self,
-        generators: List[TimeSeriesGenerator],
-        per_generator_noise: bool = False,
-        **kwargs,
-    ):
+    def __init__(self, generators: List[TimeSeriesGenerator], per_generator_noise: bool = False, **kwargs):
         kwargs["f"] = lambda x: x
         super().__init__(**kwargs)
         """
@@ -153,9 +154,7 @@ class GeneratorComposer(TimeSeriesGenerator):
         else:
             for generator in generators:
                 generator.noise = lambda: 0
-        self.f = reduce(
-            lambda f, g: lambda x: f(g(x)), [g.f for g in generators], lambda x: x
-        )
+        self.f = reduce(lambda f, g: lambda x: f(g(x)), [g.f for g in generators], lambda x: x)
 
 
 class GeneratorConcatenator(GeneratorComposer):

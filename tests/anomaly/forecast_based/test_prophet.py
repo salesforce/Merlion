@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 from os.path import abspath, dirname, join
@@ -8,10 +14,7 @@ import numpy as np
 
 from merlion.transform.normalize import PowerTransform
 from merlion.transform.resample import TemporalResample
-from merlion.models.anomaly.forecast_based.prophet import (
-    ProphetDetector,
-    ProphetDetectorConfig,
-)
+from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -32,9 +35,7 @@ class TestProphet(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
         self.model = ProphetDetector(
             ProphetDetectorConfig(
-                transform=PowerTransform(lmbda=0.0),
-                max_forecast_steps=self.test_len,
-                uncertainty_samples=1000,
+                transform=PowerTransform(lmbda=0.0), max_forecast_steps=self.test_len, uncertainty_samples=1000
             )
         )
 
@@ -97,8 +98,6 @@ class TestProphet(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.INFO,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

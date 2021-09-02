@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Transforms that inject synthetic anomalies into time series.
 """
@@ -21,12 +27,7 @@ class Anomalize(TransformBase):
     both the anomalized time series along with associated anomaly labels.
     """
 
-    def __init__(
-        self,
-        anom_prob: float = 0.01,
-        natural_bounds: Tuple[float, float] = (None, None),
-        **kwargs,
-    ):
+    def __init__(self, anom_prob: float = 0.01, natural_bounds: Tuple[float, float] = (None, None), **kwargs):
         """
         :param anom_prob: The probability of anomalizing a particular data point.
         :param natural_bounds: Upper and lower natrual boundaries which injected anomalies should
@@ -64,9 +65,7 @@ class Anomalize(TransformBase):
             label injected anomalies.
         """
         if not self.is_trained:
-            raise RuntimeError(
-                f"Cannot use {type(self).__name__} without " f"training it first!"
-            )
+            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
 
         assert time_series.dim <= 2, (
             "anomalize transforms may only be applied to univariate time series "
@@ -75,27 +74,21 @@ class Anomalize(TransformBase):
         )
 
         if time_series.dim == 2:
-            var, prev_label_var = [
-                time_series.univariates[name] for name in time_series.names
-            ]
+            var, prev_label_var = [time_series.univariates[name] for name in time_series.names]
             assert "anom" in prev_label_var.name
         else:
             var, prev_label_var = time_series.univariates[time_series.names[0]], None
 
         new_var, label_var = self._anomalize_univariate(var)
         if not label_anoms:
-            label_var = UnivariateTimeSeries(
-                label_var.time_stamps, [0] * len(prev_label_var), prev_label_var.name
-            )
+            label_var = UnivariateTimeSeries(label_var.time_stamps, [0] * len(prev_label_var), prev_label_var.name)
 
         # combine label univariates
         if prev_label_var is not None:
             labels = []
             for (t1, lab), (t2, prev_lab) in zip(prev_label_var, label_var):
                 labels.append(max(lab, prev_lab))
-            label_var = UnivariateTimeSeries(
-                label_var.time_stamps, labels, label_var.name
-            )
+            label_var = UnivariateTimeSeries(label_var.time_stamps, labels, label_var.name)
 
         # bound result
         return TimeSeries.from_ts_list([self.bound(new_var.to_ts()), label_var.to_ts()])
@@ -189,9 +182,7 @@ class Shock(Anomalize):
         """
         pass
 
-    def _anomalize_univariate(
-        self, var: UnivariateTimeSeries
-    ) -> Tuple[UnivariateTimeSeries, UnivariateTimeSeries]:
+    def _anomalize_univariate(self, var: UnivariateTimeSeries) -> Tuple[UnivariateTimeSeries, UnivariateTimeSeries]:
         ems = var.to_pd().ewm(alpha=self.alpha, adjust=False).std(bias=True)
 
         new_vals, labels = [], []

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Module for visualizing model predictions.
 """
@@ -63,14 +69,10 @@ class Figure:
         :param yhat_prev_lb: lower bound on ``yhat_prev`` (if model supports uncertainty estimation)
         :param yhat_prev_ub: upper bound on ``yhat_prev`` (if model supports uncertainty estimation)
         """
-        assert not (
-            anom is not None and y is None
-        ), "If `anom` is given, `y` must also be given"
+        assert not (anom is not None and y is None), "If `anom` is given, `y` must also be given"
 
         if yhat is None:
-            assert yhat_lb is None and yhat_ub is None, (
-                "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
-            )
+            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
         else:
             assert (yhat_lb is None and yhat_ub is None) or (
                 yhat_lb is not None and yhat_ub is not None
@@ -78,8 +80,7 @@ class Figure:
 
         if yhat_prev is None:
             assert yhat_prev_lb is None and yhat_prev_ub is None, (
-                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if "
-                "`yhat_prev` is given"
+                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if " "`yhat_prev` is given"
             )
         else:
             assert (yhat_prev_lb is None and yhat_prev_ub is None) or (
@@ -97,9 +98,7 @@ class Figure:
         self.y_prev = y_prev
         self.yhat_prev = yhat_prev
         if yhat_prev_lb is not None and yhat_prev_ub is not None:
-            self.yhat_prev_iqr = TimeSeries(
-                {"lb": yhat_prev_lb, "ub": yhat_prev_ub}
-            ).align()
+            self.yhat_prev_iqr = TimeSeries({"lb": yhat_prev_lb, "ub": yhat_prev_ub}).align()
         else:
             self.yhat_prev_iqr = None
 
@@ -163,14 +162,7 @@ class Figure:
         else:
             return None
 
-    def plot(
-        self,
-        title=None,
-        metric_name=None,
-        figsize=(1000, 600),
-        ax=None,
-        label_alias: Dict[str, str] = None,
-    ):
+    def plot(self, title=None, metric_name=None, figsize=(1000, 600), ax=None, label_alias: Dict[str, str] = None):
         """
         Plots the figure in matplotlib.
 
@@ -215,23 +207,14 @@ class Figure:
         if yhat is not None:
             metric_name = yhat.name if metric_name is None else metric_name
             yhat_label = full_label_alias.get("yhat")
-            ln = ax.plot(
-                yhat.index,
-                yhat.np_values,
-                ls="-",
-                c="#0072B2",
-                zorder=0,
-                label=yhat_label,
-            )
+            ln = ax.plot(yhat.index, yhat.np_values, ls="-", c="#0072B2", zorder=0, label=yhat_label)
             lines.extend(ln)
 
         # Get & plot the uncertainty of the prediction (if applicable)
         iqr = self.get_yhat_iqr()
         if iqr is not None:
             lb, ub = iqr.univariates["lb"], iqr.univariates["ub"]
-            ax.fill_between(
-                lb.index, lb.values, ub.values, color="#0072B2", alpha=0.2, zorder=2
-            )
+            ax.fill_between(lb.index, lb.values, ub.values, color="#0072B2", alpha=0.2, zorder=2)
 
         # Plot anomaly scores if desired
         if self.anom is not None and self.y is not None:
@@ -251,9 +234,7 @@ class Figure:
         # Format the axes before returning the figure
         locator = AutoDateLocator(interval_multiples=False)
         formatter = AutoDateFormatter(locator)
-        ax.set_xlim(
-            self.t0 - (self.tf - self.t0) / 20, self.tf + (self.tf - self.t0) / 20
-        )
+        ax.set_xlim(self.t0 - (self.tf - self.t0) / 20, self.tf + (self.tf - self.t0) / 20)
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(formatter)
         ax.grid(True, which="major", c="gray", ls="-", lw=1, alpha=0.2)
@@ -264,13 +245,7 @@ class Figure:
         fig.tight_layout()
         return fig, ax
 
-    def plot_plotly(
-        self,
-        title=None,
-        metric_name=None,
-        figsize=(1000, 600),
-        label_alias: Dict[str, str] = None,
-    ):
+    def plot_plotly(self, title=None, metric_name=None, figsize=(1000, 600), label_alias: Dict[str, str] = None):
         """
         Plots the figure in plotly.
 
@@ -307,12 +282,7 @@ class Figure:
             lb = iqr.univariates["lb"]
             traces.append(
                 go.Scatter(
-                    x=lb.index,
-                    y=lb.np_values,
-                    mode="lines",
-                    line=dict(width=0),
-                    hoverinfo="skip",
-                    showlegend=False,
+                    x=lb.index, y=lb.np_values, mode="lines", line=dict(width=0), hoverinfo="skip", showlegend=False
                 )
             )
 
@@ -349,11 +319,7 @@ class Figure:
         if y is not None:
             traces.append(
                 go.Scatter(
-                    name=y.name,
-                    x=y.index,
-                    y=y.values,
-                    mode="lines",
-                    line=dict(color=actual_color, width=line_width),
+                    name=y.name, x=y.index, y=y.values, mode="lines", line=dict(color=actual_color, width=line_width)
                 )
             )
 
@@ -395,12 +361,8 @@ class Figure:
                     buttons=list(
                         [
                             dict(count=7, label="1w", step="day", stepmode="backward"),
-                            dict(
-                                count=1, label="1m", step="month", stepmode="backward"
-                            ),
-                            dict(
-                                count=6, label="6m", step="month", stepmode="backward"
-                            ),
+                            dict(count=1, label="1m", step="month", stepmode="backward"),
+                            dict(count=6, label="6m", step="month", stepmode="backward"),
                             dict(count=1, label="1y", step="year", stepmode="backward"),
                             dict(step="all"),
                         ]
@@ -413,8 +375,7 @@ class Figure:
         if title is not None:
             layout["title"] = title
         fig = make_subplots(
-            specs=[[{"secondary_y": anom_trace is not None}]],
-            figure=go.Figure(data=traces, layout=layout),
+            specs=[[{"secondary_y": anom_trace is not None}]], figure=go.Figure(data=traces, layout=layout)
         )
         if anom_trace is not None:
             fig.add_trace(anom_trace, secondary_y=True)
@@ -424,9 +385,7 @@ class Figure:
                 minval, maxval = minval - delta / 8, maxval + 2 * delta
             else:
                 minval, maxval = minval - 1 / 30, maxval + 1
-            fig.update_yaxes(
-                title_text=anom_label, range=[minval, maxval], secondary_y=True
-            )
+            fig.update_yaxes(title_text=anom_label, range=[minval, maxval], secondary_y=True)
 
         return fig
 
@@ -447,9 +406,7 @@ class MTSFigure:
         assert y is not None, "`y` must be given"
 
         if yhat is None:
-            assert yhat_lb is None and yhat_ub is None, (
-                "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
-            )
+            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
         else:
             assert (yhat_lb is None and yhat_ub is None) or (
                 yhat_lb is not None and yhat_ub is not None
@@ -457,8 +414,7 @@ class MTSFigure:
 
         if yhat_prev is None:
             assert yhat_prev_lb is None and yhat_prev_ub is None, (
-                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if "
-                "`yhat_prev` is given"
+                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if " "`yhat_prev` is given"
             )
         else:
             assert (yhat_prev_lb is None and yhat_prev_ub is None) or (
@@ -515,9 +471,7 @@ class MTSFigure:
 
     def get_yhat_iqr(self):
         """Get IQR of predicted values."""
-        return self._combine_prev(self.yhat_lb, self.yhat_prev_lb), self._combine_prev(
-            self.yhat_ub, self.yhat_prev_ub
-        )
+        return self._combine_prev(self.yhat_lb, self.yhat_prev_lb), self._combine_prev(self.yhat_ub, self.yhat_prev_ub)
 
     @staticmethod
     def _get_layout(title, figsize):
@@ -530,12 +484,8 @@ class MTSFigure:
                     buttons=list(
                         [
                             dict(count=7, label="1w", step="day", stepmode="backward"),
-                            dict(
-                                count=1, label="1m", step="month", stepmode="backward"
-                            ),
-                            dict(
-                                count=6, label="6m", step="month", stepmode="backward"
-                            ),
+                            dict(count=1, label="1m", step="month", stepmode="backward"),
+                            dict(count=6, label="6m", step="month", stepmode="backward"),
                             dict(count=1, label="1y", step="year", stepmode="backward"),
                             dict(step="all"),
                         ]
@@ -572,24 +522,12 @@ class MTSFigure:
             v = y.univariates[name]
             min_y.append(v.np_values.min())
             max_y.append(v.np_values.max())
-            traces.append(
-                go.Scatter(
-                    name=name,
-                    x=v.index,
-                    y=v.np_values,
-                    mode="lines",
-                )
-            )
+            traces.append(go.Scatter(name=name, x=v.index, y=v.np_values, mode="lines"))
             if lb is not None and name in lb.names:
                 v = lb.univariates[name]
                 traces.append(
                     go.Scatter(
-                        x=v.index,
-                        y=v.np_values,
-                        mode="lines",
-                        line=dict(width=0),
-                        hoverinfo="skip",
-                        showlegend=False,
+                        x=v.index, y=v.np_values, mode="lines", line=dict(width=0), hoverinfo="skip", showlegend=False
                     )
                 )
             if yhat is not None and name in yhat.names:
@@ -625,11 +563,7 @@ class MTSFigure:
         if self.anom is not None:
             v = self.anom.univariates[self.anom.names[0]]
             anom_trace = go.Scatter(
-                name="Anomaly Score",
-                x=v.index,
-                y=v.np_values,
-                mode="lines",
-                line=dict(color=anom_color),
+                name="Anomaly Score", x=v.index, y=v.np_values, mode="lines", line=dict(color=anom_color)
             )
 
         t_split = self.t_split
@@ -660,7 +594,5 @@ class MTSFigure:
                 minval, maxval = minval - delta / 8, maxval + 2 * delta
             else:
                 minval, maxval = minval - 1 / 30, maxval + 1
-            fig.update_yaxes(
-                title_text="Anomaly Score", range=[minval, maxval], secondary_y=True
-            )
+            fig.update_yaxes(title_text="Anomaly Score", range=[minval, maxval], secondary_y=True)
         return fig

@@ -1,11 +1,12 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 
-from merlion.utils.istat import (
-    Mean,
-    Variance,
-    ExponentialMovingAverage,
-    RecencyWeightedVariance,
-)
+from merlion.utils.istat import Mean, Variance, ExponentialMovingAverage, RecencyWeightedVariance
 from os.path import abspath, dirname
 import sys
 import unittest
@@ -46,11 +47,7 @@ class TestIStat(unittest.TestCase):
             ivar.add_batch(data)
             self.assertAlmostEqual(np.var(data, ddof=1), ivar.value, places=-1)
             # variance with initial values
-            init_ivar = Variance(
-                ex_value=np.mean(left),
-                ex2_value=np.mean(np.array(left) ** 2),
-                n=len(left),
-            )
+            init_ivar = Variance(ex_value=np.mean(left), ex2_value=np.mean(np.array(left) ** 2), n=len(left))
             init_ivar.add_batch(right)
             self.assertAlmostEqual(np.var(data, ddof=1), init_ivar.value, places=-1)
             # drop left values to get right var
@@ -82,9 +79,7 @@ class TestIStat(unittest.TestCase):
                 expected_ema = pd.Series(left).ewm(alpha=rw).mean().iloc[-1]
                 self.assertAlmostEqual(expected_ema, iema.value, places=5)
                 # ema with initial value
-                init_iema = ExponentialMovingAverage(
-                    recency_weight=rw, value=iema.value, n=iema.n
-                )
+                init_iema = ExponentialMovingAverage(recency_weight=rw, value=iema.value, n=iema.n)
                 init_iema.add_batch(right)
                 iema.add_batch(right)
                 self.assertAlmostEqual(iema.value, init_iema.value, places=5)
@@ -92,10 +87,7 @@ class TestIStat(unittest.TestCase):
                 irwv = RecencyWeightedVariance(recency_weight=rw)
                 irwv.add_batch(left)
                 init_irwv = RecencyWeightedVariance(
-                    recency_weight=rw,
-                    n=irwv.n,
-                    ex_value=irwv.ex.value,
-                    ex2_value=irwv.ex2.value,
+                    recency_weight=rw, n=irwv.n, ex_value=irwv.ex.value, ex2_value=irwv.ex2.value
                 )
                 init_irwv.add_batch(right)
                 irwv.add_batch(right)
@@ -104,8 +96,6 @@ class TestIStat(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

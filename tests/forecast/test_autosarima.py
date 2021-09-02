@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from os.path import abspath, dirname, join
 import pytest
@@ -784,9 +790,11 @@ class TestAutoSarima(unittest.TestCase):
         self.model = SeasonalityLayer(
             model=AutoSarima(
                 model=Sarima(
-                    AutoSarimaConfig(order=(15, "auto", 5),
-                           seasonal_order=(2, "auto", 1, "auto"),
-                        max_forecast_steps=self.max_forecast_steps, maxiter=5
+                    AutoSarimaConfig(
+                        order=(15, "auto", 5),
+                        seasonal_order=(2, "auto", 1, "auto"),
+                        max_forecast_steps=self.max_forecast_steps,
+                        maxiter=5,
                     )
                 )
             )
@@ -795,18 +803,12 @@ class TestAutoSarima(unittest.TestCase):
     def test_forecast(self):
         # sMAPE = 3.1810 with pqPQ
         train_pred, train_err = self.model.train(
-            self.train_data,
-            train_config={
-                "enforce_stationarity": False,
-                "enforce_invertibility": False,
-            },
+            self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
         )
 
         # check automatic periodicity detection
         k = self.test_data.names[0]
-        m = autosarima_utils.multiperiodicity_detection(
-            self.train_data.univariates[k].np_values
-        )
+        m = autosarima_utils.multiperiodicity_detection(self.train_data.univariates[k].np_values)
         self.assertEqual(m[0], 24)
 
         # check the length of training results
@@ -820,9 +822,7 @@ class TestAutoSarima(unittest.TestCase):
         # check the forecasting results w.r.t sMAPE
         y_true = self.test_data.univariates[k].np_values
         y_hat = pred.univariates[pred.names[0]].np_values
-        smape = np.mean(
-            200.0 * np.abs((y_true - y_hat) / (np.abs(y_true) + np.abs(y_hat)))
-        )
+        smape = np.mean(200.0 * np.abs((y_true - y_hat) / (np.abs(y_true) + np.abs(y_hat))))
         logger.info(f"sMAPE = {smape:.4f}")
         self.assertLessEqual(smape, 4.5)
 
@@ -838,8 +838,6 @@ class TestAutoSarima(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 """
 Multiple z-score model (static thresholding at multiple time scales).
 """
@@ -23,9 +29,7 @@ class ZMSConfig(DetectorConfig, NormalizingConfig):
 
     _default_transform = TemporalResample(trainable_granularity=True)
 
-    def __init__(
-        self, base: int = 2, n_lags: int = None, lag_inflation: float = 1.0, **kwargs
-    ):
+    def __init__(self, base: int = 2, n_lags: int = None, lag_inflation: float = 1.0, **kwargs):
         r"""
         Configuration class for ZMS. The transform of this config is actually a
         pre-processing step, followed by the desired number of lag transforms
@@ -82,11 +86,7 @@ class ZMSConfig(DetectorConfig, NormalizingConfig):
         the output dimension (number of lags) will change.
         """
         self._n_lags = n
-        lags = (
-            [LagTransform(self.base ** k, pad=True) for k in range(n)]
-            if n is not None
-            else []
-        )
+        lags = [LagTransform(self.base ** k, pad=True) for k in range(n)] if n is not None else []
         self.lags = TransformStack([Identity(), *lags])
         self.normalize = MeanVarNormalize()
 
@@ -139,42 +139,28 @@ class ZMS(DetectorBase):
         return self.lag_inflation > 0.0 and len(self.lag_scales) > 1
 
     def train(
-        self,
-        train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
-        train_config=None,
-        post_rule_train_config=None,
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         if self.n_lags is None:
             self.n_lags = int(log(len(train_data), self.config.base))
 
-        self.train_pre_process(
-            train_data, require_even_sampling=False, require_univariate=False
-        )
+        self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         train_scores = self.get_anomaly_score(train_data)
         self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
         return train_scores
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None
-    ) -> TimeSeries:
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         z_scores = time_series.to_pd().values
 
         if self.adjust_z_scores:
             # choose z-score according to adjusted z-scores
             adjusted_z_scores = np.hstack(
-                (
-                    z_scores[:, 0:1],
-                    z_scores[:, 1:]
-                    / (np.asarray(self.lag_scales) ** self.lag_inflation),
-                )
+                (z_scores[:, 0:1], z_scores[:, 1:] / (np.asarray(self.lag_scales) ** self.lag_inflation))
             )
             lag_args = np.argmax(adjusted_z_scores, axis=1)
             scores = [z_scores[(i, a)] for i, a in enumerate(lag_args)]
         else:
             scores = np.nanmax(np.abs(z_scores), axis=1)
 
-        return UnivariateTimeSeries(
-            time_stamps=time_series.time_stamps, values=scores, name="anom_score"
-        ).to_ts()
+        return UnivariateTimeSeries(time_stamps=time_series.time_stamps, values=scores, name="anom_score").to_ts()

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 from functools import reduce
 import logging
 import os
@@ -22,11 +28,7 @@ class TestDynamicBaseline(unittest.TestCase):
 
         np.random.seed(1234)
         self.data = TimeSeriesGenerator(
-            f=lambda x: np.sin(x * 0.2) + 0.5 * np.sin(x * 0.05),
-            n=30000,
-            x0=2,
-            step=1.5,
-            tdelta="55min",
+            f=lambda x: np.sin(x * 0.2) + 0.5 * np.sin(x * 0.05), n=30000, x0=2, step=1.5, tdelta="55min"
         ).generate()
         logger.info(f"Data looks like:\n{self.data[:5]}")
 
@@ -35,9 +37,7 @@ class TestDynamicBaseline(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
 
         self.model = DynamicBaseline(
-            DynamicBaselineConfig(
-                train_window="15d", wind_sz="1h", trends=["daily", "weekly"]
-            )
+            DynamicBaselineConfig(train_window="15d", wind_sz="1h", trends=["daily", "weekly"])
         )
 
         logger.info("Training model...\n")
@@ -94,17 +94,10 @@ class TestDynamicBaseline(unittest.TestCase):
         rolling_config = DynamicBaselineConfig(train_window=scope, **kwargs)
         fixed_config = DynamicBaselineConfig(fixed_period=fixed_period, **kwargs)
 
-        rolling_model, rolling_imodel = DynamicBaseline(
-            rolling_config
-        ), DynamicBaseline(rolling_config)
-        fixed_model, fixed_imodel = DynamicBaseline(fixed_config), DynamicBaseline(
-            fixed_config
-        )
+        rolling_model, rolling_imodel = DynamicBaseline(rolling_config), DynamicBaseline(rolling_config)
+        fixed_model, fixed_imodel = DynamicBaseline(fixed_config), DynamicBaseline(fixed_config)
 
-        for model, imodel in (
-            (fixed_model, fixed_imodel),
-            (rolling_model, rolling_imodel),
-        ):
+        for model, imodel in ((fixed_model, fixed_imodel), (rolling_model, rolling_imodel)):
             # train model
             model.train(self.vals_train)
             # train & update model incrementally
@@ -112,9 +105,7 @@ class TestDynamicBaseline(unittest.TestCase):
             imodel.update(self.vals_train[-125:-74])
             imodel.update(self.vals_train[-74:])
             # score
-            scores, iscores = [
-                m.get_anomaly_score(self.vals_test) for m in (model, imodel)
-            ]
+            scores, iscores = [m.get_anomaly_score(self.vals_test) for m in (model, imodel)]
             score_diffs = scores.squeeze().np_values - iscores.squeeze().np_values
             self.assertAlmostEqual(np.abs(score_diffs).max(), 0, delta=1e-3)
 
@@ -134,9 +125,7 @@ class TestDynamicBaseline(unittest.TestCase):
         ]
         for trends in trend_sets:
             fixed_period = ("1970-07-22", "1971-09-27")
-            fixed_model = DynamicBaseline(
-                DynamicBaselineConfig(trends=trends, fixed_period=fixed_period)
-            )
+            fixed_model = DynamicBaseline(DynamicBaselineConfig(trends=trends, fixed_period=fixed_period))
             rolling_model = DynamicBaseline(DynamicBaselineConfig(trends=trends))
 
             for model in (rolling_model, fixed_model):
@@ -169,20 +158,13 @@ class TestDynamicBaseline(unittest.TestCase):
 
                 # determine key
                 key = (
-                    reduce(
-                        lambda key1, key2: lambda t: key1(t) + key2(t),
-                        keys,
-                        lambda t: tuple(),
-                    )
+                    reduce(lambda key1, key2: lambda t: key1(t) + key2(t), keys, lambda t: tuple())
                     if len(keys) > 1
                     else lambda t: keys[0](t)[0]
                 )
 
                 expected_scores = np.asarray(
-                    [
-                        (x - mu[key(t)]) / sd[key(t)]
-                        for t, x in self.vals_test.to_pd().iterrows()
-                    ]
+                    [(x - mu[key(t)]) / sd[key(t)] for t, x in self.vals_test.to_pd().iterrows()]
                 ).flatten()
                 score_diffs = scores - expected_scores
                 self.assertAlmostEqual(np.abs(score_diffs).max(), 0, delta=1e-3)
@@ -197,19 +179,11 @@ class TestDynamicBaseline(unittest.TestCase):
         window = tuple(t.timestamp() for t in (tf - pd.Timedelta(scope), tf))
 
         kwargs = dict(wind_sz="11min", trends=[])
-        rolling_model = DynamicBaseline(
-            DynamicBaselineConfig(train_window=scope, **kwargs)
-        )
-        fixed_model = DynamicBaseline(
-            DynamicBaselineConfig(fixed_period=window, **kwargs)
-        )
+        rolling_model = DynamicBaseline(DynamicBaselineConfig(train_window=scope, **kwargs))
+        fixed_model = DynamicBaseline(DynamicBaselineConfig(fixed_period=window, **kwargs))
 
         # get z-scores
-        rel_vals = (
-            self.vals_train.window(t0=window[0], tf=window[1], include_tf=True)
-            .squeeze()
-            .np_values
-        )
+        rel_vals = self.vals_train.window(t0=window[0], tf=window[1], include_tf=True).squeeze().np_values
         mu, sd = rel_vals.mean(), rel_vals.std()
         z_scores = (self.vals_test.squeeze().np_values - mu) / sd
 
@@ -238,9 +212,7 @@ class TestDynamicBaseline(unittest.TestCase):
         ).generate()
         train_vals, test_vals = data[: 2 * 24], data[2 * 24 :]
 
-        model = DynamicBaseline(
-            DynamicBaselineConfig(train_window="7d", trends=["weekly"])
-        )
+        model = DynamicBaseline(DynamicBaselineConfig(train_window="7d", trends=["weekly"]))
         model.train(train_vals)
 
         scores = model.get_anomaly_score(test_vals).squeeze().values
@@ -253,12 +225,8 @@ class TestDynamicBaseline(unittest.TestCase):
 
         # check upper and lower bounds and baselines
         figure = self.model.get_baseline_figure(self.vals_test)
-        self.assertTrue(
-            (figure.yhat_iqr.univariates["lb"].np_values < figure.yhat.np_values).all()
-        )
-        self.assertTrue(
-            (figure.yhat_iqr.univariates["ub"].np_values > figure.yhat.np_values).all()
-        )
+        self.assertTrue((figure.yhat_iqr.univariates["lb"].np_values < figure.yhat.np_values).all())
+        self.assertTrue((figure.yhat_iqr.univariates["ub"].np_values > figure.yhat.np_values).all())
 
         # test plot with matplotlib
         figdir = join(rootdir, "tmp", "dbl_plot")
@@ -282,8 +250,6 @@ class TestDynamicBaseline(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.INFO,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2021 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import math
 from os.path import abspath, dirname, join
@@ -7,10 +13,7 @@ import unittest
 import numpy as np
 
 from merlion.transform.resample import TemporalResample
-from merlion.models.anomaly.forecast_based.arima import (
-    ArimaDetector,
-    ArimaDetectorConfig,
-)
+from merlion.models.anomaly.forecast_based.arima import ArimaDetector, ArimaDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -30,11 +33,7 @@ class TestArima(unittest.TestCase):
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :]
         self.model = ArimaDetector(
-            ArimaDetectorConfig(
-                max_forecast_steps=self.test_len,
-                order=(4, 1, 2),
-                transform=TemporalResample("15min"),
-            )
+            ArimaDetectorConfig(max_forecast_steps=self.test_len, order=(4, 1, 2), transform=TemporalResample("15min"))
         )
 
     def test_score(self):
@@ -105,8 +104,6 @@ class TestArima(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s",
-        stream=sys.stdout,
-        level=logging.DEBUG,
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()
