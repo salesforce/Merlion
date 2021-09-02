@@ -1,4 +1,4 @@
-name: Run tests
+name: build
 
 on:
   push:
@@ -21,13 +21,55 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install Merlion
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        python -m pip install pytest
-        sudo apt-get install openjdk-11-jdk
+        python -m pip install pytest coverage
+        sudo apt-get install bc openjdk-11-jdk
         pip install .[plot]
         pip install -e ts_datasets/
+
     - name: Test with pytest
+      id: test
       run: |
-        pytest -v
+        coverage run --source=merlion/ -L -m pytest -v
+
+        # Obtain code coverage from coverage report
+        coverage report
+        coverage xml -o .github/badges/coverage.xml
+        COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
+        echo "##[set-output name=coverage;]${COVERAGE}"
+
+        # Choose a color based on code coverage
+        COVERAGE=${COVERAGE/\%/}
+        if (($COVERAGE > 90)); then
+          COLOR=brightgreen
+        elif (($COVERAGE > 80)); then
+          COLOR=green
+        elif (($COVERAGE > 70)); then
+          COLOR=yellow
+        elif (($COVERAGE > 60)); then
+          COLOR=orange
+        else
+          COLOR=red
+        fi
+        echo "##[set-output name=color;]${COLOR}"
+
+    - name: Create coverage badge
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' }}
+      uses: emibcn/badge-action@v1.2.1
+      with:
+        label: coverage
+        status: ${{ steps.test.outputs.coverage }}
+        color: ${{ steps.test.outputs.color }}
+        path: .github/badges/coverage.svg
+
+    - name: Push badge to badges branch
+      uses: s0/git-publish-subdir-action@develop
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' }}
+      env:
+        REPO: self
+        BRANCH: badges
+        FOLDER: .github/badges
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
