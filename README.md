@@ -1,5 +1,21 @@
 # Merlion: A Machine Learning Framework for Time Series Intelligence
 
+<div align="center">
+  <a href="https://github.com/salesforce/Merlion/actions">
+  <img alt="Tests" src="https://github.com/salesforce/Merlion/actions/workflows/tests.yml/badge.svg?branch=main"/>
+  </a>
+  <a href="https://github.com/salesforce/Merlion/actions">
+  <img alt="Coverage" src="https://github.com/salesforce/Merlion/raw/badges/coverage.svg"/>
+  </a>
+  <a href="https://pypi.python.org/pypi/sfdc-merlion">
+  <img alt="PyPI Version" src="https://img.shields.io/pypi/v/sfdc-merlion.svg"/>
+  </a>
+  <a href="https://salesforce.github.io/Merlion">
+  <img alt="docs" src="https://github.com/salesforce/Merlion/actions/workflows/docs.yml/badge.svg"/>
+  </a>
+</div>
+
+
 ## Table of Contents
 1. [Introduction](#introduction)
 1. [Installation](#installation)
@@ -96,7 +112,7 @@ fig, ax = model.plot_anomaly(time_series=test_data)
 plot_anoms(ax=ax, anomaly_labels=test_labels)
 plt.show()
 ```
-![anomaly figure](figures/anom_example.png)
+![anomaly figure](https://github.com/salesforce/Merlion/raw/main/figures/anom_example.png)
 ```python
 # Evaluate the model's predictions quantitatively
 from merlion.evaluate.anomaly import TSADMetric
@@ -132,7 +148,7 @@ import matplotlib.pyplot as plt
 fig, ax = model.plot_forecast(time_series=test_data, plot_forecast_uncertainty=True)
 plt.show()
 ```
-![forecast figure](figures/forecast_example.png)
+![forecast figure](https://github.com/salesforce/Merlion/raw/main/figures/forecast_example.png)
 ```python
 # Evaluate the model's predictions quantitatively
 from scipy.stats import norm
