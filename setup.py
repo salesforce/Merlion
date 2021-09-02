@@ -16,6 +16,7 @@ setup(
     "Daeki Cho, Bo Zong, Silvio Savarese",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",
     long_description=open("README.md", "r", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
     keywords="Time Series Anomaly Detection Forecast Visualization",
     url="https://github.com/salesforce/Merlion",
     license="3-Clause BSD",
