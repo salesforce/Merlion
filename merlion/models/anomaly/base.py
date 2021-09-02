@@ -228,6 +228,19 @@ class DetectorBase(ModelBase):
         plot_time_series_prev=False,
         fig: Figure = None,
     ) -> Figure:
+        """
+        :param time_series: The `TimeSeries` we wish to plot & predict anomaly scores for.
+        :param time_series_prev: a `TimeSeries` immediately preceding
+            ``time_stamps``. If given, we use it to initialize the time series
+            model. Otherwise, we assume that ``time_stamps`` immediately follows
+            the training data.
+        :param filter_scores: whether to filter the anomaly scores by the
+            post-rule before plotting them.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
+            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param fig: a `Figure` we might want to add anomaly scores onto.
+        :return: a `Figure` of the model's anomaly score predictions.
+        """
         f = self.get_anomaly_label if filter_scores else self.get_anomaly_score
         scores = f(time_series, time_series_prev=time_series_prev)
         scores = scores.univariates[scores.names[0]]
@@ -268,8 +281,7 @@ class DetectorBase(ModelBase):
         series overlaid as points color-coded to indicate their severity as
         anomalies.
 
-        :param time_series: The time series we wish to plot, with color-coding
-            to indicate anomalies.
+        :param time_series: The `TimeSeries` we wish to plot & predict anomaly scores for.
         :param time_series_prev: a `TimeSeries` immediately preceding
             ``time_series``. Plotted as context if given.
         :param filter_scores: whether to filter the anomaly scores by the
@@ -304,8 +316,7 @@ class DetectorBase(ModelBase):
         series overlaid as points color-coded to indicate their severity as
         anomalies.
 
-        :param time_series: The time series we wish to plot, with color-coding
-            to indicate anomalies.
+        :param time_series: The `TimeSeries` we wish to plot & predict anomaly scores for.
         :param time_series_prev: a `TimeSeries` immediately preceding
             ``time_series``. Plotted as context if given.
         :param filter_scores: whether to filter the anomaly scores by the

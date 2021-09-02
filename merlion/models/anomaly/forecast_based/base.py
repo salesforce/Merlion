@@ -119,15 +119,38 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        plot_anomaly=True,
         filter_scores=True,
         plot_forecast=False,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
     ) -> Figure:
+        """
+        :param time_series: the time series over whose timestamps we wish to
+            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
+            should be provided.
+        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
+            one of ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a `TimeSeries` immediately preceding
+            ``time_stamps``. If given, we use it to initialize the time series
+            model. Otherwise, we assume that ``time_stamps`` immediately follows
+            the training data.
+        :param plot_anomaly: Whether to plot the model's predicted anomaly scores.
+        :param filter_scores: whether to filter the anomaly scores by the
+            post-rule before plotting them.
+        :param plot_forecast: Whether to plot the model's forecasted values.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
+            inter-quartile range) for forecast values. Not supported for all
+            models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
+            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :return: a `Figure` of the model's anomaly score predictions and/or forecast.
+        """
         assert not (
             time_series is None and time_stamps is None
         ), "Must provide at least one of time_series or time_stamps"
         fig = None
+        plot_forecast = plot_forecast or not plot_anomaly
         if plot_forecast or time_series is None:
             fig = ForecasterBase.get_figure(
                 self,
@@ -137,7 +160,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
                 plot_forecast_uncertainty=plot_forecast_uncertainty,
                 plot_time_series_prev=plot_time_series_prev,
             )
-        if time_series is None:
+        if time_series is None or not plot_anomaly:
             return fig
         return DetectorBase.get_figure(
             self,
@@ -191,6 +214,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
             time_series=time_series,
             time_series_prev=time_series_prev,
             filter_scores=filter_scores,
+            plot_anomaly=True,
             plot_forecast=plot_forecast,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
@@ -242,6 +266,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
             time_series_prev=time_series_prev,
             filter_scores=filter_scores,
             plot_forecast=plot_forecast,
+            plot_anomaly=True,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
         )
@@ -249,3 +274,48 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
         if plot_forecast:
             title += " (Forecast Overlaid)"
         return fig.plot_plotly(title=title, metric_name=metric_name, figsize=figsize)
+
+    def plot_forecast(
+        self,
+        *,
+        time_series: TimeSeries = None,
+        time_stamps: List[int] = None,
+        time_series_prev: TimeSeries = None,
+        plot_forecast_uncertainty=False,
+        plot_time_series_prev=False,
+        figsize=(1000, 600),
+        ax=None,
+    ):
+        fig = self.get_figure(
+            time_series=time_series,
+            time_stamps=time_stamps,
+            time_series_prev=time_series_prev,
+            plot_forecast_uncertainty=plot_forecast_uncertainty,
+            plot_time_series_prev=plot_time_series_prev,
+            plot_anomaly=False,
+            plot_forecast=True,
+        )
+        title = f"{type(self).__name__}: Forecast of {self.target_name}"
+        return fig.plot(title=title, metric_name=self.target_name, figsize=figsize, ax=ax)
+
+    def plot_forecast_plotly(
+        self,
+        *,
+        time_series: TimeSeries = None,
+        time_stamps: List[int] = None,
+        time_series_prev: TimeSeries = None,
+        plot_forecast_uncertainty=False,
+        plot_time_series_prev=False,
+        figsize=(1000, 600),
+    ):
+        fig = self.get_figure(
+            time_series=time_series,
+            time_stamps=time_stamps,
+            time_series_prev=time_series_prev,
+            plot_forecast_uncertainty=plot_forecast_uncertainty,
+            plot_time_series_prev=plot_time_series_prev,
+            plot_anomaly=False,
+            plot_forecast=True,
+        )
+        title = f"{type(self).__name__}: Forecast of {self.target_name}"
+        return fig.plot_plotly(title=title, metric_name=self.target_name, figsize=figsize)

@@ -385,9 +385,10 @@ class ForecasterBase(ModelBase):
 
     def plot_forecast_plotly(
         self,
-        time_stamps: List[int],
-        time_series_prev: TimeSeries = None,
         *,
+        time_series: TimeSeries = None,
+        time_stamps: List[int] = None,
+        time_series_prev: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
         figsize=(1000, 600),
@@ -397,7 +398,11 @@ class ForecasterBase(ModelBase):
         plotting the uncertainty of the forecast, as well as the past values
         (both true and predicted) of the time series.
 
-        :param time_stamps: a list of timestamps we wish to forecast for
+        :param time_series: the time series over whose timestamps we wish to
+            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
+            should be provided.
+        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
+            one of ``time_series`` or ``time_stamps`` should be provided.
         :param time_series_prev: a `TimeSeries` immediately preceding
             ``time_stamps``. If given, we use it to initialize the time series
             model. Otherwise, we assume that ``time_stamps`` immediately follows
@@ -410,6 +415,7 @@ class ForecasterBase(ModelBase):
         :param figsize: figure size in pixels
         """
         fig = self.get_figure(
+            time_series=time_series,
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
             plot_forecast_uncertainty=plot_forecast_uncertainty,

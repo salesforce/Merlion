@@ -71,18 +71,21 @@ class TestPlot(unittest.TestCase):
         try:
             import plotly
 
-            fig = self.model.plot_anomaly_plotly(
+            fig1 = self.model.plot_anomaly_plotly(
                 time_series=self.vals_test,
                 time_series_prev=self.vals_train,
                 plot_forecast=True,
                 plot_forecast_uncertainty=True,
                 plot_time_series_prev=True,
             )
-            plot_anoms_plotly(fig, self.labels)
+            plot_anoms_plotly(fig1, self.labels)
+
+            fig2 = self.model.plot_forecast_plotly(time_series=self.vals_test, plot_forecast_uncertainty=False)
             try:
                 import kaleido
 
-                fig.write_image((join(figdir, "prophet_plotly.png")), engine="kaleido")
+                fig1.write_image((join(figdir, "prophet_plotly.png")), engine="kaleido")
+                fig2.write_image((join(figdir, "prophet_forecast_plotly.png")), engine="kaleido")
             except ImportError:
                 logger.info("kaleido not installed, not trying to save image")
         except ImportError:
