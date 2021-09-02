@@ -225,42 +225,6 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
     return maxiter
 
 
-def periodicity_detection(x, max_lag=None, m=None):
-    """
-    Detect the periodicity of a time series with the assumption of one seasonality period at most.
-    The idea can be found in theta method
-    (https://github.com/Mcompetitions/M4-methods/blob/master/4Theta%20method.R).
-    Returns a tuple (seasonality, periodicity), where seasonality indicates whether the time
-    series has a seasonal behavior, periodicity indicates the seasonal period
-    """
-    tcrit = 1.96
-    if m is not None and x.shape[0] < 3 * m:
-        return False, 0
-    xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
-
-    # select the local maximum points with acf > 0
-    candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
-    if candidates.shape[0] == 0:
-        return False, 0
-    elif candidates.shape[0] > 1:
-        candidates_filter = np.array([candidates[0]])
-        for i in range(1, candidates.shape[0]):
-            if not (np.divmod(candidates[i], candidates_filter)[1] == 0).any():
-                candidates_filter = np.append(candidates_filter, candidates[i])
-        candidates = candidates_filter
-    xacf = xacf[1:]
-    clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-    if m is not None:
-        if m not in candidates:
-            return False, m
-        candidates = [m]
-    # statistical test if acf is significant w.r.t a normal distribution
-    for candidate in candidates:
-        if np.abs(xacf[candidate - 1]) > clim[candidate - 1] and candidate * 3 < x.shape[0]:
-            return True, candidate
-    return False, 0
-
-
 def multiperiodicity_detection(x, max_lag=None):
     """
     Detect multiple periodicity of a time series

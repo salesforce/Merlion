@@ -253,12 +253,6 @@ def gen_next_seq_label_pairs(data: TimeSeries, target_seq_index: int, maxlags: i
         yield data[i - maxlags : i], data_uni[i : i + forecast_steps]
 
 
-def transform_data(transform: TransformBase, data: TimeSeries):
-    assert isinstance(transform, TransformBase)
-    transformed_data = transform(data)
-    return transformed_data
-
-
 def hybrid_forecast(model, inputs, steps, prediction_stride, maxlags):
     """
     n-step autoregression method for univairate data, each regression step updates n_prediction_steps data points

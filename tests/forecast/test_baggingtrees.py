@@ -77,7 +77,7 @@ class TestRandomForestForecaster(unittest.TestCase):
                 max_forecast_steps=self.max_forecast_steps,
                 maxlags=self.maxlags,
                 target_seq_index=self.i,
-                sampling_mode="normal",
+                sampling_mode="stats",
                 prediction_stride=1,
                 n_estimators=20,
             )
