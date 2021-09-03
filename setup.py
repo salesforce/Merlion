@@ -36,7 +36,7 @@ setup(
         "GitPython",
         "JPype1==1.0.2",
         "matplotlib",
-        "numpy",
+        "numpy!=1.18.*",  # 1.18 causes a bug with scipy
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
         'pystan<3.0"',  # >=3.0 fails with fbprophet
         "scikit-learn>=0.22",  # >=0.22 for changes to isolation forest algorithm
