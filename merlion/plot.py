@@ -40,7 +40,7 @@ def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
             ax.axvspan(t[splits[k]], t[splits[k + 1]], color="#e07070", alpha=0.5)
 
 
-def plot_anoms_plotly(fig: go.Figure, anomaly_labels: TimeSeries):
+def plot_anoms_plotly(fig, anomaly_labels: TimeSeries):
     """
     Plots anomalies as pink windows on the plotly ``Figure`` object ``fig``.
     """
