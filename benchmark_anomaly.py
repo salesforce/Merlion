@@ -72,12 +72,13 @@ def parse_args():
     parser.add_argument(
         "--retrain_freq",
         type=str,
-        default="1d",
+        default="default",
         help="String (e.g. 1d, 2w, etc.) specifying how often "
         "to re-train the model before evaluating it on "
         "the next window of data. Note that re-training "
         "is unsupervised, i.e. does not use ground truth "
-        "anomaly labels in any way.",
+        "anomaly labels in any way. Default retrain_freq is "
+        "1d for univariate data and None for multivariate.",
     )
     parser.add_argument(
         "--train_window",
@@ -99,14 +100,14 @@ def parse_args():
         type=str,
         default="PointAdjustedF1",
         choices=list(TSADMetric.__members__.keys()),
-        help="Final metric to optimize for when evaluating " "point-adjusted performance",
+        help="Final metric to optimize for when evaluating point-adjusted performance",
     )
     parser.add_argument(
         "--pointwise_metric",
         type=str,
         default="PointwiseF1",
         choices=list(TSADMetric.__members__.keys()),
-        help="Final metric to optimize for when evaluating " "pointwise performance",
+        help="Final metric to optimize for when evaluating pointwise performance",
     )
     parser.add_argument("--unsupervised", action="store_true")
     parser.add_argument(
@@ -149,7 +150,7 @@ def parse_args():
     args.visualize = args.visualize and not args.eval_only
     if args.retrain_freq.lower() in ["", "none", "null"]:
         args.retrain_freq = None
-    else:
+    elif args.retrain_freq != "default":
         rf = pd.to_timedelta(args.retrain_freq).total_seconds()
         if rf % (3600 * 24) == 0:
             args.retrain_freq = f"{int(rf/3600/24)}d"
@@ -193,7 +194,7 @@ def resolve_model_name(model_name: str):
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -211,7 +212,7 @@ def get_model(
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -342,7 +343,7 @@ def train_model(
             df = pd.read_csv(csv)
             ts_df = train_scores.to_pd().append(test_scores.to_pd())
             ts_df.columns = ["y"]
-            ts_df.loc[:, "timestamp"] = ts_df.index.astype(int) // 1e9
+            ts_df.loc[:, "timestamp"] = ts_df.index.view(int) // 1e9
             ts_df.loc[:, "trainval"] = [j < len(train_scores) for j in range(len(ts_df))]
             ts_df.loc[:, "idx"] = i
             df = df.append(ts_df, ignore_index=True)
@@ -572,12 +573,11 @@ def main():
     )
     dataset = get_dataset(args.dataset)
     retrain_freq, train_window = args.retrain_freq, args.train_window
-    if dataset[0][0].shape[1] > 1:
-        if retrain_freq is not None:
-            logger.warning(f"Setting retrain_freq = None for multivariate " f"dataset {type(dataset).__name__}")
-        if train_window is not None:
-            logger.warning(f"Setting train_window = None for multivariate " f"dataset {type(dataset).__name__}")
-        retrain_freq, train_window = None, None
+    univariate = dataset[0][0].shape[1] == 1
+    if retrain_freq == "default":
+        retrain_freq = "1d" if univariate else None
+        desc = "univariate" if univariate else "multivariate"
+        logger.warning(f"Setting retrain_freq = {retrain_freq} for {desc} dataset {type(dataset).__name__}")
 
     for model_name in args.models:
         if not args.eval_only:
