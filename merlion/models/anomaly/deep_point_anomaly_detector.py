@@ -184,7 +184,7 @@ class DeepPointAnomalyDetector(DetectorBase):
     ) -> TimeSeries:
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
-        times, train_values = zip(*train_data)
+        times, train_values = zip(*train_data.align())
         processed_times, train_values = self._preprocess(times), self._preprocess(train_values)
         # train an MLP on with (processed_times, train_values) as (input, target)
         # and report the loss vector corresponding to these points as anomaly scores

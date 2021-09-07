@@ -160,7 +160,7 @@ class LSTMED(DetectorBase):
         """
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
 
-        train_df = train_data.to_pd()
+        train_df = train_data.align().to_pd()
         self._train(train_df.values)
         scores = batch_detect(self, train_df.values)
 
@@ -178,7 +178,7 @@ class LSTMED(DetectorBase):
         """
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         ts = time_series_prev + time_series if time_series_prev is not None else time_series
-        scores = batch_detect(self, ts.to_pd().values)
+        scores = batch_detect(self, ts.align().to_pd().values)
         timestamps = time_series.time_stamps
         return TimeSeries({"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])})
 

@@ -59,7 +59,7 @@ class IsolationForest(DetectorBase):
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-        times, train_values = zip(*train_data)
+        times, train_values = zip(*train_data.align())
         train_values = np.asarray(train_values)
 
         self.model.fit(train_values)
