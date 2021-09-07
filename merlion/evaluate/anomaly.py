@@ -191,9 +191,9 @@ def accumulate_tsad_score(
         returns a ``float``. The `TSADScoreAccumulator` object is returned if
         ``metric`` is ``None``.
     """
-    assert ground_truth.dim == 1 and predict.dim == 1, (
-        "Can only evaluate anomaly scores when ground truth and prediction " "are single-variable time series."
-    )
+    assert (
+        ground_truth.dim == 1 and predict.dim == 1
+    ), "Can only evaluate anomaly scores when ground truth and prediction are single-variable time series."
     ground_truth = ground_truth.univariates[ground_truth.names[0]]
     ts = ground_truth.np_time_stamps
     ys = ground_truth.np_values.astype(bool)

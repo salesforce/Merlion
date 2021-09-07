@@ -33,9 +33,9 @@ class EnergyPower(BaseDataset):
             merlion_root = os.path.abspath(os.path.join(fdir, "..", "..", ".."))
             rootdir = os.path.join(merlion_root, "data", "multivariate", "energy_power")
 
-        assert "energy_power" in rootdir.split("/")[-1], (
-            "energy_power should be found as the last level" " of the directory for this dataset"
-        )
+        assert (
+            "energy_power" in rootdir.split("/")[-1]
+        ), "energy_power should be found as the last level of the directory for this dataset"
 
         dsetdirs = [rootdir]
         extension = "csv.gz"

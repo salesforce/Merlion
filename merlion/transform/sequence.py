@@ -28,9 +28,9 @@ class TransformSequence(InvertibleTransformBase):
         super().__init__()
         self.transforms = []
         for t in transforms:
-            assert isinstance(t, (TransformBase, dict)), (
-                f"Expected all transforms to be instances of TransformBase, " f"or dict, but got {transforms}"
-            )
+            assert isinstance(
+                t, (TransformBase, dict)
+            ), f"Expected all transforms to be instances of TransformBase, or dict, but got {transforms}"
             if isinstance(t, dict):
                 t = TransformFactory.create(**t)
             self.transforms.append(t)
@@ -78,7 +78,7 @@ class TransformSequence(InvertibleTransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         logger.warning(
-            f"_invert() should not be called by a transform of type " f"{type(self).__name__}. Applying the identity.",
+            f"_invert() should not be called by a transform of type {type(self).__name__}. Applying the identity.",
             stack_info=True,
         )
         return time_series

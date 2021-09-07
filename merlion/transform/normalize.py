@@ -71,7 +71,7 @@ class Rescale(InvertibleTransformBase):
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         if not self.is_trained:
-            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
+            raise RuntimeError(f"Cannot use {type(self).__name__} without training it first!")
 
         d = time_series.dim
         bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
@@ -95,7 +95,7 @@ class Rescale(InvertibleTransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         if not self.is_trained:
-            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
+            raise RuntimeError(f"Cannot use {type(self).__name__} without training it first!")
         d = time_series.dim
         bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
         scale = self.scale if isinstance(self.scale, Iterable) else [self.scale] * d

@@ -116,9 +116,7 @@ class EnsembleBase(ModelBase, ABC):
         if config.model_configs is None and models is None:
             raise RuntimeError(f"{msg} Received neither.")
         elif config.model_configs is not None and models is not None:
-            logger.warning(
-                f"{msg} Received both. Overriding `model_configs` " f"with the configs belonging to `models`."
-            )
+            logger.warning(f"{msg} Received both. Overriding `model_configs` with the configs belonging to `models`.")
 
         if models is not None:
             models = [copy.deepcopy(model) for model in models]

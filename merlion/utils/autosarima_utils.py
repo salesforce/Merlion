@@ -587,7 +587,7 @@ class _StepwiseFitWrapper:
 
         # check if the search has been ended after max_steps
         if self.k >= self.max_k:
-            warnings.warn("stepwise search has reached the maximum number " "of tries to find the best fit model")
+            warnings.warn("stepwise search has reached the maximum number of tries to find the best fit model")
         filtered_models_ics = sorted(
             [
                 (v, k, self.ic_dict[k])

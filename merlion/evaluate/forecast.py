@@ -128,7 +128,7 @@ class ForecastScoreAccumulator:
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn("Some values very close to 0, sMAPE might not be " "estimated accurately.")
+            warnings.warn("Some values very close to 0, sMAPE might not be estimated accurately.")
         return np.mean(200.0 * errors / (scale + 1e-8))
 
     def mase(self):
@@ -152,7 +152,7 @@ class ForecastScoreAccumulator:
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn("Some values very close to 0, MASE might not be " "estimated accurately.")
+            warnings.warn("Some values very close to 0, MASE might not be estimated accurately.")
         return np.mean(errors / (scale + 1e-8))
 
     def msis(self):
@@ -183,7 +183,7 @@ class ForecastScoreAccumulator:
 
         # Make sure the divisor is not close to zero at each timestamp
         if (scale < 1e-8).any():
-            warnings.warn("Some values very close to 0, MSIS might not be " "estimated accurately.")
+            warnings.warn("Some values very close to 0, MSIS might not be estimated accurately.")
         return errors / (scale + 1e-8) / len(ground_truth_values)
 
 

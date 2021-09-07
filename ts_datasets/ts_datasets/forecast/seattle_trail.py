@@ -34,9 +34,9 @@ class SeattleTrail(BaseDataset):
             merlion_root = os.path.abspath(os.path.join(fdir, "..", "..", ".."))
             rootdir = os.path.join(merlion_root, "data", "multivariate", "seattle_trail")
 
-        assert "seattle_trail" in rootdir.split("/")[-1], (
-            "seattle_trail should be found as the last level" " of the directory for this dataset"
-        )
+        assert (
+            "seattle_trail" in rootdir.split("/")[-1]
+        ), "seattle_trail should be found as the last level of the directory for this dataset"
 
         dsetdirs = [rootdir]
         extension = "csv"

@@ -149,7 +149,7 @@ def resolve_model_name(model_name: str):
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -165,7 +165,7 @@ def get_model(model_name: str, dataset: BaseDataset, **kwargs) -> ForecasterBase
 
     if model_name not in config_dict:
         raise NotImplementedError(
-            f"Benchmarking not implemented for model {model_name}. Valid " f"model names are {list(config_dict.keys())}"
+            f"Benchmarking not implemented for model {model_name}. Valid model names are {list(config_dict.keys())}"
         )
 
     while "alias" in config_dict[model_name]:
@@ -298,9 +298,7 @@ def train_model(
         for horizon in horizons:
             horizon = granularity_str_to_seconds(horizon)
             max_forecast_steps = math.ceil(horizon / dt.total_seconds())
-            logger.debug(
-                f"horizon is {pd.Timedelta(seconds=horizon)} " f"and max_forecast_steps is {max_forecast_steps}"
-            )
+            logger.debug(f"horizon is {pd.Timedelta(seconds=horizon)} and max_forecast_steps is {max_forecast_steps}")
             if retrain_type == "without_retrain":
                 retrain_freq = None
                 train_window = None
@@ -313,7 +311,7 @@ def train_model(
                 train_window = None
             else:
                 raise ValueError(
-                    "the retrain_type should be without_retrain" "sliding_window_retrain or expanding_window_retrain"
+                    "the retrain_type should be without_retrain, sliding_window_retrain or expanding_window_retrain"
                 )
 
             # Get Model
@@ -344,7 +342,7 @@ def train_model(
 
             # Log relevant info to the CSV
             with open(csv, "a") as f:
-                f.write(f"{i},{df.columns[0]},{horizon},{retrain_type},{n_retrain}," f"{rmses},{smapes}\n")
+                f.write(f"{i},{df.columns[0]},{horizon},{retrain_type},{n_retrain},{rmses},{smapes}\n")
 
             # generate comparison plot
             if visualize:
@@ -490,10 +488,10 @@ def main():
         summary = summarize_full_df(df)
         summary.to_csv(os.path.join(results_dir, f"{basename}_summary.csv"), index=True)
         summary = summary[summary.columns[0]]
-        logger.info(f"Pooled mean   sMAPE: " f"{summary['mean_sMAPE']:.4f}")
-        logger.info(f"Pooled median sMAPE: " f"{summary['median_sMAPE']:.4f}")
-        logger.info(f"Pooled mean   RMSE: " f"{summary['mean_RMSE']:.4f}")
-        logger.info(f"Pooled median RMSE: " f"{summary['median_RMSE']:.4f}")
+        logger.info(f"Pooled mean   sMAPE: {summary['mean_sMAPE']:.4f}")
+        logger.info(f"Pooled median sMAPE: {summary['median_sMAPE']:.4f}")
+        logger.info(f"Pooled mean   RMSE: {summary['mean_RMSE']:.4f}")
+        logger.info(f"Pooled median RMSE: {summary['median_RMSE']:.4f}")
 
     # Now we summarize all results. Get all the individual CSV's as dataframes
     name2df = OrderedDict()

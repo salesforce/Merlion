@@ -107,9 +107,9 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
             f"Expected forecast & standard error of forecast to have the same "
             f"length, but len(forecast) = {len(forecast)}, len(err) = {len(err)}"
         )
-        assert len(forecast) == len(time_series), (
-            f"forecast() returned a forecast with length {len(forecast)}, " f"but expected length {len(time_series)}"
-        )
+        assert len(forecast) == len(
+            time_series
+        ), f"forecast() returned a forecast with length {len(forecast)}, but expected length {len(time_series)}"
 
         return self.forecast_to_anom_score(time_series, forecast, err)
 

@@ -39,9 +39,9 @@ class SolarPlant(BaseDataset):
             merlion_root = os.path.abspath(os.path.join(fdir, "..", "..", ".."))
             rootdir = os.path.join(merlion_root, "data", "multivariate", "solar_plant")
 
-        assert "solar_plant" in rootdir.split("/")[-1], (
-            "solar_plant should be found as the last level " "of the directory for this dataset"
-        )
+        assert (
+            "solar_plant" in rootdir.split("/")[-1]
+        ), "solar_plant should be found as the last level of the directory for this dataset"
 
         # Get all filenames, extracting the zipfile if needed
         fnames = glob.glob(f"{rootdir}/*.csv")

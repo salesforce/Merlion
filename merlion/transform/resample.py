@@ -90,7 +90,7 @@ class TemporalResample(TransformBase):
         if isinstance(agg, str):
             valid = set(AggregationPolicy.__members__.keys())
             if agg not in valid:
-                raise KeyError(f"{agg} is not a valid aggregation policy. " f"Valid aggregation policies are: {valid}")
+                raise KeyError(f"{agg} is not a valid aggregation policy. Valid aggregation policies are: {valid}")
             agg = AggregationPolicy[agg]
         self._aggregation_policy = agg
 
@@ -103,7 +103,7 @@ class TemporalResample(TransformBase):
         if isinstance(mv, str):
             valid = set(MissingValuePolicy.__members__.keys())
             if mv not in valid:
-                raise KeyError(f"{mv} is not a valid missing value policy. " f"Valid aggregation policies are: {valid}")
+                raise KeyError(f"{mv} is not a valid missing value policy. Valid aggregation policies are: {valid}")
             mv = MissingValuePolicy[mv]
         self._missing_value_policy = mv
 
@@ -238,9 +238,9 @@ class Shingle(InvertibleTransformBase):
                 f"aligned multivariate time series of dim {self.size}, but "
                 f"something went wrong."
             )
-            assert src.names == expected_src_names, (
-                f"Expected univariates named {expected_src_names}, " f"but got {src.names}"
-            )
+            assert (
+                src.names == expected_src_names
+            ), f"Expected univariates named {expected_src_names}, but got {src.names}"
 
             for j, (t, val_vec) in enumerate(src[::-1]):
                 j0 = j * self.stride

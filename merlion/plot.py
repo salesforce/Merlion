@@ -86,16 +86,16 @@ class Figure:
         assert not (anom is not None and y is None), "If `anom` is given, `y` must also be given"
 
         if yhat is None:
-            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
+            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` is given"
         else:
             assert (yhat_lb is None and yhat_ub is None) or (
                 yhat_lb is not None and yhat_ub is not None
             ), "Must give both or neither of `yhat_lb` and `yhat_ub`"
 
         if yhat_prev is None:
-            assert yhat_prev_lb is None and yhat_prev_ub is None, (
-                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if " "`yhat_prev` is given"
-            )
+            assert (
+                yhat_prev_lb is None and yhat_prev_ub is None
+            ), "Can only give `yhat_prev_lb` and `yhat_prev_ub` if `yhat_prev` is given"
         else:
             assert (yhat_prev_lb is None and yhat_prev_ub is None) or (
                 yhat_prev_lb is not None and yhat_prev_ub is not None
@@ -407,16 +407,16 @@ class MTSFigure:
         assert y is not None, "`y` must be given"
 
         if yhat is None:
-            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` " "is given"
+            assert yhat_lb is None and yhat_ub is None, "Can only give `yhat_lb` and `yhat_ub` if `yhat` is given"
         else:
             assert (yhat_lb is None and yhat_ub is None) or (
                 yhat_lb is not None and yhat_ub is not None
             ), "Must give both or neither of `yhat_lb` and `yhat_ub`"
 
         if yhat_prev is None:
-            assert yhat_prev_lb is None and yhat_prev_ub is None, (
-                "Can only give `yhat_prev_lb` and `yhat_prev_ub` if " "`yhat_prev` is given"
-            )
+            assert (
+                yhat_prev_lb is None and yhat_prev_ub is None
+            ), "Can only give `yhat_prev_lb` and `yhat_prev_ub` if `yhat_prev` is given"
         else:
             assert (yhat_prev_lb is None and yhat_prev_ub is None) or (
                 yhat_prev_lb is not None and yhat_prev_ub is not None

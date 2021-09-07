@@ -74,16 +74,14 @@ class TSADBaseDataset(BaseDataset):
                 anom_in_trainval.append(False)
 
         print("=" * 80)
-        print(f"Time series in dataset have average length " f"{int(np.mean([len(ts) for ts, md in self]))}.")
-        print(f"Time series in dataset have {len(anom_bds) / len(self):.1f} " f"anomalies on average.")
+        print(f"Time series in dataset have average length {int(np.mean([len(ts) for ts, md in self]))}.")
+        print(f"Time series in dataset have {len(anom_bds) / len(self):.1f} anomalies on average.")
         print(
             f"{sum(anom_in_trainval) / len(anom_in_trainval) * 100:.1f}% of "
             f"anomalies are in the train/val split of their respective time "
             f"series."
         )
-        print(
-            f"Anomalies in dataset have average length " f"{pd.Timedelta(np.mean([(tf - t0) for t0, tf in anom_bds]))}."
-        )
+        print(f"Anomalies in dataset have average length {pd.Timedelta(np.mean([(tf - t0) for t0, tf in anom_bds]))}.")
         print(
             f"Average anomaly occurs {np.mean(anom_locs) * 100:.1f}% "
             f"(+/- {np.std(anom_locs) * 100:.1f}%) of the way through "

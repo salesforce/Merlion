@@ -80,9 +80,9 @@ class DynamicBaselineConfig(DetectorConfig):
 
     @trends.setter
     def trends(self, trends: List[str]):
-        assert all(t.lower() in Trend.__members__ for t in trends), (
-            f"Encountered a trend that is unsupported. Supported " f"trend types include: {Trend.__members__.keys()}"
-        )
+        assert all(
+            t.lower() in Trend.__members__ for t in trends
+        ), f"Encountered a trend that is unsupported. Supported trend types include: {Trend.__members__.keys()}"
         self._trends = [Trend[t.lower()] for t in trends]
 
     def determine_train_window(self):

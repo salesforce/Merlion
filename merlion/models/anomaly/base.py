@@ -108,9 +108,7 @@ class NoCalibrationDetectorConfig(DetectorConfig):
     @enable_calibrator.setter
     def enable_calibrator(self, e):
         if e is not False:
-            logger.warning(
-                f"Tried to set enable_calibrator={e}, but only " f"False supported for {type(self).__name__}."
-            )
+            logger.warning(f"Tried to set enable_calibrator={e}, but only False supported for {type(self).__name__}.")
 
 
 class DetectorBase(ModelBase):

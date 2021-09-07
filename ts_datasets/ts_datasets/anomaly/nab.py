@@ -81,7 +81,7 @@ class NAB(TSADBaseDataset):
             df = df.sort_values(by="timestamp")
             if len(df["timestamp"][df["timestamp"].diff() == datetime.timedelta(0)]) != 0:
                 df = df.drop_duplicates(subset="timestamp", keep="first")
-                logger.warning(f"Time series {csv} (index {i}) has timestamp " f"duplicates. Kept first values.")
+                logger.warning(f"Time series {csv} (index {i}) has timestamp duplicates. Kept first values.")
 
             all_dt = np.unique(np.diff(df["timestamp"])).astype(int)
             gcd_dt = all_dt[0]

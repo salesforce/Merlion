@@ -399,7 +399,7 @@ class MSES(ForecasterBase):
         xhat, neg_err, pos_err = [[f[i] for f in forecast] for i in (0, 1, 2)]
 
         if return_prev and time_series_prev is not None:
-            assert not return_iqr, "MSES does not yet support uncertainty " "for previous time series"
+            assert not return_iqr, "MSES does not yet support uncertainty for previous time series"
             xhat = prev_x + xhat
             time_stamps = prev_t + time_stamps
             orig_t = None if orig_t is None else prev_t + orig_t

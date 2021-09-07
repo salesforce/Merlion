@@ -110,7 +110,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         train, valid = self.train_valid_split(full_train, train_config)
         if train is not valid:
-            logger.warning("Using a train/validation split to train a " "DetectorEnsemble is not recommended!")
+            logger.warning("Using a train/validation split to train a DetectorEnsemble is not recommended!")
 
         per_model_train_configs = train_config.per_model_train_configs
         if per_model_train_configs is None:

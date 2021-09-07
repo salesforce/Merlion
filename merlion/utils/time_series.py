@@ -614,9 +614,9 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: concatenated time series
         """
-        assert self.dim == other.dim, (
-            f"Cannot concatenate a {self.dim}-dimensional time series with " f"a {other.dim}-dimensional time series."
-        )
+        assert (
+            self.dim == other.dim
+        ), f"Cannot concatenate a {self.dim}-dimensional time series with a {other.dim}-dimensional time series."
         assert self.names == other.names, (
             f"Cannot concatenate time series with two different sets of "
             f"variable names, {self.names} and {other.names}."
@@ -818,7 +818,7 @@ class TimeSeries:
         """
         if reference is not None or alignment_policy is AlignPolicy.FixedReference:
             if reference is None:
-                raise RuntimeError("`reference` is required when using " "`alignment_policy` FixedReference.")
+                raise RuntimeError("`reference` is required when using `alignment_policy` FixedReference.")
 
             if alignment_policy not in [None, AlignPolicy.FixedReference]:
                 logger.warning(
@@ -906,7 +906,7 @@ class TimeSeries:
                 t = t.intersection(tprime)
             if len(t) == 0:
                 raise RuntimeError(
-                    "No time stamps are shared between all variables! Try " "again with a different alignment policy."
+                    "No time stamps are shared between all variables! Try again with a different alignment policy."
                 )
             t = to_pd_datetime(sorted(t))
             return TimeSeries.from_pd(self.to_pd().loc[t], check_times=False)
@@ -970,9 +970,9 @@ def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float 
         else:
             assert timedelta > 0
 
-        assert np.abs(timedeltas - timedeltas[0]).max() < 2e-3, (
-            f"Data must be sampled with the same time difference between each " f"element of the time series"
-        )
+        assert (
+            np.abs(timedeltas - timedeltas[0]).max() < 2e-3
+        ), f"Data must be sampled with the same time difference between each element of the time series"
         assert np.abs(timedeltas[0] - timedelta) < 2e-3, (
             f"Expected data to be sampled every {timedelta} seconds, but time "
             f"series is sampled every {timedeltas[0]} seconds instead."

@@ -230,7 +230,7 @@ class DifferenceTransform(InvertibleTransformBase):
         for name, var in time_series.items():
             x0.append(var[0])
             if len(var) <= 1:
-                logger.warning(f"Cannot apply a difference transform to a time " f"series of length {len(var)} < 2")
+                logger.warning(f"Cannot apply a difference transform to a time series of length {len(var)} < 2")
                 new_vars[name] = UnivariateTimeSeries([], [])
             else:
                 new_vars[name] = UnivariateTimeSeries.from_pd(var.diff())[1:]
@@ -285,7 +285,7 @@ class LagTransform(InvertibleTransformBase):
 
             if len(var) <= self.k and not self.pad:
                 logger.warning(
-                    f"Cannot apply a {self.k}-lag transform to a " f"time series of length {len(var)} <= {self.k}"
+                    f"Cannot apply a {self.k}-lag transform to a time series of length {len(var)} <= {self.k}"
                 )
                 new_vars[name] = UnivariateTimeSeries([], [])
             else:

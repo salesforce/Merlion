@@ -65,7 +65,7 @@ class Anomalize(TransformBase):
             label injected anomalies.
         """
         if not self.is_trained:
-            raise RuntimeError(f"Cannot use {type(self).__name__} without " f"training it first!")
+            raise RuntimeError(f"Cannot use {type(self).__name__} without training it first!")
 
         assert time_series.dim <= 2, (
             "anomalize transforms may only be applied to univariate time series "

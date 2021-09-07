@@ -35,11 +35,11 @@ class Threshold(PostRuleBase):
         self.abs_score = abs_score
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
-        assert time_series.dim == 1, (
-            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
-        )
+        assert (
+            time_series.dim == 1
+        ), f"{type(self).__name__} post-rule can only be applied on single-variable time series"
         if self.alm_threshold is None:
-            raise RuntimeError(f"alm_threshold is None. Please train the " f"post-rule before attempting to use it.")
+            raise RuntimeError(f"alm_threshold is None. Please train the post-rule before attempting to use it.")
         k = time_series.names[0]
         times = time_series.univariates[k].index
         scores = time_series.univariates[k].np_values
@@ -81,9 +81,9 @@ class Threshold(PostRuleBase):
             metric, we retain with the current (default) threshold.
         """
         metric = TSADMetric[metric] if isinstance(metric, str) else metric
-        assert anomaly_scores.dim == 1 and (anomaly_labels is None or anomaly_labels.dim == 1), (
-            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
-        )
+        assert anomaly_scores.dim == 1 and (
+            anomaly_labels is None or anomaly_labels.dim == 1
+        ), f"{type(self).__name__} post-rule can only be applied on single-variable time series"
 
         k = anomaly_scores.names[0]
         scores = np.asarray(anomaly_scores.univariates[k].np_values)
@@ -115,7 +115,7 @@ class Threshold(PostRuleBase):
                     max_early_sec=max_early_sec,
                     max_delay_sec=max_delay_sec,
                 )
-                logger.debug(f"threshold={threshold:6.2f} --> " f"{metric.name}={thresh2score[threshold]:.4f}")
+                logger.debug(f"threshold={threshold:6.2f} --> {metric.name}={thresh2score[threshold]:.4f}")
 
             # The threshold is the one which achieves the highest metric value.
             # However, we stick with the default score if the best one achieves
@@ -126,7 +126,7 @@ class Threshold(PostRuleBase):
             elif thresh2score[t] == thresh2score[default]:
                 t = default
             self.alm_threshold = t
-            logger.info(f"Threshold {t:.4f} achieves " f"{metric.name}={thresh2score[t]:.4f}.")
+            logger.info(f"Threshold {t:.4f} achieves {metric.name}={thresh2score[t]:.4f}.")
 
         elif unsup_quantile is not None:
             self.alm_threshold = np.percentile(scores, unsup_quantile * 100)
@@ -277,9 +277,9 @@ class AdaptiveThreshold(Threshold):
         self.default_hist_gap_thres = default_hist_gap_thres
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
-        assert time_series.dim == 1, (
-            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
-        )
+        assert (
+            time_series.dim == 1
+        ), f"{type(self).__name__} post-rule can only be applied on single-variable time series"
         k = time_series.names[0]
         times = time_series.univariates[k].time_stamps
         scores = np.asarray(time_series.univariates[k].np_values)
@@ -313,9 +313,9 @@ class AdaptiveThreshold(Threshold):
     ) -> TimeSeries:
 
         metric = TSADMetric[metric] if isinstance(metric, str) else metric
-        assert anomaly_scores.dim == 1 and (anomaly_labels is None or anomaly_labels.dim == 1), (
-            f"{type(self).__name__} post-rule can only be applied on " f"single-variable time series"
-        )
+        assert anomaly_scores.dim == 1 and (
+            anomaly_labels is None or anomaly_labels.dim == 1
+        ), f"{type(self).__name__} post-rule can only be applied on single-variable time series"
 
         k = anomaly_scores.names[0]
         scores = np.asarray(anomaly_scores.univariates[k].np_values)
@@ -338,7 +338,7 @@ class AdaptiveThreshold(Threshold):
                         max_delay_sec=max_delay_sec,
                     )
                     thresh2score[(self.alm_threshold, bin_sz)] = score
-                    logger.debug(f"hist gap threshold={hist_gap:6.2f}, " f"bin_sz={bin_sz:2} --> score={score:.4f}")
+                    logger.debug(f"hist gap threshold={hist_gap:6.2f}, bin_sz={bin_sz:2} --> score={score:.4f}")
 
             # The threshold is the one which achieves the highest metric value
             best_cand = sorted(thresh2score.keys(), key=lambda t: (thresh2score[t], t))[-1]
