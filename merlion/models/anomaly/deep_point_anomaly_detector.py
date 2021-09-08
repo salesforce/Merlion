@@ -197,7 +197,7 @@ class DeepPointAnomalyDetector(DetectorBase):
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        times, values = zip(*time_series)
+        times, values = zip(*time_series.align())
         processed_times, values = self._preprocess(times), self._preprocess(values)
 
         scores = get_dnn_loss_as_anomaly_score(processed_times, values, use_cuda=self.use_cuda)

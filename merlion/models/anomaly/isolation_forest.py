@@ -72,7 +72,7 @@ class IsolationForest(DetectorBase):
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        time_stamps, values = zip(*time_series)
+        time_stamps, values = zip(*time_series.align())
         values = np.asarray(values)
 
         # Return negative of model's score, since model scores are in (0, -1],
