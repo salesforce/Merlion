@@ -162,9 +162,14 @@ class Sarima(ForecasterBase, SeasonalityModel):
                 forecast_result = new_state.get_forecast(len(time_stamps))
                 forecast = forecast_result.predicted_mean
                 err = forecast_result.se_mean
-            except:
-                forecast = np.full(len(time_stamps), np.nan)
-                err = np.full(len(time_stamps), np.nan)
+                assert len(forecast) == len(time_stamps), (
+                    f"Expected SARIMA model to return forecast of length {len(time_stamps)}, but got "
+                    f"{len(forecast)} instead."
+                )
+            except Exception as e:
+                logger.warning(f"Caught {type(e).__name__}: {str(e)}")
+                forecast = np.full(len(time_stamps), val_prev[-1])
+                err = np.zeros(len(time_stamps))
 
             if return_prev:
                 n_prev = len(time_series_prev)
