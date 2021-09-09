@@ -178,9 +178,9 @@ def dataset_to_threshold(dataset: TSADBaseDataset, tune_on_test=False):
     elif isinstance(dataset, Synthetic):
         return 2
     elif isinstance(dataset, MSL):
-        return 2.35
+        return 3.0
     elif isinstance(dataset, SMAP):
-        return 2.5
+        return 3.0
     elif isinstance(dataset, SMD):
         return 3 if not tune_on_test else 2.5
     elif hasattr(dataset, "default_threshold"):
@@ -476,7 +476,7 @@ def evaluate_predictions(
 
             # Train each model's post rule on the train split
             models = []
-            for name, train in zip(model_names, pred_train):
+            for name, train, og_pred in zip(model_names, pred_train, pred):
                 m, prtc = get_model(
                     model_name=name,
                     dataset=dataset,
@@ -487,6 +487,8 @@ def evaluate_predictions(
                 m.config.enable_threshold = len(model_names) == 1
                 if simple_threshold:
                     m.threshold = m.threshold.to_simple_threshold()
+                if tune_on_test and not unsupervised:
+                    m.calibrator.train(TimeSeries.from_pd(og_pred["y"][og_pred["trainval"]]))
                 m.train_post_rule(anomaly_scores=train, anomaly_labels=true_train, post_rule_train_config=prtc)
                 models.append(m)
 
