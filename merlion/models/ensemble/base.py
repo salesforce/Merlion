@@ -139,7 +139,7 @@ class EnsembleBase(ModelBase, ABC):
 
         return transformed_train_data.bisect(t0 + (tf - t0) * (1 - valid_frac))
 
-    def get_max_horizon(self):
+    def get_max_common_horizon(self):
         horizons = []
         for model in self.models:
             dt = getattr(model, "timedelta", None)

@@ -103,7 +103,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 combined = self.train_combiner(preds, train.univariates[k].to_ts())
             else:
                 logger.info("Evaluating validation performance...")
-                h = self.get_max_horizon()
+                h = self.get_max_common_horizon()
                 k = valid.names[self.target_seq_index]
                 if h is None:
                     preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
