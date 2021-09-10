@@ -9,6 +9,7 @@ import copy
 import logging
 from typing import List, Optional, Tuple, Union
 
+import pandas as pd
 from scipy.stats import norm
 
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
@@ -101,9 +102,25 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 k = train.names[self.target_seq_index]
                 combined = self.train_combiner(preds, train.univariates[k].to_ts())
             else:
+                h = self.get_max_horizon()
                 valid = valid.univariates[valid.names[self.target_seq_index]].to_ts()
-                valid = self.truncate_valid_data(valid)
-                preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
+                if h is None:
+                    preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
+                else:
+                    # evaluate using prediction windows of size h
+                    prev = train
+                    t0, tf = valid.t0, valid.tf
+                    valid_windows = []
+                    preds = [[] for _ in self.models]
+                    while t0 < tf:
+                        window = valid.window(t0, prev.tf + h, include_tf=False)
+                        valid_windows.append(window)
+                        for i, model in enumerate(self.models):
+                            preds[i].append(model.forecast(window.time_stamps, prev)[0])
+                        prev = prev + window
+                        t0 += h
+                    valid = valid_windows
+
                 combined = self.train_combiner(preds, valid)
         except AssertionError as e:
             if "None of `all_model_outs` can be `None`" in str(e):

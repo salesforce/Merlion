@@ -99,8 +99,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
         :param all_model_outs: a list of time series, with each time series
             representing the output of a single model.
         :param target: a target time series (e.g. labels)
-        :return: a single time series of combined model outputs on this training
-            data.
+        :return: a single time series of combined model outputs on this training data.
         """
         self.n_models = len(all_model_outs)
         return self(all_model_outs, target, _check_dim=False)
@@ -112,9 +111,23 @@ class CombinerBase(metaclass=AutodocABCMeta):
         :param all_model_outs: a list of time series, with each time series
             representing the output of a single model.
         :param target: a target time series (e.g. labels)
-        :return: a single time series of combined model outputs on this training
-            data.
+        :return: a single time series of combined model outputs on this training data.
         """
+        if isinstance(target, list):
+            new_all_model_outs = []
+            for i, out in enumerate(all_model_outs):
+                if out is None:
+                    new_all_model_outs.append(out)
+                else:
+                    assert isinstance(out, list) and len(out) == len(target), (
+                        f"If target is a list of time series, each model output should be a "
+                        f"list with the same length, but target has length {len(target)}, "
+                        f"while model output {i} is a {type(out).__name__} of length {len(out)}"
+                    )
+                    new_all_model_outs.append(sum(out[1:], out[0]))
+            target = sum(target[1:], target[0])
+            all_model_outs = new_all_model_outs
+
         js = [j for j, out in enumerate(all_model_outs) if out is not None]
         assert len(js) > 0, "`all_model_outs` cannot all be `None`"
         j = js[0]
@@ -210,11 +223,9 @@ class ModelSelector(Mean):
     the value of an evaluation metric.
     """
 
-    def __init__(self, metric: Union[str, TSADMetric, ForecastMetric], invert, abs_score=False):
+    def __init__(self, metric: Union[str, TSADMetric, ForecastMetric], abs_score=False):
         """
         :param metric: the evaluation metric to use
-        :param invert: if ``False``, a larger metric value is better (e.g. F1).
-            If ``True``, a smaller metric value is better (e.g. MSE).
         :param abs_score: whether to take the absolute value of the model
             outputs. Useful for anomaly detection.
         """
@@ -224,8 +235,15 @@ class ModelSelector(Mean):
             metric_cls = {c.__name__: c for c in [ForecastMetric, TSADMetric]}[metric_cls]
             metric = metric_cls[name]
         self.metric = metric
-        self.invert = invert
         self.metric_values = None
+
+    @property
+    def invert(self):
+        if isinstance(self.metric, ForecastMetric):
+            return True
+        if self.metric is TSADMetric.MeanTimeToDetect:
+            return True
+        return False
 
     @property
     def requires_training(self):
@@ -256,11 +274,23 @@ class ModelSelector(Mean):
         metric_values = []
         assert all(x is not None for x in all_model_outs), f"None of `all_model_outs` can be `None`"
         self.n_models = len(all_model_outs)
-        for model_out in all_model_outs:
+        for i, model_out in enumerate(all_model_outs):
             if target is None and self.metric_values is None:
                 metric_values.append(1)
-            elif target is not None:
+            elif target is not None and not isinstance(target, list):
                 metric_values.append(self.metric.value(ground_truth=target, predict=model_out, **kwargs))
+            elif isinstance(target, list):
+                assert isinstance(model_out, list) and len(model_out) == len(target), (
+                    f"If target is a list of time series, each model output should be a "
+                    f"list with the same length, but target has length {len(target)}, "
+                    f"while model output {i} is a {type(model_out).__name__} of length "
+                    f"{len(model_out)}"
+                )
+                vals = [
+                    self.metric.value(ground_truth=y, predict=yhat.align(reference=y.time_stamps), **kwargs)
+                    for y, yhat in zip(target, model_out)
+                ]
+                metric_values.append(np.mean(vals))
 
         if len(metric_values) == len(all_model_outs):
             self.metric_values = metric_values

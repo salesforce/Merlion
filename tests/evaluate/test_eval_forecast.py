@@ -75,7 +75,7 @@ class TestEvaluateForecast(unittest.TestCase):
         model1 = Arima(ArimaConfig(order=(20, 0, 0), **kwargs))
         model2 = Arima(ArimaConfig(order=(6, 2, 1), **kwargs))
         ensemble = ForecasterEnsemble(
-            config=ForecasterEnsembleConfig(combiner=MetricWeightedMean(metric=ForecastMetric.sMAPE, invert=True)),
+            config=ForecasterEnsembleConfig(combiner=MetricWeightedMean(metric=ForecastMetric.sMAPE)),
             models=[model0, model1, model2],
         )
 

@@ -11,7 +11,9 @@ import unittest
 
 import numpy as np
 
-from merlion.models.ensemble.forecast import ForecasterEnsemble
+from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
+from merlion.models.ensemble.combine import ModelSelector, Mean
+from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.arima import Arima, ArimaConfig
 from merlion.models.forecast.prophet import Prophet, ProphetConfig
 from merlion.models.factory import ModelFactory
@@ -32,15 +34,32 @@ class TestForecastEnsemble(unittest.TestCase):
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :].univariates[data.names[0]]
 
-        model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=3000, transform=TemporalResample("1h")))
-        model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=3000))
+        model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
+        model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=50))
         model2 = Prophet(ProphetConfig(transform=Identity()))
         model2.model.logger = None
-        self.ensemble = ForecasterEnsemble(models=[model0, model1, model2])
+        self.ensemble = ForecasterEnsemble(
+            models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
+        )
 
-    def test_full(self):
+    def test_mean(self):
         print("-" * 80)
-        logger.info("test_full\n" + "-" * 80 + "\n")
+        self.expected_smape = 37
+        logger.info("test_mean\n" + "-" * 80 + "\n")
+        self.run_test()
+
+    def test_selector(self):
+        print("-" * 80)
+        self.expected_smape = 35
+        logger.info("test_selector\n" + "-" * 80 + "\n")
+        self.ensemble.config.combiner = ModelSelector(metric=ForecastMetric.sMAPE)
+        self.run_test()
+        # We expect the model selector to select Prophet because it gets the lowest validation sMAPE
+        valid_smapes = np.asarray(self.ensemble.combiner.metric_values)
+        self.assertAlmostEqual(np.max(np.abs(valid_smapes - [34.65, 39.62, 30.71])), 0, delta=0.5)
+        self.assertSequenceEqual(self.ensemble.models_used, [False, False, True])
+
+    def run_test(self):
         logger.info("Training model...")
         self.ensemble.train(self.vals_train)
 
@@ -54,7 +73,7 @@ class TestForecastEnsemble(unittest.TestCase):
         yhat = yhat.univariates[yhat.names[0]].np_values
         smape = np.mean(200.0 * np.abs((y - yhat) / (np.abs(y) + np.abs(yhat))))
         logger.info(f"sMAPE = {smape:.4f}")
-        self.assertAlmostEqual(smape, 37, delta=1)
+        self.assertAlmostEqual(smape, self.expected_smape, delta=1)
 
         logger.info("Testing save/load...")
         self.ensemble.save(join(rootdir, "tmp", "forecast_ensemble"))

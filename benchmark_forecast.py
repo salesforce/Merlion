@@ -198,9 +198,9 @@ def get_combiner(ensemble_type: str) -> CombinerBase:
     if ensemble_type == "mean":
         return Mean(abs_score=False)
     elif ensemble_type == "selector":
-        return ModelSelector(metric=ForecastMetric.sMAPE, invert=True)
+        return ModelSelector(metric=ForecastMetric.sMAPE)
     elif ensemble_type == "err_weighted_mean":
-        return MetricWeightedMean(metric=ForecastMetric.sMAPE, invert=True)
+        return MetricWeightedMean(metric=ForecastMetric.sMAPE)
     else:
         raise KeyError(f"ensemble_type {ensemble_type} not supported.")
 
