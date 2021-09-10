@@ -63,7 +63,7 @@ def to_pd_datetime(timestamp):
     elif isinstance(timestamp, (int, float)):
         return pd.to_datetime(int(timestamp * 1000), unit="ms")
     elif isinstance(timestamp, Iterable) and all(isinstance(t, (int, float)) for t in timestamp):
-        timestamp = pd.to_datetime(np.asarray(timestamp) * 1000, unit="ms")
+        timestamp = pd.to_datetime(np.asarray(timestamp).astype(float) * 1000, unit="ms")
     return pd.to_datetime(timestamp)
 
 
