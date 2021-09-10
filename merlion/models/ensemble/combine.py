@@ -286,10 +286,7 @@ class ModelSelector(Mean):
                     f"while model output {i} is a {type(model_out).__name__} of length "
                     f"{len(model_out)}"
                 )
-                vals = [
-                    self.metric.value(ground_truth=y, predict=yhat.align(reference=y.time_stamps), **kwargs)
-                    for y, yhat in zip(target, model_out)
-                ]
+                vals = [self.metric.value(ground_truth=y, predict=yhat, **kwargs) for y, yhat in zip(target, model_out)]
                 metric_values.append(np.mean(vals))
 
         if len(metric_values) == len(all_model_outs):
