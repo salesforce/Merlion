@@ -45,6 +45,8 @@ class TestForecastEnsemble(unittest.TestCase):
     def test_mean(self):
         print("-" * 80)
         self.expected_smape = 37
+        self.ensemble.models[0].config.max_forecast_steps = None
+        self.ensemble.models[1].config.max_forecast_steps = None
         logger.info("test_mean\n" + "-" * 80 + "\n")
         self.run_test()
 
