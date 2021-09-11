@@ -196,10 +196,10 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
                 cur_train = cur_train.window(t - self.train_window, t)
             if self.horizon is not None:
                 i = np.searchsorted(all_t, t)
-                tf_pred = t + self.horizon
+                tf_pred = cur_train.tf + self.horizon
                 if self.horizon is not None and i + 1 < len(all_t):
                     tf_pred = max(tf_pred, all_t[i + 1])
-                cur_test = cur_test.window(t, tf_pred)
+                cur_test = cur_test.window(t, tf_pred, include_tf=True)
 
             # Fully re-train the model when it is time to do so
             if t >= t_next and not cur_train.is_empty() and not cur_test.is_empty():

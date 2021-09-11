@@ -106,8 +106,7 @@ class TestEvaluateAnomaly(unittest.TestCase):
 
         # Build ensemble model
         model = DetectorEnsemble(
-            models=[model0, model1, model2],
-            config=DetectorEnsembleConfig(combiner=ModelSelector(metric=TSADMetric.F1, invert=False)),
+            models=[model0, model1, model2], config=DetectorEnsembleConfig(combiner=ModelSelector(metric=TSADMetric.F1))
         )
         train_config = EnsembleTrainConfig(valid_frac=valid_frac)
         train_kwargs = {"anomaly_labels": self.train_labels, "train_config": train_config}
