@@ -66,15 +66,29 @@ class DefaultDetector(ModelWrapper, DetectorBase):
     ) -> TimeSeries:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
 
-        # Multivariate model is LSTM encoder/decoder
+        # Multivariate model is ensemble of VAE and RRCF
+        n_threads = self.config.n_threads
         if train_data.dim > 1:
-            self.model = ModelFactory.create("LSTMED", transform=transform_dict, enable_threshold=False)
+            self.model = ModelFactory.create(
+                "DetectorEnsemble",
+                enable_threshold=False,
+                models=[
+                    ModelFactory.create("VAE", transform=transform_dict),
+                    ModelFactory.create(
+                        "RandomCutForest",
+                        online_updates=True,
+                        parallel=n_threads > 1,
+                        thread_pool_size=n_threads,
+                        n_estimators=100,
+                        max_n_samples=512,
+                    ),
+                ],
+            )
 
         # Univariate model is ETS/RCF/WindStats/ZMS ensemble
         else:
             dt = "1h" if self.granularity is None else self.granularity
             ets_transform = dict(name="TemporalResample", granularity=dt)
-            n_threads = self.config.n_threads
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
                 enable_threshold=False,

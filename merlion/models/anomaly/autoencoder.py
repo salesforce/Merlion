@@ -115,7 +115,7 @@ class AutoEncoder(DetectorBase):
             self.device
         )
 
-        scores = np.zeros((X.shape[0],), dtype=np.float)
+        scores = np.zeros((X.shape[0],), dtype=float)
         test_scores = self.model(test_data).cpu().data.numpy()
         scores[self.k - 1 :] = test_scores
         scores[: self.k - 1] = test_scores[0]

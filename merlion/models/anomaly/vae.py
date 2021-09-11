@@ -145,7 +145,7 @@ class VAE(DetectorBase):
             r += recon_y.cpu().data.numpy()
         r /= self.num_eval_samples
 
-        scores = np.zeros((X.shape[0],), dtype=np.float)
+        scores = np.zeros((X.shape[0],), dtype=float)
         test_scores = np.sum(np.abs(r - y.cpu().data.numpy()), axis=1)
         scores[self.k - 1 :] = test_scores
         scores[: self.k - 1] = test_scores[0]

@@ -114,7 +114,7 @@ class UnivariateTimeSeries(pd.Series):
         :rtype: np.ndarray
         :return: the ``numpy`` representation of this time series's Unix timestamps
         """
-        ts = self.index.values.astype("datetime64[ms]").astype(np.float64) / 1000
+        ts = self.index.values.astype("datetime64[ms]").astype(float) / 1000
         return ts
 
     @property

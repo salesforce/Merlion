@@ -68,7 +68,7 @@ def preprocess(logger, data_folder, dataset):
     for row in data_info:
         anomalies = ast.literal_eval(row[2])
         length = int(row[-1])
-        label = np.zeros([length], dtype=np.bool)
+        label = np.zeros([length], dtype=bool)
         for anomaly in anomalies:
             label[anomaly[0] : anomaly[1] + 1] = True
         labels.extend(label)

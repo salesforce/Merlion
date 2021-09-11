@@ -82,13 +82,8 @@ class Mixin(ABC):
         self.assertEqual(len(scores_np), len(loaded_model_scores))
         max_diff = float(np.max(np.abs(scores_np - loaded_model_scores)))
         self.assertAlmostEqual(max_diff, 0.0, delta=1)
-
-        if multi:
-            alarms = self.model.get_anomaly_label(test_ts)
-            loaded_model_alarms = loaded_model.get_anomaly_label(test_ts)
-        else:
-            alarms = self.model.post_rule(scores)
-            loaded_model_alarms = loaded_model.post_rule(scores)
+        alarms = self.model.post_rule(scores)
+        loaded_model_alarms = loaded_model.post_rule(scores)
         self.assertSequenceEqual(list(alarms), list(loaded_model_alarms))
 
     def test_plot(self):
