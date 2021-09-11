@@ -139,6 +139,17 @@ class EnsembleBase(ModelBase, ABC):
 
         return transformed_train_data.bisect(t0 + (tf - t0) * (1 - valid_frac))
 
+    def get_max_common_horizon(self):
+        horizons = []
+        for model in self.models:
+            dt = getattr(model, "timedelta", None)
+            n = getattr(model, "max_forecast_steps", None)
+            if dt is not None and n is not None:
+                horizons.append(dt * n)
+        if all(h is None for h in horizons):
+            return None
+        return min([h for h in horizons if h is not None])
+
     def truncate_valid_data(self, transformed_valid_data: TimeSeries):
         tf = transformed_valid_data.tf
         max_model_tfs = [tf]

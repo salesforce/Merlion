@@ -10,6 +10,7 @@ import logging
 from typing import List, Optional, Tuple, Union
 
 from scipy.stats import norm
+from tqdm import tqdm
 
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
@@ -101,9 +102,31 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 k = train.names[self.target_seq_index]
                 combined = self.train_combiner(preds, train.univariates[k].to_ts())
             else:
-                valid = valid.univariates[valid.names[self.target_seq_index]].to_ts()
-                valid = self.truncate_valid_data(valid)
-                preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
+                logger.info("Evaluating validation performance...")
+                h = self.get_max_common_horizon()
+                k = valid.names[self.target_seq_index]
+                if h is None:
+                    preds = [model.forecast(valid.time_stamps)[0] for model in self.models]
+                else:
+                    # evaluate using prediction windows of size h
+                    prev = train
+                    t0, tf = valid.t0, valid.tf
+                    valid_windows = []
+                    preds = [[] for _ in self.models]
+                    pbar = tqdm(total=int(tf - t0), desc="Validation")
+                    while t0 < tf:
+                        pbar.update(min(int(h), int(tf - t0)))
+                        window = valid.window(t0, prev.tf + h, include_tf=False)
+                        t0 += h
+                        if window.is_empty():
+                            continue
+                        valid_windows.append(window.univariates[k].to_ts())
+                        for i, model in enumerate(self.models):
+                            preds[i].append(model.forecast(window.time_stamps, prev)[0])
+                        prev = prev + window
+                    valid = valid_windows
+                    pbar.close()
+
                 combined = self.train_combiner(preds, valid)
         except AssertionError as e:
             if "None of `all_model_outs` can be `None`" in str(e):
