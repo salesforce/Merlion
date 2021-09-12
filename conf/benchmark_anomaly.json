@@ -60,16 +60,13 @@
     "config": {
       "default": {
         "order": [4, 1, 2],
-        "transform": {"name": "TemporalResample", "granularity": "1h"},
-        "max_forecast_steps": 10000
+        "transform": {"name": "TemporalResample", "granularity": "1h"}
       },
       "IOpsCompetition": {
-        "transform": {"name": "TemporalResample", "granularity": "5min"},
-        "max_forecast_steps": 30000
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
       },
       "CASP": {
-        "transform": {"name": "TemporalResample", "granularity": "5min"},
-        "max_forecast_steps": 30000
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
       }
     }
   },
@@ -81,16 +78,13 @@
     "config": {
       "default": {
         "damped_trend": true,
-        "transform": {"name": "TemporalResample", "granularity": "1h"},
-        "max_forecast_steps": 10000
+        "transform": {"name": "TemporalResample", "granularity": "1h"}
       },
       "IOpsCompetition": {
-        "transform": {"name": "TemporalResample", "granularity": "5min"},
-        "max_forecast_steps": 30000
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
       },
       "CASP": {
-        "transform": {"name": "TemporalResample", "granularity": "5min"},
-        "max_forecast_steps": 30000
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
       }
     }
   },
