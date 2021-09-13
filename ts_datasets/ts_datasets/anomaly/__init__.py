@@ -12,12 +12,13 @@ from ts_datasets.anomaly.base import TSADBaseDataset
 from ts_datasets.anomaly.iops_competition import IOpsCompetition
 from ts_datasets.anomaly.nab import NAB
 from ts_datasets.anomaly.synthetic import Synthetic
+from ts_datasets.anomaly.ucr import UCR
 
 from ts_datasets.anomaly.smd import SMD
 from ts_datasets.anomaly.smap import SMAP
 from ts_datasets.anomaly.msl import MSL
 
-__all__ = ["get_dataset", "TSADBaseDataset", "IOpsCompetition", "NAB", "Synthetic", "SMD", "SMAP", "MSL"]
+__all__ = ["get_dataset", "TSADBaseDataset", "IOpsCompetition", "NAB", "Synthetic", "UCR", "SMD", "SMAP", "MSL"]
 
 
 def get_dataset(dataset_name: str, rootdir: str = None) -> TSADBaseDataset:

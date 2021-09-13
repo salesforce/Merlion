@@ -180,7 +180,7 @@ def dataset_to_threshold(dataset: TSADBaseDataset, tune_on_test=False):
     elif isinstance(dataset, MSL):
         return 3.0
     elif isinstance(dataset, SMAP):
-        return 3.0
+        return 3.5
     elif isinstance(dataset, SMD):
         return 3 if not tune_on_test else 2.5
     elif hasattr(dataset, "default_threshold"):
@@ -452,17 +452,21 @@ def evaluate_predictions(
 ):
 
     score_rpa, score_pw, score_pa = [], [], []
+    use_ucr_eval = isinstance(dataset, UCR) and (unsupervised or not tune_on_test)
+
     for i, (true, md) in enumerate(tqdm(dataset)):
         # Get time series for the train & test splits of the ground truth
         idx = ~md.trainval if tune_on_test else md.trainval
         true_train = df_to_merlion(true[idx], md[idx], get_ground_truth=True)
         true_test = df_to_merlion(true[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
-        for simple_threshold, opt_metric, scores in [
-            (False, metric, score_rpa),
-            (True, pointwise_metric, score_pw),
-            (True, point_adj_metric, score_pa),
-        ]:
+        for acc_id, (simple_threshold, opt_metric, scores) in enumerate(
+            [(use_ucr_eval, metric, score_rpa), (True, pointwise_metric, score_pw), (True, point_adj_metric, score_pa)]
+        ):
+            if acc_id > 0 and use_ucr_eval:
+                score_pw = score_rpa
+                score_pa = score_rpa
+                continue
             # For each model, load its raw anomaly scores for the i'th time series
             # as a UnivariateTimeSeries, and collect all the models' scores as a
             # TimeSeries. Do this for both the train and test splits.
@@ -502,7 +506,7 @@ def evaluate_predictions(
             # No further training if we only have 1 model
             if len(models) == 1:
                 model = models[0]
-                pred_test = model.post_rule(pred_test[0])
+                pred_test_raw = pred_test[0]
 
             # If we have multiple models, train an ensemble model
             else:
@@ -524,10 +528,29 @@ def evaluate_predictions(
                     model.threshold = model.threshold.to_simple_threshold()
                 model.threshold.alm_threshold = threshold
                 model.train_post_rule(pred_train, true_train, ensemble_threshold_train_config)
-                pred_test = model.post_rule(model.combiner(pred_test, true_test))
+                pred_test_raw = model.combiner(pred_test, true_test)
 
-            # Compute the individual components comprising various scores
+            # For UCR dataset, the evaluation just checks whether the point with the highest
+            # anomaly score is anomalous or not.
+            if acc_id == 0 and use_ucr_eval:
+                df = pred_test_raw.to_pd()
+                df[np.abs(df) < df.max()] = 0
+                pred_test = TimeSeries.from_pd(df)
+            else:
+                pred_test = model.post_rule(pred_test_raw)
+
+            # Compute the individual components comprising various scores.
             score = accumulate_tsad_score(true_test, pred_test, max_early_sec=early, max_delay_sec=delay)
+
+            # Make sure all time series have exactly one detection for UCR dataset (either 1 TP, or 1 FN & 1 FP).
+            if acc_id == 0 and use_ucr_eval:
+                n_anom = score.num_tp_anom + score.num_fn_anom
+                if n_anom == 0:
+                    score.num_tp_anom, score.num_fn_anom, score.num_fp = 0, 0, 0
+                elif score.num_tp_anom > 0:
+                    score.num_tp_anom, score.num_fn_anom, score.num_fp = 1, 0, 0
+                else:
+                    score.num_tp_anom, score.num_fn_anom, score.num_fp = 0, 1, 1
             scores.append(score)
 
     # Report F1, precision, and recall
