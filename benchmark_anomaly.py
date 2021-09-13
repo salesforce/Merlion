@@ -461,7 +461,11 @@ def evaluate_predictions(
         true_test = df_to_merlion(true[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
         for acc_id, (simple_threshold, opt_metric, scores) in enumerate(
-            [(use_ucr_eval, metric, score_rpa), (True, pointwise_metric, score_pw), (True, point_adj_metric, score_pa)]
+            [
+                (use_ucr_eval and not tune_on_test, metric, scores_rpa),
+                (True, pointwise_metric, scores_pw),
+                (True, point_adj_metric, scores_pa),
+            ]
         ):
             if acc_id > 0 and use_ucr_eval:
                 score_pw = score_rpa
@@ -534,8 +538,12 @@ def evaluate_predictions(
             # anomaly score is anomalous or not.
             if acc_id == 0 and use_ucr_eval:
                 df = pred_test_raw.to_pd()
-                df[np.abs(df) < df.max()] = 0
-                pred_test = TimeSeries.from_pd(df)
+                if tune_on_test and unsupervised:
+                    model.threshold.alm_threshold = np.percentile(df.values, 99.5)
+                    pred_test = model.threshold(pred_test_raw)
+                else:
+                    df[np.abs(df) < df.max()] = 0
+                    pred_test = TimeSeries.from_pd(df)
             else:
                 pred_test = model.post_rule(pred_test_raw)
 

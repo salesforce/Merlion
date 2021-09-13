@@ -55,7 +55,7 @@ class UCR(TSADBaseDataset):
     def __getitem__(self, i):
         fname = self.time_series[i]
         split, anom_start, anom_end = [int(x) for x in fname[: -len(".txt")].split("_")[-3:]]
-        name = fname.split("_")[3]
+        name = fname.split("_")[-4]
         arr = np.loadtxt(fname)
         trainval = [i < split for i in range(len(arr))]
         anomaly = [anom_start <= i <= anom_end for i in range(len(arr))]
