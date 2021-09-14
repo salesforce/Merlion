@@ -451,9 +451,8 @@ def evaluate_predictions(
     debug=False,
 ):
 
-    score_rpa, score_pw, score_pa = [], [], []
+    scores_rpa, scores_pw, scores_pa = [], [], []
     use_ucr_eval = isinstance(dataset, UCR) and (unsupervised or not tune_on_test)
-
     for i, (true, md) in enumerate(tqdm(dataset)):
         # Get time series for the train & test splits of the ground truth
         idx = ~md.trainval if tune_on_test else md.trainval
@@ -468,8 +467,8 @@ def evaluate_predictions(
             ]
         ):
             if acc_id > 0 and use_ucr_eval:
-                score_pw = score_rpa
-                score_pa = score_rpa
+                scores_pw = scores_rpa
+                scores_pa = scores_rpa
                 continue
             # For each model, load its raw anomaly scores for the i'th time series
             # as a UnivariateTimeSeries, and collect all the models' scores as a
@@ -561,22 +560,61 @@ def evaluate_predictions(
                     score.num_tp_anom, score.num_fn_anom, score.num_fp = 0, 1, 1
             scores.append(score)
 
-    # Report F1, precision, and recall
-    score = sum(score_rpa, ScoreAcc())
-    score_pw = sum(score_pw, ScoreAcc())
-    score_pa = sum(score_pa, ScoreAcc())
-    mttd = score.mean_time_to_detect()
+    # Aggregate statistics from full dataset
+    score_rpa = sum(scores_rpa, ScoreAcc())
+    score_pw = sum(scores_pw, ScoreAcc())
+    score_pa = sum(scores_pa, ScoreAcc())
+
+    # Determine if it's better to have all negatives for each time series if
+    # using the test data in a supervised way.
+    if tune_on_test and not unsupervised:
+        # Convert true positives to false negatives, and remove all false positives.
+        # Keep the updated version if it improves F1 score.
+        for s in sorted(scores_rpa, key=lambda x: x.num_fp, reverse=True):
+            stype = ScoreType.RevisedPointAdjusted
+            sprime = copy.deepcopy(score_rpa)
+            sprime.num_tp_anom -= s.num_tp_anom
+            sprime.num_fn_anom += s.num_tp_anom
+            sprime.num_fp -= s.num_fp
+            if score_rpa.f1(stype) < sprime.f1(stype):
+                for duration, delay in zip(s.tp_anom_durations, s.tp_detection_delays):
+                    sprime.tp_anom_durations.remove(duration)
+                    sprime.tp_detection_delays.remove(delay)
+                score_rpa = sprime
+
+        # Repeat for pointwise scores
+        for s in sorted(scores_pw, key=lambda x: x.num_fp, reverse=True):
+            stype = ScoreType.Pointwise
+            sprime = copy.deepcopy(score_pw)
+            sprime.num_tp_pointwise -= s.num_tp_pointwise
+            sprime.num_fn_pointwise += s.num_tp_pointwise
+            sprime.num_fp -= s.num_fp
+            if score_pw.f1(stype) < sprime.f1(stype):
+                score_pw = sprime
+
+        # Repeat for point-adjusted scores
+        for s in sorted(scores_pa, key=lambda x: x.num_fp, reverse=True):
+            stype = ScoreType.PointAdjusted
+            sprime = copy.deepcopy(score_pa)
+            sprime.num_tp_point_adj -= s.num_tp_point_adj
+            sprime.num_fn_point_adj += s.num_tp_point_adj
+            sprime.num_fp -= s.num_fp
+            if score_pa.f1(stype) < sprime.f1(stype):
+                score_pa = sprime
+
+    # Compute MTTD & report F1, precision, and recall
+    mttd = score_rpa.mean_time_to_detect()
     if mttd < pd.to_timedelta(0):
         mttd = f"-{-mttd}"
     print()
     print("Revised point-adjusted metrics")
-    print(f"F1 score:  {score.f1(ScoreType.RevisedPointAdjusted):.4f}")
-    print(f"Precision: {score.precision(ScoreType.RevisedPointAdjusted):.4f}")
-    print(f"Recall:    {score.recall(ScoreType.RevisedPointAdjusted):.4f}")
+    print(f"F1 score:  {score_rpa.f1(ScoreType.RevisedPointAdjusted):.4f}")
+    print(f"Precision: {score_rpa.precision(ScoreType.RevisedPointAdjusted):.4f}")
+    print(f"Recall:    {score_rpa.recall(ScoreType.RevisedPointAdjusted):.4f}")
     print()
     print(f"Mean Time To Detect Anomalies:  {mttd}")
-    print(f"Mean Detected Anomaly Duration: {score.mean_detected_anomaly_duration()}")
-    print(f"Mean Anomaly Duration:          {score.mean_anomaly_duration()}")
+    print(f"Mean Detected Anomaly Duration: {score_rpa.mean_detected_anomaly_duration()}")
+    print(f"Mean Anomaly Duration:          {score_rpa.mean_anomaly_duration()}")
     print()
     if debug:
         print("Pointwise metrics")
@@ -590,12 +628,12 @@ def evaluate_predictions(
         print(f"Recall:    {score_pa.recall(ScoreType.PointAdjusted):.4f}")
         print()
         print("NAB Scores")
-        print(f"NAB Score (balanced):       {score.nab_score():.4f}")
-        print(f"NAB Score (high precision): {score.nab_score(fp_weight=0.22):.4f}")
-        print(f"NAB Score (high recall):    {score.nab_score(fn_weight=2.0):.4f}")
+        print(f"NAB Score (balanced):       {score_rpa.nab_score():.4f}")
+        print(f"NAB Score (high precision): {score_rpa.nab_score(fp_weight=0.22):.4f}")
+        print(f"NAB Score (high recall):    {score_rpa.nab_score(fn_weight=2.0):.4f}")
         print()
 
-    return score, score_pw, score_pa
+    return score_rpa, score_pw, score_pa
 
 
 def main():
