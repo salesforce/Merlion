@@ -89,23 +89,33 @@ Here, we provide some minimal examples using Merlion default models,
 to help you get started with both anomaly detection and forecasting.
 
 ### Anomaly Detection
+We begin by importing Merlion’s `TimeSeries` class and the data loader for the Numenta Anomaly Benchmark `NAB`.
+We can then divide a specific time series from this dataset into training and testing splits.
+
 ```python
 from merlion.utils import TimeSeries
-from ts_datasets.anomaly import NAB  # data loader for Numenta Anomaly Benchmark
+from ts_datasets.anomaly import NAB
 
 # Data loader returns pandas DataFrames, which we convert to Merlion TimeSeries
 time_series, metadata = NAB(subset="realKnownCause")[3]
 train_data = TimeSeries.from_pd(time_series[metadata.trainval])
 test_data = TimeSeries.from_pd(time_series[~metadata.trainval])
 test_labels = TimeSeries.from_pd(metadata.anomaly[~metadata.trainval])
+```
 
-# Initialize the model, train it, and get its predictions on the test data
+We can then initialize and train Merlion’s `DefaultDetector`, which is an anomaly detection model that
+balances performance with efficiency. We also obtain its predictions on the test split.
+
+```python
 from merlion.models.defaults import DefaultDetectorConfig, DefaultDetector
 model = DefaultDetector(DefaultDetectorConfig())
 model.train(train_data=train_data)
 test_pred = model.get_anomaly_label(time_series=test_data)
+```
 
-# Visualize the model's predictions
+Next, we visualize the model's predictions.
+
+```python
 from merlion.plot import plot_anoms
 import matplotlib.pyplot as plt
 fig, ax = model.plot_anomaly(time_series=test_data)
@@ -113,8 +123,12 @@ plot_anoms(ax=ax, anomaly_labels=test_labels)
 plt.show()
 ```
 ![anomaly figure](https://github.com/salesforce/Merlion/raw/main/figures/anom_example.png)
+
+Finally, we can quantitatively evaluate the model. The precision and recall come from the fact that the model
+fired 4 alarms, with 2 true positives, 1 false negative, and 2 false positives. We also evaluate the mean time
+the model took to detect each anomaly that it correctly detected.
+
 ```python
-# Evaluate the model's predictions quantitatively
 from merlion.evaluate.anomaly import TSADMetric
 p = TSADMetric.Precision.value(ground_truth=test_labels, predict=test_pred)
 r = TSADMetric.Recall.value(ground_truth=test_labels, predict=test_pred)
@@ -128,27 +142,41 @@ Precision: 0.5000, Recall: 0.6667, F1: 0.5714
 Mean Time To Detect: 1 days 10:27:30
 ```
 ### Forecasting
+We begin by importing Merlion’s `TimeSeries` class and the data loader for the `M4` dataset. We can then divide a
+specific time series from this dataset into training and testing splits.
+
 ```python
 from merlion.utils import TimeSeries
-from ts_datasets.forecast import M4  # data loader for M4 data
+from ts_datasets.forecast import M4
 
 # Data loader returns pandas DataFrames, which we convert to Merlion TimeSeries
 time_series, metadata = M4(subset="Hourly")[0]
 train_data = TimeSeries.from_pd(time_series[metadata.trainval])
 test_data = TimeSeries.from_pd(time_series[~metadata.trainval])
+```
 
-# Initialize the model, train it, and get its predictions on the test data
+We can then initialize and train Merlion’s `DefaultForecaster`, which is an forecasting model that balances
+performance with efficiency. We also obtain its predictions on the test split.
+
+```python
 from merlion.models.defaults import DefaultForecasterConfig, DefaultForecaster
 model = DefaultForecaster(DefaultForecasterConfig())
 model.train(train_data=train_data)
 test_pred, test_err = model.forecast(time_stamps=test_data.time_stamps)
+```
 
-# Visualize the model's predictions
+Next, we visualize the model’s predictions.
+
+```python
 import matplotlib.pyplot as plt
 fig, ax = model.plot_forecast(time_series=test_data, plot_forecast_uncertainty=True)
 plt.show()
 ```
 ![forecast figure](https://github.com/salesforce/Merlion/raw/main/figures/forecast_example.png)
+
+Finally, we quantitatively evaluate the model. sMAPE measures the error of the prediction on a scale of 0 to 100
+(lower is better), while MSIS evaluates the quality of the 95% confidence band on a scale of 0 to 100 (lower is better).
+
 ```python
 # Evaluate the model's predictions quantitatively
 from scipy.stats import norm
@@ -163,10 +191,9 @@ ub = TimeSeries.from_pd(test_pred.to_pd() + norm.ppf(0.975) * test_err.to_pd().v
 msis = ForecastMetric.MSIS.value(ground_truth=test_data, predict=test_pred,
                                  insample=train_data, lb=lb, ub=ub)
 print(f"sMAPE: {smape:.4f}, MSIS: {msis:.4f}")
-
 ```
 ```
-sMAPE: 6.2855, MSIS: 16.3387
+sMAPE: 6.2855, MSIS: 19.1584
 ```
 
 ## Evaluation and Benchmarking
