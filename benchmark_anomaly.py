@@ -576,7 +576,10 @@ def evaluate_predictions(
             sprime.num_tp_anom -= s.num_tp_anom
             sprime.num_fn_anom += s.num_tp_anom
             sprime.num_fp -= s.num_fp
+            sprime.tp_score -= s.tp_score
+            sprime.fp_score -= s.fp_score
             if score_rpa.f1(stype) < sprime.f1(stype):
+                # Update anomaly durations
                 for duration, delay in zip(s.tp_anom_durations, s.tp_detection_delays):
                     sprime.tp_anom_durations.remove(duration)
                     sprime.tp_detection_delays.remove(delay)
