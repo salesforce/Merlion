@@ -85,7 +85,7 @@ class DefaultDetector(ModelWrapper, DetectorBase):
                 ],
             )
 
-        # Univariate model is ETS/RCF/WindStats/ZMS ensemble
+        # Univariate model is ETS/RRCF/ZMS ensemble
         else:
             dt = "1h" if self.granularity is None else self.granularity
             ets_transform = dict(name="TemporalResample", granularity=dt)
@@ -104,7 +104,6 @@ class DefaultDetector(ModelWrapper, DetectorBase):
                         n_estimators=100,
                         max_n_samples=512,
                     ),
-                    ModelFactory.create("WindStats", wind_sz=360),
                     ModelFactory.create("ZMS", n_lags=3, transform=transform_dict),
                 ],
             )

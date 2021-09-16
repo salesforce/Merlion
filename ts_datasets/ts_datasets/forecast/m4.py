@@ -79,8 +79,7 @@ class M4(BaseDataset):
             ntrain = train_set.iloc[i, :].dropna().shape[0]
             sequence = pd.concat((train_set.iloc[i, :].dropna(), test_set.iloc[i, :].dropna()))
             # raw data do not follow consistent timestamp format
-            startingdate = (pd.Timestamp.min + pd.to_timedelta(1, unit="W")).round("D")
-            sequence.index = pd.date_range(start=startingdate, periods=sequence.shape[0], freq=freq)
+            sequence.index = pd.date_range(start=0, periods=sequence.shape[0], freq=freq)
             sequence = sequence.to_frame()
 
             metadata = pd.DataFrame({"trainval": sequence.index < sequence.index[ntrain]}, index=sequence.index)

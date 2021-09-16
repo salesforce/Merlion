@@ -137,7 +137,7 @@ plt.show()
 ![anomaly figure](https://github.com/salesforce/Merlion/raw/main/figures/anom_example.png)
 
 Finally, we can quantitatively evaluate the model. The precision and recall come from the fact that the model
-fired 4 alarms, with 2 true positives, 1 false negative, and 2 false positives. We also evaluate the mean time
+fired 3 alarms, with 2 true positives, 1 false negative, and 1 false positive. We also evaluate the mean time
 the model took to detect each anomaly that it correctly detected.
 
 ```python
@@ -150,8 +150,8 @@ print(f"Precision: {p:.4f}, Recall: {r:.4f}, F1: {f1:.4f}\n"
       f"Mean Time To Detect: {mttd}")
 ```
 ```
-Precision: 0.5000, Recall: 0.6667, F1: 0.5714
-Mean Time To Detect: 1 days 10:27:30
+Precision: 0.6667, Recall: 0.6667, F1: 0.6667
+Mean Time To Detect: 1 days 10:30:00
 ```
 ### Forecasting
 We begin by importing Merlion’s `TimeSeries` class and the data loader for the `M4` dataset. We can then divide a
