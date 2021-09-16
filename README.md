@@ -24,29 +24,41 @@
     1. [Anomaly Detection](#anomaly-detection)
     1. [Forecasting](#forecasting)
 1. [Evaluation and Benchmarking](#evaluation-and-benchmarking)
+1. [Technical Report and Citing Merlion](#technical-report-and-citing-merlion)
 
 ## Introduction
+Merlion is a Python library for time series intelligence. It provides an end-to-end machine learning framework that
+includes loading and transforming data, building and training models, post-processing model outputs, and evaluating
+model performance. It supports various time series learning tasks, including forecasting and anomaly detection for both
+univariate and multivariate time series. Merlion's key features are 
+-  Standardized and easily extensible data loading & benchmarking for a wide range of forecasting and anomaly
+   detection datasets.
+-  A library of diverse models and data processing transforms unified under a shared interface. New models are easy
+   to add, and we provide "default" models that are both efficient and achieve good performance across a wide range
+   of settings.
+-  AutoML for automated hyperaparameter tuning and model selection.
+-  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more
+   interpretable, while also reducing the number of false positives.
+-  Easy-to-use ensembles that combine the outputs of multiple models to achieve more robust performance. 
+-  Flexible evaluation pipelines that simulate the live deployment & re-training of a model in production,
+   and evaluate performance on both forecasting and anomaly detection.
+-  Native support for visualizing model predictions.
 
-Merlion is a Python library for time series intelligence. It provides an end-to-end machine 
-learning framework that includes loading and transforming data, building and training models, 
-post-processing model outputs, and evaluating model performance. It supports various time series 
-learning tasks, including forecasting and anomaly detection for both univariate and multivariate 
-time series. It also contains ensemble learning and autoML modules.
+The table below provides a visual overview of how Merlion's feature set compares to similar libraries for time series
+anomaly detection and/or forecasting.
 
-Key Features
-- A library of models unified under a shared interface, including default options for a variety of common use cases
-- Pre-processing layer implementing many standard data transformations
-- Post-processing layer for anomaly detection, to ensure that anomaly scores are calibrated and to
-  reduce the number of false alarms
-- AutoML for automated hyperparameter tuning and model selection 
-- Native support for visualizing model predictions
-- Evaluation frameworks for evaluating a model's performance for time series anomaly detection and forecasting
-- Standardized data loading & benchmarking for a wide range of anomaly detection and forecasting datasets
-
-Read the [Installation](#installation) section of this document to set up the repo, and check out the
-[example Jupyter notebooks](https://github.com/salesforce/Merlion/tree/main/examples) to get a practical
-overview of the repo's main features (we provide a guided overview of these examples
-[here](https://salesforce.github.io/Merlion/tutorials.html)).
+|              |  Univar Forecast   |  Multivar Forecast |   Univar Anomaly   |  Multivar Anomaly  |     AutoML         |    Ensemble        |  Bench-marking     |   Plots    
+|-------------:|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------
+|  alibi-detect|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --
+|          Kats| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            | :heavy_check_mark:
+|   statsmodels| :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --            |      --            |      --
+|      gluon-ts| :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --            | :heavy_check_mark: |      --
+|          RRCF|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --
+|        STUMPY|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --
+|      Greykite| :heavy_check_mark: |      --            | :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --            | :heavy_check_mark:
+|       Prophet| :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --            |      --            |      --            | :heavy_check_mark:
+|      pmdarima| :heavy_check_mark: |      --            |      --            |      --            | :heavy_check_mark: |      --            |      --            |      --
+|       Merlion| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 
 ## Installation
 
@@ -55,13 +67,13 @@ and `ts_datasets` provides standardized data loaders for multiple time series da
 ``pandas.DataFrame`` s with accompanying metadata.
 
 You can install `merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
-cloning this repo, navigating to the root directory, and calling ``pip install [-e] .``. You may install
-additional dependencies for plotting & visualization via ``pip install sfdc-merlion[plot]``, or by calling
-``pip install [-e] .[plot]`` from the root directory of this repo.
+cloning this repo, navigating to the root directory, and calling ``pip install .``, or ``pip install -e .`` to
+install in editable mode. You may install  additional dependencies for plotting & visualization via
+``pip install sfdc-merlion[plot]``, or by calling ``pip install .[plot]`` from the root directory of this repo.
 
 To install the data loading package `ts_datasets`, clone this repo, navigate to its root directory, and call
-``pip install -e ts_datasets/``. This package must be installed in editable mode if you don't want
-to manually specify the root directory of every dataset when initializing its data loader.
+``pip install -e ts_datasets/``. This package must be installed in editable mode (with the ``-e`` flag)
+if you don't want  to manually specify the root directory of every dataset when initializing its data loader.
 
 Note the following external dependencies:
 
@@ -223,6 +235,26 @@ will evaluate the anomaly detection performance of the `IsolationForest` (retrai
 python benchmark_forecast.py --dataset M4_Hourly --model ETS
 ```
 will evaluate the batch forecasting performance (i.e. no retraining) of `ETS` on the "Hourly" subset of the M4 dataset. 
-You can find the results produced by running these scripts
-[here](https://github.com/salesforce/Merlion/tree/main/results).
-and in the [technical report](TODO).
+You can find the results produced by running these scripts in the Experiments section of the
+[technical report](TODO).
+
+## Technical Report and Citing Merlion
+You can find more details in our technical report: TODO
+
+If you're using Merlion in your research or applications, please cite using this BibTeX:
+```
+@article{bhatnagar2021merlion,
+  author    =  {Aadyot Bhatnagar and Rowan Cassius and Paul Kassianik and Chenghao Liu and Tian Lan and
+                Wenzhuo Yang and Doyen Sahoo and Devansh Arpit and Sri Subramanian and Gerald Woo and
+                Amrita Saha and Huan Wang and Steven Hoi and Arun Jagota and Yingbo Zhou and Caiming Xiong and
+                Gokulakrishnan Gopalakrishnan and Manpreet Singh and K C Krithika and Sukumar Maddineni and
+                Daeki Cho and Bo Zong and Silvio Savarese},
+  title     = {TODO},
+  journal   = {CoRR},
+  volume    = {TODO},
+  year      = {2021},
+  url       = {TODO},
+  archivePrefix = {arXiv},
+  eprint    = {TODO},
+}
+```
