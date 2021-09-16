@@ -15,11 +15,10 @@ MERLION_JARS = [
 setup(
     name="sfdc-merlion",
     version="1.0.0",
-    author="Aadyot Bhatnagar, Rowan Cassius, Paul Kassianik, Chenghao Liu, Tian Lan, "
-    "Wenzhuo Yang, Doyen Sahoo, Devansh Arpit, Sri Subramanian, Gerald Woo, "
-    "Amrita Saha, Huan Wang, Steven Hoi, Arun Jagota, Yingbo Zhou, Caiming Xiong, "
-    "Gokulakrishnan Gopalakrishnan, Manpreet Singh, K C Krithika, Sukumar Maddineni, "
-    "Daeki Cho, Bo Zong, Silvio Savarese",
+    author="Aadyot Bhatnagar, Paul Kassianik, Chenghao Liu, Tian Lan, Wenzhuo Yang, "
+    "Rowan Cassius, Doyen Sahoo, Devansh Arpit, Sri Subramanian, Gerald Woo, Amrita Saha, Arun Kumar Jagota, "
+    "Gokulakrishnan Gopalakrishnan, Manpreet Singh, K C Krithika, Sukumar Maddineni, Daeki Cho, Bo Zong, "
+    "Huan Wang, Yingbo Zhou, Caiming Xiong, Steven Hoi, Silvio Savarese",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
