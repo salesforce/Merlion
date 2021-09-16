@@ -1,4 +1,4 @@
-# Merlion: A Machine Learning Framework for Time Series Intelligence
+# Merlion: A Machine Learning Library for Time Series Intelligence
 
 <div align="center">
   <a href="https://github.com/salesforce/Merlion/actions">
@@ -244,11 +244,12 @@ You can find more details in our technical report: TODO
 If you're using Merlion in your research or applications, please cite using this BibTeX:
 ```
 @article{bhatnagar2021merlion,
-  author    =  {Aadyot Bhatnagar and Rowan Cassius and Paul Kassianik and Chenghao Liu and Tian Lan and
-                Wenzhuo Yang and Doyen Sahoo and Devansh Arpit and Sri Subramanian and Gerald Woo and
-                Amrita Saha and Huan Wang and Steven Hoi and Arun Jagota and Yingbo Zhou and Caiming Xiong and
-                Gokulakrishnan Gopalakrishnan and Manpreet Singh and K C Krithika and Sukumar Maddineni and
-                Daeki Cho and Bo Zong and Silvio Savarese},
+  author    =  {Aadyot Bhatnagar and Paul Kassianik and Chenghao Liu and Tian Lan
+                and Wenzhuo Yang and Rowan Cassius and Doyen Sahoo and Devansh Arpit
+                and Sri Subramanian and Gerald Woo and Amrita Saha and Arun Kumar Jagota
+                and Gokulakrishnan Gopalakrishnan and Manpreet Singh and K C Krithika
+                and Sukumar Maddineni and Daeki Cho and Bo Zong and Huan Wang
+                and Yingbo Zhou and Caiming Xiong and Steven Hoi and Silvio Savarese},
   title     = {TODO},
   journal   = {CoRR},
   volume    = {TODO},
