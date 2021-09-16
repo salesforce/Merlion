@@ -535,14 +535,10 @@ def evaluate_predictions(
 
             # For UCR dataset, the evaluation just checks whether the point with the highest
             # anomaly score is anomalous or not.
-            if acc_id == 0 and use_ucr_eval:
+            if acc_id == 0 and use_ucr_eval and not unsupervised:
                 df = pred_test_raw.to_pd()
-                if tune_on_test and unsupervised:
-                    model.threshold.alm_threshold = np.percentile(df.values, 99.5)
-                    pred_test = model.threshold(pred_test_raw)
-                else:
-                    df[np.abs(df) < df.max()] = 0
-                    pred_test = TimeSeries.from_pd(df)
+                df[np.abs(df) < df.max()] = 0
+                pred_test = TimeSeries.from_pd(df)
             else:
                 pred_test = model.post_rule(pred_test_raw)
 
