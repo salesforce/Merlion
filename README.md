@@ -1,4 +1,4 @@
-# Merlion: A Machine Learning Library for Time Series Intelligence
+# Merlion: A Machine Learning Library for Time Series
 
 <div align="center">
   <a href="https://github.com/salesforce/Merlion/actions">
@@ -33,12 +33,10 @@ model performance. It supports various time series learning tasks, including for
 univariate and multivariate time series. Merlion's key features are 
 -  Standardized and easily extensible data loading & benchmarking for a wide range of forecasting and anomaly
    detection datasets.
--  A library of diverse models and data processing transforms unified under a shared interface. New models are easy
-   to add, and we provide "default" models that are both efficient and achieve good performance across a wide range
-   of settings.
+-  A library of diverse models for both anomaly detection and forecasting, unified undera shared interface. Models include classic statistical methods, tree ensembles, and deeplearning approaches. Advanced users may fully configure each model as desired.
+-  Abstract `DefaultDetector` and `DefaultForecaster` models that are efficient, robustly achieve good performance, and provide a starting point for new users.
 -  AutoML for automated hyperaparameter tuning and model selection.
--  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more
-   interpretable, while also reducing the number of false positives.
+-  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more interpretable, while also reducing the number of false positives.
 -  Easy-to-use ensembles that combine the outputs of multiple models to achieve more robust performance. 
 -  Flexible evaluation pipelines that simulate the live deployment & re-training of a model in production,
    and evaluate performance on both forecasting and anomaly detection.
@@ -47,18 +45,16 @@ univariate and multivariate time series. Merlion's key features are
 The table below provides a visual overview of how Merlion's feature set compares to similar libraries for time series
 anomaly detection and/or forecasting.
 
-|              |  Univar Forecast   |  Multivar Forecast |   Univar Anomaly   |  Multivar Anomaly  |     AutoML         |    Ensemble        |  Bench-marking     |   Plots    
-|-------------:|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------
-|  alibi-detect|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --
-|          Kats| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            | :heavy_check_mark:
-|   statsmodels| :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --            |      --            |      --
-|      gluon-ts| :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --            | :heavy_check_mark: |      --
-|          RRCF|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --
-|        STUMPY|      --            |      --            | :heavy_check_mark: | :heavy_check_mark: |      --            |      --            |      --            |      --
-|      Greykite| :heavy_check_mark: |      --            | :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --            | :heavy_check_mark:
-|       Prophet| :heavy_check_mark: |      --            | :heavy_check_mark: |      --            |      --            |      --            |      --            | :heavy_check_mark:
-|      pmdarima| :heavy_check_mark: |      --            |      --            |      --            | :heavy_check_mark: |      --            |      --            |      --
-|       Merlion| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+|                     | Merlion | Alibi Detect | Kats | statsmodels | GluonTS | RRCF | STUMPY | Greykite | Prophet | pmdarima 
+:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :----: | :---:
+| Univariate Forecasting | ✅      | | ✅    | ✅          | ✅       |      |      |✅        | ✅      | ✅ 
+| Multivariate Forecasting | ✅ | | ✅ | ✅ | ✅ | | | | | | 
+| Univariate Anomaly Detection | ✅ | ✅ | ✅ | | | ✅ | ✅ | ✅ | ✅ | 
+| Multivariate Anomaly Detection | ✅ | ✅ | ✅ | | | ✅ | ✅ | | | |
+| AutoML | ✅ | | ✅ | | | | | ✅ | | ✅ 
+| Ensembles | ✅ | | | | | ✅  | | | | 
+| Benchmarking | ✅ | | | | ✅ | | | | | 
+| Visualization | ✅ | | ✅ | | | | | ✅ | ✅ | | 
 
 ## Installation
 
