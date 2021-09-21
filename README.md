@@ -12,7 +12,7 @@
   <a href="https://pypi.python.org/pypi/sfdc-merlion">
   <img alt="PyPI Version" src="https://img.shields.io/pypi/v/sfdc-merlion.svg"/>
   </a>
-  <a href="https://salesforce.github.io/Merlion">
+  <a href="https://opensource.salesforce.com/Merlion/index.html">
   <img alt="docs" src="https://github.com/salesforce/Merlion/actions/workflows/docs.yml/badge.svg"/>
   </a>
 </div>
@@ -92,8 +92,8 @@ Note the following external dependencies:
 
 For example code and an introduction to Merlion, see the Jupyter notebooks in
 [`examples`](https://github.com/salesforce/Merlion/tree/main/examples), and the guided walkthrough
-[here](https://salesforce.github.io/Merlion/tutorials.html). You may find detailed API documentation (including the
-example code) [here](https://salesforce.github.io/Merlion/). The
+[here](https://opensource.salesforce.com/Merlion/tutorials.html). You may find detailed API documentation (including the
+example code) [here](https://opensource.salesforce.com/Merlion/index.html). The
 [technical report](https://arxiv.org/abs/2109.09265) outlines Merlion's overall architecture
 and presents experimental results on time series anomaly detection & forecasting for both univariate and multivariate
 time series.

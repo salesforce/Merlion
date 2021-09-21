@@ -16,7 +16,7 @@ license headers whenever you make a commit.
 Merlion supports two kinds of models: anomaly detectors (`merlion.models.anomaly`) and forecasters
 (`merlion.models.forecast`). Each model should inherit from its respective base class:
 `merlion.models.anomaly.base.DetectorBase` for anomaly detectors, and `merlion.models.forecast.base.ForecasterBase`
-for forecasters. Make sure to carefully read the [API docs](https://salesforce.github.io/Merlion/merlion.models.html)
+for forecasters. Make sure to carefully read the [API docs](https://opensource.salesforce.com/Merlion/merlion.models.html)
 for the appropriate base class and module before  proceeding.
 
 After implementing your model, please register it with the [model factory](merlion/models/factory.py), and add it to
@@ -102,7 +102,7 @@ example of what this looks like in practice, as well as the forecaster tutorial
 
 ## Data Pre-Processing Transforms
 To implement a new data pre-processing transform, begin by reading the
-[API docs](https://salesforce.github.io/Merlion/merlion.transform.html) for the base classes
+[API docs](https://opensource.salesforce.com/Merlion/merlion.transform.html) for the base classes
 `merlion.transform.base.TransformBase` and `merlion.transform.base.InvertibleTransformBase`. Inherit from the
 appropriate base class, depending on whether you transform is invertible. However, even non-invertible transforms
 should support pseudo-inversion. For example, when you resample an input time series with
@@ -133,7 +133,7 @@ You can add support for a new dataset of time series by implementing an appropri
 [`ts_datasets`](ts_datasets), and uploading the raw data (potentially compressed) to the [`data`](data) directory.
 If your dataset has labeled anomalies, it belongs in [`ts_datasets.anomaly`](ts_datasets/ts_datasets/anomaly). If it
 does not have labeled anomalies, it belongs in [`ts_datasets.forecast`](ts_datasets/ts_datasets/forecast). See the
-[API docs](https://salesforce.github.io/Merlion/latest/ts_datasets.html) for more details.
+[API docs](https://opensource.salesforce.com/Merlion/latest/ts_datasets.html) for more details.
 
 Once you've implemented your data loader class, add it to the top-level namespace of the module
 ([`ts_datasets/ts_datasets/anomaly/__init__.py`](ts_datasets/ts_datasets/anomaly/__init__.py) or
