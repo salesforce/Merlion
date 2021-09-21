@@ -17,6 +17,15 @@ source venv/bin/activate
 pip3 install -r "${DIRNAME}/requirements.txt"
 sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
 
+# Build API docs for current head
+export current_version="latest"
+pip3 install ".[plot]"
+pip3 install ts_datasets/
+sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}"
+rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
+pip3 uninstall -y sfdc-merlion
+pip3 uninstall -y ts_datasets
+
 # Install all previous released versions of Merlion/ts_datasets
 # and use them to build the appropriate API docs.
 # Uninstall after we're done with each one.
@@ -32,14 +41,6 @@ for version in $(git tag --list 'v[0-9]*'); do
     pip3 uninstall -y sfdc-merlion
     pip3 uninstall -y ts_datasets
 done
-
-# Install main branch version & build API docs
-git checkout main
-export current_version="latest"
-pip3 install ".[plot]"
-pip3 install ts_datasets/
-sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}"
-rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
 
 # Determine the latest stable version if there is one
 if (( ${#versions[@]} > 0 )); then

@@ -2,7 +2,7 @@ name: Publish to pip
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   deploy:
@@ -24,3 +24,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
