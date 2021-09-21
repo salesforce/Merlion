@@ -1,0 +1,19 @@
+# package
+__pycache__
+*.egg-info
+tmp
+# pytest
+.pytest_cache
+.coverage*
+htmlcov
+# IDE/system
+.idea
+*.swp
+.DS_Store
+sandbox
+.vscode
+Icon?
+# build files
+docs/build/*
+.ipynb_checkpoints
+venv/

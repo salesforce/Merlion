@@ -1,0 +1,23 @@
+{% if display_lower_left %}
+{# Add rst-badge after rst-versions for small badge style. #}
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      {{ current_version }}
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      {% if versions|length >= 1 %}
+      <dl>
+        <dt>{{ _('Versions') }}</dt>
+        {% for version, url in versions %}
+          {% if version == current_version %} <strong> {% endif %}
+          <dd><a href="{{ url }}">{{ version }}</a></dd>
+          {% if version == current_version %} </strong> {% endif %}
+        {% endfor %}
+      </dl>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+ 

@@ -1,0 +1,12 @@
+repos:
+- repo: https://github.com/psf/black
+  rev: '19.3b0'
+  hooks:
+  - id: black
+    args: ["--line-length", "120"]
+- repo: https://github.com/johann-petrak/licenseheaders.git
+  rev: 'v0.8.8'
+  hooks:
+    - id: licenseheaders
+      args: ["-t", ".copyright.tmpl", "-cy", "-o", "salesforce.com, inc.",
+             "-E", ".py", "-x", "docs/source/conf.py", "-f"]

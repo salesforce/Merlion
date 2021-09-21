@@ -1,0 +1,171 @@
+{
+  "DefaultDetector": {
+    "config": {
+      "default": {"n_threads": 8},
+      "IOpsCompetition": {"granularity": "5min"},
+      "CASP": {"granularity": "5min"},
+      "Synthetic": {"granularity":  "5min"}
+    }
+  },
+
+  "DBL": {"alias": "DynamicBaseline"},
+  "DynamicBaseline": {
+    "config": {
+      "default": {
+        "train_window": "28d",
+        "wind_sz": "6h"
+      }
+    }
+  },
+
+  "WindStats": {
+    "config": {
+      "default": {
+        "wind_sz": 360,
+        "transform": {"name": "DifferenceTransform"}
+      }
+    }
+  },
+
+  "RRCF": {"alias":  "RandomCutForest"},
+  "RandomCutForest" : {
+    "config": {
+      "default": {
+        "thread_pool_size": 8,
+        "parallel": true,
+        "online_updates": true,
+        "max_n_samples": 512,
+        "n_estimators": 100,
+        "transform": {
+          "name": "TransformSequence",
+          "transforms": [
+            {"name": "DifferenceTransform"},
+            {"name": "Shingle", "size": 5, "stride": 1}
+          ]
+        }
+      }
+    }
+  },
+
+  "ISF": {"alias":  "IsolationForest"},
+  "IsolationForest": {
+    "config": {
+      "default": {"n_estimators": 100}
+    }
+  },
+
+  "Arima": {"alias": "ArimaDetector"},
+  "ARIMA": {"alias": "ArimaDetector"},
+  "ArimaDetector": {
+    "config": {
+      "default": {
+        "order": [4, 1, 2],
+        "transform": {"name": "TemporalResample", "granularity": "1h"}
+      },
+      "IOpsCompetition": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      },
+      "CASP": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      }
+    }
+  },
+
+  "HoltWinter": {"alias": "ETSDetector"},
+  "AdditiveHoltWinter": {"alias": "ETSDetector"},
+  "ETS": {"alias": "ETSDetector"},
+  "ETSDetector": {
+    "config": {
+      "default": {
+        "damped_trend": true,
+        "transform": {"name": "TemporalResample", "granularity": "1h"}
+      },
+      "IOpsCompetition": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      },
+      "CASP": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      }
+    }
+  },
+
+  "Prophet": {"alias": "ProphetDetector"},
+  "ProphetDetector": {
+    "config": {
+      "default": {}
+    }
+  },
+
+  "StatThreshold": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"metric": null, "unsup_quantile": 0.995}
+    }
+  },
+
+  "SR": {"alias": "SpectralResidual"},
+  "SpectralResidual": {
+    "config": {
+      "default": {},
+      "IOpsCompetition": {
+        "local_wind_sz": 21,
+        "q": 3,
+        "estimated_points": 5,
+        "predicting_points": 5,
+        "transform": {"name": "TemporalResample"}
+      }
+    }
+  },
+
+  "ZMS": {
+    "config": {
+      "default": {"n_lags": 3}
+    },
+    "post_rule_train_config": {
+      "default": {"metric": "F1", "unsup_quantile": 0.995}
+    }
+  },
+
+
+  "AE": {"alias":  "AutoEncoder"},
+  "AutoEncoder": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"unsup_quantile": 0.95}
+    }
+  },
+
+  "VariationalAutoEncoder": {"alias":  "VAE"},
+  "VAE": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"unsup_quantile": 0.95}
+    }
+  },
+
+  "DeepGaussianMixture": {"alias": "DAGMM" },
+  "DAGMM": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"unsup_quantile": 0.95}
+    }
+  },
+
+  "LSTMEncoderDecoder": {"alias": "LSTMED"},
+  "LSTMED": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"unsup_quantile": 0.95}
+    }
+  }
+}

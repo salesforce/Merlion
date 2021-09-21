@@ -1,0 +1,11 @@
+include AUTHORS.md CODE_OF_CONDUCT.md LICENSE SECURITY.md
+global-exclude *.py[cod]
+exclude benchmark*.py merlion_logo.svg
+recursive-exclude conf *
+recursive-exclude data *
+recursive-exclude docs *
+recursive-exclude examples *
+recursive-exclude figures *
+recursive-exclude tests *
+recursive-exclude ts_datasets *
+recursive-exclude venv *
