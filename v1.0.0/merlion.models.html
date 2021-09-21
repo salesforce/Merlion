@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion.models package &mdash; Merlion 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.models.anomaly package" href="merlion.models.anomaly.html" />
+    <link rel="prev" title="merlion: Time Series Intelligence" href="merlion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.models.base">merlion.models.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.models.factory">merlion.models.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.models.defaults">merlion.models.defaults module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
+      <li>merlion.models package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="merlion-models-package">
+<h1>merlion.models package<a class="headerlink" href="#merlion-models-package" title="Permalink to this headline"></a></h1>
+<p>Broadly, Merlion contains two types of models: anomaly detection (<a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>)
+and forecasting (<a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>). Note that there is a distinct subset of anomaly
+detection models that use forecasting models at their core (<a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>).</p>
+<p>We implement an abstract <a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a> class which provides the following functionality for all models:</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">ModelClass(config)</span></code></p>
+<ul class="simple">
+<li><p>initialization with a model-specific config (which inherits from <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>)</p></li>
+<li><p>configs contain:</p>
+<ul>
+<li><p>a (potentially trainable) data pre-processing transform from <a class="reference internal" href="merlion.transform.html#module-merlion.transform" title="merlion.transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.transform</span></code></a>;
+note that <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> is a property which refers to <code class="docutils literal notranslate"><span class="pre">model.config.transform</span></code></p></li>
+<li><p>model-specific hyperparameters</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.save(dirname,</span> <span class="pre">save_config=None)</span></code></p>
+<ul class="simple">
+<li><p>saves the model to the specified directory. The model’s configuration is saved to
+<code class="docutils literal notranslate"><span class="pre">&lt;dirname&gt;/config.json</span></code>, while the model’s binary data is (by default) saved in binary form to
+<code class="docutils literal notranslate"><span class="pre">&lt;dirname&gt;/model.pkl</span></code>. Note that if you edit the saved <code class="docutils literal notranslate"><span class="pre">&lt;dirname&gt;/config.json</span></code> on disk, the changes
+will be loaded when you call <code class="docutils literal notranslate"><span class="pre">ModelClass.load(dirname)</span></code>!</p></li>
+<li><p>this method heavily exploits the fact that many objects in Merlion are JSON-serializable</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ModelClass.load(dirname,</span> <span class="pre">**kwargs)</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>this class method initializes an instance of <code class="docutils literal notranslate"><span class="pre">ModelClass</span></code> from the config file saved in
+<code class="docutils literal notranslate"><span class="pre">&lt;dirname&gt;/config.json</span></code>, (overriding any parameters of the config with <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> where relevant),
+loads the remaining binary data into the model object, and returns the fully initialized model.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>For users who aren’t familiar with the specific details of various models, we provide default models for anomaly
+detection and forecasting in <a class="reference internal" href="#module-merlion.models.defaults" title="merlion.models.defaults"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.defaults</span></code></a>.</p>
+<p>We also provide a <a class="reference internal" href="#merlion.models.factory.ModelFactory" title="merlion.models.factory.ModelFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelFactory</span></code></a> which can be used to conveniently instantiate models from their name and a set of
+keyword arguments, or to load them directly from disk. For example, we may have the following workflow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.models.factory</span> <span class="kn">import</span> <span class="n">ModelFactory</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.windstats</span> <span class="kn">import</span> <span class="n">WindStats</span><span class="p">,</span> <span class="n">WindStatsConfig</span>
+
+<span class="c1"># creates the same kind of model in 2 equivalent ways</span>
+<span class="n">model1a</span> <span class="o">=</span> <span class="n">WindStats</span><span class="p">(</span><span class="n">WindStatsConfig</span><span class="p">(</span><span class="n">wind_sz</span><span class="o">=</span><span class="mi">60</span><span class="p">))</span>
+<span class="n">model1b</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;WindStats&quot;</span><span class="p">,</span> <span class="n">wind_sz</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># save the model &amp; load it in 2 equivalent ways</span>
+<span class="n">model1a</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
+<span class="n">model2a</span> <span class="o">=</span> <span class="n">WindStats</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
+<span class="n">model2b</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we support ensembles of models in <a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.ensemble</span></code></a>.</p>
+<span class="target" id="module-merlion.models"></span><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.base" title="merlion.models.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
+<td><p>Contains the base classes for all models.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.factory" title="merlion.models.factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">factory</span></code></a></p></td>
+<td><p>Contains the <a class="reference internal" href="#merlion.models.factory.ModelFactory" title="merlion.models.factory.ModelFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelFactory</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.defaults" title="merlion.models.defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defaults</span></code></a></p></td>
+<td><p>Default models for anomaly detection &amp; forecasting that balance speed and performance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly</span></code></a></p></td>
+<td><p>Contains all anomaly detection models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly.forecast_based</span></code></a></p></td>
+<td><p>Contains all forecaster-based anomaly detectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forecast</span></code></a></p></td>
+<td><p>Contains all forecasting models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble</span></code></a></p></td>
+<td><p>Ensembles of models and automated model selection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">automl</span></code></a></p></td>
+<td><p>Contains all AutoML layers.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.base">merlion.models.forecast.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.arima">merlion.models.forecast.arima module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.sarima">merlion.models.forecast.sarima module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.prophet">merlion.models.forecast.prophet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.smoother">merlion.models.forecast.smoother module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.vector_ar">merlion.models.forecast.vector_ar module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.baggingtrees">merlion.models.forecast.baggingtrees module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.boostingtrees">merlion.models.forecast.bo0stingtrees module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.lstm">merlion.models.forecast.lstm module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.base">merlion.models.ensemble.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.combine">merlion.models.ensemble.combine module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.anomaly">merlion.models.ensemble.anomaly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.forecast">merlion.models.ensemble.forecast module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.MoE_forecast">merlion.models.ensemble.MoE_forecast module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.layer_mixin">merlion.models.automl.layer_mixin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.forecasting_layer_base">merlion.models.automl.forecasting_layer_base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.autosarima">merlion.models.automl.autosarima module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.seasonality_mixin">merlion.models.automl.seasonality_mixin module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-merlion.models.base">
+<span id="merlion-models-base-module"></span><h2>merlion.models.base module<a class="headerlink" href="#module-merlion.models.base" title="Permalink to this headline"></a></h2>
+<p>Contains the base classes for all models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.base.Config">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.Config" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract class which defines a model config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transform</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a>]) – Transformation to pre-process input time series.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.base.Config.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'config.json'</span></em><a class="headerlink" href="#merlion.models.base.Config.filename" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.Config.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.Config.to_dict" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict with keyword arguments used to initialize the config class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.Config.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_unused_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.Config.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> from a Python dictionary of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – dict that will be used to instantiate this object.</p></li>
+<li><p><strong>return_unused_kwargs</strong> – whether to return any unused keyword args.</p></li>
+<li><p><strong>kwargs</strong> – any additional parameters to set (overriding config_dict).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object initialized from the dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.base.NormalizingConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">NormalizingConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.NormalizingConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<p>Model config where the transform must return normalized values. Applies
+additional normalization after the initial data pre-processing transform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>normalize</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.transform.html#merlion.transform.normalize.Rescale" title="merlion.transform.normalize.Rescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rescale</span></code></a>]) – Pre-trained normalization transformation (optional).</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.base.NormalizingConfig.full_transform">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">full_transform</span></span><a class="headerlink" href="#merlion.models.base.NormalizingConfig.full_transform" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the full transform, including the pre-processing step, lags, and
+final mean/variance normalization.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.base.NormalizingConfig.transform">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">transform</span></span><a class="headerlink" href="#merlion.models.base.NormalizingConfig.transform" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">ModelBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for models.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'model.pkl'</span></em><a class="headerlink" href="#merlion.models.base.ModelBase.filename" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.base.ModelBase.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the model’s internal state.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.transform">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">transform</span></span><a class="headerlink" href="#merlion.models.base.ModelBase.transform" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The data pre-processing transform to apply on any time series,
+before giving it to the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.train_pre_process">
+<span class="sig-name descname"><span class="pre">train_pre_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_even_sampling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_univariate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.train_pre_process" title="Permalink to this definition"></a></dt>
+<dd><p>Applies pre-processing steps common for training most models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the original time series of training data</p></li>
+<li><p><strong>require_even_sampling</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the model assumes that training
+data is sampled at a fixed frequency</p></li>
+<li><p><strong>require_univariate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the model only works with univariate
+time series</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the training data, after any necessary pre-processing has been applied</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.transform_time_series">
+<span class="sig-name descname"><span class="pre">transform_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.transform_time_series" title="Permalink to this definition"></a></dt>
+<dd><p>Applies the model’s pre-processing transform to <code class="docutils literal notranslate"><span class="pre">time_series</span></code> and
+<code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The time series</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of context, immediately preceding
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code>. Optional.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The transformed <code class="docutils literal notranslate"><span class="pre">time_series</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.train">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the model on the specified time series, optionally with some
+additional implementation-specific config options <code class="docutils literal notranslate"><span class="pre">train_config</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> to use as a training set</p></li>
+<li><p><strong>train_config</strong> – additional configurations (if needed)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.save" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirname</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – directory to save the model &amp; its config</p></li>
+<li><p><strong>save_config</strong> – additional configurations (if needed)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.load">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.load" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirname</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – directory to load model (and config) from</p></li>
+<li><p><strong>kwargs</strong> – config params to override manually</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a> object loaded from file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.to_bytes">
+<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.to_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the entire model state and configuration to a single byte object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bytes object representing the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.from_bytes">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelBase.from_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a fully specified model from a byte object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – byte object to convert into a model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ModelBase object loaded from <code class="docutils literal notranslate"><span class="pre">obj</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">ModelWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelBase</span></code></a></p>
+<p>Abstract class implementing a model that wraps around another internal model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'model'</span></em><a class="headerlink" href="#merlion.models.base.ModelWrapper.filename" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper.save" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirname</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – directory to save the model &amp; its config</p></li>
+<li><p><strong>save_config</strong> – additional configurations (if needed)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.load">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper.load" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.to_bytes">
+<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper.to_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the entire model state and configuration to a single byte object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bytes object representing the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.from_bytes">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper.from_bytes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.factory">
+<span id="merlion-models-factory-module"></span><h2>merlion.models.factory module<a class="headerlink" href="#module-merlion.models.factory" title="Permalink to this headline"></a></h2>
+<p>Contains the <a class="reference internal" href="#merlion.models.factory.ModelFactory" title="merlion.models.factory.ModelFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelFactory</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.factory.ModelFactory">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.factory.</span></span><span class="sig-name descname"><span class="pre">ModelFactory</span></span><a class="headerlink" href="#merlion.models.factory.ModelFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.factory.ModelFactory.get_model_class">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_model_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.factory.ModelFactory.get_model_class" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.factory.ModelFactory.create">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.factory.ModelFactory.create" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.factory.ModelFactory.load">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.factory.ModelFactory.load" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.factory.ModelFactory.load_bytes">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.factory.ModelFactory.load_bytes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.defaults">
+<span id="merlion-models-defaults-module"></span><h2>merlion.models.defaults module<a class="headerlink" href="#module-merlion.models.defaults" title="Permalink to this headline"></a></h2>
+<p>Default models for anomaly detection &amp; forecasting that balance speed and performance.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultModelConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultModelConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultModelConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>transform</strong> – Transformation to pre-process input time series.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultModelConfig.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultModelConfig.to_dict" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict with keyword arguments used to initialize the config class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetectorConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetectorConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultModelConfig</span></code></a></p>
+<p>Config object for default anomaly detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>granularity</strong> – the granularity at which the input time series should
+be sampled, e.g. “5min”, “1h”, “1d”, etc.</p></li>
+<li><p><strong>threshold</strong> – <a class="reference internal" href="merlion.post_process.html#merlion.post_process.threshold.Threshold" title="merlion.post_process.threshold.Threshold"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Threshold</span></code></a> object setting a default anomaly detection
+threshold in units of z-score.</p></li>
+<li><p><strong>n_threads</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of parallel threads to use for relevant models</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorBase</span></code></a></p>
+<p>Default anomaly detection model that balances efficiency with performance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a>) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultDetectorConfig" title="merlion.models.defaults.DefaultDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultDetectorConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.granularity">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">granularity</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.granularity" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the anomaly detector (unsupervised) and its post-rule
+(supervised, if labels are given) on the input time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are
+anomalous. Optional.</p></li>
+<li><p><strong>train_config</strong> – Additional training configs, if needed. Only
+required for some models.</p></li>
+<li><p><strong>post_rule_train_config</strong> – The config to use for training the
+model’s post-rule. The model’s default post-rule train config is
+used if none is supplied here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the model’s anomaly scores on the training
+data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.get_anomaly_score">
+<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.get_anomaly_score" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model’s predicted sequence of anomaly scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+for.</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
+anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
+immediately follows the training data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.get_anomaly_label">
+<span class="sig-name descname"><span class="pre">get_anomaly_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.get_anomaly_label" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model’s predicted sequence of anomaly scores, processed
+by any relevant post-rules (calibration and/or thresholding).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+for.</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
+anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
+immediately follows the training data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores, filtered by the
+model’s post-rule</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecasterConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecasterConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultModelConfig</span></code></a></p>
+<p>Config object for default forecasting model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>granularity</strong> – the granularity at which the input time series should
+be sampled, e.g. “5min”, “1h”, “1d”, etc.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> – If doing multivariate forecasting, the index of
+univariate whose value you wish to forecast.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<p>Default forecasting model that balances efficiency with performance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultForecasterConfig" title="merlion.models.defaults.DefaultForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultForecasterConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster.granularity">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">granularity</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster.granularity" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the forecaster on the input time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>train_config</strong> – Additional training configs, if needed. Only
+required for some models.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the model’s prediction on <code class="docutils literal notranslate"><span class="pre">train_data</span></code>, in the same format as
+if you called <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.forecast" title="merlion.models.forecast.base.ForecasterBase.forecast"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.forecast</span></code></a> on the time stamps of
+<code class="docutils literal notranslate"><span class="pre">train_data</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_iqr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model’s forecast on the timestamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_stamps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Either a <code class="docutils literal notranslate"><span class="pre">list</span></code> of timestamps we wish to forecast for,
+or the number of steps (<code class="docutils literal notranslate"><span class="pre">int</span></code>) we wish to forecast for.</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of (timestamp, value) pairs immediately
+preceding <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time
+series model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code> immediately
+follows the training data.</p></li>
+<li><p><strong>return_iqr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to return the inter-quartile range for the
+forecast. Note that not all models support this option.</p></li>
+<li><p><strong>return_prev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to return the forecast for
+<code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and its stderr or IQR if relevant), in addition
+to the forecast for <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>. Only used if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>
+is provided.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">forecast_stderr)</span></code> if <code class="docutils literal notranslate"><span class="pre">return_iqr</span></code> is false,
+<code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">forecast_lb,</span> <span class="pre">forecast_ub)</span></code> otherwise.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast</span></code>: the forecast for the timestamps given</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">forecast_stderr</span></code>: the standard error of each forecast value.</dt><dd><p>May be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast_lb</span></code>: 25th percentile of forecast values for each timestamp</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast_ub</span></code>: 75th percentile of forecast values for each timestamp</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.html" class="btn btn-neutral float-left" title="merlion: Time Series Intelligence" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.anomaly.html" class="btn btn-neutral float-right" title="merlion.models.anomaly package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+           </strong> 
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
