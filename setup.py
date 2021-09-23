@@ -19,7 +19,7 @@ def read_file(fname):
 
 
 setup(
-    name="sfdc-merlion",
+    name="salesforce-merlion",
     version="1.0.0",
     author=", ".join(read_file("AUTHORS.md").split("\n")),
     author_email="abhatnagar@salesforce.com",

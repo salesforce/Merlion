@@ -25,7 +25,7 @@ project = "Merlion"
 copyright = "2021, salesforce.com, inc."
 
 # The full version, including alpha/beta/rc tags
-release = pkg_resources.get_distribution("sfdc-merlion").version
+release = pkg_resources.get_distribution("salesforce-merlion").version
 
 default_role = "any"
 
