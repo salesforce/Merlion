@@ -90,4 +90,4 @@ EOF
 
 # Return to original git state
 git switch "$GIT_BRANCH"
-git stash pop
+git stash pop || true
