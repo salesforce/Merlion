@@ -44,8 +44,10 @@ for version in $(git tag --list 'v[0-9]*'); do
     rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
     pip3 uninstall -y salesforce-merlion
     pip3 uninstall -y ts_datasets
-    git checkout "${GIT_BRANCH}"
-    git branch -d "${version}_local_docs_only"
+    if [ -n "${GIT_BRANCH}" ]; then
+        git checkout "${GIT_BRANCH}"
+        git branch -d "${version}_local_docs_only"
+    fi
 done
 
 # Determine the latest stable version if there is one
@@ -92,5 +94,7 @@ EOF
 echo "Finished writing to build/html."
 
 # Return to original git state
-git checkout "${GIT_BRANCH}"
-git stash pop || true
+if [ -n "${GIT_BRANCH}" ]; then
+    git checkout "${GIT_BRANCH}"
+    git stash pop || true
+fi
