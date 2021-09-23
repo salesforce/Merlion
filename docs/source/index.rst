@@ -25,10 +25,10 @@ Merlion consists of two sub-packages: :doc:`merlion <merlion>` implements the li
 and :doc:`ts_datasets <ts_datasets>` provides standardized data loaders for multiple time series datasets. These loaders load
 time series as ``pandas.DataFrame`` s with accompanying metadata.
 
-You can install ``merlion`` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
+You can install ``merlion`` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
 cloning the Merlion `repo <https://github.com/salesforce/Merlion>`_, navigating to the root directory, and calling
 ``pip install .``, or ``pip install -e .`` to install in editable mode. You may install additional dependencies
-for plotting & visualization via ``pip install sfdc-merlion[plot]``, or by calling ``pip install ".[plot]"`` from the
+for plotting & visualization via ``pip install salesforce-merlion[plot]``, or by calling ``pip install ".[plot]"`` from the
 root directory of the repo if installing from source.
 
 To install the data loading package ``ts_datasets``, simply clone the Merlion

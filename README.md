@@ -9,8 +9,8 @@
   <a href="https://github.com/salesforce/Merlion/actions">
   <img alt="Coverage" src="https://github.com/salesforce/Merlion/raw/badges/coverage.svg"/>
   </a>
-  <a href="https://pypi.python.org/pypi/sfdc-merlion">
-  <img alt="PyPI Version" src="https://img.shields.io/pypi/v/sfdc-merlion.svg"/>
+  <a href="https://pypi.python.org/pypi/salesforce-merlion">
+  <img alt="PyPI Version" src="https://img.shields.io/pypi/v/salesforce-merlion.svg"/>
   </a>
   <a href="https://opensource.salesforce.com/Merlion/index.html">
   <img alt="docs" src="https://github.com/salesforce/Merlion/actions/workflows/docs.yml/badge.svg"/>
@@ -39,10 +39,14 @@ rapidly develop models for their specific time series needs, and benchmark them 
 Merlion's key features are
 -  Standardized and easily extensible data loading & benchmarking for a wide range of forecasting and anomaly
    detection datasets.
--  A library of diverse models for both anomaly detection and forecasting, unified undera shared interface. Models include classic statistical methods, tree ensembles, and deeplearning approaches. Advanced users may fully configure each model as desired.
--  Abstract `DefaultDetector` and `DefaultForecaster` models that are efficient, robustly achieve good performance, and provide a starting point for new users.
+-  A library of diverse models for both anomaly detection and forecasting, unified under a shared interface.
+   Models include classic statistical methods, tree ensembles, and deep
+   learning approaches. Advanced users may fully configure each model as desired.
+-  Abstract `DefaultDetector` and `DefaultForecaster` models that are efficient, robustly achieve good performance,
+   and provide a starting point for new users.
 -  AutoML for automated hyperaparameter tuning and model selection.
--  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more interpretable, while also reducing the number of false positives.
+-  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more interpretable,
+   while also reducing the number of false positives.
 -  Easy-to-use ensembles that combine the outputs of multiple models to achieve more robust performance. 
 -  Flexible evaluation pipelines that simulate the live deployment & re-training of a model in production,
    and evaluate performance on both forecasting and anomaly detection.
@@ -68,10 +72,10 @@ Merlion consists of two sub-repos: `merlion` implements the library's core time 
 and `ts_datasets` provides standardized data loaders for multiple time series datasets. These loaders load
 time series as ``pandas.DataFrame`` s with accompanying metadata.
 
-You can install `merlion` from PyPI by calling ``pip install sfdc-merlion``. You may install from source by
+You can install `merlion` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
 cloning this repo, navigating to the root directory, and calling ``pip install .``, or ``pip install -e .`` to
 install in editable mode. You may install  additional dependencies for plotting & visualization via
-``pip install sfdc-merlion[plot]``, or by calling ``pip install ".[plot]"`` from the root directory of this repo.
+``pip install salesforce-merlion[plot]``, or by calling ``pip install ".[plot]"`` from the root directory of this repo.
 
 To install the data loading package `ts_datasets`, clone this repo, navigate to its root directory, and call
 ``pip install -e ts_datasets/``. This package must be installed in editable mode (i.e. with the ``-e`` flag)
