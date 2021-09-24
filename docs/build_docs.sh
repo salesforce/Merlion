@@ -48,7 +48,7 @@ for version in $(git tag --list 'v[0-9]*'); do
     rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
     pip3 uninstall -y salesforce-merlion
     pip3 uninstall -y ts_datasets
-    git checkout "${GIT_BRANCH}"
+    git checkout "${GIT_BRANCH}" --
     git branch -D "${version}_local_docs_only"
 done
 
