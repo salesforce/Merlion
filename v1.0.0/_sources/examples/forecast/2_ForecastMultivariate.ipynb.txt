@@ -1,0 +1,241 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "bd943f7c",
+   "metadata": {},
+   "source": [
+    "# Multivariate Time Series Forecasting\n",
+    "\n",
+    "Multivariate time series forecasting works similarly to univariate time series forecasting (covered [here](0_ForecastIntro.ipynb) and [here](1_ForecastFeatures.ipynb)). The main difference is that you must specify the index of a target univariate to forecast, e.g. for a 5-variable time series you may want to forecast the value of the 3rd variable (we specify this by indicating `target_seq_index = 2`). To begin, we will load the multivariate `SeattleTrail` dataset for time series forecasting."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "a6c1f175",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Time series is 5-dimensional\n"
+     ]
+    }
+   ],
+   "source": [
+    "from merlion.utils import TimeSeries\n",
+    "from ts_datasets.forecast import SeattleTrail\n",
+    "\n",
+    "time_series, metadata = SeattleTrail()[0]\n",
+    "train_data = TimeSeries.from_pd(time_series[metadata[\"trainval\"]])\n",
+    "test_data = TimeSeries.from_pd(time_series[~metadata[\"trainval\"]])\n",
+    "\n",
+    "print(f\"Time series is {train_data.dim}-dimensional\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "82df16db",
+   "metadata": {},
+   "source": [
+    "## Model Initialization and Training\n",
+    "\n",
+    "For the purposes of this tutorial, we will be using 3 models:\n",
+    "\n",
+    "1. `DefaultForeacster` (which automatically detects whether the input time series is univariate or multivariate);\n",
+    "2. `ARIMA` (a classic univariate algorithm) trained to forecast a specific univariate; and \n",
+    "3. A `ForecasterEnsemble` which selects the better of the two models.\n",
+    "\n",
+    "All models are trained with a maximum allowed forecasting horizon of 100 steps. Note that all multivariate forecasting models can be used for univariate time series, and by specifying `target_seq_index` appropriately, univariate models can be used for multivariate time series as well. Moreover, the API is identical in all cases."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "46593ce3",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Training DefaultForecaster...\n",
+      "Training Arima...\n",
+      "Training ForecasterEnsemble...\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Validation: 100%|██████████| 31550400/31550400 [00:20<00:00, 1558063.14it/s]\n"
+     ]
+    }
+   ],
+   "source": [
+    "from merlion.evaluate.forecast import ForecastMetric\n",
+    "from merlion.models.factory import ModelFactory\n",
+    "from merlion.models.ensemble.combine import ModelSelector\n",
+    "\n",
+    "# Time series is sampled hourly, so max_forecast_steps = 24 means we can predict up to 1 day in the future\n",
+    "target_seq_index = 2\n",
+    "max_forecast_steps = 24\n",
+    "kwargs = dict(target_seq_index=target_seq_index, max_forecast_steps=max_forecast_steps)\n",
+    "\n",
+    "model1 = ModelFactory.create(\"DefaultForecaster\", **kwargs)\n",
+    "model2 = ModelFactory.create(\"Arima\", **kwargs)\n",
+    "\n",
+    "# This ModelSelector combiner picks the best model based on sMAPE\n",
+    "model3 = ModelFactory.create(\"ForecasterEnsemble\", models=[model1, model2],\n",
+    "                             combiner=ModelSelector(metric=ForecastMetric.sMAPE))\n",
+    "\n",
+    "for model in [model1, model2, model3]:\n",
+    "    print(f\"Training {type(model).__name__}...\")\n",
+    "    train_pred, train_stderr = model.train(train_data)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a720d718",
+   "metadata": {},
+   "source": [
+    "## Model Inference and Quantitative Evaluation\n",
+    "Like univariate models, we may call `model.forecast()` to get a forecast and potentially a standard error for the model. We can use these to evaluate the model's performance. Note that the model selector successfully picks the better of the two models."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "6ee7d7bd",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "DefaultForecaster\n",
+      "RMSE:  6.6216\n",
+      "sMAPE: 121.1709\n",
+      "\n",
+      "Arima\n",
+      "RMSE:  10.2208\n",
+      "sMAPE: 140.2772\n",
+      "\n",
+      "ForecasterEnsemble\n",
+      "RMSE:  6.6216\n",
+      "sMAPE: 121.1709\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from merlion.evaluate.forecast import ForecastMetric\n",
+    "\n",
+    "target_univariate = test_data.univariates[test_data.names[target_seq_index]]\n",
+    "target = target_univariate[:max_forecast_steps].to_ts()\n",
+    "\n",
+    "for model in [model1, model2, model3]:\n",
+    "    forecast, stderr = model.forecast(target.time_stamps)\n",
+    "    rmse = ForecastMetric.RMSE.value(ground_truth=target, predict=forecast)\n",
+    "    smape = ForecastMetric.sMAPE.value(ground_truth=target, predict=forecast)\n",
+    "    print(f\"{type(model).__name__}\")\n",
+    "    print(f\"RMSE:  {rmse:.4f}\")\n",
+    "    print(f\"sMAPE: {smape:.4f}\")\n",
+    "    print()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0df4307b",
+   "metadata": {},
+   "source": [
+    "We can also use a `ForecastEvaluator` to evaluate a model in a manner that simulates live deployment. Here, we train an initial model on the training data, and we obtain its predictions on the training data using a sliding window of 1 day (`horizon=\"1d\"` means that we want the model to predict 1 day in the future at each time step, and `cadence=\"1d\"` means that we obtain a prediction from the model once per day). Note that we never actually re-train the model (`retrain_freq=None`)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "bcac94ff",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "DefaultForecaster Sliding Window Evaluation\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "ForecastEvaluator: 100%|██████████| 31528800/31528800 [01:22<00:00, 383184.32it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "RMSE:  12.0339\n",
+      "sMAPE: 99.4165\n",
+      "\n",
+      "Arima Sliding Window Evaluation\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "ForecastEvaluator: 100%|██████████| 31528800/31528800 [03:45<00:00, 139586.71it/s]\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "RMSE:  13.1032\n",
+      "sMAPE: 112.2607\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from merlion.evaluate.forecast import ForecastEvaluator, ForecastEvaluatorConfig\n",
+    "\n",
+    "for model in [model1, model2]:\n",
+    "    print(f\"{type(model).__name__} Sliding Window Evaluation\")\n",
+    "    evaluator = ForecastEvaluator(model=model, config=ForecastEvaluatorConfig(\n",
+    "        horizon=\"1d\", cadence=\"1d\", retrain_freq=None))\n",
+    "    train_result, test_pred = evaluator.get_predict(train_vals=train_data, test_vals=test_data)\n",
+    "    rmse = evaluator.evaluate(ground_truth=test_data, predict=test_pred, metric=ForecastMetric.RMSE)\n",
+    "    smape = evaluator.evaluate(ground_truth=test_data, predict=test_pred, metric=ForecastMetric.sMAPE)\n",
+    "    print(f\"RMSE:  {rmse:.4f}\")\n",
+    "    print(f\"sMAPE: {smape:.4f}\")\n",
+    "    print()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
