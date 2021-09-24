@@ -10,9 +10,10 @@
       {% if versions|length >= 1 %}
       <dl>
         <dt>{{ _('Versions') }}</dt>
-        {% for version, url in versions %}
+        {% for version in versions %}
           {% if version == current_version %} <strong> {% endif %}
-          <dd><a href="{{ url }}">{{ version }}</a></dd>
+          {% set rootdir = "/".join(pathto(root_doc).split("/")[:-1] + [".."]) %}
+          <dd><a href="{{ rootdir }}/{{ version }}/index.html">{{ version }}</a></dd>
           {% if version == current_version %} </strong> {% endif %}
         {% endfor %}
       </dl>

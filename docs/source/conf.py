@@ -83,5 +83,4 @@ if "current_version" in os.environ:
     html_context["version"] = current_version
     versions = sorted([tag.name for tag in repo.tags if re.match("v[0-9].*", tag.name)], reverse=True)
     versions = ["latest", *versions]
-    versions = [(version, f"../{version}/index.html") for version in versions]
     html_context["versions"] = versions
