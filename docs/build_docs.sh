@@ -36,7 +36,8 @@ pip3 uninstall -y ts_datasets
 versions=()
 for version in $(git tag --list 'v[0-9]*'); do
     versions+=("$version")
-    git checkout "tags/${version}" -b "${version}_local_docs_only"
+    git checkout -b "${version}_local_docs_only"
+    git checkout "tags/${version}" -- "${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets"
     export current_version=${version}
     pip3 install ".[plot]"
     pip3 install ts_datasets/
@@ -46,7 +47,7 @@ for version in $(git tag --list 'v[0-9]*'); do
     pip3 uninstall -y ts_datasets
     if [ -n "${GIT_BRANCH}" ]; then
         git checkout "${GIT_BRANCH}"
-        git branch -d "${version}_local_docs_only"
+        git branch -D "${version}_local_docs_only"
     fi
 done
 
