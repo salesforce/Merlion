@@ -15,6 +15,9 @@ source venv/bin/activate
 
 # Get current git branch & stash unsaved changes
 GIT_BRANCH=$(git branch --show-current)
+if [ -z "${GIT_BRANCH}" ]; then
+    GIT_BRANCH="main"
+fi
 git stash
 
 # Clean up build directory and install Sphinx requirements
@@ -45,10 +48,8 @@ for version in $(git tag --list 'v[0-9]*'); do
     rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
     pip3 uninstall -y salesforce-merlion
     pip3 uninstall -y ts_datasets
-    if [ -n "${GIT_BRANCH}" ]; then
-        git checkout "${GIT_BRANCH}"
-        git branch -D "${version}_local_docs_only"
-    fi
+    git checkout "${GIT_BRANCH}"
+    git branch -D "${version}_local_docs_only"
 done
 
 # Determine the latest stable version if there is one
@@ -95,7 +96,5 @@ EOF
 echo "Finished writing to build/html."
 
 # Return to original git state
-if [ -n "${GIT_BRANCH}" ]; then
-    git checkout "${GIT_BRANCH}"
-    git stash pop || true
-fi
+git checkout "${GIT_BRANCH}"
+git stash pop || true
