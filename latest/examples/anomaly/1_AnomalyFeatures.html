@@ -413,8 +413,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
-Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+plotly not installed, so plotly visualizations will not work.
+Time series /Users/pkassianik/research/MerlionPublic/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/pkassianik/research/MerlionPublic/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -452,7 +453,7 @@ Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_te
 <li><p>Prophet (Facebook’s popular forecasting model, adapted for anomaly detection.</p></li>
 </ol>
 <p>Let’s start by initializing each of them:</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
@@ -492,6 +493,14 @@ Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_te
 <span class="n">model3</span>  <span class="o">=</span> <span class="n">ProphetDetector</span><span class="p">(</span><span class="n">config3</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Importing plotly failed. Interactive plots will not work.
+</pre></div></div>
 </div>
 <p>Now that we have initialized the individual models, we will also combine them in an ensemble. We set this ensemble’s detection threshold to fire alerts for 4-sigma events (the same as WindStats).</p>
 <div class="nbinput nblast docutils container">
@@ -563,10 +572,8 @@ Training IsolationForest...
 <div class="highlight"><pre>
 INFO:merlion.post_process.threshold:Threshold 3.2263 achieves F1=0.5000.
 INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:numexpr.utils:Note: NumExpr detected 16 cores but &#34;NUMEXPR_MAX_THREADS&#34; not set, so enforcing safe limit of 8.
-INFO:numexpr.utils:NumExpr defaulting to 8 threads.
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -603,8 +610,8 @@ Training ensemble...
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -795,19 +802,19 @@ WindStats
 Precision: 0.2500
 Recall:    0.6667
 F1:        0.3636
-MTTD:      1 days 10:27:30
+MTTD:      1 days 10:25:00
 
 ProphetDetector
 Precision: 0.3000
 Recall:    1.0000
 F1:        0.4615
-MTTD:      1 days 00:05:00
+MTTD:      1 days 00:03:20
 
 DetectorEnsemble
 Precision: 0.4000
 Recall:    0.6667
 F1:        0.5000
-MTTD:      1 days 10:27:30
+MTTD:      1 days 10:25:00
 
 </pre></div></div>
 </div>
@@ -951,7 +958,7 @@ ProphetDetector
 IsolationForest Config
 {&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
                 &#39;anchors&#39;: [[0.38992633996347176, 0.0],
-                            [0.41877507813617143, 0.5],
+                            [0.4187750781361715, 0.5],
                             [0.445336977389891, 1.0],
                             [0.47974261897360404, 1.5],
                             [0.5271631189090943, 2.0],
@@ -962,7 +969,7 @@ IsolationForest Config
  &#39;enable_calibrator&#39;: True,
  &#39;enable_threshold&#39;: True,
  &#39;max_n_samples&#39;: 1.0,
- &#39;model_path&#39;: &#39;/Users/abhatnagar/Desktop/Merlion/examples/anomaly/models/isf/model.pkl&#39;,
+ &#39;model_path&#39;: &#39;/Users/pkassianik/research/MerlionPublic/examples/anomaly/models/isf/model.pkl&#39;,
  &#39;n_estimators&#39;: 100,
  &#39;threshold&#39;: {&#39;abs_score&#39;: True,
                &#39;alm_suppress_minutes&#39;: 120,
@@ -1017,11 +1024,11 @@ Ensemble Config
  &#39;enable_calibrator&#39;: False,
  &#39;enable_threshold&#39;: True,
  &#39;model_paths&#39;: [[&#39;IsolationForest&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion/examples/anomaly/models/ensemble/0&#39;],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/anomaly/models/ensemble/0&#39;],
                  [&#39;WindStats&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion/examples/anomaly/models/ensemble/1&#39;],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/anomaly/models/ensemble/1&#39;],
                  [&#39;ProphetDetector&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion/examples/anomaly/models/ensemble/2&#39;]],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/anomaly/models/ensemble/2&#39;]],
  &#39;threshold&#39;: {&#39;abs_score&#39;: True,
                &#39;alm_suppress_minutes&#39;: 120,
                &#39;alm_threshold&#39;: 4,
@@ -1077,27 +1084,27 @@ a maximum amount of data (<code class="docutils literal notranslate"><span class
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:04, 1039930.97it/s]INFO:merlion.models.forecast.prophet:Add seasonality 13
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  21%|██        | 1209600/5783700 [00:03&lt;00:15, 291306.22it/s]INFO:merlion.models.forecast.prophet:Add seasonality 13
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:07&lt;00:19, 204205.27it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:10&lt;00:16, 200797.88it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:16&lt;00:18, 150898.03it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:20&lt;00:14, 151825.96it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:26&lt;00:12, 127252.90it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:31&lt;00:07, 128260.14it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:40&lt;00:03, 99713.90it/s] INFO:merlion.models.forecast.prophet:Add seasonality 12
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator: 100%|██████████| 5783700/5783700 [00:49&lt;00:00, 116554.57it/s]
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1344494.93it/s]INFO:merlion.models.forecast.prophet:Add seasonality 13
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  21%|██        | 1209600/5783700 [00:03&lt;00:15, 296394.17it/s]INFO:merlion.models.forecast.prophet:Add seasonality 13
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:07&lt;00:19, 204091.41it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:10&lt;00:16, 202177.03it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:16&lt;00:17, 154550.90it/s]INFO:merlion.models.forecast.prophet:Add seasonality 15
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:21&lt;00:14, 143959.12it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:26&lt;00:11, 129449.34it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:32&lt;00:07, 121326.31it/s]INFO:merlion.models.forecast.prophet:Add seasonality 12
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:41&lt;00:03, 94051.57it/s] INFO:merlion.models.forecast.prophet:Add seasonality 12
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator: 100%|██████████| 5783700/5783700 [00:53&lt;00:00, 109123.17it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1128,7 +1135,7 @@ Ensemble Performance
 Precision: 0.6667
 Recall:    0.6667
 F1:        0.6667
-MTTD:      1 days 10:27:30
+MTTD:      1 days 10:25:00
 
 </pre></div></div>
 </div>

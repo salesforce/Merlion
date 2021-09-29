@@ -419,7 +419,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 513.64it/s]
+100%|██████████| 414/414 [00:00&lt;00:00, 581.91it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -449,7 +449,7 @@ Has missing data: False
 <h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this headline"></a></h2>
 <p>In this notebook, we will use three different forecasting models: 1. ARIMA (a classic stochastic process model) 2. Prophet (Facebook’s popular time series forecasting model) 3. MSES (the Multi-Scale Exponential Smoothing model, developed in-house)</p>
 <p>Let’s start by initializing each of them.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -491,6 +491,15 @@ Has missing data: False
 <span class="n">model3</span>  <span class="o">=</span> <span class="n">MSES</span><span class="p">(</span><span class="n">config3</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+plotly not installed, so plotly visualizations will not work.
+Importing plotly failed. Interactive plots will not work.
+</pre></div></div>
 </div>
 <p>Now that we have initialized the individual models, we will also combine them in two different ensembles: <code class="docutils literal notranslate"><span class="pre">ensemble</span></code> simply takes the mean prediction of each individual model, and <code class="docutils literal notranslate"><span class="pre">selector</span></code> selects the best individual model based on its sMAPE (symmetric Mean Average Precision Error). The sMAPE is a metric used to evaluate the quality of a continuous forecast. For ground truth <span class="math notranslate nohighlight">\(y \in \mathbb{R}^T\)</span> and prediction <span class="math notranslate nohighlight">\(\hat{y} \in \mathbb{R}^T\)</span>, the sMAPE is computed as</p>
 <div class="math notranslate nohighlight">
@@ -577,7 +586,7 @@ Training Arima...
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -615,7 +624,7 @@ Training ensemble...
 <div class="highlight"><pre>
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
 INFO:merlion.models.ensemble.forecast:Training model 1/3...
 </pre></div></div>
@@ -636,14 +645,14 @@ Training model selector...
 <div class="highlight"><pre>
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
 INFO:merlion.models.ensemble.forecast:Evaluating validation performance...
-Validation: 100%|██████████| 500400/500400 [00:01&lt;00:00, 353419.55it/s]
+Validation: 100%|██████████| 500400/500400 [00:01&lt;00:00, 370267.02it/s]
 INFO:merlion.models.ensemble.forecast:Re-training model 1/3 on full data...
 INFO:merlion.models.ensemble.forecast:Re-training model 2/3 on full data...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Re-training model 3/3 on full data...
 </pre></div></div>
 </div>
@@ -726,7 +735,7 @@ Done!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Arima sMAPE is 3.768
+Arima sMAPE is 3.770
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -763,7 +772,7 @@ Arima sMAPE is 3.768
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Prophet sMAPE is 3.087
+Prophet sMAPE is 2.912
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -826,7 +835,7 @@ MSES sMAPE is 4.377
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ensemble sMAPE is 2.497
+Ensemble sMAPE is 2.594
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -857,7 +866,7 @@ Ensemble sMAPE is 2.497
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Selector sMAPE is 3.768
+Selector sMAPE is 3.770
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -911,7 +920,7 @@ Prophet Config
  &#39;daily_seasonality&#39;: &#39;auto&#39;,
  &#39;dim&#39;: 1,
  &#39;max_forecast_steps&#39;: None,
- &#39;model_path&#39;: &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/forecast/models/prophet/model.pkl&#39;,
+ &#39;model_path&#39;: &#39;/Users/pkassianik/research/MerlionPublic/examples/forecast/models/prophet/model.pkl&#39;,
  &#39;target_seq_index&#39;: 0,
  &#39;transform&#39;: {&#39;name&#39;: &#39;Identity&#39;},
  &#39;uncertainty_samples&#39;: 100,
@@ -952,19 +961,19 @@ Prophet Config
 Selector Config
 {&#39;combiner&#39;: {&#39;abs_score&#39;: False,
               &#39;metric&#39;: &#39;ForecastMetric.sMAPE&#39;,
-              &#39;metric_values&#39;: [5.479063255045728,
-                                8.611665684950744,
+              &#39;metric_values&#39;: [5.508162256738464,
+                                9.015287748492169,
                                 17.72980301555831],
               &#39;n_models&#39;: 3,
               &#39;name&#39;: &#39;ModelSelector&#39;},
  &#39;dim&#39;: 1,
  &#39;max_forecast_steps&#39;: None,
  &#39;model_paths&#39;: [[&#39;Arima&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/forecast/models/selector/0&#39;],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/forecast/models/selector/0&#39;],
                  [&#39;Prophet&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/forecast/models/selector/1&#39;],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/forecast/models/selector/1&#39;],
                  [&#39;MSES&#39;,
-                  &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/forecast/models/selector/2&#39;]],
+                  &#39;/Users/pkassianik/research/MerlionPublic/examples/forecast/models/selector/2&#39;]],
  &#39;target_seq_index&#39;: 0,
  &#39;transform&#39;: {&#39;name&#39;: &#39;Identity&#39;}}
 </pre></div></div>
@@ -1018,7 +1027,7 @@ Selector Config
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-ForecastEvaluator: 100%|██████████| 169200/169200 [00:12&lt;00:00, 13577.69it/s]
+ForecastEvaluator: 100%|██████████| 169200/169200 [00:08&lt;00:00, 19715.09it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1045,8 +1054,8 @@ ForecastEvaluator: 100%|██████████| 169200/169200 [00:12&lt;
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Arima sMAPE: 2.015
-Arima RMSE:  143.416
+Arima sMAPE: 2.012
+Arima RMSE:  143.235
 </pre></div></div>
 </div>
 <p>Next, we will evaluate the ensemble (taking the mean prediction of ARIMA, Prophet, and MSES every time the models are called).</p>
@@ -1072,27 +1081,27 @@ Arima RMSE:  143.416
 INFO:merlion.models.ensemble.forecast:Training model 1/3...
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
-ForecastEvaluator:  26%|██▌       | 43200/169200 [00:06&lt;00:21, 5956.61it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
+ForecastEvaluator:  26%|██▌       | 43200/169200 [00:04&lt;00:14, 8996.40it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
-ForecastEvaluator:  51%|█████     | 86400/169200 [00:20&lt;00:14, 5592.43it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
+ForecastEvaluator:  51%|█████     | 86400/169200 [00:13&lt;00:09, 8845.69it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
-ForecastEvaluator:  77%|███████▋  | 129600/169200 [00:32&lt;00:06, 6221.19it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
+ForecastEvaluator:  77%|███████▋  | 129600/169200 [00:21&lt;00:04, 8884.15it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3...
 INFO:merlion.models.ensemble.forecast:Training model 2/3...
 INFO:merlion.models.forecast.prophet:Add seasonality 24
-INFO:fbprophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:fbprophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
 INFO:merlion.models.ensemble.forecast:Training model 3/3...
-ForecastEvaluator: 100%|██████████| 169200/169200 [00:44&lt;00:00, 3763.04it/s]
+ForecastEvaluator: 100%|██████████| 169200/169200 [00:29&lt;00:00, 5649.86it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1119,8 +1128,8 @@ ForecastEvaluator: 100%|██████████| 169200/169200 [00:44&lt;
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ensemble sMAPE: 2.893
-Ensemble RMSE:  210.927
+Ensemble sMAPE: 2.882
+Ensemble RMSE:  210.098
 </pre></div></div>
 </div>
 </section>
