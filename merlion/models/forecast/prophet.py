@@ -10,7 +10,7 @@ Wrapper around Facebook's popular Prophet model for time series forecasting.
 import logging
 from typing import List, Tuple, Union
 
-import fbprophet
+import prophet
 import numpy as np
 import pandas as pd
 
@@ -75,7 +75,7 @@ class Prophet(ForecasterBase):
 
     def __init__(self, config: ProphetConfig):
         super().__init__(config)
-        self.model = fbprophet.Prophet(
+        self.model = prophet.Prophet(
             yearly_seasonality=self.yearly_seasonality,
             weekly_seasonality=self.weekly_seasonality,
             daily_seasonality=self.daily_seasonality,
@@ -159,7 +159,7 @@ class Prophet(ForecasterBase):
         else:
             times = to_pd_datetime(time_stamps)
 
-        # Construct data frame for fbprophet
+        # Construct data frame for prophet
         df = pd.DataFrame()
         if time_series_prev is not None:
             series = self.transform(time_series_prev)
@@ -167,7 +167,7 @@ class Prophet(ForecasterBase):
             df = pd.DataFrame({"ds": series.index, "y": series.np_values})
         df = df.append(pd.DataFrame({"ds": times}))
 
-        # Get MAP estimate from fbprophet
+        # Get MAP estimate from prophet
         self.model.uncertainty_samples = 0
         yhat = self.model.predict(df)["yhat"].values
         self.model.uncertainty_samples = self.uncertainty_samples
