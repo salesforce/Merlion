@@ -77,7 +77,11 @@ def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Uni
     if isinstance(granularity, (float, int)):
         ms = np.floor(granularity * 1000)
     else:
-        ms = np.floor(pd.tseries.frequencies.to_offset(pd.Timedelta(granularity)).nanos / 1e6)
+        try:
+            granularity = pd.Timedelta(granularity)
+        except:
+            pass
+        ms = np.floor(pd.tseries.frequencies.to_offset(granularity).nanos / 1e6)
     return ms / 1000
 
 

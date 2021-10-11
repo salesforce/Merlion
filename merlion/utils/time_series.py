@@ -12,6 +12,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from pandas.tseries.frequencies import to_offset
 
 from .misc import ValIterOrderedDict
 from .resample import (
@@ -874,10 +875,18 @@ class TimeSeries:
             # Get the granularity in seconds, if one is specified. Otherwise,
             # find the GCD granularity of  all the timedeltas that appear in any
             # of the univariate series.
-            if granularity is not None:
-                granularity = granularity_str_to_seconds(granularity)
-            else:
-                granularity = get_gcd_timedelta(*[var.np_time_stamps for var in self.univariates])
+            if granularity is None:
+                time_stamps = self.time_stamps
+                freq = pd.infer_freq(to_pd_datetime(time_stamps))
+                if freq is not None:
+                    granularity = to_offset(freq)
+                else:
+                    granularity = pd.to_timedelta(get_gcd_timedelta(time_stamps), unit="s")
+                    logger.warning(f"Inferred granularity {granularity}")
+            try:
+                granularity = pd.to_timedelta(granularity, unit="s")
+            except:
+                granularity = to_offset(granularity)
 
             # Remove non-overlapping portions of univariates if desired
             df = self.to_pd()
@@ -887,8 +896,7 @@ class TimeSeries:
                 df = df[t0:tf]
 
             # Resample at the desired granularity, setting the origin as needed
-            granularity = pd.to_timedelta(granularity, unit="s")
-            if origin is None:
+            if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
             origin = to_pd_datetime(origin)
@@ -981,6 +989,8 @@ def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float 
     Checks that all time deltas in the time series are equal, either to each
     other, or a pre-specified timedelta (in seconds).
     """
+    if pd.infer_freq(time_series.index) is not None:
+        return
     if len(time_series) >= 2:
         timedeltas = np.diff(time_series.np_time_stamps)
         if timedelta is None:
@@ -996,3 +1006,17 @@ def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float 
             f"Expected data to be sampled every {timedelta} seconds, but time "
             f"series is sampled every {timedeltas[0]} seconds instead."
         )
+
+
+def get_horizon(start, periods, granularity):
+    """
+    Gets the timestamp occurring the specified number of ``periods`` after the given ``start``,
+    at the specified ``granularity``.
+    """
+    start = to_pd_datetime(start)
+    try:
+        granularity = pd.to_timedelta(granularity, unit="s")
+    except:
+        granularity = to_offset(granularity)
+    dt = ((start + granularity * periods) - start).total_seconds()
+    return dt

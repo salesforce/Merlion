@@ -14,13 +14,15 @@ import logging
 from typing import List, Tuple, Union
 
 import numpy as np
+import pandas as pd
+from pandas.tseries.frequencies import to_offset
 
 from merlion.transform.base import TransformBase, InvertibleTransformBase
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.utils.resample import (
     granularity_str_to_seconds,
     get_gcd_timedelta,
-    reindex_df,
+    to_pd_datetime,
     AlignPolicy,
     AggregationPolicy,
     MissingValuePolicy,
@@ -67,7 +69,10 @@ class TemporalResample(TransformBase):
         """
         super().__init__()
         if not isinstance(granularity, (int, float)):
-            granularity = granularity_str_to_seconds(granularity)
+            try:
+                granularity = granularity_str_to_seconds(granularity)
+            except:
+                granularity = to_offset(granularity)
         self.granularity = granularity
         self.origin = origin
         if trainable_granularity is None:
@@ -109,11 +114,20 @@ class TemporalResample(TransformBase):
 
     def train(self, time_series: TimeSeries):
         if self.trainable_granularity:
-            self.granularity = get_gcd_timedelta(*[var.time_stamps for var in time_series.univariates])
+            time_stamps = time_series.time_stamps
+            freq = pd.infer_freq(to_pd_datetime(time_stamps))
+            if freq is not None:
+                try:
+                    self.granularity = pd.to_timedelta(to_offset(freq)).total_seconds()
+                except:
+                    self.granularity = freq
+            else:
+                self.granularity = get_gcd_timedelta(time_stamps)
+                logger.warning(f"Inferred granularity {pd.to_timedelta(self.granularity, unit='s')}")
 
         if self.trainable_granularity or self.origin is None:
             t0, tf = time_series.t0, time_series.tf
-            if self.granularity:
+            if isinstance(self.granularity, (int, float)):
                 offset = (tf - t0) % self.granularity
             else:
                 offset = 0

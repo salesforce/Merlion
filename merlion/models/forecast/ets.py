@@ -20,7 +20,7 @@ from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils
-from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import get_horizon, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +168,8 @@ class ETS(ForecasterBase):
         # transform time_series_prev if relevant (before making the prediction)
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
-            _, new_data = time_series_prev.bisect(self.last_train_time + self.timedelta, t_in_left=False)
+            dt = get_horizon(start=self.last_train_time, granularity=self.timedelta, periods=1)
+            _, new_data = time_series_prev.bisect(self.last_train_time + dt, t_in_left=False)
             # if time_series_prev does not contain new data w.r.t. train_data, we skip it
             if new_data.is_empty():
                 time_series_prev = None

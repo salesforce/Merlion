@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
-from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas, get_horizon
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
 from merlion.utils.resample import to_pd_datetime
 from merlion.transform.moving_average import LagTransform
@@ -197,7 +197,7 @@ class MSES(ForecasterBase):
 
     @property
     def max_horizon(self):
-        return self.max_forecast_steps * self.timedelta
+        return get_horizon(start=0, periods=self.max_forecast_steps, granularity=self.timedelta)
 
     def train(self, train_data: TimeSeries, train_config: MSESTrainConfig = None) -> Tuple[Optional[TimeSeries], None]:
         if train_config is None:
@@ -229,7 +229,7 @@ class MSES(ForecasterBase):
 
         # train incrementally
         h = train_config.train_cadence
-        h = h * self.timedelta if h is not None else None
+        h = get_horizon(start=0, periods=h, granularity=self.timedelta) if h is not None else None
         h = min(h, self.max_horizon) if h is not None else self.max_horizon
         train_forecast, train_err = self._incremental_train(
             train_data=train_data,
@@ -298,7 +298,9 @@ class MSES(ForecasterBase):
         new_data = self.transform(new_data).univariates[name]
 
         assert_equal_timedeltas(new_data, self.timedelta)
-        next_train_time = self.last_train_time + self.timedelta
+        next_train_time = self.last_train_time + get_horizon(
+            start=self.last_train_time, periods=1, granularity=self.timedelta
+        )
         if new_data.t0 > next_train_time:
             logger.warning(
                 f"Updating the model with new data requires the "
@@ -465,7 +467,9 @@ class MSES(ForecasterBase):
 
         assert len(xhat_h) == len(self.backsteps)
         if all(x is None for x in xhat_h):
-            t = self.last_train_time + horizon * self.timedelta
+            t = self.last_train_time = get_horizon(
+                start=self.last_train_time, periods=horizon, granularity=self.timedelta
+            )
             raise RuntimeError(
                 f"Not enough training data to forecast at horizon {horizon} "
                 f"(estimated time {pd.to_datetime(t, unit='s')}, last train "

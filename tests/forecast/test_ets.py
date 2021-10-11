@@ -14,7 +14,7 @@ import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.ets import ETSConfig, ETS
-from merlion.utils import TimeSeries
+from merlion.utils.time_series import TimeSeries, get_horizon
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -129,12 +129,12 @@ class TestETS(unittest.TestCase):
         forecast_results = None
         while t < tf:
             cur_train, cur_test = self.data.bisect(t, t_in_left=False)
-            cur_test = cur_test.window(t, t + self.model.timedelta)
+            cur_test = cur_test.window(t, t + get_horizon(start=t, periods=1, granularity=self.model.timedelta))
             forecast, err = self.model.forecast(cur_test.time_stamps, cur_train)
             if forecast_results is None:
                 forecast_results = forecast
             forecast_results += forecast
-            t += self.model.timedelta
+            t = t + get_horizon(start=t, periods=1, granularity=self.model.timedelta)
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse_onestep, 2.4, delta=1)

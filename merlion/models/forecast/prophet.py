@@ -153,8 +153,11 @@ class Prophet(ForecasterBase):
         return_prev=False,
     ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if isinstance(time_stamps, (int, float)):
-            time_stamps = [self.last_train_time + (i + 1) * self.timedelta for i in range(int(time_stamps))]
-        times = to_pd_datetime(time_stamps)
+            times = pd.date_range(
+                start=to_pd_datetime(self.last_train_time), freq=self.timedelta, periods=int(time_stamps)
+            )[1:]
+        else:
+            times = to_pd_datetime(time_stamps)
 
         # Construct data frame for fbprophet
         df = pd.DataFrame()

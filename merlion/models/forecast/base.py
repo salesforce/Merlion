@@ -10,8 +10,10 @@ Base class for forecasting models.
 from abc import abstractmethod
 import copy
 import logging
-import math
 from typing import Any, Dict, List, Optional, Tuple, Union
+
+import pandas as pd
+from pandas.tseries.frequencies import to_offset
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
@@ -108,33 +110,47 @@ class ForecasterBase(ModelBase):
         )
 
         # Determine timedelta & initial time of forecast
-        dt = self.timedelta
+        try:
+            dt = pd.to_timedelta(self.timedelta, unit="s")
+        except:
+            dt = to_offset(self.timedelta)
         if time_series_prev is not None and not time_series_prev.is_empty():
             t0 = time_series_prev.tf
         else:
             t0 = self.last_train_time
+        t0 = to_pd_datetime(t0)
 
         # Handle the case where time_stamps is an integer
         if isinstance(time_stamps, (int, float)):
             n = int(time_stamps)
             assert self.max_forecast_steps is None or n <= self.max_forecast_steps
-            return [t0 + i * dt for i in range(1, n + 1)]
+            resampled = pd.date_range(start=t0, periods=n + 1, freq=dt)[1:]
+            tf = resampled[-1]
+            time_stamps = resampled.values.astype("datetime64[ms]")
+            time_stamps = (time_stamps.astype(float) / 1000).tolist()
 
-        # Determine the final time to forecast
-        if self.max_forecast_steps is None:
-            tf = time_stamps[-1]
+        # Handle the cases where we don't have a max_forecast_steps
+        elif self.max_forecast_steps is None:
+            tf = to_pd_datetime(time_stamps[-1])
+            resampled = pd.date_range(start=t0, end=tf, freq=dt)[1:]
+            if resampled[-1] < tf:
+                extra = pd.date_range(start=resampled[-1], periods=2, freq=dt)[1:]
+                resampled = resampled.union(extra)
+
+        # Handle the case where we do have a max_forecast_steps
         else:
-            tf = t0 + self.max_forecast_steps * dt
+            resampled = pd.date_range(start=t0, periods=self.max_forecast_steps + 1, freq=dt)[1:]
+            tf = resampled[-1]
+            n = sum(t < to_pd_datetime(time_stamps[-1]) for t in resampled)
+            resampled = resampled[: n + 1]
 
-        assert time_stamps[0] >= t0 and time_stamps[-1] <= tf, (
-            f"Expected `time_stamps` to be between {to_pd_datetime(t0)} and "
-            f"{to_pd_datetime(tf)}, but `time_stamps` ranges from "
-            f"{to_pd_datetime(time_stamps[0])} to "
-            f"{to_pd_datetime(time_stamps[-1])}"
+        assert to_pd_datetime(time_stamps[0]) >= t0 and to_pd_datetime(time_stamps[-1]) <= tf, (
+            f"Expected `time_stamps` to be between {t0} and {tf}, but `time_stamps` ranges "
+            f"from {to_pd_datetime(time_stamps[0])} to {to_pd_datetime(time_stamps[-1])}"
         )
 
-        n = math.ceil((time_stamps[-1] - t0) / dt)
-        return [t0 + i * dt for i in range(1, n + 1)]
+        resampled = resampled.values.astype("datetime64[ms]")
+        return (resampled.astype(float) / 1000).tolist()
 
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
