@@ -107,20 +107,24 @@ class ForecasterBase(ModelBase):
             "self.timedelta and self.last_train_time appropriately."
         )
 
+        # Determine timedelta & initial time of forecast
         dt = self.timedelta
         if time_series_prev is not None and not time_series_prev.is_empty():
             t0 = time_series_prev.tf
         else:
             t0 = self.last_train_time
-        if self.max_forecast_steps is None:
-            tf = time_stamps[-1]
-        else:
-            tf = t0 + self.max_forecast_steps * dt
 
+        # Handle the case where time_stamps is an integer
         if isinstance(time_stamps, (int, float)):
             n = int(time_stamps)
             assert self.max_forecast_steps is None or n <= self.max_forecast_steps
             return [t0 + i * dt for i in range(1, n + 1)]
+
+        # Determine the final time to forecast
+        if self.max_forecast_steps is None:
+            tf = time_stamps[-1]
+        else:
+            tf = t0 + self.max_forecast_steps * dt
 
         assert time_stamps[0] >= t0 and time_stamps[-1] <= tf, (
             f"Expected `time_stamps` to be between {to_pd_datetime(t0)} and "
