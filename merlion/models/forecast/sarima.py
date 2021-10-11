@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class SarimaConfig(ForecasterConfig):
-    _default_transform = TemporalResample(granularity="1h", trainable_granularity=False)
+    _default_transform = TemporalResample(granularity=None)
 
     def __init__(
         self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs
