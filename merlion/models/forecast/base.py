@@ -58,8 +58,7 @@ class ForecasterBase(ModelBase):
 
         If your model depends on an evenly spaced time series, make sure to
 
-        1. Set `ForecasterBase.timedelta` and `ForecasterBase.last_train_time` in
-           `ForecasterBase.train`
+        1. Call `ForecasterBase.train_pre_process` in `ForecasterBase.train`
         2. Call `ForecasterBase.resample_time_stamps` at the start of
            `ForecasterBase.forecast` to get a set of resampled time stamps, and
            call ``time_series.align(reference=time_stamps)`` to align the forecast
