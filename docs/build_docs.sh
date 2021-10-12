@@ -37,10 +37,11 @@ pip3 uninstall -y ts_datasets
 # and use them to build the appropriate API docs.
 # Uninstall after we're done with each one.
 versions=()
+checkout_files=("${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets" "setup.py" "MANIFEST.in")
 for version in $(git tag --list 'v[0-9]*'); do
     versions+=("$version")
     git checkout -b "${version}_local_docs_only"
-    git checkout "tags/${version}" -- "${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets"
+    git checkout "tags/${version}" -- "${checkout_files[@]}"
     export current_version=${version}
     pip3 install ".[plot]"
     pip3 install ts_datasets/

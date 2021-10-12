@@ -20,7 +20,7 @@ def read_file(fname):
 
 setup(
     name="salesforce-merlion",
-    version="1.0.0",
+    version="1.0.1",
     author=", ".join(read_file("AUTHORS.md").split("\n")),
     author_email="abhatnagar@salesforce.com",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",
