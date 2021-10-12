@@ -129,7 +129,9 @@ class Prophet(ForecasterBase):
             if max_periodicty > 1:
                 logger.info(f"Add seasonality {str(max_periodicty)}")
                 self.model.add_seasonality(
-                    name="extra_season", period=max_periodicty * self.timedelta / 86400, fourier_order=max_periodicty
+                    name="extra_season",
+                    period=(max_periodicty * self.timedelta / 86400).total_seconds(),
+                    fourier_order=max_periodicty,
                 )
 
         self.model.fit(df)
@@ -153,9 +155,7 @@ class Prophet(ForecasterBase):
         return_prev=False,
     ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if isinstance(time_stamps, (int, float)):
-            times = pd.date_range(
-                start=to_pd_datetime(self.last_train_time), freq=self.timedelta, periods=int(time_stamps)
-            )[1:]
+            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
         else:
             times = to_pd_datetime(time_stamps)
 

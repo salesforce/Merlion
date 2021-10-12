@@ -17,7 +17,7 @@ import numpy as np
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
 from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries
-from merlion.utils.time_series import granularity_str_to_seconds
+from merlion.utils.resample import granularity_str_to_seconds
 
 
 # TODO: support multivariate time series

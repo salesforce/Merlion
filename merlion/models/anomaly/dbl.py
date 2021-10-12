@@ -71,7 +71,7 @@ class DynamicBaselineConfig(DetectorConfig):
     def fixed_period(self, period: Tuple[str, str]):
         if period is not None:
             assert len(period) == 2
-            period = tuple(to_pd_datetime(t).timestamp() for t in period)
+            period = tuple(to_pd_datetime(t) for t in period)
         self._fixed_period = period
 
     @property
@@ -124,7 +124,7 @@ class DynamicBaseline(DetectorBase):
 
     @property
     def train_window(self):
-        return granularity_str_to_seconds(self.config.train_window)
+        return pd.to_timedelta(self.config.train_window)
 
     @property
     def fixed_period(self):
@@ -153,10 +153,10 @@ class DynamicBaseline(DetectorBase):
         or updating.
         """
         if self.has_fixed_period:
-            t0 = max(self.last_train_time + 0.001, self.fixed_period[0])
+            t0 = max(self.last_train_time + pd.to_timedelta("1ms"), self.fixed_period[0])
             tf = self.fixed_period[1]
         else:
-            t0 = max(self.last_train_time + 0.001, data.tf - self.train_window)
+            t0 = max(self.last_train_time + pd.to_timedelta("1ms"), to_pd_datetime(data.tf) - self.train_window)
             tf = data.tf
 
         return data.window(t0=t0, tf=tf, include_tf=True)
@@ -174,7 +174,7 @@ class DynamicBaseline(DetectorBase):
         """
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=True)
 
-        self.last_train_time = -np.inf
+        self.last_train_time = pd.Timestamp.min
         train_data = train_data.squeeze()
         rel_train_data = self.get_relevant(train_data)
 
@@ -239,10 +239,10 @@ class DynamicBaseline(DetectorBase):
 
         if not self.has_fixed_period:
             # drop points outside rolling scope
-            if new_data.tf - new_data.t0 >= self.train_window:
+            if pd.to_timedelta(new_data.tf - new_data.t0, unit="s") >= self.train_window:
                 self.segmenter.reset()
             else:
-                old_data, _ = self.data.bisect(new_data.tf - self.train_window)
+                old_data, _ = self.data.bisect(to_pd_datetime(new_data.tf) - self.train_window)
                 for t, x in old_data:
                     self.segmenter.drop(t, x)
             # update data

@@ -17,7 +17,7 @@ from pandas.tseries.frequencies import to_offset
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.utils.time_series import to_pd_datetime, TimeSeries
+from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -109,15 +109,11 @@ class ForecasterBase(ModelBase):
         )
 
         # Determine timedelta & initial time of forecast
-        try:
-            dt = pd.to_timedelta(self.timedelta, unit="s")
-        except:
-            dt = to_offset(self.timedelta)
+        dt = self.timedelta
         if time_series_prev is not None and not time_series_prev.is_empty():
-            t0 = time_series_prev.tf
+            t0 = to_pd_datetime(time_series_prev.tf)
         else:
             t0 = self.last_train_time
-        t0 = to_pd_datetime(t0)
 
         # Handle the case where time_stamps is an integer
         if isinstance(time_stamps, (int, float)):
@@ -125,8 +121,7 @@ class ForecasterBase(ModelBase):
             assert self.max_forecast_steps is None or n <= self.max_forecast_steps
             resampled = pd.date_range(start=t0, periods=n + 1, freq=dt)[1:]
             tf = resampled[-1]
-            time_stamps = resampled.values.astype("datetime64[ms]")
-            time_stamps = (time_stamps.astype(float) / 1000).tolist()
+            time_stamps = to_timestamp(resampled)
 
         # Handle the cases where we don't have a max_forecast_steps
         elif self.max_forecast_steps is None:
@@ -148,8 +143,7 @@ class ForecasterBase(ModelBase):
             f"from {to_pd_datetime(time_stamps[0])} to {to_pd_datetime(time_stamps[-1])}"
         )
 
-        resampled = resampled.values.astype("datetime64[ms]")
-        return (resampled.astype(float) / 1000).tolist()
+        return to_timestamp(resampled).tolist()
 
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool

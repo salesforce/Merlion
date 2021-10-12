@@ -200,14 +200,28 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     @property
     def timedelta(self):
-        try:
-            return pd.to_timedelta(self._timedelta, unit="s").total_seconds()
-        except:
-            return to_offset(self._timedelta)
+        """
+        :return: the gap (as a ``pandas.Timedelta`` or ``pandas.DateOffset``) between data points in the training data
+        """
+        return self._timedelta
 
     @timedelta.setter
     def timedelta(self, timedelta):
-        self._timedelta = timedelta
+        try:
+            self._timedelta = pd.to_timedelta(timedelta, unit="s")
+        except:
+            self._timedelta = to_offset(timedelta)
+
+    @property
+    def last_train_time(self):
+        """
+        :return: the last time (as a ``pandas.Timestamp``) that the model was trained on
+        """
+        return self._last_train_time
+
+    @last_train_time.setter
+    def last_train_time(self, last_train_time):
+        self._last_train_time = to_pd_datetime(last_train_time)
 
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool

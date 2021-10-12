@@ -16,9 +16,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
-from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas, get_timedelta_seconds
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
-from merlion.utils.resample import to_pd_datetime
+from merlion.utils.resample import to_pd_datetime, to_timestamp, offset_to_seconds
 from merlion.transform.moving_average import LagTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
@@ -197,7 +197,7 @@ class MSES(ForecasterBase):
 
     @property
     def max_horizon(self):
-        return get_timedelta_seconds(start=0, periods=self.max_forecast_steps, granularity=self.timedelta)
+        return self.max_forecast_steps * self.timedelta
 
     def train(self, train_data: TimeSeries, train_config: MSESTrainConfig = None) -> Tuple[Optional[TimeSeries], None]:
         if train_config is None:
@@ -229,7 +229,7 @@ class MSES(ForecasterBase):
 
         # train incrementally
         h = train_config.train_cadence
-        h = get_timedelta_seconds(start=0, periods=h, granularity=self.timedelta) if h is not None else None
+        h = h * self.timedelta if h is not None else None
         h = min(h, self.max_horizon) if h is not None else self.max_horizon
         train_forecast, train_err = self._incremental_train(
             train_data=train_data,
@@ -253,7 +253,7 @@ class MSES(ForecasterBase):
         while t <= tf:
             i = np.searchsorted(all_t, t)
             if i + 1 < len(all_t):
-                t_next = max(t + train_cadence, all_t[i + 1])
+                t_next = max(to_timestamp(to_pd_datetime(t) + train_cadence), all_t[i + 1])
             else:
                 t_next = all_t[-1] + 0.001
             train_batch = train_data.window(t, t_next, include_tf=False)
@@ -298,10 +298,8 @@ class MSES(ForecasterBase):
         new_data = self.transform(new_data).univariates[name]
 
         assert_equal_timedeltas(new_data, self.timedelta)
-        next_train_time = self.last_train_time + get_timedelta_seconds(
-            start=self.last_train_time, periods=1, granularity=self.timedelta
-        )
-        if new_data.t0 > next_train_time:
+        next_train_time = self.last_train_time + self.timedelta
+        if to_pd_datetime(new_data.t0) > next_train_time:
             logger.warning(
                 f"Updating the model with new data requires the "
                 f"new data to start at or before time "
@@ -467,9 +465,7 @@ class MSES(ForecasterBase):
 
         assert len(xhat_h) == len(self.backsteps)
         if all(x is None for x in xhat_h):
-            t = self.last_train_time = get_timedelta_seconds(
-                start=self.last_train_time, periods=horizon, granularity=self.timedelta
-            )
+            t = self.last_train_time = self.last_train_time + horizon * self.timedelta
             raise RuntimeError(
                 f"Not enough training data to forecast at horizon {horizon} "
                 f"(estimated time {pd.to_datetime(t, unit='s')}, last train "

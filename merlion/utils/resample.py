@@ -6,11 +6,14 @@
 #
 from enum import Enum
 from functools import partial
+import logging
 from typing import Iterable, Sequence, Union
 
 import numpy as np
 import pandas as pd
 import pandas.tseries.frequencies
+
+logger = logging.getLogger(__name__)
 
 
 class AlignPolicy(Enum):
@@ -67,6 +70,30 @@ def to_pd_datetime(timestamp):
     return pd.to_datetime(timestamp)
 
 
+def to_timestamp(t):
+    """
+    Converts a datetime to a Unix timestamp.
+    """
+    if isinstance(t, (int, float)) or isinstance(t, Iterable) and all(isinstance(ti, (int, float)) for ti in t):
+        return t
+    # print(t, type(t), isinstance(t, pd.Timestamp), isinstance(t, Iterable))
+    return np.asarray(t).astype("datetime64[ms]").astype(float) / 1000
+
+
+def offset_to_seconds(start, periods, granularity):
+    """
+    Gets the timedelta (in seconds) occurring the specified number of ``periods`` after the given ``start``,
+    at the specified ``granularity``.
+    """
+    start = to_pd_datetime(start)
+    try:
+        granularity = pd.to_timedelta(granularity, unit="s")
+    except:
+        granularity = pd.tseries.frequencies.to_offset(granularity)
+    dt = ((start + granularity * periods) - start).total_seconds()
+    return dt
+
+
 def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Union[float, None]:
     """
     Converts a string/float/int granularity (representing a timedelta) to the
@@ -96,6 +123,19 @@ def get_gcd_timedelta(*time_stamp_lists):
     for dt in all_dt[1:]:
         gcd_dt = np.gcd(gcd_dt, dt)
     return gcd_dt.astype(float) / 1000
+
+
+def infer_granularity(time_stamps):
+    """
+    Infers the granularity of a list of time stamps
+    """
+    freq = pd.infer_freq(to_pd_datetime(time_stamps))
+    if freq is not None:
+        granularity = pd.tseries.frequencies.to_offset(freq)
+    else:
+        granularity = pd.to_timedelta(get_gcd_timedelta(time_stamps), unit="s")
+        logger.warning(f"Inferred granularity {granularity}")
+    return granularity
 
 
 def reindex_df(

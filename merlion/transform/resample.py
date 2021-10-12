@@ -72,7 +72,7 @@ class TemporalResample(TransformBase):
             try:
                 granularity = granularity_str_to_seconds(granularity)
             except:
-                granularity = to_offset(granularity)
+                pass
         self.granularity = granularity
         self.origin = origin
         if trainable_granularity is None:
@@ -85,6 +85,19 @@ class TemporalResample(TransformBase):
     @property
     def requires_inversion_state(self):
         return False
+
+    @property
+    def granularity(self):
+        return self._granularity
+
+    @granularity.setter
+    def granularity(self, granularity):
+        if not isinstance(granularity, (int, float)):
+            try:
+                granularity = granularity_str_to_seconds(granularity)
+            except:
+                pass
+        self._granularity = granularity
 
     @property
     def aggregation_policy(self) -> AggregationPolicy:
