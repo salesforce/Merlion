@@ -1008,9 +1008,9 @@ def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float 
         )
 
 
-def get_horizon(start, periods, granularity):
+def get_timedelta_seconds(start, periods, granularity):
     """
-    Gets the timestamp occurring the specified number of ``periods`` after the given ``start``,
+    Gets the timedelta (in seconds) occurring the specified number of ``periods`` after the given ``start``,
     at the specified ``granularity``.
     """
     start = to_pd_datetime(start)
