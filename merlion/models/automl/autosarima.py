@@ -151,10 +151,10 @@ class AutoSarima(ForecasterAutoMLBase):
         #  set the seasonal differencing order with statistical test
         D = seasonal_order[1] if seasonal_order[1] != "auto" else None
         D = 0 if m == 1 else D
+        xx = y.copy()
         if stationary:
             D = 0
         elif D is None:
-            xx = y.copy()
             D = autosarima_utils.nsdiffs(xx, m=m, max_D=max_D, test=seasonal_test)
             if D > 0:
                 dx = autosarima_utils.diff(xx, differences=D, lag=m)
