@@ -76,7 +76,6 @@ def to_timestamp(t):
     """
     if isinstance(t, (int, float)) or isinstance(t, Iterable) and all(isinstance(ti, (int, float)) for ti in t):
         return t
-    # print(t, type(t), isinstance(t, pd.Timestamp), isinstance(t, Iterable))
     return np.asarray(t).astype("datetime64[ms]").astype(float) / 1000
 
 
