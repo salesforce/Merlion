@@ -20,7 +20,6 @@ from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
-from merlion.utils.resample import offset_to_seconds
 
 logger = logging.getLogger(__name__)
 

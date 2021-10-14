@@ -18,7 +18,7 @@ from scipy.stats import norm
 
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
-from merlion.utils.resample import to_pd_datetime, to_timestamp, offset_to_seconds
+from merlion.utils.resample import to_pd_datetime, to_timestamp
 from merlion.transform.moving_average import LagTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig

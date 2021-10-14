@@ -80,20 +80,6 @@ def to_timestamp(t):
     return np.asarray(t).astype("datetime64[ms]").astype(float) / 1000
 
 
-def offset_to_seconds(start, periods, granularity):
-    """
-    Gets the timedelta (in seconds) occurring the specified number of ``periods`` after the given ``start``,
-    at the specified ``granularity``.
-    """
-    start = to_pd_datetime(start)
-    try:
-        granularity = pd.to_timedelta(granularity, unit="s")
-    except:
-        granularity = pd.tseries.frequencies.to_offset(granularity)
-    dt = ((start + granularity * periods) - start).total_seconds()
-    return dt
-
-
 def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Union[float, None]:
     """
     Converts a string/float/int granularity (representing a timedelta) to the
