@@ -13,7 +13,6 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
