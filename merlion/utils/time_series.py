@@ -100,9 +100,9 @@ class UnivariateTimeSeries(pd.Series):
                 if isinstance(freq, (int, float)):
                     freq = pd.to_timedelta(freq, unit="s")
                 else:
-                    freq = pd.to_timedelta(freq)
+                    freq = to_offset(freq)
                 if is_pd and values.index.dtype in ("int64", "float64"):
-                    index = values.index * freq + pd.to_datetime(0)
+                    index = values.index.values * freq + np.full(len(values), pd.to_datetime(0))
                 else:
                     index = pd.date_range(start=0, periods=len(values), freq=freq)
             else:
