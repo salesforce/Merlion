@@ -5,6 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
+import warnings
 from collections import Iterator
 from typing import Tuple, Any, Optional
 
@@ -137,6 +138,10 @@ class AutoSarima(ForecasterAutoMLBase):
 
         # detect seasonality
         m = seasonal_order[-1]
+        if not isinstance(m, (int, float)):
+            m = 1
+            warnings.warn("Set periodicity to 1, use the SeasonalityLayer()"
+                          "wrapper to automatically detect seasonality.")
 
         #  adjust max p,q,P,Q start p,q,P,Q
         max_p = int(min(max_p, np.floor(n_samples / 3)))
@@ -151,10 +156,10 @@ class AutoSarima(ForecasterAutoMLBase):
         #  set the seasonal differencing order with statistical test
         D = seasonal_order[1] if seasonal_order[1] != "auto" else None
         D = 0 if m == 1 else D
+        xx = y.copy()
         if stationary:
             D = 0
         elif D is None:
-            xx = y.copy()
             D = autosarima_utils.nsdiffs(xx, m=m, max_D=max_D, test=seasonal_test)
             if D > 0:
                 dx = autosarima_utils.diff(xx, differences=D, lag=m)
