@@ -5,6 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
+import warnings
 from collections import Iterator
 from typing import Tuple, Any, Optional
 
@@ -137,6 +138,12 @@ class AutoSarima(ForecasterAutoMLBase):
 
         # detect seasonality
         m = seasonal_order[-1]
+        if not isinstance(m, (int, float)):
+            m = 1
+            warnings.warn("Set periodicity to 1, use the SeasonalityLayer()"
+                          "wrapper to automatically detect seasonality.")
+
+
 
         #  adjust max p,q,P,Q start p,q,P,Q
         max_p = int(min(max_p, np.floor(n_samples / 3)))
