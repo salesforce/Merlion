@@ -104,7 +104,7 @@ class NAB(TSADBaseDataset):
 
     @staticmethod
     def load_labels(datafile, label_list, freq):
-        filename = "/".join(datafile.split("/")[-2:])
+        filename = "/".join(re.sub("\\", "/", datafile).split("/")[-2:])
         label_list = label_list[filename]
         labels = pd.DatetimeIndex([])
         for lp in label_list:
