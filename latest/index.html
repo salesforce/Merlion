@@ -116,14 +116,14 @@ for their specific time series needs, and benchmark them across multiple time se
 and <a class="reference internal" href="ts_datasets.html"><span class="doc">ts_datasets</span></a> provides standardized data loaders for multiple time series datasets. These loaders load
 time series as <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> s with accompanying metadata.</p>
 <p>You can install <code class="docutils literal notranslate"><span class="pre">merlion</span></code> from PyPI by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion</span></code>. You may install from source by
-cloning the Merlion <a class="reference external" href="https://github.com/salesforce/Merlion">repo</a>, navigating to the root directory, and calling
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code>, or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code> to install in editable mode. You may install additional dependencies
-for plotting &amp; visualization via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[plot]</span></code>, or by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;.[plot]&quot;</span></code> from the
-root directory of the repo if installing from source.</p>
-<p>To install the data loading package <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>, simply clone the Merlion
-<a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and call <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">ts_datasets/</span></code>
-from its root directory. This package must be installed in editable mode (i.e. with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag)
-if you don’t want to manually specify the root directory of every dataset when initializing its data loader.</p>
+cloning the Merlion <a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Merlion/</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/</span></code> to install in editable mode. You may install additional dependencies for plotting &amp;
+visualization via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[plot]</span></code>, or by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;Merlion/[plot]&quot;</span></code>
+if installing from source.</p>
+<p>To install the data loading package <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>, clone the Merlion
+<a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and call <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/ts_datasets/</span></code>. This package must be
+installed in editable mode (i.e. with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag) if you don’t want to manually specify the root directory of
+every dataset when initializing its data loader.</p>
 <p>Note the following external dependencies:</p>
 <ol class="arabic simple">
 <li><p>Some of our forecasting models depend on OpenMP. Some of our forecasting models depend on OpenMP.
