@@ -13,6 +13,7 @@ import unittest
 import numpy as np
 
 from merlion.models.anomaly.forecast_based.sarima import SarimaDetector, SarimaDetectorConfig
+from merlion.transform.resample import TemporalResample
 from merlion.utils.time_series import ts_csv_load, TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,10 @@ class TestSarima(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
         self.model = SarimaDetector(
             SarimaDetectorConfig(
-                order=(2, 0, 2), seasonal_order=(2, 0, 2, 24), max_forecast_steps=self.test_len  # daily seasonality
+                order=(2, 0, 2),
+                seasonal_order=(2, 0, 2, 24),  # daily seasonality
+                transform=TemporalResample("1h"),
+                max_forecast_steps=self.test_len,
             )
         )
 

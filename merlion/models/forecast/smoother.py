@@ -18,7 +18,7 @@ from scipy.stats import norm
 
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
-from merlion.utils.resample import to_pd_datetime
+from merlion.utils.resample import to_pd_datetime, to_timestamp
 from merlion.transform.moving_average import LagTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
@@ -253,7 +253,7 @@ class MSES(ForecasterBase):
         while t <= tf:
             i = np.searchsorted(all_t, t)
             if i + 1 < len(all_t):
-                t_next = max(t + train_cadence, all_t[i + 1])
+                t_next = max(to_timestamp(to_pd_datetime(t) + train_cadence), all_t[i + 1])
             else:
                 t_next = all_t[-1] + 0.001
             train_batch = train_data.window(t, t_next, include_tf=False)
@@ -299,7 +299,7 @@ class MSES(ForecasterBase):
 
         assert_equal_timedeltas(new_data, self.timedelta)
         next_train_time = self.last_train_time + self.timedelta
-        if new_data.t0 > next_train_time:
+        if to_pd_datetime(new_data.t0) > next_train_time:
             logger.warning(
                 f"Updating the model with new data requires the "
                 f"new data to start at or before time "
@@ -465,7 +465,7 @@ class MSES(ForecasterBase):
 
         assert len(xhat_h) == len(self.backsteps)
         if all(x is None for x in xhat_h):
-            t = self.last_train_time + horizon * self.timedelta
+            t = self.last_train_time = self.last_train_time + horizon * self.timedelta
             raise RuntimeError(
                 f"Not enough training data to forecast at horizon {horizon} "
                 f"(estimated time {pd.to_datetime(t, unit='s')}, last train "

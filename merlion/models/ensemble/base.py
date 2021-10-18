@@ -15,6 +15,9 @@ import dill
 import os
 from typing import Dict, List, Tuple, Union
 
+import pandas as pd
+from pandas.tseries.frequencies import to_offset
+
 from merlion.models.base import ModelBase, Config
 from merlion.models.ensemble.combine import CombinerBase, CombinerFactory, Mean
 from merlion.models.factory import ModelFactory
@@ -145,7 +148,11 @@ class EnsembleBase(ModelBase, ABC):
             dt = getattr(model, "timedelta", None)
             n = getattr(model, "max_forecast_steps", None)
             if dt is not None and n is not None:
-                horizons.append(dt * n)
+                try:
+                    h = pd.to_timedelta(dt * n, unit="s")
+                except:
+                    h = to_offset(dt * n)
+                horizons.append(h)
         if all(h is None for h in horizons):
             return None
         return min([h for h in horizons if h is not None])
