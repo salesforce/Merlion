@@ -16,12 +16,14 @@ from os.path import abspath, join
 from typing import Any, Dict, Optional, Tuple
 
 import dill
+import pandas as pd
+from pandas.tseries.frequencies import to_offset
 
 from merlion.transform.base import TransformBase, Identity
 from merlion.transform.factory import TransformFactory
 from merlion.transform.normalize import Rescale, MeanVarNormalize
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import assert_equal_timedeltas, TimeSeries
+from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
@@ -196,6 +198,31 @@ class ModelBase(metaclass=AutodocABCMeta):
     def transform(self, transform):
         self.config.transform = transform
 
+    @property
+    def timedelta(self):
+        """
+        :return: the gap (as a ``pandas.Timedelta`` or ``pandas.DateOffset``) between data points in the training data
+        """
+        return self._timedelta
+
+    @timedelta.setter
+    def timedelta(self, timedelta):
+        try:
+            self._timedelta = pd.to_timedelta(timedelta, unit="s")
+        except:
+            self._timedelta = to_offset(timedelta)
+
+    @property
+    def last_train_time(self):
+        """
+        :return: the last time (as a ``pandas.Timestamp``) that the model was trained on
+        """
+        return self._last_train_time
+
+    @last_train_time.setter
+    def last_train_time(self, last_train_time):
+        self._last_train_time = to_pd_datetime(last_train_time)
+
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
@@ -222,12 +249,13 @@ class ModelBase(metaclass=AutodocABCMeta):
                 f"only handle uni-variate time series. Change the transform."
             )
 
+        t = train_data.time_stamps
         if require_even_sampling:
             assert_equal_timedeltas(train_data.univariates[train_data.names[0]])
             assert train_data.is_aligned
-
-        t = train_data.time_stamps
-        self.timedelta = t[1] - t[0]
+            self.timedelta = pd.infer_freq(to_pd_datetime(t))
+        else:
+            self.timedelta = t[1] - t[0]
         self.last_train_time = t[-1]
         return train_data
 

@@ -15,7 +15,7 @@ from tqdm import tqdm
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
-from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import to_pd_datetime, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -115,9 +115,11 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                     preds = [[] for _ in self.models]
                     pbar = tqdm(total=int(tf - t0), desc="Validation")
                     while t0 < tf:
-                        pbar.update(min(int(h), int(tf - t0)))
-                        window = valid.window(t0, prev.tf + h, include_tf=False)
-                        t0 += h
+                        next_tf = to_pd_datetime(prev.tf) + h
+                        dt = int((next_tf - to_pd_datetime(prev.tf)).total_seconds())
+                        pbar.update(min(dt, int(tf - t0)))
+                        window = valid.window(to_pd_datetime(t0), next_tf, include_tf=False)
+                        t0 += (next_tf - to_pd_datetime(prev.tf)).total_seconds()
                         if window.is_empty():
                             continue
                         valid_windows.append(window.univariates[k].to_ts())

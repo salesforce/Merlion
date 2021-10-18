@@ -20,6 +20,7 @@ from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import Shingle
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils import UnivariateTimeSeries, TimeSeries
+from merlion.utils.resample import to_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +197,7 @@ class RandomCutForest(DetectorBase):
         times, values = zip(*time_series.align())
         values = np.asarray(values)
 
-        t0 = bisect.bisect_right(times, self.last_train_time)
+        t0 = bisect.bisect_right(times, to_timestamp(self.last_train_time))
         if 0 < t0 < len(times):
             old = self._forest_predict(values[:t0], False)
             new = self._forest_predict(values[t0:], self.online_updates)

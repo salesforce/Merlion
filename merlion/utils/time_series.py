@@ -12,16 +12,17 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from pandas.tseries.frequencies import to_offset
 
-from .misc import ValIterOrderedDict
-from .resample import (
+from merlion.utils.misc import ValIterOrderedDict
+from merlion.utils.resample import (
     AggregationPolicy,
     AlignPolicy,
     MissingValuePolicy,
-    get_gcd_timedelta,
-    granularity_str_to_seconds,
+    infer_granularity,
     reindex_df,
     to_pd_datetime,
+    to_timestamp,
 )
 
 logger = logging.getLogger(__name__)
@@ -99,9 +100,9 @@ class UnivariateTimeSeries(pd.Series):
                 if isinstance(freq, (int, float)):
                     freq = pd.to_timedelta(freq, unit="s")
                 else:
-                    freq = pd.to_timedelta(freq)
+                    freq = to_offset(freq)
                 if is_pd and values.index.dtype in ("int64", "float64"):
-                    index = values.index * freq + pd.to_datetime(0)
+                    index = values.index.values * freq + np.full(len(values), pd.to_datetime(0))
                 else:
                     index = pd.date_range(start=0, periods=len(values), freq=freq)
             else:
@@ -116,8 +117,7 @@ class UnivariateTimeSeries(pd.Series):
         :rtype: np.ndarray
         :return: the ``numpy`` representation of this time series's Unix timestamps
         """
-        ts = self.index.values.astype("datetime64[ms]").astype(float) / 1000
-        return ts
+        return to_timestamp(self.index.values)
 
     @property
     def np_values(self):
@@ -246,7 +246,7 @@ class UnivariateTimeSeries(pd.Series):
             ``True``, excluded otherwise).
         """
         times = self.index
-        t0, tf = to_pd_datetime([t0, tf])
+        t0, tf = to_pd_datetime(t0), to_pd_datetime(tf)
         i_0 = bisect_left(times, t0)
         i_f = bisect_right(times, tf) if include_tf else bisect_left(times, tf)
         return self[i_0:i_f]
@@ -874,10 +874,12 @@ class TimeSeries:
             # Get the granularity in seconds, if one is specified. Otherwise,
             # find the GCD granularity of  all the timedeltas that appear in any
             # of the univariate series.
-            if granularity is not None:
-                granularity = granularity_str_to_seconds(granularity)
-            else:
-                granularity = get_gcd_timedelta(*[var.np_time_stamps for var in self.univariates])
+            if granularity is None:
+                granularity = infer_granularity(self.time_stamps)
+            try:
+                granularity = pd.to_timedelta(granularity, unit="s")
+            except:
+                granularity = to_offset(granularity)
 
             # Remove non-overlapping portions of univariates if desired
             df = self.to_pd()
@@ -887,8 +889,7 @@ class TimeSeries:
                 df = df[t0:tf]
 
             # Resample at the desired granularity, setting the origin as needed
-            granularity = pd.to_timedelta(granularity, unit="s")
-            if origin is None:
+            if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
             origin = to_pd_datetime(origin)
@@ -981,6 +982,8 @@ def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float 
     Checks that all time deltas in the time series are equal, either to each
     other, or a pre-specified timedelta (in seconds).
     """
+    if pd.infer_freq(time_series.index) is not None:
+        return
     if len(time_series) >= 2:
         timedeltas = np.diff(time_series.np_time_stamps)
         if timedelta is None:

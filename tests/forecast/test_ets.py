@@ -14,7 +14,7 @@ import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.ets import ETSConfig, ETS
-from merlion.utils import TimeSeries
+from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -125,7 +125,7 @@ class TestETS(unittest.TestCase):
 
         # streaming forecasting RMSE = 2.4689
         test_t = self.test_data.np_time_stamps
-        t, tf = test_t[0], test_t[-1]
+        t, tf = to_pd_datetime([test_t[0], test_t[-1]])
         forecast_results = None
         while t < tf:
             cur_train, cur_test = self.data.bisect(t, t_in_left=False)

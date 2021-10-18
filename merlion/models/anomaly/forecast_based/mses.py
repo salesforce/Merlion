@@ -7,6 +7,8 @@
 """
 MSES (Multi-Scale Exponential Smoother) forecasting model adapted for anomaly detection.
 """
+import pandas as pd
+
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.models.anomaly.base import DetectorConfig
 from merlion.models.forecast.smoother import MSESConfig, MSES, MSESTrainConfig
@@ -49,7 +51,7 @@ class MSESDetector(ForecastingDetectorBase, MSES):
                 full_ts = time_series
             else:
                 full_ts = time_series_prev + time_series
-            forecast, err = self.update(full_ts, train_cadence=0)
+            forecast, err = self.update(full_ts, train_cadence=pd.to_timedelta(0))
             forecast, err = [x.bisect(time_series.t0, t_in_left=False)[1] for x in [forecast, err]]
             return self.forecast_to_anom_score(time_series, forecast, err)
         else:

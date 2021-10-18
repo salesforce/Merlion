@@ -123,14 +123,16 @@ class Prophet(ForecasterBase):
         if self.add_seasonality == "auto":
             periods = autosarima_utils.multiperiodicity_detection(series.np_values)
             if len(periods) > 0:
-                max_periodicty = periods[-1]
+                max_periodicity = periods[-1]
             else:
-                max_periodicty = 0
-            if max_periodicty > 1:
-                logger.info(f"Add seasonality {str(max_periodicty)}")
-                self.model.add_seasonality(
-                    name="extra_season", period=max_periodicty * self.timedelta / 86400, fourier_order=max_periodicty
-                )
+                max_periodicity = 0
+            if max_periodicity > 1:
+                logger.info(f"Add seasonality {str(max_periodicity)}")
+                if hasattr(self.timedelta, "total_seconds"):
+                    period = max_periodicity * self.timedelta.total_seconds() / 86400
+                else:
+                    period = max_periodicity * (series.ds[1] - series.ds[0]).total_seconds() / 86400
+                self.model.add_seasonality(name="extra_season", period=period, fourier_order=max_periodicity)
 
         self.model.fit(df)
 
@@ -153,8 +155,9 @@ class Prophet(ForecasterBase):
         return_prev=False,
     ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if isinstance(time_stamps, (int, float)):
-            time_stamps = [self.last_train_time + (i + 1) * self.timedelta for i in range(int(time_stamps))]
-        times = to_pd_datetime(time_stamps)
+            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
+        else:
+            times = to_pd_datetime(time_stamps)
 
         # Construct data frame for prophet
         df = pd.DataFrame()
