@@ -64,11 +64,11 @@ class SMD(TSADBaseDataset):
 
     @staticmethod
     def _load_data(directory, sequence_name):
-        with open(os.path.join(directory, f"test/{sequence_name}.txt"), "r") as f:
+        with open(os.path.join(directory, "test", f"{sequence_name}.txt"), "r") as f:
             test_data = np.genfromtxt(f, dtype=np.float32, delimiter=",")
-        with open(os.path.join(directory, f"test_label/{sequence_name}.txt"), "r") as f:
+        with open(os.path.join(directory, "test_label", f"{sequence_name}.txt"), "r") as f:
             test_labels = np.genfromtxt(f, dtype=np.float32, delimiter=",")
-        with open(os.path.join(directory, f"train/{sequence_name}.txt"), "r") as f:
+        with open(os.path.join(directory, "train", f"{sequence_name}.txt"), "r") as f:
             train_data = np.genfromtxt(f, dtype=np.float32, delimiter=",")
         return (pd.DataFrame(train_data), pd.DataFrame(test_data), test_labels.astype(int))
 
