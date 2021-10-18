@@ -49,6 +49,7 @@ class SolarPlant(BaseDataset):
             with zipfile.ZipFile(f"{rootdir}/merged.zip", "r") as zip_ref:
                 zip_ref.extractall(rootdir)
             fnames = glob.glob(f"{rootdir}/*.csv")
+        assert len(fnames) == 1, f"rootdir {rootdir} does not contain dataset file."
 
         for i, fn in enumerate(sorted(fnames)):
 

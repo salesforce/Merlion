@@ -9,6 +9,7 @@ import glob
 import json
 import logging
 import os
+import re
 import requests
 
 import numpy as np
@@ -104,7 +105,7 @@ class NAB(TSADBaseDataset):
 
     @staticmethod
     def load_labels(datafile, label_list, freq):
-        filename = "/".join(datafile.split("/")[-2:])
+        filename = "/".join(re.sub(r"\\", "/", datafile).split("/")[-2:])
         label_list = label_list[filename]
         labels = pd.DatetimeIndex([])
         for lp in label_list:
