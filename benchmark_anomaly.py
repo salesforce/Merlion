@@ -306,7 +306,7 @@ def train_model(
         model, post_rule_train_config = get_model(
             model_name=model_name, dataset=dataset, metric=metric, tune_on_test=tune_on_test, unsupervised=unsupervised
         )
-        delay = post_rule_train_config["max_early_sec"]
+        delay = post_rule_train_config["max_delay_sec"]
         train_vals = df_to_merlion(df[md.trainval], md[md.trainval], get_ground_truth=False, transform=resampler)
         test_vals = df_to_merlion(df[~md.trainval], md[~md.trainval], get_ground_truth=False, transform=resampler)
         train_anom = df_to_merlion(df[md.trainval], md[md.trainval], get_ground_truth=True)
