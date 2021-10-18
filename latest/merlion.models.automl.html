@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.automl package &mdash; Merlion 1.0.0 documentation</title>
+  <title>merlion.models.automl package &mdash; Merlion 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -320,21 +320,6 @@ is provided.</p></li>
 <em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.forecasting_layer_base.ForecasterAutoMLBase.load" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.forecasting_layer_base.ForecasterAutoMLBase.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.forecasting_layer_base.ForecasterAutoMLBase.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.forecasting_layer_base.ForecasterAutoMLBase.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.forecasting_layer_base.ForecasterAutoMLBase.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -442,21 +427,6 @@ theta is a list of parameter combination [order, seasonal_order, trend]</p>
 this behavior is custom to every model. Oftentimes in internal implementations, <code class="docutils literal notranslate"><span class="pre">model</span></code> is the optimal model.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarima.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarima.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarima.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarima.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -543,21 +513,6 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.seasonality_mixin.SeasonalityLayer.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.seasonality_mixin.SeasonalityLayer.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.automl.seasonality_mixin.SeasonalityLayer.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.automl.seasonality_mixin.SeasonalityLayer.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>

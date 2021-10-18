@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models package &mdash; Merlion 1.0.0 documentation</title>
+  <title>merlion.models package &mdash; Merlion 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -382,6 +382,26 @@ final mean/variance normalization.</p>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The data pre-processing transform to apply on any time series,
 before giving it to the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.timedelta">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">timedelta</span></span><a class="headerlink" href="#merlion.models.base.ModelBase.timedelta" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the gap (as a <code class="docutils literal notranslate"><span class="pre">pandas.Timedelta</span></code> or <code class="docutils literal notranslate"><span class="pre">pandas.DateOffset</span></code>) between data points in the training data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.base.ModelBase.last_train_time">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">last_train_time</span></span><a class="headerlink" href="#merlion.models.base.ModelBase.last_train_time" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the last time (as a <code class="docutils literal notranslate"><span class="pre">pandas.Timestamp</span></code>) that the model was trained on</p>
 </dd>
 </dl>
 </dd></dl>

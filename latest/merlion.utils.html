@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.utils package &mdash; Merlion 1.0.0 documentation</title>
+  <title>merlion.utils package &mdash; Merlion 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -538,6 +538,12 @@ truncated at the millisecond.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="merlion.utils.resample.to_timestamp">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">to_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.to_timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a datetime to a Unix timestamp.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.resample.granularity_str_to_seconds">
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">granularity_str_to_seconds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.granularity_str_to_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a string/float/int granularity (representing a timedelta) to the
@@ -554,6 +560,12 @@ number of seconds it represents, truncated at the millisecond.</p>
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">get_gcd_timedelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">time_stamp_lists</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.get_gcd_timedelta" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates all timedeltas present in any of the lists of time stamps given,
 and returns the GCD of all these timedeltas (up to units of milliseconds).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.utils.resample.infer_granularity">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">infer_granularity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.infer_granularity" title="Permalink to this definition"></a></dt>
+<dd><p>Infers the granularity of a list of time stamps</p>
 </dd></dl>
 
 <dl class="py function">

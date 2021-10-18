@@ -57,7 +57,7 @@
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a></li>
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a></li>
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion-models-anomaly-forecast-based-prophet-module">merlion.models.anomaly.forecast_based.prophet module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a></li>
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a></li>
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
 </ul>
@@ -86,7 +86,7 @@
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion-models-anomaly-forecast-based-prophet-module">merlion.models.anomaly.forecast_based.prophet module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
 </ul>
@@ -194,8 +194,8 @@ the model’s uncertainty in its own prediction.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets" title="merlion.models.anomaly.forecast_based.ets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ets</span></code></a></p></td>
 <td><p>ETS (error, trend, seasonal) forecasting model, adapted for anomaly detection.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet" title="merlion.models.anomaly.forecast_based.prophet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></a></p></td>
+<td><p>Adaptation of Facebook's Prophet forecasting model to anomaly detection.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm" title="merlion.models.anomaly.forecast_based.lstm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstm</span></code></a></p></td>
 <td><p>Adaptation of a LSTM neural net forecaster, to the task of anomaly detection.</p></td>
@@ -647,8 +647,76 @@ timedelta.</p>
 </dd></dl>
 
 </section>
-<section id="merlion-models-anomaly-forecast-based-prophet-module">
-<h2>merlion.models.anomaly.forecast_based.prophet module<a class="headerlink" href="#merlion-models-anomaly-forecast-based-prophet-module" title="Permalink to this headline"></a></h2>
+<section id="module-merlion.models.anomaly.forecast_based.prophet">
+<span id="merlion-models-anomaly-forecast-based-prophet-module"></span><h2>merlion.models.anomaly.forecast_based.prophet module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.prophet" title="Permalink to this headline"></a></h2>
+<p>Adaptation of Facebook’s Prophet forecasting model to anomaly detection.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.prophet.ProphetConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
+<p>Config object used to define a forecaster model.</p>
+<p>Configuration class for Facebook’s Prophet model, as described in this
+<a class="reference external" href="https://peerj.com/preprints/3190/">paper</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all
+univariates in a general multivariate time series) whose value we
+would like to forecast.</p></li>
+<li><p><strong>yearly_seasonality</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – If bool, whether to enable yearly seasonality.
+By default, it is activated if there are &gt;= 2 years of history, but
+deactivated otherwise. If int, this is the number of Fourier series
+components used to model the seasonality (default = 10).</p></li>
+<li><p><strong>weekly_seasonality</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – If bool, whether to enable weekly seasonality.
+By default, it is activated if there are &gt;= 2 weeks of history, but
+deactivated otherwise. If int, this is the number of Fourier series
+components used to model the seasonality (default = 3).</p></li>
+<li><p><strong>daily_seasonality</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – If bool, whether to enable daily seasonality.
+By default, it is activated if there are &gt;= 2 days of history, but
+deactivated otherwise. If int, this is the number of Fourier series
+components used to model the seasonality (default = 4).</p></li>
+<li><p><strong>add_seasonality</strong> – ‘auto’ indicates automatically adding extra
+seasonaltiy by detection methods (default = None).</p></li>
+<li><p><strong>uncertainty_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of posterior samples to draw in
+order to calibrate the anomaly scores.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.prophet.Prophet</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProphetConfig</span></code></a>) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.timedelta">
+<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.timedelta" title="Permalink to this definition"></a></dt>
+<dd><p>The expected number of seconds between observations in an input time series.
+should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
+timedelta.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.last_train_time">
+<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.last_train_time" title="Permalink to this definition"></a></dt>
+<dd><p>The last unix timestamp of the training data. Should be set in
+<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.lstm">
 <span id="merlion-models-anomaly-forecast-based-lstm-module"></span><h2>merlion.models.anomaly.forecast_based.lstm module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.lstm" title="Permalink to this headline"></a></h2>

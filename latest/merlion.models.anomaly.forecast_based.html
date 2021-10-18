@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly.forecast_based package &mdash; Merlion 1.0.0 documentation</title>
+  <title>merlion.models.anomaly.forecast_based package &mdash; Merlion 1.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -466,21 +466,6 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -505,21 +490,6 @@ adapted for anomaly detection.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig" title="merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -561,21 +531,6 @@ for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig" title="merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -627,21 +582,6 @@ seasonality exists, change <code class="docutils literal notranslate"><span clas
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -700,21 +640,6 @@ order to calibrate the anomaly scores.</p></li>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig</span></code></a></p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -755,21 +680,6 @@ like to subsample the input data before giving it to the model.</p></li>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig" title="merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.lstm.LSTMDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.lstm.LSTMDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -890,21 +800,6 @@ immediately follows the training data.</p></li>
 <dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector.timedelta">
-<span class="sig-name descname"><span class="pre">timedelta</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>The expected number of seconds between observations in an input time series.
-should be set in <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a> if the model assumes a fixed
-timedelta.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector.last_train_time">
-<span class="sig-name descname"><span class="pre">last_train_time</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.last_train_time" title="Permalink to this definition"></a></dt>
-<dd><p>The last unix timestamp of the training data. Should be set in
-<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
