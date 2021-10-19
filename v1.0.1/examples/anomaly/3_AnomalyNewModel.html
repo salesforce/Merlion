@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding New Anomaly Detection Models &mdash; Merlion 1.0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="A Gentle Introduction to Forecasting in Merlion" href="../forecast/0_ForecastIntro.html" />
+    <link rel="prev" title="Multivariate Time Series Anomaly Detection" href="2_AnomalyMultivariate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../tutorials.html#anomaly-detection">Anomaly Detection</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="0_AnomalyIntro.html">A Gentle Introduction to Anomaly Detection in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_AnomalyFeatures.html">How to Use Anomaly Detectors in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_AnomalyMultivariate.html">Multivariate Time Series Anomaly Detection</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Adding New Anomaly Detection Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Config-Class">Model Config Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Class">Model Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Running-the-Model:-A-Simple-Example">Running the Model: A Simple Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Visualization">Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Customizing-the-Post-Rule">Customizing the Post-Rule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>Adding New Anomaly Detection Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/anomaly/3_AnomalyNewModel.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Adding-New-Anomaly-Detection-Models">
+<h1>Adding New Anomaly Detection Models<a class="headerlink" href="#Adding-New-Anomaly-Detection-Models" title="Permalink to this headline"></a></h1>
+<p>This notebook provides a minimal example on how to add a new anomaly detection model to Merlion. We follow the instructions in <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. We suggest you review this <a class="reference internal" href="1_AnomalyFeatures.html"><span class="doc">notebook</span></a> explaining how to use a Merlion anomaly detection model before reading this notebook.</p>
+<p>More specifically, let’s implement an anomaly detection model whose anomaly score is just equal to the value of the time series metric (after mean and variance normalization). By default, we want the model to fire an alarm when the value of the time series metric is more than 3 standard deviations away from the mean value.</p>
+<p>Note that this is already implemented <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/stat_threshold.py">here</a> as the <code class="docutils literal notranslate"><span class="pre">StatThreshold</span></code> algorithm. For a more complete example, see our implementation of <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/isolation_forest.py">Isolation Forest</a>.</p>
+<section id="Model-Config-Class">
+<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this headline"></a></h2>
+<p>The first step of creating a new model is defining an appropriate config class, which inherits from <code class="docutils literal notranslate"><span class="pre">DetectorConfig</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.models.anomaly.base</span> <span class="kn">import</span> <span class="n">DetectorConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.post_process.threshold</span> <span class="kn">import</span> <span class="n">Threshold</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span>
+
+<span class="k">class</span> <span class="nc">StatThresholdConfig</span><span class="p">(</span><span class="n">DetectorConfig</span><span class="p">):</span>
+    <span class="c1"># If the transform argument is not provided when initializing the config,</span>
+    <span class="c1"># we will pre-process the input by normalizing it to be zero mean (but</span>
+    <span class="c1"># not unit variance!)</span>
+    <span class="n">_default_transform</span> <span class="o">=</span> <span class="n">MeanVarNormalize</span><span class="p">(</span><span class="n">normalize_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># When you call model.get_anomaly_label(), you will transform the model&#39;s</span>
+    <span class="c1"># raw anomaly scores (returned by model.get_anomaly_score() into z-scores,</span>
+    <span class="c1"># and you will apply a thresholding rule to suppress all anomaly scores</span>
+    <span class="c1"># with magnitude smaller than the threshold. Here, we only wish to report</span>
+    <span class="c1"># 3-sigma events.</span>
+    <span class="n">_default_threshold</span> <span class="o">=</span> <span class="n">Threshold</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Provide model-specific config parameters here, with kwargs to capture any</span>
+<span class="sd">        general-purpose arguments used by the base class. For DetectorConfig,</span>
+<span class="sd">        these are transform and post_rule.</span>
+
+<span class="sd">        We include the initializer here for clarity. In this case, it may be</span>
+<span class="sd">        excluded, as it only calls the superclass initializer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Model-Class">
+<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this headline"></a></h2>
+<p>Next, we define the model itself, which must inherit from the <code class="docutils literal notranslate"><span class="pre">DetectorBase</span></code> base class and define all abstract methods. See the API docs for more details.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.base</span> <span class="kn">import</span> <span class="n">DetectorBase</span>
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+
+<span class="k">class</span> <span class="nc">StatThreshold</span><span class="p">(</span><span class="n">DetectorBase</span><span class="p">):</span>
+    <span class="c1"># The config class for StatThreshold is StatThresholdConfig, defined above</span>
+    <span class="n">config_class</span> <span class="o">=</span> <span class="n">StatThresholdConfig</span>
+
+    <span class="c1"># By default, we would like to train the model&#39;s post-rule (i.e. the threshold</span>
+    <span class="c1"># at which we fire an alert) to maximize F1 score</span>
+    <span class="n">_default_post_rule_train_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StatThresholdConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the model config and any other local variables. We include the</span>
+<span class="sd">        initializer here for clarity. In this case, it may be excluded, as it</span>
+<span class="sd">        only calls the superclass initializer.</span>
+
+<span class="sd">        :param config: model configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span>
+              <span class="n">anomaly_labels</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">post_rule_train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+        <span class="c1"># Apply standard pre-processing steps before training the model. Note</span>
+        <span class="c1"># that this model can accept arbitrary time stamps, but it only works</span>
+        <span class="c1"># for univariate time series, so we specify that.</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_pre_process</span><span class="p">(</span>
+            <span class="n">train_data</span><span class="p">,</span> <span class="n">require_even_sampling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">require_univariate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Since this model&#39;s anomaly scores are just the values of the time</span>
+        <span class="c1"># series metric (after any pre-processing), there is no model to train.</span>
+        <span class="c1"># In general, you should train your model here, and determine its</span>
+        <span class="c1"># anomaly scores on the training data. Note that this training should not</span>
+        <span class="c1"># use anomaly_labels in any way!</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="n">train_data</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">train_anom_scores</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">({</span><span class="s2">&quot;anom_score&quot;</span><span class="p">:</span> <span class="n">train_data</span><span class="p">})</span>
+
+        <span class="c1"># We train the model&#39;s post-rule here, based on the training anomaly scores</span>
+        <span class="c1"># and the anomaly labels (if none are given, an unsupervised threshold</span>
+        <span class="c1"># selection strategy is used).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_post_rule</span><span class="p">(</span><span class="n">train_anom_scores</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="p">,</span> <span class="n">post_rule_train_config</span><span class="p">)</span>
+
+        <span class="c1"># Return the model&#39;s predicted anomaly scores on the train data</span>
+        <span class="k">return</span> <span class="n">train_anom_scores</span>
+
+    <span class="k">def</span> <span class="nf">get_anomaly_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_series</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span>
+                          <span class="n">time_series_prev</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+
+        <span class="c1"># Apply the data pre-processing transform on the input data.</span>
+        <span class="c1"># Make sure to prepend time_series_prev to time_series if it is given.</span>
+        <span class="n">time_series</span><span class="p">,</span> <span class="n">time_series_prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_time_series</span><span class="p">(</span>
+            <span class="n">time_series</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="p">)</span>
+
+        <span class="c1"># For this model, the anomaly scores are just the values of the time</span>
+        <span class="c1"># time series metric. Make sure to return a time series with a single</span>
+        <span class="c1"># variable named &quot;anom_score&quot;.</span>
+        <span class="n">anom_scores</span> <span class="o">=</span> <span class="n">time_series</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="n">time_series</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">TimeSeries</span><span class="p">({</span><span class="s2">&quot;anom_score&quot;</span><span class="p">:</span> <span class="n">anom_scores</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Running-the-Model:-A-Simple-Example">
+<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this headline"></a></h2>
+<p>Let’s try running this model on some actual data! This next part assumes you’ve installed <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>. We’ll begin by getting a time series from the NAB dataset &amp; visualizing it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">merlion.plot</span> <span class="kn">import</span> <span class="n">plot_anoms</span>
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+<span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">NAB</span>
+
+<span class="c1"># This is a time series with anomalies in both the train and test split.</span>
+<span class="c1"># time_series and metadata are both time-indexed pandas DataFrames.</span>
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;realKnownCause&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="c1"># Visualize the full time series</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+
+<span class="c1"># Label the train/test split with a dashed line &amp; plot anomalies</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_3_AnomalyNewModel_6_1.png" src="../../_images/examples_anomaly_3_AnomalyNewModel_6_1.png" />
+</div>
+</div>
+<p>Now, we’ll split the data into train &amp; test splits, and run our anomaly detection model on it.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get training split</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="n">train_labels</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">anomaly</span><span class="p">)</span>
+
+<span class="c1"># Get testing split</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="n">test_labels</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">anomaly</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Initialize a model &amp; train it. The dataframe returned &amp; printed</span>
+<span class="c1"># below is the model&#39;s anomaly scores on the training data.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">StatThreshold</span><span class="p">(</span><span class="n">StatThresholdConfig</span><span class="p">())</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">train_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                     anom_score
+2013-12-02 21:15:00   -9.065700
+2013-12-02 21:20:00   -8.097140
+2013-12-02 21:25:00   -6.908860
+2013-12-02 21:30:00   -4.892315
+2013-12-02 21:35:00   -3.703186
+...                         ...
+2013-12-14 16:25:00   15.041999
+2013-12-14 16:30:00   14.494303
+2013-12-14 16:35:00   16.234568
+2013-12-14 16:40:00   15.160902
+2013-12-14 16:45:00   15.055357
+
+[3403 rows x 1 columns]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Let&#39;s run the our model on the test data, both with and without</span>
+<span class="c1"># applying the post-rule. Notice that applying the post-rule filters out</span>
+<span class="c1"># a lot of entries!</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">anom_scores</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
+<span class="n">anom_labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;no post rule&quot;</span><span class="p">:</span> <span class="n">anom_scores</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">&quot;with post rule&quot;</span><span class="p">:</span> <span class="n">anom_labels</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]}))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                     no post rule  with post rule
+2013-12-14 16:50:00     14.520900             0.0
+2013-12-14 16:55:00     15.065935             0.0
+2013-12-14 17:00:00     15.825172             0.0
+2013-12-14 17:05:00     13.846644             0.0
+2013-12-14 17:10:00     15.050966             0.0
+...                           ...             ...
+2014-02-19 15:05:00     15.152393             0.0
+2014-02-19 15:10:00     14.771146             0.0
+2014-02-19 15:15:00     14.102446             0.0
+2014-02-19 15:20:00     15.023830             0.0
+2014-02-19 15:25:00     13.870839             0.0
+
+[19280 rows x 2 columns]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Additionally, notice that the nonzero post-processed anomaly scores,</span>
+<span class="c1"># are interpretable as z-scores. This is due to the automatic calibration.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">anom_labels</span><span class="p">[</span><span class="n">anom_labels</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                     anom_score
+2013-12-16 06:40:00   -3.024196
+2013-12-16 06:45:00   -3.012073
+2013-12-16 07:00:00   -3.468464
+2013-12-16 07:05:00   -3.124039
+2013-12-16 07:10:00   -3.491421
+...                         ...
+2014-02-09 11:35:00   -4.819248
+2014-02-09 11:40:00   -4.823173
+2014-02-09 11:45:00   -4.822201
+2014-02-09 11:50:00   -4.677379
+2014-02-09 11:55:00   -4.300280
+
+[721 rows x 1 columns]
+</pre></div></div>
+</div>
+</section>
+<section id="Visualization">
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this headline"></a></h2>
+<p>Qualitatively, we can plot the anomaly score sequences to see the difference.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;no post rule&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+no post rule
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_3_AnomalyNewModel_13_1.png" src="../../_images/examples_anomaly_3_AnomalyNewModel_13_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;with post rule&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+with post rule
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_3_AnomalyNewModel_14_1.png" src="../../_images/examples_anomaly_3_AnomalyNewModel_14_1.png" />
+</div>
+</div>
+</section>
+<section id="Customizing-the-Post-Rule">
+<h2>Customizing the Post-Rule<a class="headerlink" href="#Customizing-the-Post-Rule" title="Permalink to this headline"></a></h2>
+<p>The example above uses a simple threshold as the post-processing rule. As a result, the model is continuously firing alerts when the differenced time series value is far from 0. We support an alternative option which combines successive alerts into a single alert. We demonstrate this below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.post_process.threshold</span> <span class="kn">import</span> <span class="n">AggregateAlarms</span>
+
+<span class="c1"># We use a custom post-rule (AggegateAlarms instead of the default Threshold),</span>
+<span class="c1"># where we suppress all alarms for a day after the most recent one is fired.</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">alm_suppress_minutes</span><span class="o">=</span><span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">StatThreshold</span><span class="p">(</span><span class="n">StatThresholdConfig</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">))</span>
+
+<span class="c1"># Train the model as before</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
+
+<span class="c1"># Visualize the model&#39;s anomaly scores with the new post-rule</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_3_AnomalyNewModel_16_0.png" src="../../_images/examples_anomaly_3_AnomalyNewModel_16_0.png" />
+</div>
+</div>
+</section>
+<section id="Quantitative-Evaluation">
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<p>Finally, you may quantitatively evaluate the performance of your model as well. Here, we compute precision, recall, and F1 score for <code class="docutils literal notranslate"><span class="pre">model2</span></code> above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">anom_labels2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model Evaluation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1 Score:  </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Model Evaluation
+Precision: 0.5000
+Recall:    1.0000
+F1 Score:  0.6667
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_AnomalyMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../forecast/0_ForecastIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Forecasting in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.0.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
