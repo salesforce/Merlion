@@ -11,6 +11,13 @@ utilities for resampling time series.
 Submodules
 ----------
 
+merlion.utils.conj_priors module
+--------------------------------
+.. automodule:: merlion.utils.conj_priors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 merlion.utils.istat module
 --------------------------
 
