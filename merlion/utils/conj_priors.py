@@ -112,13 +112,14 @@ class ConjPrior(ABC):
             return rv.logpmf(x) if log else rv.pmf(x)
 
     @abstractmethod
-    def posterior(self, x, return_rv=False, log=True):
+    def posterior(self, x, return_rv=False, log=True, return_updated=False):
         """
         Predictive posterior (log) PDF for new observations, or the ``scipy.stats`` random variable where applicable.
 
         :param x: value(s) to evaluate posterior at (``None`` implies that we want to return the random variable)
         :param return_rv: whether to return the random variable directly
         :param log: whether to return the log PDF (instead of the PDF)
+        :param return_updated: whether to return an updated version of the conjugate prior as well
         """
         raise NotImplementedError
 
@@ -173,13 +174,18 @@ class BetaBernoulli(ScalarConjPrior):
         if sample is not None:
             self.update(sample)
 
-    def posterior(self, x, return_rv=False, log=True):
+    def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
         The posterior distribution of x is :math:`\mathrm{Bernoulli}(\alpha / (\alpha + \beta))`.
         """
-        t, x = self.process_time_series(x)
+        t, x_np = self.process_time_series(x)
         rv = bernoulli(self.alpha / (self.alpha + self.beta))
-        return self._process_return(x=x, rv=rv, return_rv=return_rv, log=log)
+        ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
+        if return_updated:
+            updated = copy.deepcopy(self)
+            updated.update(x)
+            return ret, updated
+        return ret
 
     def theta_posterior(self, theta, return_rv=False, log=True):
         r"""
@@ -257,14 +263,19 @@ class NormInvGamma(ScalarConjPrior):
         rv = invgamma(a=self.alpha, scale=self.beta)
         return self._process_return(x=sigma2, rv=rv, return_rv=return_rv, log=log)
 
-    def posterior(self, x, log=True, return_rv=False):
+    def posterior(self, x, log=True, return_rv=False, return_updated=False):
         r"""
         The posterior for :math:`x` is :math:`\text{Student-t}_{2\alpha}(\mu_0, (n+1) \beta / (n \alpha))`
         """
-        t, x = self.process_time_series(x)
+        t, x_np = self.process_time_series(x)
         scale = (self.beta * (self.n + 1)) / (self.alpha * self.n)
         rv = student_t(loc=self.mu_0, scale=np.sqrt(scale), df=2 * self.alpha)
-        return self._process_return(x=x, rv=rv, return_rv=return_rv, log=log)
+        ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
+        if return_updated:
+            updated = copy.deepcopy(self)
+            updated.update(x)
+            return ret, updated
+        return ret
 
 
 class MVNormInvWishart(ConjPrior):
@@ -339,15 +350,20 @@ class MVNormInvWishart(ConjPrior):
         rv = invwishart(df=self.nu, scale=self.Lambda)
         return self._process_return(x=sigma2, rv=rv, return_rv=return_rv, log=log)
 
-    def posterior(self, x, return_rv=False, log=True):
+    def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
         The posterior for :math:`x` is :math:`\text{Student-t}_{\nu-d+1}(\mu_0, (n + 1) \Lambda / (n (\nu - d + 1)))`
         """
-        t, x = self.process_time_series(x)
+        t, x_np = self.process_time_series(x)
         dof = max(self.nu - self.dim + 1, 1)
         shape = self.Lambda * (self.n + 1) / (self.n * dof)
         rv = mvt(shape=shape, loc=self.mu_0, df=dof)
-        return self._process_return(x=x, rv=rv, return_rv=return_rv, log=log)
+        ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
+        if return_updated:
+            updated = copy.deepcopy(self)
+            updated.update(x)
+            return ret, updated
+        return ret
 
 
 class BayesianLinReg(ConjPrior):
