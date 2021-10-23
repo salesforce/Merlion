@@ -731,6 +731,13 @@ class TimeSeries:
         """
         if isinstance(df, pd.Series):
             return cls({df.name: UnivariateTimeSeries.from_pd(df[~df.isna()])})
+        elif isinstance(df, np.ndarray):
+            arr = df.reshape(len(df), -1).T
+            ret = cls([UnivariateTimeSeries(time_stamps=None, values=v, freq=freq) for v in arr], check_aligned=False)
+            ret._is_aligned = True
+            return ret
+        elif not isinstance(df, pd.DataFrame):
+            df = pd.DataFrame(df)
 
         # Time series is not aligned iff there are missing values
         aligned = df.shape[1] == 1 or not df.isna().any().any()
