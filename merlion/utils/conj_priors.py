@@ -320,17 +320,15 @@ class MVNormInvWishart(ConjPrior):
         self.nu = self.nu + n
 
         sample_mean = np.mean(x, axis=0)
-        sample_cov = np.cov(x, rowvar=False)
+        sample_cov = (x - sample_mean).T @ (x - sample_mean)
         if self.n == 0:
             self.mu_0 = sample_mean
-            self.Lambda = sample_cov * n
+            self.Lambda = sample_cov
             self.n = n
 
         else:
             delta = sample_mean - self.mu_0
-            sample_comp = sample_cov * n
-            prior_comp = (delta.T @ delta) * n * n0 / (n + n0)
-            self.Lambda = self.Lambda + sample_comp + prior_comp
+            self.Lambda = self.Lambda + sample_cov + n * n0 / (n + n0) * (delta.T @ delta)
             self.mu_0 = self.mu_0 * n0 / (n0 + n) + sample_mean * n / (n0 + n)
             self.n = n0 + n
 
@@ -427,7 +425,7 @@ class BayesianLinReg(ConjPrior):
         self.alpha = self.alpha + len(x) / 2
         self.beta = self.beta + (x.T @ x + pred0 - pred) / 2
 
-    def posterior(self, x, return_rv=False, log=True, return_updated=False):
+    def posterior_explicit(self, x, return_rv=False, log=True, return_updated=False):
         r"""
         Let :math:`\Lambda_n, \alpha_n, \beta_n` be the posterior values obtained by updating
         the model on data :math:`(t_1, x_1), \ldots, (t_n, x_n)`. The predictive posterior has PDF
@@ -444,9 +442,9 @@ class BayesianLinReg(ConjPrior):
                 "Bayesian linear regression doesn't have a scipy.stats random variable posterior. "
                 "Please specify a non-``None`` value of ``x`` and set ``return_rv = False``."
             )
-        t, x_np = self.process_time_series(x)
         updated = copy.deepcopy(self)
         updated.update(x)
+        t, x_np = self.process_time_series(x)
         a = -len(x_np) / 2 * np.log(2 * np.pi)
         b = (np.linalg.slogdet(self.Lambda_0)[1] - np.linalg.slogdet(updated.Lambda_0)[1]) / 2
         c = self.alpha * np.log(self.beta) - updated.alpha * np.log(updated.beta)
@@ -454,7 +452,7 @@ class BayesianLinReg(ConjPrior):
         ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(len(x_np))
         return (ret, updated) if return_updated else ret
 
-    def naive_posterior(self, x, log=True):
+    def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
         Naive computation of the posterior using Bayes Rule, i.e.
 
@@ -468,6 +466,11 @@ class BayesianLinReg(ConjPrior):
             p(w = \hat{w}, \sigma^2 = \hat{\sigma}^2 \mid x, t)}
 
         """
+        if x is None or return_rv:
+            raise ValueError(
+                "Bayesian linear regression doesn't have a scipy.stats random variable posterior. "
+                "Please specify a non-``None`` value of ``x`` and set ``return_rv = False``."
+            )
         t, x_np = self.process_time_series(x)
 
         # Get priors & MAP estimates for sigma^2 and w; get the MAP estimate for x(t)
@@ -484,11 +487,12 @@ class BayesianLinReg(ConjPrior):
         post_w = mvnorm(updated.w_0, sigma2_hat * pinvh(updated.Lambda_0))
 
         # Apply Bayes' rule
-        evidence = norm(xhat, np.sqrt(sigma2_hat)).logpdf(x_np).reshape(len(x_np))
+        evidence = norm(xhat, np.sqrt(sigma2_hat)).logpdf(x_np.flatten()).reshape(len(x_np))
         prior = prior_sigma2.logpdf(sigma2_hat) + prior_w.logpdf(w_hat)
         post = post_sigma2.logpdf(sigma2_hat) + post_w.logpdf(w_hat)
         logp = evidence + prior.item() - post.item()
-        return logp if log else np.exp(logp)
+        ret = logp if log else np.exp(logp)
+        return (ret, updated) if return_updated else ret
 
 
 class BayesianMVLinReg(ConjPrior):
@@ -587,7 +591,7 @@ class BayesianMVLinReg(ConjPrior):
         post_w = mvnorm(updated.w_0.flatten(), np.kron(Sigma_hat, pinvh(updated.Lambda_0)))
 
         # Apply Bayes' rule
-        evidence = mvnorm(xhat, Sigma_hat).logpdf(x_np).reshape(len(x_np))
+        evidence = mvnorm(cov=Sigma_hat).logpdf(x_np - xhat).reshape(len(x_np))
         prior = prior_Sigma.logpdf(Sigma_hat) + prior_w.logpdf(w_hat)
         post = post_Sigma.logpdf(Sigma_hat) + post_w.logpdf(w_hat)
         logp = evidence + prior - post
