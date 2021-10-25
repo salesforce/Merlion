@@ -61,8 +61,8 @@ class SpectralResidual(DetectorBase):
     """
     Spectral Residual Algorithm for Anomaly Detection.
 
-    Spectral Residual Anomaly Detection algorithm based on the algorithm described in this
-    `paper <https://arxiv.org/abs/1906.03821>`_. After taking the frequency spectrum, compute the
+    Spectral Residual Anomaly Detection algorithm based on the algorithm described by
+    `Ren et al. (2019) <https://arxiv.org/abs/1906.03821>`__. After taking the frequency spectrum, compute the
     log deviation from the mean. Use inverse fourier transform to obtain the saliency map. Anomaly scores
     for a point in the time series are obtained by comparing the saliency score of the point to the
     average of the previous points.
