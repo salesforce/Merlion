@@ -10,6 +10,7 @@ merlion.models.forecast package
     base
     arima
     sarima
+    ets
     prophet
     smoother
     vector_ar
@@ -45,6 +46,14 @@ merlion.models.forecast.sarima module
    :undoc-members:
    :show-inheritance:
 
+merlion.models.forecast.ets module
+----------------------------------
+.. automodule:: merlion.models.forecast.ets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 merlion.models.forecast.prophet module
 --------------------------------------
 
@@ -78,7 +87,7 @@ merlion.models.forecast.baggingtrees module
    :show-inheritance:
 
 
-merlion.models.forecast.bo0stingtrees module
+merlion.models.forecast.boostingtrees module
 --------------------------------------------
 
 .. automodule:: merlion.models.forecast.boostingtrees
