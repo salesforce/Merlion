@@ -56,11 +56,12 @@
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.base">merlion.models.forecast.base module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.arima">merlion.models.forecast.arima module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.sarima">merlion.models.forecast.sarima module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.ets">merlion.models.forecast.ets module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.prophet">merlion.models.forecast.prophet module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.smoother">merlion.models.forecast.smoother module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.vector_ar">merlion.models.forecast.vector_ar module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.baggingtrees">merlion.models.forecast.baggingtrees module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.boostingtrees">merlion.models.forecast.bo0stingtrees module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.boostingtrees">merlion.models.forecast.boostingtrees module</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.lstm">merlion.models.forecast.lstm module</a></li>
 </ul>
 </li>
@@ -193,22 +194,25 @@ on the time stamps of <code class="docutils literal notranslate"><span class="pr
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.sarima" title="merlion.models.forecast.sarima"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sarima</span></code></a></p></td>
 <td><p>A variant of ARIMA with a user-specified Seasonality.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.prophet" title="merlion.models.forecast.prophet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.ets" title="merlion.models.forecast.ets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ets</span></code></a></p></td>
+<td><p>ETS (Error, Trend, Seasonal) forecasting model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.prophet" title="merlion.models.forecast.prophet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></a></p></td>
 <td><p>Wrapper around Facebook's popular Prophet model for time series forecasting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.smoother" title="merlion.models.forecast.smoother"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smoother</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.smoother" title="merlion.models.forecast.smoother"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smoother</span></code></a></p></td>
 <td><p>Multi-Scale Exponential Smoother for univariate time series forecasting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.vector_ar" title="merlion.models.forecast.vector_ar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_ar</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.vector_ar" title="merlion.models.forecast.vector_ar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_ar</span></code></a></p></td>
 <td><p>Vector AutoRegressive model for multivariate time series forecasting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.baggingtrees" title="merlion.models.forecast.baggingtrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baggingtrees</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.baggingtrees" title="merlion.models.forecast.baggingtrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baggingtrees</span></code></a></p></td>
 <td><p>Bagging Tree-based models for multivariate time series forecasting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.boostingtrees" title="merlion.models.forecast.boostingtrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boostingtrees</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.boostingtrees" title="merlion.models.forecast.boostingtrees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boostingtrees</span></code></a></p></td>
 <td><p>Boosting Tree-based models for multivariate time series forecasting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.lstm" title="merlion.models.forecast.lstm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstm</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.lstm" title="merlion.models.forecast.lstm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstm</span></code></a></p></td>
 <td><p>A forecaster based on a LSTM neural net.</p></td>
 </tr>
 </tbody>
@@ -714,6 +718,143 @@ is provided.</p></li>
 <li><p><strong>train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>) – Training data (or numpy array representing the target univariate)
 for any model-specific adjustments you might want to make.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.forecast.ets">
+<span id="merlion-models-forecast-ets-module"></span><h2>merlion.models.forecast.ets module<a class="headerlink" href="#module-merlion.models.forecast.ets" title="Permalink to this headline"></a></h2>
+<p>ETS (Error, Trend, Seasonal) forecasting model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETSConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.ets.</span></span><span class="sig-name descname"><span class="pre">ETSConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.ets.ETSConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<p>Config object used to define a forecaster model.</p>
+<p>Configuration class for ETS model. ETS model is an underlying state space
+model consisting of an error term (E), a trend component (T), a seasonal
+component (S), and a level component. Each component is flexible with
+different traits with additive (‘add’) or multiplicative (‘mul’) formulation.
+Refer to <a class="reference external" href="https://otexts.com/fpp2/taxonomy.html">https://otexts.com/fpp2/taxonomy.html</a> for more information
+about ETS model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_forecast_steps</strong> – Number of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
+univariates in a general multivariate time series) whose value we
+would like to forecast.</p></li>
+<li><p><strong>error</strong> – The error term. “add” or “mul”.</p></li>
+<li><p><strong>trend</strong> – The trend component. “add”, “mul” or None.</p></li>
+<li><p><strong>damped_trend</strong> – Whether or not an included trend component is damped.</p></li>
+<li><p><strong>seasonal</strong> – The seasonal component. “add”, “mul” or None.</p></li>
+<li><p><strong>seasonal_periods</strong> – The length of the seasonality cycle. ‘auto’
+indicates automatically select the seasonality cycle. If no
+seasonality exists, change <code class="docutils literal notranslate"><span class="pre">seasonal</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.ets.</span></span><span class="sig-name descname"><span class="pre">ETS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.ets.ETS" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<p>Implementation of the classic local statistical model ETS (Error, Trend, Seasonal) for forecasting.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.ets.ETSConfig" title="merlion.models.forecast.ets.ETSConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.ets.ETSConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.error">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.trend">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">trend</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.trend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.damped_trend">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">damped_trend</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.damped_trend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.seasonal">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">seasonal</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.seasonal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.seasonal_periods">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">seasonal_periods</span></span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.seasonal_periods" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the forecaster on the input time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>train_config</strong> – Additional training configs, if needed. Only
+required for some models.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the model’s prediction on <code class="docutils literal notranslate"><span class="pre">train_data</span></code>, in the same format as
+if you called <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.forecast" title="merlion.models.forecast.base.ForecasterBase.forecast"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.forecast</span></code></a> on the time stamps of
+<code class="docutils literal notranslate"><span class="pre">train_data</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_iqr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model’s forecast on the timestamps given. Note that if
+<code class="docutils literal notranslate"><span class="pre">self.transform</span></code> is specified in the config, the forecast is a forecast
+of transformed values! It is up to you to manually invert the transform
+if desired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_stamps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Either a <code class="docutils literal notranslate"><span class="pre">list</span></code> of timestamps we wish to forecast for,
+or the number of steps (<code class="docutils literal notranslate"><span class="pre">int</span></code>) we wish to forecast for.</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of (timestamp, value) pairs immediately
+preceding <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time
+series model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code> immediately
+follows the training data.</p></li>
+<li><p><strong>return_iqr</strong> – whether to return the inter-quartile range for the
+forecast. Note that not all models support this option.</p></li>
+<li><p><strong>return_prev</strong> – whether to return the forecast for
+<code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and its stderr or IQR if relevant), in addition
+to the forecast for <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>. Only used if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>
+is provided.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">forecast_stderr)</span></code> if <code class="docutils literal notranslate"><span class="pre">return_iqr</span></code> is false,
+<code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">forecast_lb,</span> <span class="pre">forecast_ub)</span></code> otherwise.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast</span></code>: the forecast for the timestamps given</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">forecast_stderr</span></code>: the standard error of each forecast value.</dt><dd><p>May be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast_lb</span></code>: 25th percentile of forecast values for each timestamp</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forecast_ub</span></code>: 75th percentile of forecast values for each timestamp</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1730,7 +1871,7 @@ control over-fitting.</p>
 
 </section>
 <section id="module-merlion.models.forecast.boostingtrees">
-<span id="merlion-models-forecast-bo0stingtrees-module"></span><h2>merlion.models.forecast.bo0stingtrees module<a class="headerlink" href="#module-merlion.models.forecast.boostingtrees" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-boostingtrees-module"></span><h2>merlion.models.forecast.boostingtrees module<a class="headerlink" href="#module-merlion.models.forecast.boostingtrees" title="Permalink to this headline"></a></h2>
 <p>Boosting Tree-based models for multivariate time series forecasting.
 LightGBM</p>
 <dl class="py class">

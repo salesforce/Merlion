@@ -363,6 +363,8 @@
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.LGBMForecaster.config_class">(merlion.models.forecast.boostingtrees.LGBMForecaster attribute)</a>
 </li>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.config_class">(merlion.models.forecast.ets.ETS attribute)</a>
+</li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.lstm.LSTM.config_class">(merlion.models.forecast.lstm.LSTM attribute)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet.config_class">(merlion.models.forecast.prophet.Prophet attribute)</a>
@@ -403,6 +405,8 @@
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Trend.daily">daily (merlion.models.anomaly.dbl.Trend attribute)</a>
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet.daily_seasonality">daily_seasonality (merlion.models.forecast.prophet.Prophet property)</a>
+</li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.damped_trend">damped_trend (merlion.models.forecast.ets.ETS property)</a>
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.DynamicBaseline.data">data (merlion.models.anomaly.dbl.DynamicBaseline property)</a>
 
@@ -520,6 +524,12 @@
 </li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.epoch_max">epoch_max (merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble property)</a>
 </li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.error">error (merlion.models.forecast.ets.ETS property)</a>
+</li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS">ETS (class in merlion.models.forecast.ets)</a>
+</li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETSConfig">ETSConfig (class in merlion.models.forecast.ets)</a>
+</li>
       <li><a href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetector">ETSDetector (class in merlion.models.anomaly.forecast_based.ets)</a>
 </li>
       <li><a href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig">ETSDetectorConfig (class in merlion.models.anomaly.forecast_based.ets)</a>
@@ -632,6 +642,8 @@
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.forecast">(merlion.models.forecast.base.ForecasterBase method)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.BoostingTreeForecaster.forecast">(merlion.models.forecast.boostingtrees.BoostingTreeForecaster method)</a>
+</li>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.forecast">(merlion.models.forecast.ets.ETS method)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.lstm.LSTM.forecast">(merlion.models.forecast.lstm.LSTM method)</a>
 </li>
@@ -1424,6 +1436,13 @@
 </li>
       </ul></li>
       <li>
+    merlion.models.forecast.ets
+
+      <ul>
+        <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.ets">module</a>
+</li>
+      </ul></li>
+      <li>
     merlion.models.forecast.lstm
 
       <ul>
@@ -1778,6 +1797,8 @@
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.base">merlion.models.forecast.base</a>
 </li>
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.boostingtrees">merlion.models.forecast.boostingtrees</a>
+</li>
+        <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.ets">merlion.models.forecast.ets</a>
 </li>
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.lstm">merlion.models.forecast.lstm</a>
 </li>
@@ -2246,12 +2267,16 @@
 </li>
       <li><a href="merlion.utils.html#merlion.utils.istat.Variance.se">se (merlion.utils.istat.Variance property)</a>
 </li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.seasonal">seasonal (merlion.models.forecast.ets.ETS property)</a>
+</li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.arima.ArimaConfig.seasonal_order">seasonal_order (merlion.models.forecast.arima.ArimaConfig property)</a>
 
       <ul>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima.seasonal_order">(merlion.models.forecast.sarima.Sarima property)</a>
 </li>
       </ul></li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.seasonal_periods">seasonal_periods (merlion.models.forecast.ets.ETS property)</a>
+</li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.seasonality_mixin.SeasonalityLayer">SeasonalityLayer (class in merlion.models.automl.seasonality_mixin)</a>
 </li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.seasonality_mixin.SeasonalityModel">SeasonalityModel (class in merlion.models.automl.seasonality_mixin)</a>
@@ -2260,10 +2285,10 @@
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Segment">Segment (class in merlion.models.anomaly.dbl)</a>
 </li>
-      <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Segmenter.segment_key">segment_key() (merlion.models.anomaly.dbl.Segmenter method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Segmenter.segment_key">segment_key() (merlion.models.anomaly.dbl.Segmenter method)</a>
+</li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Segmenter">Segmenter (class in merlion.models.anomaly.dbl)</a>
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.baggingtrees.BaggingTreeForecaster.set_data_already_transformed">set_data_already_transformed() (merlion.models.forecast.baggingtrees.BaggingTreeForecaster method)</a>
@@ -2519,6 +2544,8 @@
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.BoostingTreeForecaster.train">(merlion.models.forecast.boostingtrees.BoostingTreeForecaster method)</a>
 </li>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.train">(merlion.models.forecast.ets.ETS method)</a>
+</li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.lstm.LSTM.train">(merlion.models.forecast.lstm.LSTM method)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet.train">(merlion.models.forecast.prophet.Prophet method)</a>
@@ -2623,7 +2650,11 @@
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Trend">Trend (class in merlion.models.anomaly.dbl)</a>
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.Segmenter.trend">trend (merlion.models.anomaly.dbl.Segmenter property)</a>
+
+      <ul>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.trend">(merlion.models.forecast.ets.ETS property)</a>
 </li>
+      </ul></li>
       <li><a href="merlion.transform.html#merlion.transform.anomalize.TrendChange">TrendChange (class in merlion.transform.anomalize)</a>
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.DynamicBaselineConfig.trends">trends (merlion.models.anomaly.dbl.DynamicBaselineConfig property)</a>
