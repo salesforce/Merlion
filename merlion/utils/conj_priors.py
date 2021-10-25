@@ -75,25 +75,42 @@ class ConjPrior(ABC):
         if x is None:
             return None, None
 
-        # Initialize t0 and dt if needed
-        if self.t0 is None or self.dt is None:
+        # Initialize t0 if needed
+        if self.t0 is None:
             if isinstance(x, TimeSeries):
                 t0, tf = x.t0, x.tf
                 self.t0 = t0
-                self.dt = tf - t0 if tf != t0 else 1
+                self.dt = tf - t0 if tf != t0 else None
+            elif isinstance(x, tuple) and len(x) == 2:
+                self.t0 = x[0]
+                self.dt = None
             else:
                 x = np.asarray(x)
                 self.t0 = 0
                 self.dt = 1 if x.ndim < 1 else len(x)
 
+        # Initialize dt if needed; this only happens for cases 1 and 2 above
+        if self.dt is None:
+            if isinstance(x, TimeSeries):
+                tf = x.tf
+            else:
+                tf = x[0]
+            if tf != self.t0:
+                self.dt = tf - self.t0
+
         # Convert time series to numpy, or convert numpy array to pseudo time series
         if isinstance(x, TimeSeries):
-            t = (x.np_time_stamps - self.t0) / self.dt
+            t = x.np_time_stamps
             x = x.align().to_pd().values
+        elif isinstance(x, tuple) and len(x) == 2:
+            t, x = x
+            t = np.asarray(x).reshape(1)
+            x = np.asarray(x).reshape(1, -1)
         else:
             x = np.asarray(x)
             x = x.reshape((1, 1) if x.ndim < 1 else (len(x), -1))
-            t = (np.arange(self.n, self.n + len(x)) - self.t0) / self.dt
+            t = np.arange(self.n, self.n + len(x))
+        t = (t - self.t0) / (self.dt or 1)
 
         if self.dim is None:
             self.dim = x.shape[-1]
@@ -107,9 +124,10 @@ class ConjPrior(ABC):
         if x is None or return_rv:
             return rv
         try:
-            return rv.logpdf(x) if log else rv.pdf(x)
+            ret = rv.logpdf(x) if log else rv.pdf(x)
         except AttributeError:
-            return rv.logpmf(x) if log else rv.pmf(x)
+            ret = rv.logpmf(x) if log else rv.pmf(x)
+        return ret.reshape(len(x))
 
     @abstractmethod
     def posterior(self, x, return_rv=False, log=True, return_updated=False):
