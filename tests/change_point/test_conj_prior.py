@@ -73,7 +73,8 @@ class TestConjugatePriors(unittest.TestCase):
         u = np.random.randn(d, d)
         cov = u.T @ u
         data = TimeSeries.from_pd(np.random.randn(n, d) @ u + mu, freq="1h")
-        dist = MVNormInvWishart(data[:-5])
+        dist = MVNormInvWishart(data[:5])
+        dist.update(data[:-5])
         dist.posterior(data[5:])  # make sure we can compute a posterior
 
         # require low L1 distance between expected mean/cov and true mean/cov
@@ -89,9 +90,9 @@ class TestConjugatePriors(unittest.TestCase):
         x_test = x[n + 1 :]
 
         # Make sure univariate & multivariate agree when initialized from nothing
-        uni = BayesianLinReg()
+        uni = BayesianLinReg(x_train[:5])
         uni_posterior, uni = uni.posterior(x_train, return_updated=True)
-        multi = BayesianMVLinReg()
+        multi = BayesianMVLinReg(x_train[:5])
         multi_posterior, multi = multi.posterior(x_train, return_updated=True)
         self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=8)
 
@@ -118,7 +119,8 @@ class TestConjugatePriors(unittest.TestCase):
         x_train = x[: n + 1]
         x_test = x[n + 1 :]
 
-        dist = BayesianMVLinReg(x_train)
+        dist = BayesianMVLinReg(x_train[:5])
+        dist.update(x_train)
         post = dist.posterior(x_test)  # make sure we can compute a multivariate posterior PDF
         self.assertEqual(post.shape, (n,))
 

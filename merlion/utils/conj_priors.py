@@ -17,6 +17,7 @@ Implementations of Bayesian conjugate priors & their online update rules.
 """
 from abc import ABC, abstractmethod
 import copy
+from typing import Tuple
 
 import numpy as np
 from scipy.special import loggamma
@@ -43,7 +44,10 @@ class ConjPrior(ABC):
     Can be used with either `TimeSeries` or ``numpy`` arrays directly.
     """
 
-    def __init__(self):
+    def __init__(self, sample=None):
+        """
+        :param sample: a sample used to initialize the prior parameters.
+        """
         self.n = 0
         self.dim = None
         self.t0 = None
@@ -68,11 +72,27 @@ class ConjPrior(ABC):
     def __deepcopy__(self, memodict={}):
         return self.__copy__()
 
-    def process_time_series(self, x):
+    @staticmethod
+    def get_time_series_values(x) -> np.ndarray:
+        """
+        :return: numpy array representing the input ``x``
+        """
+        if x is None:
+            return None
+        if isinstance(x, TimeSeries):
+            x = x.align().to_pd().values
+        elif isinstance(x, tuple) and len(x) == 2:
+            t, x = x
+            x = np.asarray(x).reshape(1, -1)
+        else:
+            x = np.asarray(x)
+            x = x.reshape((1, 1) if x.ndim < 1 else (len(x), -1))
+        return x
+
+    def process_time_series(self, x) -> Tuple[np.ndarray, np.ndarray]:
         """
         :return: ``(t, x)``, where ``t`` is a normalized list of timestamps, and ``x`` is a ``numpy`` array
             representing the input
-        :rtype: ``Tuple[numpy.ndarray, numpy.ndarray]``
         """
         if x is None:
             return None, None
@@ -156,14 +176,19 @@ class ScalarConjPrior(ConjPrior, ABC):
     Abstract base class for a Bayesian conjugate prior for a scalar random variable.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, sample=None):
+        super().__init__(sample=sample)
         self.dim = 1
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)
         x = x.flatten() if x is not None else x
         return t, x
+
+    @staticmethod
+    def get_time_series_values(x) -> np.ndarray:
+        x = super().get_time_series_values(x)
+        return x.flatten() if x is not None else x
 
 
 class BetaBernoulli(ScalarConjPrior):
@@ -188,7 +213,7 @@ class BetaBernoulli(ScalarConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__()
+        super().__init__(sample=sample)
         self.alpha = 1
         self.beta = 1
         if sample is not None:
@@ -249,12 +274,12 @@ class NormInvGamma(ScalarConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__()
+        super().__init__(sample=sample)
         self.mu_0 = 0
         self.alpha = 1 + _epsilon
         self.beta = _epsilon
         if sample is not None:
-            self.update(sample)
+            self.mu_0 = np.mean(self.get_time_series_values(sample))
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -330,7 +355,7 @@ class MVNormInvWishart(ConjPrior):
         self.mu_0 = None
         self.Lambda = None
         if sample is not None:
-            self.update(sample)
+            self.mu_0 = np.mean(self.get_time_series_values(sample), axis=0)
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)
@@ -425,7 +450,8 @@ class BayesianLinReg(ConjPrior):
         self.alpha = 1 + _epsilon
         self.beta = _epsilon
         if sample is not None:
-            self.update(sample)
+            self.w_0[1] = np.mean(self.get_time_series_values(sample))
+            self.Lambda_0 = np.array([[_epsilon, 0], [0, 1]])
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -558,7 +584,9 @@ class BayesianMVLinReg(ConjPrior):
         self.Lambda_0 = np.eye(2) * _epsilon
         self.V_0 = None
         if sample is not None:
-            self.update(sample)
+            sample = self.get_time_series_values(sample)
+            self.w_0 = np.stack((np.zeros(sample.shape[-1]), np.mean(sample, axis=0)))
+            self.Lambda_0 = np.array([[_epsilon, 0], [0, 1]])
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)

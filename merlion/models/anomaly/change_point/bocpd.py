@@ -16,6 +16,7 @@ from scipy.stats import norm
 from tqdm import tqdm
 
 from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
+from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
@@ -53,6 +54,8 @@ class _PosteriorBeam:
 
 
 class BOCPDConfig(NoCalibrationDetectorConfig):
+    _default_threshold = AggregateAlarms(alm_threshold=3, min_alm_in_window=1)
+
     def __init__(
         self,
         change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
@@ -122,8 +125,9 @@ class BOCPD(DetectorBase):
     def lag(self):
         return self.config.lag
 
-    def create_posterior(self, logp: float) -> _PosteriorBeam:
-        return _PosteriorBeam(run_length=0, posterior=self.change_kind.value(), cp_prior=self.cp_prior, logp=logp)
+    def create_posterior(self, sample, logp: float) -> _PosteriorBeam:
+        posterior = self.change_kind.value(sample)
+        return _PosteriorBeam(run_length=0, posterior=posterior, cp_prior=self.cp_prior, logp=logp)
 
     def update(self, time_series: TimeSeries, train=False):
         if not train and self.last_train_time is not None:
@@ -145,7 +149,7 @@ class BOCPD(DetectorBase):
             else:
                 cp_delta = np.log(self.cp_prior) - np.log1p(-self.cp_prior)
                 cp_logp = logsumexp([post.logp + cp_delta for post in self.posterior_beam])
-            self.posterior_beam.append(self.create_posterior(logp=cp_logp))
+            self.posterior_beam.append(self.create_posterior(sample=(t, x), logp=cp_logp))
 
             # P(x_{1:t}) = \sum_{r_t} P(r_t, x_{1:t})
             min_ll = -np.inf if self.min_likelihood is None else np.log(self.min_likelihood)
