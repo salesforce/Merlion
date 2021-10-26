@@ -12,9 +12,10 @@ from typing import List, Union
 
 import numpy as np
 from scipy.special import logsumexp
+from scipy.stats import norm
 from tqdm import tqdm
 
-from merlion.models.anomaly.base import DetectorBase, DetectorConfig
+from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
 from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
@@ -51,13 +52,13 @@ class _PosteriorBeam:
         self.logp += sum(logp_x) + n * np.log1p(-self.cp_prior)
 
 
-class BOCPDConfig(DetectorConfig):
+class BOCPDConfig(NoCalibrationDetectorConfig):
     def __init__(
         self,
         change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
         min_likelihood=1e-4,
         cp_prior=1e-2,
-        lag=10,
+        lag=20,
         **kwargs,
     ):
         """
@@ -128,7 +129,7 @@ class BOCPD(DetectorBase):
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
-        timestamps, ret = [], []
+        timestamps, logps = [], []
         for t, x in tqdm(time_series.align()):
             # Update posterior beams
             for post in self.posterior_beam:
@@ -153,21 +154,24 @@ class BOCPD(DetectorBase):
             # P(r_t) = P(r_t, x_{1:t}) / P(x_{1:t})
             run_length_dist = {post.run_length: post.logp - evidence for post in self.posterior_beam}
 
-            # Remove posterior beam candidates whose run length likelihood is too low
+            # Remove posterior beam candidates whose run length probability is too low
+            # and re-normalize all probabilities to sum to 1
             to_remove = {r: logp for r, logp in run_length_dist.items() if logp < min_ll and r > self.lag}
             if len(to_remove) > 0:
                 excess_p = np.exp(logsumexp(list(to_remove.values())))
                 for post in self.posterior_beam:
                     post.logp -= np.log1p(-excess_p)
+                    run_length_dist[post.run_length] -= np.log1p(-excess_p)
             self.posterior_beam = [post for post in self.posterior_beam if post.run_length not in to_remove]
 
-            # Anomaly score is the negative log probability that a point is not a change point
+            # Compute the log probability that t is _not_ a change point.
             timestamps.append(t)
-            run_length_dist = {post.run_length: post.logp - evidence for post in self.posterior_beam}
             logp_cp = logsumexp([logp for r, logp in run_length_dist.items() if r < self.lag])
-            ret.append(-np.log1p(-np.exp(min(logp_cp, -1e-16))))
+            logps.append(np.log1p(-np.exp(min(logp_cp, -1e-16))))
 
-        return UnivariateTimeSeries(time_stamps=timestamps, values=ret, name="anom_score").to_ts()
+        # Convert anomaly score to z-score units
+        scores = norm.ppf(1 - np.exp(logps) / 2)
+        return UnivariateTimeSeries(time_stamps=timestamps, values=scores, name="anom_score").to_ts()
 
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
