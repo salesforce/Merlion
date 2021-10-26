@@ -34,6 +34,8 @@ from scipy.stats import (
 
 from merlion.utils import TimeSeries
 
+_epsilon = 1e-8
+
 
 class ConjPrior(ABC):
     """
@@ -249,8 +251,8 @@ class NormInvGamma(ScalarConjPrior):
     def __init__(self, sample=None):
         super().__init__()
         self.mu_0 = 0
-        self.alpha = 0
-        self.beta = 0
+        self.alpha = 1 + _epsilon
+        self.beta = _epsilon
         if sample is not None:
             self.update(sample)
 
@@ -270,7 +272,7 @@ class NormInvGamma(ScalarConjPrior):
         r"""
         The posterior for :math:`\mu` is :math:`\text{Student-t}_{2\alpha}(\mu_0, \beta / (n \alpha))`
         """
-        scale = self.beta / (self.alpha * self.n)
+        scale = self.beta / (2 * self.alpha ** 2)
         rv = student_t(loc=self.mu_0, scale=np.sqrt(scale), df=2 * self.alpha)
         return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
 
@@ -286,7 +288,7 @@ class NormInvGamma(ScalarConjPrior):
         The posterior for :math:`x` is :math:`\text{Student-t}_{2\alpha}(\mu_0, (n+1) \beta / (n \alpha))`
         """
         t, x_np = self.process_time_series(x)
-        scale = (self.beta * (self.n + 1)) / (self.alpha * self.n)
+        scale = (self.beta * (2 * self.alpha + 1)) / (2 * self.alpha ** 2)
         rv = student_t(loc=self.mu_0, scale=np.sqrt(scale), df=2 * self.alpha)
         ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
         if return_updated:
@@ -330,6 +332,17 @@ class MVNormInvWishart(ConjPrior):
         if sample is not None:
             self.update(sample)
 
+    def process_time_series(self, x):
+        t, x = super().process_time_series(x)
+        n, d = x.shape
+        if self.nu == 0:
+            self.nu = 2 * (d + _epsilon)
+        if self.Lambda is None:
+            self.Lambda = 2 * np.eye(d) * _epsilon
+        if self.mu_0 is None:
+            self.mu_0 = np.zeros(d)
+        return t, x
+
     def update(self, x):
         t, x = self.process_time_series(x)
 
@@ -339,23 +352,17 @@ class MVNormInvWishart(ConjPrior):
 
         sample_mean = np.mean(x, axis=0)
         sample_cov = (x - sample_mean).T @ (x - sample_mean)
-        if self.n == 0:
-            self.mu_0 = sample_mean
-            self.Lambda = sample_cov
-            self.n = n
-
-        else:
-            delta = sample_mean - self.mu_0
-            self.Lambda = self.Lambda + sample_cov + n * n0 / (n + n0) * (delta.T @ delta)
-            self.mu_0 = self.mu_0 * n0 / (n0 + n) + sample_mean * n / (n0 + n)
-            self.n = n0 + n
+        delta = sample_mean - self.mu_0
+        self.Lambda = self.Lambda + sample_cov + n * n0 / (n + n0) * (delta.T @ delta)
+        self.mu_0 = self.mu_0 * n0 / (n0 + n) + sample_mean * n / (n0 + n)
+        self.n = n0 + n
 
     def mu_posterior(self, mu, return_rv=False, log=True):
         r"""
         The posterior for :math:`\mu` is :math:`\text{Student-t}_{\nu-d+1}(\mu_0, \Lambda / (n (\nu - d + 1)))`
         """
         dof = max(self.nu - self.dim + 1, 1)
-        shape = self.Lambda / (self.n * dof)
+        shape = self.Lambda / (self.nu * dof)
         rv = mvt(shape=shape, loc=self.mu_0, df=dof)
         return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
 
@@ -372,7 +379,7 @@ class MVNormInvWishart(ConjPrior):
         """
         t, x_np = self.process_time_series(x)
         dof = max(self.nu - self.dim + 1, 1)
-        shape = self.Lambda * (self.n + 1) / (self.n * dof)
+        shape = self.Lambda * (self.nu + 1) / (self.nu * dof)
         rv = mvt(shape=shape, loc=self.mu_0, df=dof)
         ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
         if return_updated:
@@ -414,9 +421,9 @@ class BayesianLinReg(ConjPrior):
     def __init__(self, sample=None):
         super().__init__()
         self.w_0 = np.zeros(2)
-        self.Lambda_0 = np.zeros((2, 2))
-        self.alpha = 0
-        self.beta = 0
+        self.Lambda_0 = np.eye(2) * _epsilon
+        self.alpha = 1 + _epsilon
+        self.beta = _epsilon
         if sample is not None:
             self.update(sample)
 
@@ -494,7 +501,7 @@ class BayesianLinReg(ConjPrior):
         # Get priors & MAP estimates for sigma^2 and w; get the MAP estimate for x(t)
         prior_sigma2 = invgamma(a=self.alpha, scale=self.beta)
         sigma2_hat = prior_sigma2.mean()
-        prior_w = mvnorm(self.w_0, sigma2_hat * pinvh(self.Lambda_0))
+        prior_w = mvnorm(self.w_0, sigma2_hat * pinvh(self.Lambda_0), allow_singular=True)
         w_hat = self.w_0
         xhat = np.stack((t, np.ones_like(t)), axis=-1) @ w_hat
 
@@ -502,7 +509,7 @@ class BayesianLinReg(ConjPrior):
         updated = copy.deepcopy(self)
         updated.update(x)
         post_sigma2 = invgamma(a=updated.alpha, scale=updated.beta)
-        post_w = mvnorm(updated.w_0, sigma2_hat * pinvh(updated.Lambda_0))
+        post_w = mvnorm(updated.w_0, sigma2_hat * pinvh(updated.Lambda_0), allow_singular=True)
 
         # Apply Bayes' rule
         evidence = norm(xhat, np.sqrt(sigma2_hat)).logpdf(x_np.flatten()).reshape(len(x_np))
@@ -548,26 +555,32 @@ class BayesianMVLinReg(ConjPrior):
         super().__init__()
         self.nu = 0
         self.w_0 = None
-        self.Lambda_0 = np.zeros((2, 2))
+        self.Lambda_0 = np.eye(2) * _epsilon
         self.V_0 = None
         if sample is not None:
             self.update(sample)
 
-    def update(self, x):
-        t, x = self.process_time_series(x)
+    def process_time_series(self, x):
+        t, x = super().process_time_series(x)
         n, d = x.shape
+        if self.nu == 0:
+            self.nu = 2 * (d + _epsilon)
         if self.V_0 is None:
-            self.V_0 = np.zeros((d, d))
+            self.V_0 = 2 * np.eye(d) * _epsilon
         if self.w_0 is None:
             self.w_0 = np.zeros((2, d))
+        return t, x
+
+    def update(self, x):
+        t, x = self.process_time_series(x)
 
         t_full = np.stack((t, np.ones_like(t)), axis=-1)  # [n, 2]
         design = t_full.T @ t_full
         new_Lambda = design + self.Lambda_0
         new_w = pinvh(new_Lambda) @ (t_full.T @ x + self.Lambda_0 @ self.w_0)
 
-        self.n = self.n + n
-        self.nu = self.nu + n
+        self.n = self.n + len(x)
+        self.nu = self.nu + len(x)
         residual = x - t_full @ new_w  # [n, d]
         delta_w = new_w - self.w_0  # [2, d]
         self.V_0 = self.V_0 + residual.T @ residual + delta_w.T @ self.Lambda_0 @ delta_w
@@ -599,14 +612,14 @@ class BayesianMVLinReg(ConjPrior):
         prior_Sigma = invwishart(df=self.nu, scale=self.V_0)
         Sigma_hat = prior_Sigma.mean()
         w_hat = self.w_0.flatten()
-        prior_w = mvnorm(w_hat, np.kron(Sigma_hat, pinvh(self.Lambda_0)))
+        prior_w = mvnorm(w_hat, np.kron(Sigma_hat, pinvh(self.Lambda_0)), allow_singular=True)
         xhat = np.stack((t, np.ones_like(t)), axis=-1) @ w_hat.reshape(2, -1)
 
         # Get posteriors
         updated = copy.deepcopy(self)
         updated.update(x)
         post_Sigma = invwishart(df=updated.nu, scale=updated.V_0)
-        post_w = mvnorm(updated.w_0.flatten(), np.kron(Sigma_hat, pinvh(updated.Lambda_0)))
+        post_w = mvnorm(updated.w_0.flatten(), np.kron(Sigma_hat, pinvh(updated.Lambda_0)), allow_singular=True)
 
         # Apply Bayes' rule
         evidence = mvnorm(cov=Sigma_hat).logpdf(x_np - xhat).reshape(len(x_np))

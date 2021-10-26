@@ -47,15 +47,18 @@ class TestConjugatePriors(unittest.TestCase):
 
             # Univariate model
             dist_uni = NormInvGamma()
-            dist_uni.update(data[: n // 2])
-            pred_uni = dist_uni.posterior(data[n // 2 :], log=False)
+            pred_uni, dist_uni = dist_uni.posterior(data[: n // 2], return_updated=True)
 
             # Multivariate model
             dist_multi = MVNormInvWishart()
-            dist_multi.update(data[: n // 2])
-            pred_multi = dist_multi.posterior(data[n // 2 :], log=False)
+            pred_multi, dist_multi = dist_multi.posterior(data[: n // 2], return_updated=True)
 
             # Make sure univariate & multivariate posteriors agree
+            self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=8)
+
+            # Make sure univariate & multivariate posteriors agree after additional udpate
+            pred_uni = dist_uni.posterior(data[n // 2 :], log=False)
+            pred_multi = dist_multi.posterior(data[n // 2 :], log=False)
             self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=8)
 
             # Make sure we converge to the right model after enough data
@@ -85,10 +88,15 @@ class TestConjugatePriors(unittest.TestCase):
         x_train = x[: n + 1]
         x_test = x[n + 1 :]
 
-        # Make sure univariate & multivariate agree
-        uni = BayesianLinReg(x_train)
+        # Make sure univariate & multivariate agree when initialized from nothing
+        uni = BayesianLinReg()
+        uni_posterior, uni = uni.posterior(x_train, return_updated=True)
+        multi = BayesianMVLinReg()
+        multi_posterior, multi = multi.posterior(x_train, return_updated=True)
+        self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=8)
+
+        # Make sure univariate & multivariate agree after an additional update
         uni_posterior = uni.posterior(x_test)
-        multi = BayesianMVLinReg(x_train)
         multi_posterior = multi.posterior(x_test)
         self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=8)
 
