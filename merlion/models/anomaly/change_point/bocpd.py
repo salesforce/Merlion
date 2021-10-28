@@ -23,8 +23,8 @@ from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
 class ChangeKind(Enum):
     """
-    Enum representing the kinds of changes we would like to detect. Values correspond to the Bayesian conjugate
-    prior class used to detect that sort of change point.
+    Enum representing the kinds of changes points we would like to detect.
+    Enum values correspond to the Bayesian `ConjPrior` class used to detect each sort of change point.
     """
 
     LevelShift = MVNormInvWishart
@@ -59,22 +59,30 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
     def __init__(
         self,
         change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
-        min_likelihood=1e-4,
         cp_prior=1e-2,
-        lag=20,
+        lag=10,
+        min_likelihood=1e-4,
         **kwargs,
     ):
         """
         :param change_kind: the kind of change points we would like to detect
-        :param min_likelihood: we will not consider any hypotheses with likelihood lower than this threshold
         :param cp_prior: prior belief probability of how frequently changepoints occur
-        :param lag: the maximum amount of delay allowed for detecting change points
+        :param lag: the maximum amount of delay allowed for detecting change points. A higher lag can increase
+            recall, but it may decrease precision.
+        :param min_likelihood: we will not consider any hypotheses (about whether a particular point is a change point)
+            with likelihood lower than this threshold
         """
         self.change_kind = change_kind
         self.min_likelihood = min_likelihood
         self.cp_prior = cp_prior  # Kats checks [0.001, 0.002, 0.005, 0.01, 0.02]
         self.lag = lag
         super().__init__(**kwargs)
+
+    @property
+    def _default_post_rule_train_config(self):
+        from merlion.evaluate.anomaly import TSADMetric
+
+        return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
@@ -100,6 +108,9 @@ class BOCPD(DetectorBase):
     """
     Bayesian online change point detection algorithm described by
     `Adams & MacKay (2007) <https://arxiv.org/abs/0710.3742>`__.
+    At a high level, this algorithm models the observed data using Bayesian conjugate priors. If an observed value
+    deviates too much from the current posterior distribution, it is likely a change point, and we should start
+    modeling the time series from that point forwards with a freshly initialized Bayesian conjugate prior.
     """
 
     config_class = BOCPDConfig
@@ -111,25 +122,45 @@ class BOCPD(DetectorBase):
 
     @property
     def change_kind(self) -> ChangeKind:
+        """
+        :return: the kind of change points we would like to detect
+        """
         return self.config.change_kind
 
     @property
     def cp_prior(self) -> float:
+        """
+        :return: prior belief probability of how frequently changepoints occur
+        """
         return self.config.cp_prior
 
     @property
-    def min_likelihood(self):
-        return self.config.min_likelihood
-
-    @property
-    def lag(self):
+    def lag(self) -> int:
+        """
+        :return: the maximum amount of delay allowed for detecting change points. A higher lag can increase
+            recall, but it may decrease precision.
+        """
         return self.config.lag
 
-    def create_posterior(self, sample, logp: float) -> _PosteriorBeam:
+    @property
+    def min_likelihood(self) -> float:
+        """
+        :return: we will not consider any hypotheses (about whether a particular point is a change point)
+            with likelihood lower than this threshold
+        """
+        return self.config.min_likelihood
+
+    def _create_posterior(self, sample, logp: float) -> _PosteriorBeam:
         posterior = self.change_kind.value(sample)
         return _PosteriorBeam(run_length=0, posterior=posterior, cp_prior=self.cp_prior, logp=logp)
 
     def update(self, time_series: TimeSeries, train=False):
+        """
+        Updates the BOCPD model's internal state using the time series values provided.
+
+        :param time_series: time series whose values we are using to update the internal state of the model
+        :param train: whether we are performing the initial training of the model
+        """
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
@@ -149,7 +180,7 @@ class BOCPD(DetectorBase):
             else:
                 cp_delta = np.log(self.cp_prior) - np.log1p(-self.cp_prior)
                 cp_logp = logsumexp([post.logp + cp_delta for post in self.posterior_beam])
-            self.posterior_beam.append(self.create_posterior(sample=(t, x), logp=cp_logp))
+            self.posterior_beam.append(self._create_posterior(sample=(t, x), logp=cp_logp))
 
             # P(x_{1:t}) = \sum_{r_t} P(r_t, x_{1:t})
             min_ll = -np.inf if self.min_likelihood is None else np.log(self.min_likelihood)
@@ -175,6 +206,7 @@ class BOCPD(DetectorBase):
 
         # Convert anomaly score to z-score units
         scores = norm.ppf(1 - np.exp(logps) / 2)
+        self.last_train_time = timestamps[-1]
         return UnivariateTimeSeries(time_stamps=timestamps, values=scores, name="anom_score").to_ts()
 
     def train(

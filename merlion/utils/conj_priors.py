@@ -46,7 +46,7 @@ class ConjPrior(ABC):
 
     def __init__(self, sample=None):
         """
-        :param sample: a sample used to initialize the prior parameters.
+        :param sample: a sample used to initialize the prior.
         """
         self.n = 0
         self.dim = None
@@ -356,6 +356,7 @@ class MVNormInvWishart(ConjPrior):
         self.Lambda = None
         if sample is not None:
             self.mu_0 = np.mean(self.get_time_series_values(sample), axis=0)
+            self.dim = len(self.mu_0)
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)
@@ -585,7 +586,8 @@ class BayesianMVLinReg(ConjPrior):
         self.V_0 = None
         if sample is not None:
             sample = self.get_time_series_values(sample)
-            self.w_0 = np.stack((np.zeros(sample.shape[-1]), np.mean(sample, axis=0)))
+            self.dim = sample.shape[-1]
+            self.w_0 = np.stack((np.zeros(self.dim), np.mean(sample, axis=0)))
             self.Lambda_0 = np.array([[_epsilon, 0], [0, 1]])
 
     def process_time_series(self, x):
