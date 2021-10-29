@@ -9,8 +9,10 @@ Bayesian online change point detection algorithm.
 """
 from enum import Enum
 from typing import List, Union
+import warnings
 
 import numpy as np
+import scipy.sparse
 from scipy.special import logsumexp
 from scipy.stats import norm
 from tqdm import tqdm
@@ -54,21 +56,24 @@ class _PosteriorBeam:
 
 
 class BOCPDConfig(NoCalibrationDetectorConfig):
-    _default_threshold = AggregateAlarms(alm_threshold=3, min_alm_in_window=1)
+    _default_threshold = AggregateAlarms(alm_threshold=norm.ppf((1 + 0.5) / 2), min_alm_in_window=1)
+    """
+    Default threshold is for a >=50% probability that a point is a change point.
+    """
 
     def __init__(
         self,
         change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
         cp_prior=1e-2,
         lag=10,
-        min_likelihood=1e-4,
+        min_likelihood=1e-16,
         **kwargs,
     ):
         """
         :param change_kind: the kind of change points we would like to detect
         :param cp_prior: prior belief probability of how frequently changepoints occur
-        :param lag: the maximum amount of delay allowed for detecting change points. A higher lag can increase
-            recall, but it may decrease precision.
+        :param lag: the maximum amount of delay/lookback allowed for detecting change points.
+            If ``lag`` is ``None``, we will consider the entire history
         :param min_likelihood: we will not consider any hypotheses (about whether a particular point is a change point)
             with likelihood lower than this threshold
         """
@@ -77,12 +82,6 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         self.cp_prior = cp_prior  # Kats checks [0.001, 0.002, 0.005, 0.01, 0.02]
         self.lag = lag
         super().__init__(**kwargs)
-
-    @property
-    def _default_post_rule_train_config(self):
-        from merlion.evaluate.anomaly import TSADMetric
-
-        return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
@@ -164,8 +163,11 @@ class BOCPD(DetectorBase):
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
-        timestamps, logps = [], []
-        for t, x in tqdm(time_series.align()):
+        time_series = time_series.align()
+        T = len(time_series)
+        timestamps = []
+        full_run_length_posterior = scipy.sparse.dok_matrix((T, T), dtype=float)
+        for i, (t, x) in enumerate(tqdm(time_series)):
             # Update posterior beams
             for post in self.posterior_beam:
                 post.update((t, x))
@@ -187,25 +189,42 @@ class BOCPD(DetectorBase):
             evidence = logsumexp([post.logp for post in self.posterior_beam])
 
             # P(r_t) = P(r_t, x_{1:t}) / P(x_{1:t})
-            run_length_dist = {post.run_length: post.logp - evidence for post in self.posterior_beam}
+            run_length_dist_0 = {post.run_length: post.logp - evidence for post in self.posterior_beam}
 
             # Remove posterior beam candidates whose run length probability is too low
-            # and re-normalize all probabilities to sum to 1
-            to_remove = {r: logp for r, logp in run_length_dist.items() if logp < min_ll and r > self.lag}
+            run_length_dist, to_remove = {}, {}
+            for r, logp in run_length_dist_0.items():
+                if logp < min_ll:
+                    to_remove[r] = logp
+                else:
+                    run_length_dist[r] = logp
+
+            # Re-normalize all remaining probabilities to sum to 1
+            self.posterior_beam = [post for post in self.posterior_beam if post.run_length not in to_remove]
             if len(to_remove) > 0:
-                excess_p = np.exp(logsumexp(list(to_remove.values())))
+                excess_p = np.exp(logsumexp(list(to_remove.values())))  # log P[to_remove]
                 for post in self.posterior_beam:
                     post.logp -= np.log1p(-excess_p)
                     run_length_dist[post.run_length] -= np.log1p(-excess_p)
-            self.posterior_beam = [post for post in self.posterior_beam if post.run_length not in to_remove]
 
-            # Compute the log probability that t is _not_ a change point.
+            # Update the full posterior distribution of run-length at each time, up to the desired lag
             timestamps.append(t)
-            logp_cp = logsumexp([logp for r, logp in run_length_dist.items() if r < self.lag])
-            logps.append(np.log1p(-np.exp(min(logp_cp, -1e-16))))
+            run_length_dist = [(r, logp) for r, logp in run_length_dist.items() if self.lag is None or r <= self.lag]
+            if len(run_length_dist) > 0:
+                all_r, all_logp_r = zip(*run_length_dist)
+                full_run_length_posterior[i, all_r] = np.exp(all_logp_r)
 
-        # Convert anomaly score to z-score units
-        scores = norm.ppf(1 - np.exp(logps) / 2)
+        # Compute the MAP probability that each point is a change point.
+        # full_run_length_posterior[i, r] = P[run length = r at time t_i]
+        probs = np.zeros(T)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            full_run_length_posterior = scipy.sparse.dia_matrix(full_run_length_posterior)
+        for i in range(T):
+            probs[i] = full_run_length_posterior.diagonal(-i).max()
+
+        # Convert P[changepoint] to z-score units
+        scores = norm.ppf((1 + probs) / 2)
         self.last_train_time = timestamps[-1]
         return UnivariateTimeSeries(time_stamps=timestamps, values=scores, name="anom_score").to_ts()
 
@@ -218,6 +237,7 @@ class BOCPD(DetectorBase):
         return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         if time_series_prev is not None:
             self.update(time_series_prev)
         return self.update(time_series)

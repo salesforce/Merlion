@@ -132,7 +132,12 @@ class DetectorBase(ModelBase):
         from merlion.evaluate.anomaly import TSADMetric
 
         t = self.config._default_threshold.alm_threshold
-        q = None if self.config.enable_calibrator or t == 0 else 2 * norm.cdf(t) - 1
+        if issubclass(self.config_class, NoCalibrationDetectorConfig):
+            q = None
+        elif self.config.enable_calibrator or t == 0:
+            q = None
+        else:
+            q = 2 * norm.cdf(t) - 1
         return dict(metric=TSADMetric.F1, unsup_quantile=q)
 
     @property
