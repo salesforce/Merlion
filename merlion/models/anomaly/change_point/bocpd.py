@@ -264,7 +264,6 @@ class BOCPD(DetectorBase):
             # Choose the model with the best log likelihood
             i_best = np.argmax([candidate[2] for candidate in candidates])
             best, train_scores, _ = candidates[i_best]
-            self.config = best.config
             self.__setstate__(best.__getstate__())
             logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
 
