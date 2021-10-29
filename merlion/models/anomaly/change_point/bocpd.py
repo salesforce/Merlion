@@ -65,7 +65,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         self,
         change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
         cp_prior=1e-2,
-        lag=10,
+        lag=None,
         min_likelihood=1e-16,
         **kwargs,
     ):
