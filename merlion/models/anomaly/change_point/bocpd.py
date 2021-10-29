@@ -7,7 +7,9 @@
 """
 Bayesian online change point detection algorithm.
 """
+import copy
 from enum import Enum
+import logging
 from typing import List, Union
 import warnings
 
@@ -22,6 +24,8 @@ from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
+logger = logging.getLogger(__name__)
+
 
 class ChangeKind(Enum):
     """
@@ -29,8 +33,20 @@ class ChangeKind(Enum):
     Enum values correspond to the Bayesian `ConjPrior` class used to detect each sort of change point.
     """
 
+    Auto = None
+    """
+    Automatically choose the Bayesian conjugate prior we would like to use.
+    """
+
     LevelShift = MVNormInvWishart
+    """
+    Model data points with a normal distribution, to detect level shifts.
+    """
+
     TrendChange = BayesianMVLinReg
+    """
+    Model data points as a linear function of time, to detect trend changes.
+    """
 
 
 class _PosteriorBeam:
@@ -63,7 +79,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
 
     def __init__(
         self,
-        change_kind: Union[str, ChangeKind] = ChangeKind.TrendChange,
+        change_kind: Union[str, ChangeKind] = ChangeKind.Auto,
         cp_prior=1e-2,
         lag=None,
         min_likelihood=1e-16,
@@ -72,10 +88,10 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         """
         :param change_kind: the kind of change points we would like to detect
         :param cp_prior: prior belief probability of how frequently changepoints occur
-        :param lag: the maximum amount of delay/lookback allowed for detecting change points.
-            If ``lag`` is ``None``, we will consider the entire history
-        :param min_likelihood: we will not consider any hypotheses (about whether a particular point is a change point)
-            with likelihood lower than this threshold
+        :param lag: the maximum amount of delay/lookback (in number of steps) allowed for detecting change points.
+            If ``lag`` is ``None``, we will consider the entire history.
+        :param min_likelihood: we will discard any hypotheses whose probability of being a change point is
+            lower than this threshold. Lower values improve accuracy at the cost of time and space complexity.
         """
         self.change_kind = change_kind
         self.min_likelihood = min_likelihood
@@ -231,9 +247,34 @@ class BOCPD(DetectorBase):
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-        train_scores = self.update(time_series=train_data, train=True)
-        self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
+
+        # If automatically detecting the change kind, train candidate models with each change kind
+        if self.change_kind is ChangeKind.Auto:
+            candidates = []
+            for change_kind in ChangeKind:
+                if change_kind is ChangeKind.Auto:
+                    continue
+                candidate = copy.deepcopy(self)
+                candidate.config.change_kind = change_kind
+                train_scores = candidate.train(train_data, anomaly_labels, train_config, post_rule_train_config)
+                log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam])
+                candidates.append((candidate, train_scores, log_likelihood))
+                logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
+
+            # Choose the model with the best log likelihood
+            i_best = np.argmax([candidate[2] for candidate in candidates])
+            best, train_scores, _ = candidates[i_best]
+            self.config = best.config
+            self.__setstate__(best.__getstate__())
+            logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
+
+        # Otherwise, just train as normal
+        else:
+            train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+            train_scores = self.update(time_series=train_data, train=True)
+            self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
+
+        # Return the anomaly scores on the training data
         return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
