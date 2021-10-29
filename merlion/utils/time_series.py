@@ -715,7 +715,7 @@ class TimeSeries:
         return df
 
     @classmethod
-    def from_pd(cls, df: Union[pd.Series, pd.DataFrame], check_times=True, freq="1h"):
+    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, freq="1h"):
         """
         :param df: A pandas DataFrame with a DatetimeIndex. Each column
             corresponds to a different variable of the time series, and the
@@ -725,6 +725,8 @@ class TimeSeries:
             time series.
         :param check_times: whether to check that all times in the index are
             unique (up to the millisecond) and sorted.
+        :param freq: if ``df`` is not indexed by time, this is the frequency
+            at which we will assume it is sampled.
 
         :rtype: TimeSeries
         :return: the `TimeSeries` object corresponding to ``df``.

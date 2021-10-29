@@ -126,7 +126,7 @@ class ConjPrior(ABC):
             x = x.align().to_pd().values
         elif isinstance(x, tuple) and len(x) == 2:
             t, x = x
-            t = np.asarray(x).reshape(1)
+            t = np.asarray(t).reshape(1)
             x = np.asarray(x).reshape(1, -1)
         else:
             x = np.asarray(x)
@@ -387,9 +387,9 @@ class MVNormInvWishart(ConjPrior):
         r"""
         The posterior for :math:`\mu` is :math:`\text{Student-t}_{\nu-d+1}(\mu_0, \Lambda / (n (\nu - d + 1)))`
         """
-        dof = max(self.nu - self.dim + 1, 1)
+        dof = self.nu - self.dim + 1
         shape = self.Lambda / (self.nu * dof)
-        rv = mvt(shape=shape, loc=self.mu_0, df=dof)
+        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
         return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
 
     def Sigma_posterior(self, sigma2, return_rv=False, log=True):
@@ -404,9 +404,9 @@ class MVNormInvWishart(ConjPrior):
         The posterior for :math:`x` is :math:`\text{Student-t}_{\nu-d+1}(\mu_0, (n + 1) \Lambda / (n (\nu - d + 1)))`
         """
         t, x_np = self.process_time_series(x)
-        dof = max(self.nu - self.dim + 1, 1)
+        dof = self.nu - self.dim + 1
         shape = self.Lambda * (self.nu + 1) / (self.nu * dof)
-        rv = mvt(shape=shape, loc=self.mu_0, df=dof)
+        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
         ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
         if return_updated:
             updated = copy.deepcopy(self)
@@ -652,7 +652,7 @@ class BayesianMVLinReg(ConjPrior):
         post_w = mvnorm(updated.w_0.flatten(), np.kron(Sigma_hat, pinvh(updated.Lambda_0)), allow_singular=True)
 
         # Apply Bayes' rule
-        evidence = mvnorm(cov=Sigma_hat).logpdf(x_np - xhat).reshape(len(x_np))
+        evidence = mvnorm(cov=Sigma_hat, allow_singular=True).logpdf(x_np - xhat).reshape(len(x_np))
         prior = prior_Sigma.logpdf(Sigma_hat) + prior_w.logpdf(w_hat)
         post = post_Sigma.logpdf(Sigma_hat) + post_w.logpdf(w_hat)
         logp = evidence + prior - post
