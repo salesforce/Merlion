@@ -29,7 +29,7 @@ class TestConjugatePriors(unittest.TestCase):
             self.assertEqual(dist_np.beta, 1 + sum(1 - data))
             pred = dist_np.posterior([0, 1], log=False)
             expected = np.asarray([1 - theta_hat, theta_hat])
-            self.assertAlmostEqual(np.max(np.abs(pred - expected)), 0, places=8)
+            self.assertAlmostEqual(np.max(np.abs(pred - expected)), 0, places=6)
 
             ts = TimeSeries.from_pd(data, freq="MS")
             dist_ts = BetaBernoulli(ts[:30])
@@ -37,7 +37,7 @@ class TestConjugatePriors(unittest.TestCase):
             self.assertEqual(dist_ts.alpha, 1 + sum(data))
             self.assertEqual(dist_ts.beta, 1 + sum(1 - data))
             pred = dist_ts.posterior(TimeSeries.from_pd([0, 1]), log=False)
-            self.assertAlmostEqual(np.max(np.abs(pred - expected)), 0, places=8)
+            self.assertAlmostEqual(np.max(np.abs(pred - expected)), 0, places=6)
 
     def test_normal(self):
         mu, sigma = 5, 2
@@ -54,12 +54,12 @@ class TestConjugatePriors(unittest.TestCase):
             pred_multi, dist_multi = dist_multi.posterior(data[: n // 2], return_updated=True)
 
             # Make sure univariate & multivariate posteriors agree
-            self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=8)
+            self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=6)
 
             # Make sure univariate & multivariate posteriors agree after additional udpate
             pred_uni = dist_uni.posterior(data[n // 2 :], log=False)
             pred_multi = dist_multi.posterior(data[n // 2 :], log=False)
-            self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=8)
+            self.assertAlmostEqual(np.max(np.abs(pred_uni - pred_multi)), 0, places=6)
 
             # Make sure we converge to the right model after enough data
             if n > 5000:
@@ -94,17 +94,22 @@ class TestConjugatePriors(unittest.TestCase):
         uni_posterior, uni = uni.posterior(x_train, return_updated=True)
         multi = BayesianMVLinReg(x_train[:5])
         multi_posterior, multi = multi.posterior(x_train, return_updated=True)
-        self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=8)
+        self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=6)
 
         # Make sure univariate & multivariate agree after an additional update
         uni_posterior = uni.posterior(x_test)
         multi_posterior = multi.posterior(x_test)
-        self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=8)
+        self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=6)
 
-        # Make sure explicit version agrees with naive version
-        naive = np.concatenate([uni.posterior(x_test[i : i + 1]) for i in range(100)])
-        explicit = np.concatenate([uni.posterior_explicit(x_test[i : i + 1]) for i in range(100)])
-        self.assertAlmostEqual(np.abs(naive - explicit).max(), 0, places=8)
+        # Make sure explicit version agrees with naive version (univariate)
+        naive_uni = np.concatenate([uni.posterior(x_test[i : i + 1]) for i in range(100)])
+        explicit_uni = np.concatenate([uni.posterior_explicit(x_test[i : i + 1]) for i in range(100)])
+        self.assertAlmostEqual(np.abs(naive_uni - explicit_uni).max(), 0, places=6)
+
+        # Make sure explicit version agrees with naive version (multivariate)
+        naive_multi = np.concatenate([multi.posterior(x_test[i : i + 1]) for i in range(100)])
+        explicit_multi = np.concatenate([multi.posterior_explicit(x_test[i : i + 1]) for i in range(100)])
+        self.assertAlmostEqual(np.abs(naive_multi - explicit_multi).max(), 0, places=6)
 
         # Make sure we're accurately estimating the slope & intercept
         mhat, bhat = uni.w_0
@@ -112,22 +117,28 @@ class TestConjugatePriors(unittest.TestCase):
         self.assertAlmostEqual(bhat, b, delta=0.01)
 
     def test_mv_bayesian_linreg(self):
-        n, d, sigma = 100000, 5, 1
-        m, b = np.random.randn(2, d)
-        t = np.linspace(0, 2, 2 * n + 1)
-        x = m.reshape(1, d) * t.reshape(-1, 1) + b.reshape(1, d) + np.random.randn(len(t), d) * sigma
-        x_train = x[: n + 1]
-        x_test = x[n + 1 :]
+        n, sigma = 100000, 1
+        for d in [2, 3, 4, 5, 10, 20]:
+            m, b = np.random.randn(2, d)
+            t = np.linspace(0, 2, 2 * n + 1)
+            x = m.reshape(1, d) * t.reshape(-1, 1) + b.reshape(1, d) + np.random.randn(len(t), d) * sigma
+            x_train = x[: n + 1]
+            x_test = x[n + 1 :]
 
-        dist = BayesianMVLinReg(x_train[:5])
-        dist.update(x_train)
-        post = dist.posterior(x_test)  # make sure we can compute a multivariate posterior PDF
-        self.assertEqual(post.shape, (n,))
+            dist = BayesianMVLinReg(x_train[:5])
+            dist.update(x_train)
+            post = dist.posterior(x_test)  # make sure we can compute a multivariate posterior PDF
+            self.assertEqual(post.shape, (n,))
 
-        # Make sure we're accurately estimating the slope & intercept after all this data
-        mhat, bhat = dist.w_0
-        self.assertAlmostEqual(np.abs(mhat - m).max(), 0, delta=0.05)
-        self.assertAlmostEqual(np.abs(bhat - b).max(), 0, delta=0.05)
+            naive = np.concatenate([dist.posterior(x_test[i : i + 1]) for i in range(100)])
+            explicit = np.concatenate([dist.posterior_explicit(x_test[i : i + 1]) for i in range(100)])
+            self.assertAlmostEqual(np.abs(naive - explicit).max(), 0, places=2)
+
+            # Make sure we're accurately estimating the slope & intercept after all this data
+            if d < 10:
+                mhat, bhat = dist.w_0
+                self.assertAlmostEqual(np.abs(mhat - m).max(), 0, delta=0.05)
+                self.assertAlmostEqual(np.abs(bhat - b).max(), 0, delta=0.05)
 
 
 if __name__ == "__main__":

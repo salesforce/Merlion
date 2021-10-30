@@ -20,7 +20,7 @@ import copy
 from typing import Tuple
 
 import numpy as np
-from scipy.special import loggamma
+from scipy.special import loggamma, multigammaln
 from scipy.linalg import pinv, pinvh
 from scipy.stats import (
     bernoulli,
@@ -276,7 +276,7 @@ class NormInvGamma(ScalarConjPrior):
     def __init__(self, sample=None):
         super().__init__(sample=sample)
         self.mu_0 = 0
-        self.alpha = 1 + _epsilon
+        self.alpha = 1 / 2 + _epsilon
         self.beta = _epsilon
         if sample is not None:
             self.mu_0 = np.mean(self.get_time_series_values(sample))
@@ -362,7 +362,7 @@ class MVNormInvWishart(ConjPrior):
         t, x = super().process_time_series(x)
         n, d = x.shape
         if self.nu == 0:
-            self.nu = 2 * (d + _epsilon)
+            self.nu = d + 2 * _epsilon
         if self.Lambda is None:
             self.Lambda = 2 * np.eye(d) * _epsilon
         if self.mu_0 is None:
@@ -447,12 +447,11 @@ class BayesianLinReg(ConjPrior):
     def __init__(self, sample=None):
         super().__init__()
         self.w_0 = np.zeros(2)
-        self.Lambda_0 = np.eye(2) * _epsilon
+        self.Lambda_0 = np.array([[1, 1], [1, 2]])
         self.alpha = 1 + _epsilon
         self.beta = _epsilon
         if sample is not None:
             self.w_0[1] = np.mean(self.get_time_series_values(sample))
-            self.Lambda_0 = np.array([[_epsilon, 0], [0, 1]])
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -475,7 +474,7 @@ class BayesianLinReg(ConjPrior):
         # Update accumulators
         self.n = self.n + len(x)
         self.alpha = self.alpha + len(x) / 2
-        self.beta = self.beta + (x.T @ x + pred0 - pred) / 2
+        self.beta = self.beta + (x.T @ x + pred0 - pred).item() / 2
 
     def posterior_explicit(self, x, return_rv=False, log=True, return_updated=False):
         r"""
@@ -485,7 +484,7 @@ class BayesianLinReg(ConjPrior):
         .. math::
 
             \begin{align*}
-            P((t, x)) &= \frac{1}{(2 \pi)^{-n/2}} \sqrt{\frac{\det \Lambda_n}{\det \Lambda_0}}
+            P((t, x)) &= \frac{1}{(2 \pi)^{-n/2}} \sqrt{\frac{\det \Lambda_0}{\det \Lambda_n}}
             \frac{\beta_0^{\alpha_0}}{\beta_n^{\alpha_n}}\frac{\Gamma(\alpha_n)}{\Gamma(\alpha_0)}
             \end{align*}
         """
@@ -501,7 +500,7 @@ class BayesianLinReg(ConjPrior):
         b = (np.linalg.slogdet(self.Lambda_0)[1] - np.linalg.slogdet(updated.Lambda_0)[1]) / 2
         c = self.alpha * np.log(self.beta) - updated.alpha * np.log(updated.beta)
         d = loggamma(updated.alpha) - loggamma(self.alpha)
-        ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(len(x_np))
+        ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(1)
         return (ret, updated) if return_updated else ret
 
     def posterior(self, x, return_rv=False, log=True, return_updated=False):
@@ -582,13 +581,12 @@ class BayesianMVLinReg(ConjPrior):
         super().__init__()
         self.nu = 0
         self.w_0 = None
-        self.Lambda_0 = np.eye(2) * _epsilon
+        self.Lambda_0 = self.Lambda_0 = np.array([[1, 1], [1, 2]])
         self.V_0 = None
         if sample is not None:
             sample = self.get_time_series_values(sample)
             self.dim = sample.shape[-1]
             self.w_0 = np.stack((np.zeros(self.dim), np.mean(sample, axis=0)))
-            self.Lambda_0 = np.array([[_epsilon, 0], [0, 1]])
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)
@@ -616,6 +614,33 @@ class BayesianMVLinReg(ConjPrior):
         self.V_0 = self.V_0 + residual.T @ residual + delta_w.T @ self.Lambda_0 @ delta_w
         self.w_0 = new_w
         self.Lambda_0 = new_Lambda
+
+    def posterior_explicit(self, x, return_rv=False, log=True, return_updated=False):
+        r"""
+        Let :math:`\Lambda_n, \nu_n, V_n` be the posterior values obtained by updating
+        the model on data :math:`(t_1, x_1), \ldots, (t_n, x_n)`. The predictive posterior has PDF
+
+        .. math::
+
+            \begin{align*}
+            P((t, x)) &= \frac{1}{(2 \pi)^{-nd/2}} \sqrt{\frac{\det \Lambda_0}{\det \Lambda_n}}
+            \frac{\det(V_0/2)^{\nu_0/2}}{\det(V_n/2)^{\nu_n/2}}\frac{\Gamma_d(\nu_n/2)}{\Gamma_d(\nu_0 / 2)}
+            \end{align*}
+        """
+        if x is None or return_rv:
+            raise ValueError(
+                "Bayesian linear regression doesn't have a scipy.stats random variable posterior. "
+                "Please specify a non-``None`` value of ``x`` and set ``return_rv = False``."
+            )
+        updated = copy.deepcopy(self)
+        updated.update(x)
+        t, x_np = self.process_time_series(x)
+        a = -len(x_np) / 2 * self.dim * np.log(2 * np.pi)
+        b = (np.linalg.slogdet(self.Lambda_0)[1] - np.linalg.slogdet(updated.Lambda_0)[1]) / 2
+        c = (self.nu * np.linalg.slogdet(self.V_0 / 2)[1] - updated.nu * np.linalg.slogdet(updated.V_0 / 2)[1]) / 2
+        d = multigammaln(updated.nu / 2, self.dim) - multigammaln(self.nu / 2, self.dim)
+        ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(1)
+        return (ret, updated) if return_updated else ret
 
     def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
