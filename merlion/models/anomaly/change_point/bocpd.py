@@ -21,7 +21,7 @@ from tqdm import tqdm
 
 from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
-from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
+from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg, BayesianLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         change_kind: Union[str, ChangeKind] = ChangeKind.Auto,
         cp_prior=1e-2,
         lag=None,
-        min_likelihood=1e-16,
+        min_likelihood=1e-8,
         **kwargs,
     ):
         """
@@ -134,6 +134,14 @@ class BOCPD(DetectorBase):
         config = BOCPDConfig() if config is None else config
         super().__init__(config)
         self.posterior_beam: List[_PosteriorBeam] = []
+        self.full_run_length_posterior = scipy.sparse.dok_matrix((0, 0), dtype=float)
+
+    @property
+    def n_seen(self):
+        """
+        :return: the number of data points seen so far
+        """
+        return self.full_run_length_posterior.get_shape()[0]
 
     @property
     def change_kind(self) -> ChangeKind:
@@ -180,9 +188,11 @@ class BOCPD(DetectorBase):
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
         time_series = time_series.align()
+        n_seen = self.n_seen
         T = len(time_series)
         timestamps = []
-        full_run_length_posterior = scipy.sparse.dok_matrix((T, T), dtype=float)
+        full_run_length_posterior = scipy.sparse.dok_matrix((n_seen + T, n_seen + T), dtype=float)
+        full_run_length_posterior[:n_seen, :n_seen] = self.full_run_length_posterior
         for i, (t, x) in enumerate(tqdm(time_series)):
             # Update posterior beams
             for post in self.posterior_beam:
@@ -228,16 +238,17 @@ class BOCPD(DetectorBase):
             run_length_dist = [(r, logp) for r, logp in run_length_dist.items() if self.lag is None or r <= self.lag]
             if len(run_length_dist) > 0:
                 all_r, all_logp_r = zip(*run_length_dist)
-                full_run_length_posterior[i, all_r] = np.exp(all_logp_r)
+                full_run_length_posterior[i + n_seen, all_r] = np.exp(all_logp_r)
 
         # Compute the MAP probability that each point is a change point.
         # full_run_length_posterior[i, r] = P[run length = r at time t_i]
         probs = np.zeros(T)
+        self.full_run_length_posterior = full_run_length_posterior
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             full_run_length_posterior = scipy.sparse.dia_matrix(full_run_length_posterior)
-        for i in range(T):
-            probs[i] = full_run_length_posterior.diagonal(-i).max()
+        for i in range(n_seen + int(train), n_seen + T):
+            probs[i - n_seen] = full_run_length_posterior.diagonal(-i).max()
 
         # Convert P[changepoint] to z-score units
         scores = norm.ppf((1 + probs) / 2)
