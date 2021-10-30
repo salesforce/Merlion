@@ -64,7 +64,11 @@ class _PosteriorBeam:
         # self.logp starts as log P(r_{t-1} = self.run_length, x_{1:t-1})
         n = 1 if isinstance(x, tuple) and len(x) == 2 else len(x)
         # logp_x is log P(x_t)
-        logp_x, updated = self.posterior.posterior(x, log=True, return_updated=True)
+        if n == 1:
+            method = getattr(self.posterior, "posterior_explicit", self.posterior.posterior)
+        else:
+            method = self.posterior.posterior
+        logp_x, updated = method(x, log=True, return_updated=True)
         self.posterior = updated
         self.run_length += n
         # P(r_t = self.run_length + 1, x_{1:t}) = P(r_{t-1} = self.run_length, x_{1:t-1}) * P(x_t) * (1 - self.cp_prior)
