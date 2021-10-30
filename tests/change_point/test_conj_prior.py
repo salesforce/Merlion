@@ -74,8 +74,8 @@ class TestConjugatePriors(unittest.TestCase):
         cov = u.T @ u
         data = TimeSeries.from_pd(np.random.randn(n, d) @ u + mu, freq="1h")
         dist = MVNormInvWishart(data[:5])
-        dist.update(data[:-5])
-        dist.posterior(data[5:])  # make sure we can compute a posterior
+        dist.update(data[5:-5])
+        dist.posterior(data[-5:])  # make sure we can compute a posterior
 
         # require low L1 distance between expected mean/cov and true mean/cov
         self.assertAlmostEqual(np.abs(mu - dist.mu_posterior(None).loc).mean(), 0, delta=0.05)
@@ -90,9 +90,9 @@ class TestConjugatePriors(unittest.TestCase):
         x_test = x[n + 1 :]
 
         # Make sure univariate & multivariate agree when initialized from nothing
-        uni = BayesianLinReg(x_train[:5])
+        uni = BayesianLinReg()
         uni_posterior, uni = uni.posterior(x_train, return_updated=True)
-        multi = BayesianMVLinReg(x_train[:5])
+        multi = BayesianMVLinReg()
         multi_posterior, multi = multi.posterior(x_train, return_updated=True)
         self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=6)
 
@@ -125,20 +125,19 @@ class TestConjugatePriors(unittest.TestCase):
             x_train = x[: n + 1]
             x_test = x[n + 1 :]
 
-            dist = BayesianMVLinReg(x_train[:5])
+            dist = BayesianMVLinReg()
             dist.update(x_train)
             post = dist.posterior(x_test)  # make sure we can compute a multivariate posterior PDF
             self.assertEqual(post.shape, (n,))
 
             naive = np.concatenate([dist.posterior(x_test[i : i + 1]) for i in range(100)])
             explicit = np.concatenate([dist.posterior_explicit(x_test[i : i + 1]) for i in range(100)])
-            self.assertAlmostEqual(np.abs(naive - explicit).max(), 0, places=2)
+            self.assertAlmostEqual(np.abs(naive - explicit).max(), 0, delta=0.01)
 
             # Make sure we're accurately estimating the slope & intercept after all this data
-            if d < 10:
-                mhat, bhat = dist.w_0
-                self.assertAlmostEqual(np.abs(mhat - m).max(), 0, delta=0.05)
-                self.assertAlmostEqual(np.abs(bhat - b).max(), 0, delta=0.05)
+            mhat, bhat = dist.w_0
+            self.assertAlmostEqual(np.abs(mhat - m).max(), 0, delta=0.05)
+            self.assertAlmostEqual(np.abs(bhat - b).max(), 0, delta=0.05)
 
 
 if __name__ == "__main__":

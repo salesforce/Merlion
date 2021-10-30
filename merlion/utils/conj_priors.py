@@ -52,6 +52,8 @@ class ConjPrior(ABC):
         self.dim = None
         self.t0 = None
         self.dt = None
+        if sample is not None:
+            self.update(sample)
 
     def to_dict(self):
         return {k: v.tolist() if hasattr(v, "tolist") else copy.deepcopy(v) for k, v in self.__dict__.items()}
@@ -213,11 +215,9 @@ class BetaBernoulli(ScalarConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__(sample=sample)
         self.alpha = 1
         self.beta = 1
-        if sample is not None:
-            self.update(sample)
+        super().__init__(sample=sample)
 
     def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
@@ -274,12 +274,10 @@ class NormInvGamma(ScalarConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__(sample=sample)
         self.mu_0 = 0
         self.alpha = 1 / 2 + _epsilon
         self.beta = _epsilon
-        if sample is not None:
-            self.mu_0 = np.mean(self.get_time_series_values(sample))
+        super().__init__(sample=sample)
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -350,13 +348,10 @@ class MVNormInvWishart(ConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__()
         self.nu = 0
         self.mu_0 = None
         self.Lambda = None
-        if sample is not None:
-            self.mu_0 = np.mean(self.get_time_series_values(sample), axis=0)
-            self.dim = len(self.mu_0)
+        super().__init__(sample=sample)
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)
@@ -445,13 +440,11 @@ class BayesianLinReg(ConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__()
         self.w_0 = np.zeros(2)
-        self.Lambda_0 = np.array([[1, 1], [1, 2]])
+        self.Lambda_0 = np.array([[0, 0], [0, 1]]) + _epsilon
         self.alpha = 1 + _epsilon
         self.beta = _epsilon
-        if sample is not None:
-            self.w_0[1] = np.mean(self.get_time_series_values(sample))
+        super().__init__(sample=sample)
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -578,15 +571,11 @@ class BayesianMVLinReg(ConjPrior):
     """
 
     def __init__(self, sample=None):
-        super().__init__()
         self.nu = 0
         self.w_0 = None
-        self.Lambda_0 = self.Lambda_0 = np.array([[1, 1], [1, 2]])
+        self.Lambda_0 = np.array([[0, 0], [0, 1]]) + _epsilon
         self.V_0 = None
-        if sample is not None:
-            sample = self.get_time_series_values(sample)
-            self.dim = sample.shape[-1]
-            self.w_0 = np.stack((np.zeros(self.dim), np.mean(sample, axis=0)))
+        super().__init__(sample=sample)
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)

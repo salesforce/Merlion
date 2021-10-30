@@ -177,8 +177,8 @@ class BOCPD(DetectorBase):
         """
         return self.config.min_likelihood
 
-    def _create_posterior(self, sample, logp: float) -> _PosteriorBeam:
-        posterior = self.change_kind.value(sample)
+    def _create_posterior(self, logp: float) -> _PosteriorBeam:
+        posterior = self.change_kind.value()
         return _PosteriorBeam(run_length=0, posterior=posterior, cp_prior=self.cp_prior, logp=logp)
 
     def update(self, time_series: TimeSeries, train=False):
@@ -213,7 +213,7 @@ class BOCPD(DetectorBase):
             else:
                 cp_delta = np.log(self.cp_prior) - np.log1p(-self.cp_prior)
                 cp_logp = logsumexp([post.logp + cp_delta for post in self.posterior_beam])
-            self.posterior_beam.append(self._create_posterior(sample=(t, x), logp=cp_logp))
+            self.posterior_beam.append(self._create_posterior(logp=cp_logp))
 
             # P(x_{1:t}) = \sum_{r_t} P(r_t, x_{1:t})
             min_ll = -np.inf if self.min_likelihood is None else np.log(self.min_likelihood)
