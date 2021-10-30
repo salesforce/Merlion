@@ -191,12 +191,13 @@ class BOCPD(DetectorBase):
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
+        # Align the time series & expand the array storing the full posterior distribution of run lengths
         time_series = time_series.align()
-        n_seen = self.n_seen
-        T = len(time_series)
-        timestamps = []
-        full_run_length_posterior = scipy.sparse.dok_matrix((n_seen + T, n_seen + T), dtype=float)
-        full_run_length_posterior[:n_seen, :n_seen] = self.full_run_length_posterior
+        n_seen, T = self.n_seen, len(time_series)
+        full_run_length_posterior = scipy.sparse.block_diag(
+            (self.full_run_length_posterior, scipy.sparse.dok_matrix((T, T), dtype=float)), format="dok"
+        )
+
         for i, (t, x) in enumerate(tqdm(time_series)):
             # Update posterior beams
             for post in self.posterior_beam:
@@ -238,8 +239,7 @@ class BOCPD(DetectorBase):
                     run_length_dist[post.run_length] -= np.log1p(-excess_p)
 
             # Update the full posterior distribution of run-length at each time, up to the desired lag
-            timestamps.append(t)
-            run_length_dist = [(r, logp) for r, logp in run_length_dist.items() if self.lag is None or r <= self.lag]
+            run_length_dist = [(r, logp) for r, logp in run_length_dist.items()]
             if len(run_length_dist) > 0:
                 all_r, all_logp_r = zip(*run_length_dist)
                 full_run_length_posterior[i + n_seen, all_r] = np.exp(all_logp_r)
@@ -252,10 +252,11 @@ class BOCPD(DetectorBase):
             warnings.simplefilter("ignore")
             full_run_length_posterior = scipy.sparse.dia_matrix(full_run_length_posterior)
         for i in range(n_seen + int(train), n_seen + T):
-            probs[i - n_seen] = full_run_length_posterior.diagonal(-i).max()
+            probs[i - n_seen] = full_run_length_posterior.diagonal(-i)[: self.lag].max()
 
         # Convert P[changepoint] to z-score units
         scores = norm.ppf((1 + probs) / 2)
+        timestamps = time_series.time_stamps
         self.last_train_time = timestamps[-1]
         return UnivariateTimeSeries(time_stamps=timestamps, values=scores, name="anom_score").to_ts()
 
