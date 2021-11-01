@@ -601,9 +601,10 @@ class BayesianMVLinReg(ConjPrior):
         residual = x - t_full @ new_w  # [n, d]
         delta_w = new_w - self.w_0  # [2, d]
         self.V_0 = self.V_0 + residual.T @ residual + delta_w.T @ self.Lambda_0 @ delta_w
-        # Ensure non-singular V_0, as we take logdet(V_0) to compute the PDF
+        # Ensure non-singular PSD V_0, as we take logdet(V_0) to compute the PDF
         while np.isinf(np.linalg.slogdet(self.V_0)[1]):
-            self.V_0 += np.random.randn(*self.V_0.shape) * _epsilon
+            sqrt_delta = np.random.randn(*self.V_0.shape)
+            self.V_0 += sqrt_delta.T @ sqrt_delta / np.linalg.norm(sqrt_delta) * _epsilon
         self.w_0 = new_w
         self.Lambda_0 = new_Lambda
 

@@ -187,6 +187,7 @@ class BOCPD(DetectorBase):
 
         :param time_series: time series whose values we are using to update the internal state of the model
         :param train: whether we are performing the initial training of the model
+        :return: anomaly score associated with each point (based on the probability of it being a change point)
         """
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
