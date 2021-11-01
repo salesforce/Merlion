@@ -86,7 +86,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         change_kind: Union[str, ChangeKind] = ChangeKind.Auto,
         cp_prior=1e-2,
         lag=None,
-        min_likelihood=1e-8,
+        min_likelihood=1e-12,
         **kwargs,
     ):
         """
@@ -198,6 +198,13 @@ class BOCPD(DetectorBase):
             (self.full_run_length_posterior, scipy.sparse.dok_matrix((T, T), dtype=float)), format="dok"
         )
 
+        # Compute the minimum log likelihood threshold that we consider.
+        min_ll = -np.inf if self.min_likelihood is None or self.min_likelihood <= 0 else np.log(self.min_likelihood)
+        if self.change_kind is ChangeKind.TrendChange:
+            min_ll = min_ll * time_series.dim
+        min_ll = min_ll + np.log(self.cp_prior)
+
+        # Iterate over the time series
         for i, (t, x) in enumerate(tqdm(time_series)):
             # Update posterior beams
             for post in self.posterior_beam:
@@ -216,7 +223,6 @@ class BOCPD(DetectorBase):
             self.posterior_beam.append(self._create_posterior(logp=cp_logp))
 
             # P(x_{1:t}) = \sum_{r_t} P(r_t, x_{1:t})
-            min_ll = -np.inf if self.min_likelihood is None else np.log(self.min_likelihood)
             evidence = logsumexp([post.logp for post in self.posterior_beam])
 
             # P(r_t) = P(r_t, x_{1:t}) / P(x_{1:t})
@@ -251,8 +257,9 @@ class BOCPD(DetectorBase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             full_run_length_posterior = scipy.sparse.dia_matrix(full_run_length_posterior)
-        for i in range(n_seen + int(train), n_seen + T):
-            probs[i - n_seen] = full_run_length_posterior.diagonal(-i)[: self.lag].max()
+        n_lag = None if self.lag is None else self.lag + 1
+        for i in range(n_seen, n_seen + T):
+            probs[i - n_seen] = full_run_length_posterior.diagonal(-i)[:n_lag].max()
 
         # Convert P[changepoint] to z-score units
         scores = norm.ppf((1 + probs) / 2)
