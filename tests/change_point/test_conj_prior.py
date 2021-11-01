@@ -13,6 +13,8 @@ import numpy as np
 from merlion.utils.conj_priors import BetaBernoulli, NormInvGamma, MVNormInvWishart, BayesianLinReg, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries
 
+logger = logging.getLogger(__name__)
+
 
 class TestConjugatePriors(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -20,6 +22,8 @@ class TestConjugatePriors(unittest.TestCase):
         np.random.seed(12345)
 
     def test_beta_bernoulli(self):
+        print()
+        logger.info("test_beta_bernoulli\n" + "-" * 80 + "\n")
         for theta in [0.21, 0.5, 0.93]:
             data = np.random.rand(1000) < theta
             theta_hat = (1 + sum(data)) / (len(data) + 2)
@@ -40,6 +44,8 @@ class TestConjugatePriors(unittest.TestCase):
             self.assertAlmostEqual(np.max(np.abs(pred - expected)), 0, places=6)
 
     def test_normal(self):
+        print()
+        logger.info("test_normal\n" + "-" * 80 + "\n")
         mu, sigma = 5, 2
         for n in [10, 100, 1000, 100000]:
             # Generate data
@@ -68,6 +74,8 @@ class TestConjugatePriors(unittest.TestCase):
                 self.assertAlmostEqual(posterior.std(), sigma, delta=0.05)
 
     def test_mv_normal(self):
+        print()
+        logger.info("test_mv_normal\n" + "-" * 80 + "\n")
         n, d = 300000, 20
         mu = np.random.randn(d)
         u = np.random.randn(d, d)
@@ -82,6 +90,8 @@ class TestConjugatePriors(unittest.TestCase):
         self.assertAlmostEqual(np.abs(cov - dist.Sigma_posterior(None).mean()).mean(), 0, delta=0.05)
 
     def test_bayesian_linreg(self):
+        print()
+        logger.info("test_bayesian_linreg\n" + "-" * 80 + "\n")
         n, sigma = 100000, 1
         m, b = np.random.randn(2)
         t = np.linspace(0, 2, 2 * n + 1)
@@ -117,6 +127,8 @@ class TestConjugatePriors(unittest.TestCase):
         self.assertAlmostEqual(bhat, b, delta=0.01)
 
     def test_mv_bayesian_linreg(self):
+        print()
+        logger.info("test_mv_bayesian_linreg\n" + "-" * 80 + "\n")
         n, sigma = 100000, 1
         for d in [2, 3, 4, 5, 10, 20]:
             m, b = np.random.randn(2, d)
