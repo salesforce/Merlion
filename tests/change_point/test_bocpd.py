@@ -24,6 +24,7 @@ class TestBOCPD(unittest.TestCase):
     def test_level_shift(self):
         print()
         logger.info("test_level_shift\n" + "-" * 80 + "\n")
+
         # Create a multivariate time series with random level shifts & split it into train & test
         n, d = 300, 5
         mus = [500, -90, 5, -50, 3]
@@ -35,8 +36,9 @@ class TestBOCPD(unittest.TestCase):
 
         # Initialize & train BOCPD with automatic change kind detection.
         # Make sure we choose level shift & correctly detect the level shift in the training data
+        # Also make sure that we can make predictions on training data.
         bocpd = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, lag=1, min_likelihood=1e-12))
-        train_scores = bocpd.train(train).to_pd().iloc[:, 0].abs()
+        train_scores = bocpd.train(train + test[:n]).to_pd().iloc[:, 0].abs()
         self.assertEqual(bocpd.change_kind, ChangeKind.LevelShift)
         self.assertGreater(train_scores.iloc[n], 2)
 
@@ -53,7 +55,8 @@ class TestBOCPD(unittest.TestCase):
     def test_trend_change(self):
         print()
         logger.info("test_trend_change\n" + "-" * 80 + "\n")
-        # Create a multivariate time series with some trend changes
+
+        # Create a multivariate time series with some trend changes and split it into train & test
         n, d = 300, 4
         ms = np.array([[10, -8, 12, 50], [-10, 3, 0, 9], [-3, 2, -10, 0], [-2, -3, 5, -3], [6, -1, 1, 15]])
         bs = np.array([[0, 5, 2, 3], [0, 0, 0, 0], [10, -2, -9, 8], [-3, 66, 2, 0], [85, -9, 21, 3]])
@@ -71,7 +74,7 @@ class TestBOCPD(unittest.TestCase):
 
         # Initialize & train BOCPD with automatic change kind detection.
         # Make sure we choose trend change & correctly detect the level shift in the training data
-        bocpd = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, lag=1, min_likelihood=1e-10))
+        bocpd = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, lag=1, min_likelihood=1e-12))
         train_scores = bocpd.train(train).to_pd().iloc[:, 0].abs()
         self.assertEqual(bocpd.change_kind, ChangeKind.TrendChange)
         self.assertGreater(train_scores.iloc[n], 2)

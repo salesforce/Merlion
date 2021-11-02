@@ -7,6 +7,7 @@
 """
 Bayesian online change point detection algorithm.
 """
+import bisect
 import copy
 from enum import Enum
 import logging
@@ -21,7 +22,7 @@ from tqdm import tqdm
 
 from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
-from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg, BayesianLinReg
+from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
@@ -93,7 +94,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         :param change_kind: the kind of change points we would like to detect
         :param cp_prior: prior belief probability of how frequently changepoints occur
         :param lag: the maximum amount of delay/lookback (in number of steps) allowed for detecting change points.
-            If ``lag`` is ``None``, we will consider the entire history.
+            If ``lag`` is ``None``, we will consider the entire history. Note: we do not recommend ``lag = 0``.
         :param min_likelihood: we will discard any hypotheses whose probability of being a change point is
             lower than this threshold. Lower values improve accuracy at the cost of time and space complexity.
         """
@@ -138,6 +139,7 @@ class BOCPD(DetectorBase):
         config = BOCPDConfig() if config is None else config
         super().__init__(config)
         self.posterior_beam: List[_PosteriorBeam] = []
+        self.train_timestamps: List[float] = []
         self.full_run_length_posterior = scipy.sparse.dok_matrix((0, 0), dtype=float)
 
     @property
@@ -181,6 +183,26 @@ class BOCPD(DetectorBase):
         posterior = self.change_kind.value()
         return _PosteriorBeam(run_length=0, posterior=posterior, cp_prior=self.cp_prior, logp=logp)
 
+    def _get_preds(self, time_stamps: List[Union[int, float]]) -> TimeSeries:
+        # Convert sparse posterior matrix to a form where it's fast to access its diagonals
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            posterior = scipy.sparse.dia_matrix(self.full_run_length_posterior)
+
+        # Compute the MAP probability that each point is a change point.
+        # full_run_length_posterior[i, r] = P[run length = r at time t_i]
+        i_0 = bisect.bisect_left(self.train_timestamps, time_stamps[0])
+        i_f = bisect.bisect_right(self.train_timestamps, time_stamps[-1])
+        probs = np.zeros(i_f - i_0)
+        n_lag = None if self.lag is None else self.lag + 1
+        for i_prob, i_posterior in enumerate(range(i_0, i_f)):
+            probs[i_prob] = posterior.diagonal(-i_posterior)[:n_lag].max()
+
+        # Convert P[changepoint] to z-score units, and align it to the right time stamps
+        scores = norm.ppf((1 + probs) / 2)
+        ts = UnivariateTimeSeries(time_stamps=self.train_timestamps[i_0:i_f], values=scores, name="anom_score").to_ts()
+        return ts.align(reference=time_stamps)
+
     def update(self, time_series: TimeSeries, train=False):
         """
         Updates the BOCPD model's internal state using the time series values provided.
@@ -189,13 +211,14 @@ class BOCPD(DetectorBase):
         :param train: whether we are performing the initial training of the model
         :return: anomaly score associated with each point (based on the probability of it being a change point)
         """
+        time_stamps = time_series.time_stamps
         if not train and self.last_train_time is not None:
             _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
         # Align the time series & expand the array storing the full posterior distribution of run lengths
         time_series = time_series.align()
         n_seen, T = self.n_seen, len(time_series)
-        full_run_length_posterior = scipy.sparse.block_diag(
+        self.full_run_length_posterior = scipy.sparse.block_diag(
             (self.full_run_length_posterior, scipy.sparse.dok_matrix((T, T), dtype=float)), format="dok"
         )
 
@@ -206,7 +229,7 @@ class BOCPD(DetectorBase):
         min_ll = min_ll + np.log(self.cp_prior)
 
         # Iterate over the time series
-        for i, (t, x) in enumerate(tqdm(time_series)):
+        for i, (t, x) in enumerate(tqdm(time_series, desc="BOCPD Update")):
             # Update posterior beams
             for post in self.posterior_beam:
                 post.update((t, x))
@@ -232,7 +255,7 @@ class BOCPD(DetectorBase):
             # Remove posterior beam candidates whose run length probability is too low
             run_length_dist, to_remove = {}, {}
             for r, logp in run_length_dist_0.items():
-                if logp < min_ll:
+                if logp < min_ll and r > 2:  # allow at least 2 updates for each change point hypothesis
                     to_remove[r] = logp
                 else:
                     run_length_dist[r] = logp
@@ -249,24 +272,12 @@ class BOCPD(DetectorBase):
             run_length_dist = [(r, logp) for r, logp in run_length_dist.items()]
             if len(run_length_dist) > 0:
                 all_r, all_logp_r = zip(*run_length_dist)
-                full_run_length_posterior[i + n_seen, all_r] = np.exp(all_logp_r)
+                self.full_run_length_posterior[n_seen + i, all_r] = np.exp(all_logp_r)
 
-        # Compute the MAP probability that each point is a change point.
-        # full_run_length_posterior[i, r] = P[run length = r at time t_i]
-        probs = np.zeros(T)
-        self.full_run_length_posterior = full_run_length_posterior
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            full_run_length_posterior = scipy.sparse.dia_matrix(full_run_length_posterior)
-        n_lag = None if self.lag is None else self.lag + 1
-        for i in range(n_seen, n_seen + T):
-            probs[i - n_seen] = full_run_length_posterior.diagonal(-i)[:n_lag].max()
+            # Add this timestamp to the list of timestamps we've trained on
+            self.train_timestamps.append(t)
 
-        # Convert P[changepoint] to z-score units
-        scores = norm.ppf((1 + probs) / 2)
-        timestamps = time_series.time_stamps
-        self.last_train_time = timestamps[-1]
-        return UnivariateTimeSeries(time_stamps=timestamps, values=scores, name="anom_score").to_ts()
+        return self._get_preds(time_stamps)
 
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
