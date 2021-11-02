@@ -844,6 +844,14 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: The resampled multivariate time series.
         """
+        if all(len(v) == 0 for v in self.univariates):
+            if reference is not None or granularity is not None:
+                logger.warning(
+                    "Attempting to align an empty time series to a set of reference time stamps or a "
+                    "fixed granularity. Doing nothing."
+                )
+            return self.__class__.from_pd(self.to_pd())
+
         if reference is not None or alignment_policy is AlignPolicy.FixedReference:
             if reference is None:
                 raise RuntimeError("`reference` is required when using `alignment_policy` FixedReference.")
