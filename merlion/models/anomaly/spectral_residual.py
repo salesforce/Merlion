@@ -140,7 +140,7 @@ class SpectralResidual(DetectorBase):
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
 
         if train_data.dim == 1:
             self.config.target_seq_index = 0
@@ -159,5 +159,4 @@ class SpectralResidual(DetectorBase):
         self.train_post_rule(
             anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
-        self.train_data = train_data
         return train_scores

@@ -844,7 +844,7 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: The resampled multivariate time series.
         """
-        if all(len(v) == 0 for v in self.univariates):
+        if self.is_empty():
             if reference is not None or granularity is not None:
                 logger.warning(
                     "Attempting to align an empty time series to a set of reference time stamps or a "

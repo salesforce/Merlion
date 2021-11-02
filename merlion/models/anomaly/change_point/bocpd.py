@@ -11,10 +11,11 @@ import bisect
 import copy
 from enum import Enum
 import logging
-from typing import List, Union
+from typing import List, Tuple, Union
 import warnings
 
 import numpy as np
+import pandas as pd
 import scipy.sparse
 from scipy.special import logsumexp
 from scipy.stats import norm
@@ -141,6 +142,7 @@ class BOCPD(DetectorBase):
         self.posterior_beam: List[_PosteriorBeam] = []
         self.train_timestamps: List[float] = []
         self.full_run_length_posterior = scipy.sparse.dok_matrix((0, 0), dtype=float)
+        self.pw_model: List[Tuple[pd.Timestamp, ConjPrior]] = []
 
     @property
     def last_train_time(self):
@@ -191,7 +193,7 @@ class BOCPD(DetectorBase):
         posterior = self.change_kind.value()
         return _PosteriorBeam(run_length=0, posterior=posterior, cp_prior=self.cp_prior, logp=logp)
 
-    def _get_preds(self, time_stamps: List[Union[int, float]]) -> TimeSeries:
+    def _get_anom_scores(self, time_stamps: List[Union[int, float]]) -> TimeSeries:
         # Convert sparse posterior matrix to a form where it's fast to access its diagonals
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -211,17 +213,66 @@ class BOCPD(DetectorBase):
         ts = UnivariateTimeSeries(time_stamps=self.train_timestamps[i_0:i_f], values=scores, name="anom_score").to_ts()
         return ts.align(reference=time_stamps)
 
-    def update(self, time_series: TimeSeries, train=False):
+    def train_pre_process(
+        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
+    ) -> TimeSeries:
+        # We manually update self.train_data in update(), so do nothing here
+        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+        self.train_data = None
+        return train_data
+
+    def _update_model(self, timestamps):
+        # Figure out where the changepoints are in the data
+        changepoints = self.threshold.to_simple_threshold()(self._get_anom_scores(timestamps))
+        changepoints = changepoints.to_pd().iloc[:, 0]
+        cp_times = changepoints[changepoints != 0].index
+
+        # Remove every sub-model that takes effect after the first timestamp provided.
+        self.pw_model = [(t0, model) for t0, model in self.pw_model if t0 < changepoints.index[0]]
+
+        # Update the final piece of the existing model (if there is one)
+        t0 = changepoints.index[0] if len(self.pw_model) == 0 else self.pw_model[-1][0]
+        tf = changepoints.index[-1] if len(cp_times) == 0 else cp_times[0]
+        data = self.train_data.window(t0, tf, include_tf=len(cp_times) == 0)
+        if len(data) > 0:
+            if len(self.pw_model) == 0:
+                self.pw_model.append((t0, self.change_kind.value(data)))
+            else:
+                self.pw_model[-1] = (t0, self.change_kind.value(data))
+
+        # Build a piecewise model by using the data between each subsequent change point
+        t0 = tf
+        for tf in cp_times[1:]:
+            data = self.train_data.window(t0, tf)
+            if len(data) > 0:
+                self.pw_model.append((t0, self.change_kind.value(data)))
+                t0 = tf
+        if t0 < changepoints.index[-1]:
+            _, data = self.train_data.bisect(t0, t_in_left=False)
+            self.pw_model.append((t0, self.change_kind.value(data)))
+
+    def update(self, time_series: TimeSeries):
         """
         Updates the BOCPD model's internal state using the time series values provided.
 
         :param time_series: time series whose values we are using to update the internal state of the model
-        :param train: whether we are performing the initial training of the model
         :return: anomaly score associated with each point (based on the probability of it being a change point)
         """
+        # Only update on the portion of the time series after the last training timestamp
         time_stamps = time_series.time_stamps
-        if not train and self.last_train_time is not None:
-            _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
+        if self.last_train_time is not None:
+            time_series_prev, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
+        else:
+            time_series_prev = None
+
+        # Update the training data accumulated so far
+        if self.train_data is None:
+            self.train_data = time_series
+        else:
+            self.train_data = self.train_data + time_series
+
+        # Apply any pre-processing transforms to the time series
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
 
         # Align the time series & expand the array storing the full posterior distribution of run lengths
         time_series = time_series.align()
@@ -285,13 +336,23 @@ class BOCPD(DetectorBase):
             # Add this timestamp to the list of timestamps we've trained on
             self.train_timestamps.append(t)
 
-        return self._get_preds(time_stamps)
+        # Update the predictive model if there is any new data
+        if len(time_series) > 0:
+            if self.lag is None:
+                n = len(self.train_timestamps)
+            else:
+                n = T + self.lag
+            self._update_model(self.train_timestamps[-n:])
+
+        # Return the anomaly scores
+        return self._get_anom_scores(time_stamps)
 
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
 
         # If automatically detecting the change kind, train candidate models with each change kind
+        # TODO: abstract this logic into a merlion.models.automl.GridSearch object?
         if self.change_kind is ChangeKind.Auto:
             candidates = []
             for change_kind in ChangeKind:
@@ -312,15 +373,14 @@ class BOCPD(DetectorBase):
 
         # Otherwise, just train as normal
         else:
-            train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-            train_scores = self.update(time_series=train_data, train=True)
+            self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+            train_scores = self.update(time_series=train_data)
             self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
 
         # Return the anomaly scores on the training data
         return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         if time_series_prev is not None:
             self.update(time_series_prev)
         return self.update(time_series)
