@@ -23,7 +23,7 @@ from tqdm import tqdm
 from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
-from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +143,14 @@ class BOCPD(DetectorBase):
         self.full_run_length_posterior = scipy.sparse.dok_matrix((0, 0), dtype=float)
 
     @property
+    def last_train_time(self):
+        return None if len(self.train_timestamps) == 0 else to_pd_datetime(self.train_timestamps[-1])
+
+    @last_train_time.setter
+    def last_train_time(self, t):
+        pass
+
+    @property
     def n_seen(self):
         """
         :return: the number of data points seen so far
@@ -229,7 +237,7 @@ class BOCPD(DetectorBase):
         min_ll = min_ll + np.log(self.cp_prior)
 
         # Iterate over the time series
-        for i, (t, x) in enumerate(tqdm(time_series, desc="BOCPD Update")):
+        for i, (t, x) in enumerate(tqdm(time_series, desc="BOCPD Update", disable=(T == 0))):
             # Update posterior beams
             for post in self.posterior_beam:
                 post.update((t, x))

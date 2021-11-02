@@ -5,6 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
+from os.path import abspath, dirname, join
 import sys
 import unittest
 
@@ -13,6 +14,7 @@ import numpy as np
 from merlion.models.anomaly.change_point.bocpd import BOCPD, BOCPDConfig, ChangeKind
 from merlion.utils.time_series import TimeSeries
 
+rootdir = dirname(dirname(dirname(abspath(__file__))))
 logger = logging.getLogger(__name__)
 
 
@@ -20,6 +22,24 @@ class TestBOCPD(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         np.random.seed(12345)
+
+    def standard_check(self, bocpd: BOCPD, test_data: TimeSeries, n: int, name: str):
+        # Evaluate trained BOCPD model on the test data & make sure it has perfect precision & recall
+        scores = bocpd.get_anomaly_score(test_data)
+        alarms = bocpd.get_anomaly_label(test_data).to_pd().iloc[:, 0].abs()
+        n_alarms = (alarms != 0).sum()
+        logger.info(f"# Alarms fired: {n_alarms}")
+        logger.info(f"Alarms fired at:\n{alarms[alarms != 0]}")
+        self.assertNotEqual(alarms.iloc[0], 0)
+        self.assertNotEqual(alarms.iloc[n], 0)
+        self.assertNotEqual(alarms.iloc[2 * n], 0)
+        self.assertEqual(n_alarms, 3)
+
+        # Make sure we get the same results after saving & loading
+        bocpd.save(join(rootdir, name))
+        loaded = BOCPD.load(join(rootdir, name))
+        loaded_scores = loaded.get_anomaly_score(test_data)
+        self.assertSequenceEqual(list(scores), list(loaded_scores))
 
     def test_level_shift(self):
         print()
@@ -42,15 +62,7 @@ class TestBOCPD(unittest.TestCase):
         self.assertEqual(bocpd.change_kind, ChangeKind.LevelShift)
         self.assertGreater(train_scores.iloc[n], 2)
 
-        # Evaluate trained BOCPD model on the test data & make sure it has perfect precision & recall
-        alarms = bocpd.get_anomaly_label(test).to_pd().iloc[:, 0].abs()
-        n_alarms = (alarms != 0).sum()
-        logger.info(f"# Alarms fired: {n_alarms}")
-        logger.info(f"Alarms fired at:\n{alarms[alarms != 0]}")
-        self.assertNotEqual(alarms.iloc[0], 0)
-        self.assertNotEqual(alarms.iloc[n], 0)
-        self.assertNotEqual(alarms.iloc[2 * n].sum(), 0)
-        self.assertEqual(n_alarms, 3)
+        self.standard_check(bocpd=bocpd, test_data=test, n=n, name="level_shift")
 
     def test_trend_change(self):
         print()
@@ -80,14 +92,7 @@ class TestBOCPD(unittest.TestCase):
         self.assertGreater(train_scores.iloc[n], 2)
 
         # Evaluate trained BOCPD model on the test data & make sure it has perfect precision & recall
-        alarms = bocpd.get_anomaly_label(test).to_pd().iloc[:, 0].abs()
-        n_alarms = (alarms != 0).sum()
-        logger.info(f"# Alarms fired: {n_alarms}")
-        logger.info(f"Alarms fired at:\n{alarms[alarms != 0]}")
-        self.assertNotEqual(alarms.iloc[0], 0)
-        self.assertNotEqual(alarms.iloc[n], 0)
-        self.assertNotEqual(alarms.iloc[2 * n], 0)
-        self.assertEqual(n_alarms, 3)
+        self.standard_check(bocpd=bocpd, test_data=test, n=n, name="trend_change")
 
 
 if __name__ == "__main__":
