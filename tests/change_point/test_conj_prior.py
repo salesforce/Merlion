@@ -5,10 +5,12 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
+from packaging import version
 import sys
 import unittest
 
 import numpy as np
+import scipy
 
 from merlion.utils.conj_priors import BetaBernoulli, NormInvGamma, MVNormInvWishart, BayesianLinReg, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
@@ -90,7 +92,8 @@ class TestConjugatePriors(unittest.TestCase):
         dist.posterior(data[-5:])  # make sure we can compute a posterior
 
         # require low L1 distance between expected mean/cov and true mean/cov
-        self.assertAlmostEqual(np.abs(mu - dist.mu_posterior(None).loc).mean(), 0, delta=0.05)
+        if version.parse(scipy.__version__) >= version.parse("1.6.0"):
+            self.assertAlmostEqual(np.abs(mu - dist.mu_posterior(None).loc).mean(), 0, delta=0.05)
         self.assertAlmostEqual(np.abs(cov - dist.Sigma_posterior(None).mean()).mean(), 0, delta=0.05)
 
         # Make sure the forecast is also accurate, i.e. the stderr-normalized MSE is close to 1

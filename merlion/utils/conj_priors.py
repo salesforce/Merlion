@@ -17,25 +17,77 @@ Implementations of Bayesian conjugate priors & their online update rules.
 """
 from abc import ABC, abstractmethod
 import copy
+import logging
 from typing import Tuple
 
 import numpy as np
-from scipy.special import loggamma, multigammaln
+import pandas as pd
+import scipy
+from scipy.special import gammaln, multigammaln
 from scipy.linalg import pinv, pinvh
-from scipy.stats import (
-    bernoulli,
-    beta,
-    invgamma,
-    invwishart,
-    norm,
-    multivariate_normal as mvnorm,
-    t as student_t,
-    multivariate_t as mvt,
-)
+from scipy.stats import bernoulli, beta, invgamma, invwishart, norm, multivariate_normal as mvnorm, t as student_t
 
-from merlion.utils import TimeSeries, UnivariateTimeSeries, to_timestamp
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_timestamp, to_pd_datetime
+
+logger = logging.getLogger(__name__)
+
+try:
+    from scipy.stats import multivariate_t as mvt
+except ImportError:
+    logger.warning("Scipy version <1.6.0 installed. No support for multivariate t density.")
+    mvt = None
+    sp_pinv = pinv
+
+    # Redefine pinv to implement an optimization from more recent scipy
+    # Specifically, if the matrix is tall enough, it's easier to compute pinv with the transpose
+    def pinv(a):
+        return sp_pinv(a.T).T if a.shape[0] / a.shape[1] >= 1.1 else sp_pinv(a)
+
 
 _epsilon = 1e-8
+
+
+def _log_pdet(a):
+    """
+    Log pseudo-determinant of a (possibly singular) matrix A.
+    """
+    eigval, eigvec = np.linalg.eigh(a)
+    return np.sum(np.log(eigval[eigval > 0]))
+
+
+def _mvt_pdf(x, mu, Sigma, nu, log=True):
+    """
+    (log) PDF of multivariate t distribution. Use as a fallback when scipy >= 1.6.0 isn't available.
+    """
+    # Compute the spectrum of Sigma
+    eigval, eigvec = np.linalg.eigh(Sigma)
+
+    # Determine a lower bound for eigenvalues s.t. lmbda < eps implies that Sigma is singular
+    t = eigval.dtype.char.lower()
+    factor = {"f": 1e3, "d": 1e6}
+    eps = factor[t] * np.finfo(t).eps * np.max(eigval)
+
+    # Compute the log pseudo-determinant of Sigma
+    positive_eigval = eigval[eigval > eps]
+    log_pdet = np.sum(np.log(positive_eigval))
+    dim, rank = len(eigval), len(positive_eigval)
+
+    # Compute the square root of the pseudo-inverse of Sigma
+    inv_eigval = np.array([0 if lmbda < eps else 1 / lmbda for lmbda in eigval])
+    pinv_sqrt = np.multiply(eigvec, np.sqrt(inv_eigval))
+
+    # compute (x - \mu)^T \Sigma^{-1} (x - \mu)
+    # To do this in batch with D = (x - mu) having shape [n, d],
+    # we just need the diagonal of D @ Sigma @ D.T, which can be computed as
+    # below, using the fact that
+    delta = x - mu  # [n, d]
+    quad_form = np.square(delta @ pinv_sqrt).sum(axis=-1)
+
+    # Multivariate-t log PDF
+    a = gammaln(0.5 * (nu + dim)) - gammaln(0.5 * nu)
+    b = -0.5 * (dim * np.log(nu * np.pi) + log_pdet)
+    c = -0.5 * (nu + dim) * np.log1p(quad_form / nu)
+    return a + b + c if log else np.exp(a + b + c)
 
 
 class ConjPrior(ABC):
@@ -417,8 +469,16 @@ class MVNormInvWishart(ConjPrior):
         """
         dof = self.nu - self.dim + 1
         shape = self.Lambda / (self.nu * dof)
-        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
-        return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
+        if mvt is not None:
+            rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
+            return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
+        else:
+            if mu is None or return_rv:
+                raise ValueError(
+                    f"The scipy version you have installed ({scipy.__version__}) does not support a multivariate-t "
+                    f"random variable Please specify a non-``None`` value of ``mu`` and set ``return_rv = False``."
+                )
+            return _mvt_pdf(x=mu, mu=self.mu_0, Sigma=shape, nu=dof, log=log)
 
     def Sigma_posterior(self, sigma2, return_rv=False, log=True):
         r"""
@@ -434,8 +494,17 @@ class MVNormInvWishart(ConjPrior):
         t, x_np = self.process_time_series(x)
         dof = self.nu - self.dim + 1
         shape = self.Lambda * (self.nu + 1) / (self.nu * dof)
-        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
-        ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
+        if mvt is not None:
+            rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
+            ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
+        else:
+            if x is None or return_rv:
+                raise ValueError(
+                    f"The scipy version you have installed ({scipy.__version__}) does not support a multivariate-t "
+                    f"random variable Please specify a non-``None`` value of ``x`` and set ``return_rv = False``."
+                )
+            ret = _mvt_pdf(x=x_np, mu=self.mu_0, Sigma=shape, nu=dof, log=log)
+
         if return_updated:
             updated = copy.deepcopy(self)
             updated.update(x)
@@ -443,25 +512,20 @@ class MVNormInvWishart(ConjPrior):
         return ret
 
     def forecast(self, time_stamps, name="forecast") -> Tuple[TimeSeries, TimeSeries]:
-        t = time_stamps
+        t = to_pd_datetime(time_stamps)
         n = len(t)
-        rv = self.posterior(None)
-        mu = TimeSeries(
-            [UnivariateTimeSeries(time_stamps=t, values=[x] * n, name=name) for x, name in zip(rv.loc, self.names)]
-        )
-        if rv.df > 2:
-            cov = rv.df / (rv.df - 2) * rv.shape
+        mu = pd.DataFrame(np.ones((n, self.dim)) * self.mu_0, index=t, columns=self.names)
+
+        dof = self.nu - self.dim + 1
+        Sigma = self.Lambda * (self.nu + 1) / (self.nu * dof)
+        if dof > 2:
+            cov = dof / (dof - 2) * Sigma
             std = np.sqrt(cov.diagonal())
         else:
-            std = np.zeros(rv.dim)
-        sigma = TimeSeries(
-            [
-                UnivariateTimeSeries(time_stamps=t, values=[s] * n, name=f"{name}_stderr")
-                for s, name in zip(std, self.names)
-            ]
-        )
+            std = np.zeros(self.dim)
+        sigma = pd.DataFrame(np.ones((n, self.dim)) * std, index=t, columns=[f"{n}_stderr" for n in self.names])
 
-        return mu, sigma
+        return TimeSeries.from_pd(mu), TimeSeries.from_pd(sigma)
 
 
 class BayesianLinReg(ConjPrior):
@@ -546,7 +610,7 @@ class BayesianLinReg(ConjPrior):
         a = -len(x_np) / 2 * np.log(2 * np.pi)
         b = (np.linalg.slogdet(self.Lambda_0)[1] - np.linalg.slogdet(updated.Lambda_0)[1]) / 2
         c = self.alpha * np.log(self.beta) - updated.alpha * np.log(updated.beta)
-        d = loggamma(updated.alpha) - loggamma(self.alpha)
+        d = gammaln(updated.alpha) - gammaln(self.alpha)
         ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(1)
         return (ret, updated) if return_updated else ret
 
@@ -670,6 +734,7 @@ class BayesianMVLinReg(ConjPrior):
 
     def update(self, x):
         t, x = self.process_time_series(x)
+        n, d = x.shape
 
         t_full = np.stack((t, np.ones_like(t)), axis=-1)  # [n, 2]
         design = t_full.T @ t_full
@@ -680,11 +745,9 @@ class BayesianMVLinReg(ConjPrior):
         self.nu = self.nu + len(x)
         residual = x - t_full @ new_w  # [n, d]
         delta_w = new_w - self.w_0  # [2, d]
-        self.V_0 = self.V_0 + residual.T @ residual + delta_w.T @ self.Lambda_0 @ delta_w
-        # Ensure non-singular PSD V_0, as we take logdet(V_0) to compute the PDF
-        while np.isinf(np.linalg.slogdet(self.V_0)[1]):
-            sqrt_delta = np.random.randn(*self.V_0.shape)
-            self.V_0 += sqrt_delta.T @ sqrt_delta / np.linalg.norm(sqrt_delta) * _epsilon
+        residual_squared = residual.T @ residual
+        delta_w_quad_form = (delta_w.T @ self.Lambda_0) @ delta_w
+        self.V_0 = self.V_0 + residual_squared + delta_w_quad_form
         self.w_0 = new_w
         self.Lambda_0 = new_Lambda
 
@@ -708,9 +771,16 @@ class BayesianMVLinReg(ConjPrior):
         updated = copy.deepcopy(self)
         updated.update(x)
         t, x_np = self.process_time_series(x)
+
+        # Compute log pseudo-determinant of V_0 / 2 (for both current and updated values)
+        logdet_V = np.linalg.slogdet(self.V_0 / 2)[1]
+        logdet_V = _log_pdet(self.V_0 / 2) if np.isinf(logdet_V) else logdet_V
+        logdet_V_new = np.linalg.slogdet(updated.V_0 / 2)[1]
+        logdet_V_new = _log_pdet(updated.V_0 / 2) if np.isinf(logdet_V_new) else logdet_V_new
+
         a = -len(x_np) / 2 * self.dim * np.log(2 * np.pi)
         b = (np.linalg.slogdet(self.Lambda_0)[1] - np.linalg.slogdet(updated.Lambda_0)[1]) / 2
-        c = (self.nu * np.linalg.slogdet(self.V_0 / 2)[1] - updated.nu * np.linalg.slogdet(updated.V_0 / 2)[1]) / 2
+        c = (self.nu * logdet_V - updated.nu * logdet_V_new) / 2
         d = multigammaln(updated.nu / 2, self.dim) - multigammaln(self.nu / 2, self.dim)
         ret = (a + b + c + d if log else np.exp(a + b + c + d)).reshape(1)
         return (ret, updated) if return_updated else ret
@@ -793,14 +863,8 @@ class BayesianMVLinReg(ConjPrior):
         sigma2 = np.outer(Sigma_hat.diagonal(), x_Lambda_diag).reshape(xhat.shape)
         sigma = np.sqrt(sigma2 + Sigma_hat.diagonal())
 
-        # Add sigma2_hat from the error model of the actual observations x
-        xhat = TimeSeries(
-            UnivariateTimeSeries(time_stamps=time_stamps, values=xhat[:, i], name=names[i]) for i in range(self.dim)
-        )
-        sigma = TimeSeries(
-            [
-                UnivariateTimeSeries(time_stamps=time_stamps, values=sigma[:, i], name=f"{names[i]}_stderr")
-                for i in range(self.dim)
-            ]
-        )
-        return xhat, sigma
+        # Create data frames & return the appropriate time series
+        t = to_pd_datetime(time_stamps)
+        xhat_df = pd.DataFrame(xhat, index=t, columns=names)
+        sigma_df = pd.DataFrame(sigma, index=t, columns=[f"{n}_stderr" for n in names])
+        return TimeSeries.from_pd(xhat_df), TimeSeries.from_pd(sigma_df)
