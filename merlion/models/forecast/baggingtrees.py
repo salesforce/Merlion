@@ -237,6 +237,10 @@ class BaggingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
 
 
 class RandomForestForecasterConfig(BaggingTreeForecasterConfig):
+    """
+    Config class for `RandomForestForecaster`.
+    """
+
     pass
 
 
@@ -262,6 +266,10 @@ class RandomForestForecaster(BaggingTreeForecaster):
 
 
 class ExtraTreesForecasterConfig(BaggingTreeForecasterConfig):
+    """
+    Config cass for `ExtraTreesForecaster`.
+    """
+
     pass
 
 

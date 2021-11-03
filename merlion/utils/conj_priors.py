@@ -182,7 +182,7 @@ class ConjPrior(ABC):
         Return a posterior predictive interval for the time stamps given.
 
         :param time_stamps: a list of time stamps
-        :return: ``(forecast, stderr)``, where ``forecast`` is the expected posterior value and ``stderr` is the
+        :return: ``(forecast, stderr)``, where ``forecast`` is the expected posterior value and ``stderr`` is the
             standard error of that forecast.
         """
         raise NotImplementedError

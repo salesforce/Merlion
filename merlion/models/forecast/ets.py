@@ -25,6 +25,15 @@ logger = logging.getLogger(__name__)
 
 
 class ETSConfig(ForecasterConfig):
+    """
+    Configuration class for :py:class:`ETS` model. ETS model is an underlying state space
+    model consisting of an error term (E), a trend component (T), a seasonal
+    component (S), and a level component. Each component is flexible with
+    different traits with additive ('add') or multiplicative ('mul') formulation.
+    Refer to https://otexts.com/fpp2/taxonomy.html for more information
+    about ETS model.
+    """
+
     _default_transform = TemporalResample(granularity=None)
 
     def __init__(
@@ -39,13 +48,6 @@ class ETSConfig(ForecasterConfig):
         **kwargs,
     ):
         """
-        Configuration class for ETS model. ETS model is an underlying state space
-        model consisting of an error term (E), a trend component (T), a seasonal
-        component (S), and a level component. Each component is flexible with
-        different traits with additive ('add') or multiplicative ('mul') formulation.
-        Refer to https://otexts.com/fpp2/taxonomy.html for more information
-        about ETS model.
-
         :param max_forecast_steps: Number of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we

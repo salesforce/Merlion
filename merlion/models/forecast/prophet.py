@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 
 class ProphetConfig(ForecasterConfig):
+    """
+    Configuration class for Facebook's `Prophet` model, as described by
+    `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__.
+    """
+
     def __init__(
         self,
         max_forecast_steps: int = None,
@@ -33,9 +38,6 @@ class ProphetConfig(ForecasterConfig):
         **kwargs,
     ):
         """
-        Configuration class for Facebook's Prophet model, as described in this
-        `paper <https://peerj.com/preprints/3190/>`_.
-
         :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
@@ -68,7 +70,7 @@ class ProphetConfig(ForecasterConfig):
 class Prophet(ForecasterBase):
     """
     Facebook's model for time series forecasting. See docs for `ProphetConfig`
-    and the `paper <https://peerj.com/preprints/3190/>`_ for more details.
+    and `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__ for more details.
     """
 
     config_class = ProphetConfig

@@ -40,6 +40,12 @@ class JVMSingleton:
 
 
 class RandomCutForestConfig(DetectorConfig):
+    """
+    Configuration class for `RandomCutForest`. Refer to
+    https://github.com/aws/random-cut-forest-by-aws/tree/main/Java for
+    further documentation and defaults of the Java class.
+    """
+
     _default_transform = TransformSequence([DifferenceTransform(), Shingle(size=5, stride=1)])
 
     def __init__(
@@ -53,10 +59,6 @@ class RandomCutForestConfig(DetectorConfig):
         **kwargs
     ):
         """
-        Configuration class for random cut forest. Refer to
-        https://github.com/aws/random-cut-forest-by-aws/tree/main/Java for
-        further documentation and defaults of the Java class.
-
         :param n_estimators: The number of trees in this forest.
         :param parallel: If true, then the forest will create an internal thread
             pool. Forest updates and traversals will be submitted to this thread
@@ -102,8 +104,7 @@ class RandomCutForestConfig(DetectorConfig):
 class RandomCutForest(DetectorBase):
     """
     The random cut forest is a refinement of the classic isolation forest
-    algorithm. It was proposed in
-    `Guha et al. 2016 <http://proceedings.mlr.press/v48/guha16.pdf>`_.
+    algorithm. It was proposed in `Guha et al. 2016 <https://proceedings.mlr.press/v48/guha16.pdf>`__.
     """
 
     config_class = RandomCutForestConfig

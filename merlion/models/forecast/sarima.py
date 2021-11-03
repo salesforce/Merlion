@@ -26,14 +26,16 @@ logger = logging.getLogger(__name__)
 
 
 class SarimaConfig(ForecasterConfig):
+    """
+    Config class for `Sarima` (Seasonal AutoRegressive Integrated Moving Average).
+    """
+
     _default_transform = TemporalResample(granularity=None)
 
     def __init__(
         self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs
     ):
         """
-        Configuration class for Sarima.
-
         :param max_forecast_steps: Number of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we

@@ -18,13 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 class ArimaConfig(SarimaConfig):
+    """
+    Configuration class for `Arima`. Just a `Sarima` model with seasonal order ``(0, 0, 0, 0)``.
+    """
+
     _default_transform = TemporalResample(granularity=None, trainable_granularity=True)
 
     def __init__(self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), **kwargs):
-        """
-        Configuration class for Arima. Just a Sarima model with seasonal order
-        (0, 0, 0, 0).
-        """
         if "seasonal_order" in kwargs:
             raise ValueError("cannot specify seasonal_order for ARIMA")
         super().__init__(

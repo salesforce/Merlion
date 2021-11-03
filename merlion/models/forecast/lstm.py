@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 
 
 class LSTMConfig(ForecasterConfig):
+    """
+    Configuration class for `LSTM`.
+    """
+
     _default_transform = TransformSequence(
         [
             TemporalResample(granularity=None, trainable_granularity=True),
@@ -42,8 +46,6 @@ class LSTMConfig(ForecasterConfig):
 
     def __init__(self, max_forecast_steps: int, target_seq_index: int = None, nhid=1024, model_strides=(1,), **kwargs):
         """
-        Configuration class for `LSTM`.
-
         :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we

@@ -14,10 +14,18 @@ from merlion.utils import TimeSeries
 
 
 class StatThresholdConfig(DetectorConfig, NormalizingConfig):
+    """
+    Config class for `StatThreshold`.
+    """
+
     _default_transform = DifferenceTransform()
 
 
 class StatThreshold(DetectorBase):
+    """
+    Anomaly detection based on a static threshold.
+    """
+
     config_class = StatThresholdConfig
 
     def train(

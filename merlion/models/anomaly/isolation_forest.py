@@ -23,12 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 class IsolationForestConfig(DetectorConfig):
+    """
+    Configuration class for `IsolationForest`.
+    """
+
     _default_transform = TransformSequence([DifferenceTransform(), Shingle(size=2, stride=1)])
 
     def __init__(self, max_n_samples: int = None, n_estimators: int = 100, **kwargs):
         """
-        Configuration class for isolation forest.
-
         :param max_n_samples: Maximum number of samples to allow the isolation
             forest to train on. Specify ``None`` to use all samples in the
             training data.

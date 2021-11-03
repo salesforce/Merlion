@@ -21,6 +21,10 @@ logger = logging.getLogger(__name__)
 
 
 class WindStatsConfig(DetectorConfig):
+    """
+    Config class for `WindStats`.
+    """
+
     _default_transform = DifferenceTransform()
 
     @property

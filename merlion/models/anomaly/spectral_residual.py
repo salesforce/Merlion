@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 class SpectralResidualConfig(DetectorConfig):
+    """
+    Config class for `SpectralResidual` anomaly detector.
+    """
+
     _default_transform = TemporalResample(granularity=None)
 
     def __init__(self, local_wind_sz=21, q=3, estimated_points=5, predicting_points=5, target_seq_index=None, **kwargs):

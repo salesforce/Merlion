@@ -81,6 +81,10 @@ class _PosteriorBeam:
 
 
 class BOCPDConfig(ForecasterConfig, NoCalibrationDetectorConfig):
+    """
+    Config class for `BOCPD` (Bayesian Online Change Point Detection).
+    """
+
     _default_threshold = AggregateAlarms(alm_threshold=norm.ppf((1 + 0.5) / 2), min_alm_in_window=1)
     """
     Default threshold is for a >=50% probability that a point is a change point.
@@ -137,6 +141,10 @@ class BOCPD(ForecastingDetectorBase):
     At a high level, this algorithm models the observed data using Bayesian conjugate priors. If an observed value
     deviates too much from the current posterior distribution, it is likely a change point, and we should start
     modeling the time series from that point forwards with a freshly initialized Bayesian conjugate prior.
+
+    The ``get_anomaly_score()`` method returns a z-score corresponding to the probability of each point being
+    a change point. The ``forecast()`` method returns the predicted values (and standard error) of the underlying
+    piecewise model on the relevant data.
     """
 
     config_class = BOCPDConfig
