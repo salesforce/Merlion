@@ -21,7 +21,10 @@ from scipy.special import logsumexp
 from scipy.stats import norm
 from tqdm import tqdm
 
-from merlion.models.anomaly.base import DetectorBase, NoCalibrationDetectorConfig
+from merlion.models.anomaly.base import NoCalibrationDetectorConfig
+from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
+from merlion.models.forecast.base import ForecasterConfig
+from merlion.plot import Figure
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.conj_priors import ConjPrior, MVNormInvWishart, BayesianMVLinReg
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, to_pd_datetime
@@ -77,7 +80,7 @@ class _PosteriorBeam:
         self.logp += sum(logp_x) + n * np.log1p(-self.cp_prior)
 
 
-class BOCPDConfig(NoCalibrationDetectorConfig):
+class BOCPDConfig(ForecasterConfig, NoCalibrationDetectorConfig):
     _default_threshold = AggregateAlarms(alm_threshold=norm.ppf((1 + 0.5) / 2), min_alm_in_window=1)
     """
     Default threshold is for a >=50% probability that a point is a change point.
@@ -89,6 +92,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         cp_prior=1e-2,
         lag=None,
         min_likelihood=1e-12,
+        max_forecast_steps=None,
         **kwargs,
     ):
         """
@@ -98,12 +102,13 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
             If ``lag`` is ``None``, we will consider the entire history. Note: we do not recommend ``lag = 0``.
         :param min_likelihood: we will discard any hypotheses whose probability of being a change point is
             lower than this threshold. Lower values improve accuracy at the cost of time and space complexity.
+        :param max_forecast_steps: the maximum number of steps the model is allowed to forecast. Ignored.
         """
         self.change_kind = change_kind
         self.min_likelihood = min_likelihood
         self.cp_prior = cp_prior  # Kats checks [0.001, 0.002, 0.005, 0.01, 0.02]
         self.lag = lag
-        super().__init__(**kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
 
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
@@ -125,7 +130,7 @@ class BOCPDConfig(NoCalibrationDetectorConfig):
         self._change_kind = change_kind
 
 
-class BOCPD(DetectorBase):
+class BOCPD(ForecastingDetectorBase):
     """
     Bayesian online change point detection algorithm described by
     `Adams & MacKay (2007) <https://arxiv.org/abs/0710.3742>`__.
@@ -205,21 +210,13 @@ class BOCPD(DetectorBase):
         i_f = bisect.bisect_right(self.train_timestamps, time_stamps[-1])
         probs = np.zeros(i_f - i_0)
         n_lag = None if self.lag is None else self.lag + 1
-        for i_prob, i_posterior in enumerate(range(i_0, i_f)):
+        for i_prob, i_posterior in enumerate(range(max(i_0, 1), i_f)):
             probs[i_prob] = posterior.diagonal(-i_posterior)[:n_lag].max()
 
         # Convert P[changepoint] to z-score units, and align it to the right time stamps
         scores = norm.ppf((1 + probs) / 2)
         ts = UnivariateTimeSeries(time_stamps=self.train_timestamps[i_0:i_f], values=scores, name="anom_score").to_ts()
         return ts.align(reference=time_stamps)
-
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
-        # We manually update self.train_data in update(), so do nothing here
-        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
-        self.train_data = None
-        return train_data
 
     def _update_model(self, timestamps):
         # Figure out where the changepoints are in the data
@@ -250,6 +247,90 @@ class BOCPD(DetectorBase):
         if t0 < changepoints.index[-1]:
             _, data = self.train_data.bisect(t0, t_in_left=False)
             self.pw_model.append((t0, self.change_kind.value(data)))
+
+    def train_pre_process(
+        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
+    ) -> TimeSeries:
+        # We manually update self.train_data in update(), so do nothing here
+        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+        self.train_data = None
+        return train_data
+
+    def forecast(
+        self,
+        time_stamps: Union[int, List[int]],
+        time_series_prev: TimeSeries = None,
+        return_iqr: bool = False,
+        return_prev: bool = False,
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
+        if time_series_prev is not None:
+            self.update(time_series_prev)
+            if return_prev:
+                time_stamps = time_series_prev.time_stamps + time_stamps
+
+        # Initialize output accumulators
+        pred_full, err_full = None, None
+
+        # Split the time stamps based on which model piece should be used
+        time_stamps = to_pd_datetime(time_stamps)
+        j = 0
+        i = bisect.bisect_left([t0 for t0, model in self.pw_model], time_stamps[j], hi=len(self.pw_model) - 1)
+        for i, (t0, posterior) in enumerate(self.pw_model[i:], i):
+            # Stop forecasting if we've finished with all the input timestamps
+            if j >= len(time_stamps):
+                break
+
+            # If this is the last piece, use it to forecast the rest of the timestamps
+            if i == len(self.pw_model) - 1:
+                pred, err = posterior.forecast(time_stamps[j:])
+
+            # Otherwise, predict until the next piece takes over
+            else:
+                t_next = self.pw_model[i + 1][0]
+                j_next = bisect.bisect_left(time_stamps, t_next)
+                pred, err = posterior.forecast(time_stamps[j:j_next])
+                j = j_next
+
+            # Accumulate results
+            pred_full = pred if pred_full is None else pred_full + pred
+            err_full = err if err_full is None else err_full + err
+
+        pred = pred_full.univariates[pred_full.names[self.target_seq_index]].to_pd()
+        err = err_full.univariates[err_full.names[self.target_seq_index]].to_pd()
+        pred[pred.isna() | np.isinf(pred)] = 0
+        err[err.isna() | np.isinf(err)] = 0
+
+        if return_iqr:
+            name = pred.name
+            lb = UnivariateTimeSeries.from_pd(pred + norm.ppf(0.25) * err, name=f"{name}_lower")
+            ub = UnivariateTimeSeries.from_pd(pred + norm.ppf(0.75) * err, name=f"{name}_upper")
+            return TimeSeries.from_pd(pred), lb.to_ts(), ub.to_ts()
+        return TimeSeries.from_pd(pred), TimeSeries.from_pd(err)
+
+    def get_figure(
+        self,
+        *,
+        time_series: TimeSeries = None,
+        time_stamps: List[int] = None,
+        time_series_prev: TimeSeries = None,
+        plot_anomaly=True,
+        filter_scores=True,
+        plot_forecast=False,
+        plot_forecast_uncertainty=False,
+        plot_time_series_prev=False,
+    ) -> Figure:
+        if time_series is not None:
+            self.update(time_series)
+        return super().get_figure(
+            time_series=time_series,
+            time_stamps=time_stamps,
+            time_series_prev=time_series_prev,
+            plot_anomaly=plot_anomaly,
+            filter_scores=filter_scores,
+            plot_forecast=plot_forecast,
+            plot_forecast_uncertainty=plot_forecast_uncertainty,
+            plot_time_series_prev=plot_time_series_prev,
+        )
 
     def update(self, time_series: TimeSeries):
         """
