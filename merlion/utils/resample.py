@@ -67,6 +67,8 @@ def to_pd_datetime(timestamp):
         return pd.to_datetime(int(timestamp * 1000), unit="ms")
     elif isinstance(timestamp, Iterable) and all(isinstance(t, (int, float)) for t in timestamp):
         timestamp = pd.to_datetime(np.asarray(timestamp).astype(float) * 1000, unit="ms")
+    elif isinstance(timestamp, np.ndarray) and timestamp.dtype in [int, np.float32, np.float64]:
+        timestamp = pd.to_datetime(np.asarray(timestamp).astype(float) * 1000, unit="ms")
     return pd.to_datetime(timestamp)
 
 
@@ -75,6 +77,8 @@ def to_timestamp(t):
     Converts a datetime to a Unix timestamp.
     """
     if isinstance(t, (int, float)) or isinstance(t, Iterable) and all(isinstance(ti, (int, float)) for ti in t):
+        return t
+    elif isinstance(t, np.ndarray) and t.dtype in [int, np.float32, np.float64]:
         return t
     return np.asarray(t).astype("datetime64[ms]").astype(float) / 1000
 

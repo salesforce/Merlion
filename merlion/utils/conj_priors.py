@@ -33,7 +33,7 @@ from scipy.stats import (
     multivariate_t as mvt,
 )
 
-from merlion.utils import TimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_timestamp
 
 _epsilon = 1e-8
 
@@ -52,6 +52,7 @@ class ConjPrior(ABC):
         self.dim = None
         self.t0 = None
         self.dt = None
+        self.names = None
         if sample is not None:
             self.update(sample)
 
@@ -111,7 +112,7 @@ class ConjPrior(ABC):
             else:
                 x = np.asarray(x)
                 self.t0 = 0
-                self.dt = 1 if x.ndim < 1 else len(x)
+                self.dt = 1 if x.ndim < 1 else max(1, len(x) - 1)
 
         # Initialize dt if needed; this only happens for cases 1 and 2 above
         if self.dt is None:
@@ -124,16 +125,19 @@ class ConjPrior(ABC):
 
         # Convert time series to numpy, or convert numpy array to pseudo time series
         if isinstance(x, TimeSeries):
+            self.names = x.names
             t = x.np_time_stamps
             x = x.align().to_pd().values
         elif isinstance(x, tuple) and len(x) == 2:
             t, x = x
             t = np.asarray(t).reshape(1)
             x = np.asarray(x).reshape(1, -1)
+            self.names = [0]
         else:
             x = np.asarray(x)
             x = x.reshape((1, 1) if x.ndim < 1 else (len(x), -1))
             t = np.arange(self.n, self.n + len(x))
+            self.names = list(range(x.shape[-1]))
         t = (t - self.t0) / (self.dt or 1)
 
         if self.dim is None:
@@ -169,6 +173,17 @@ class ConjPrior(ABC):
     def update(self, x):
         """
         Update the conjugate prior based on new observations x.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def forecast(self, time_stamps) -> Tuple[TimeSeries, TimeSeries]:
+        """
+        Return a posterior predictive interval for the time stamps given.
+
+        :param time_stamps: a list of time stamps
+        :return: ``(forecast, stderr)``, where ``forecast`` is the expected posterior value and ``stderr` is the
+            standard error of that forecast.
         """
         raise NotImplementedError
 
@@ -245,6 +260,14 @@ class BetaBernoulli(ScalarConjPrior):
         self.alpha += x.sum()
         self.beta += (1 - x).sum()
 
+    def forecast(self, time_stamps) -> Tuple[TimeSeries, TimeSeries]:
+        n = len(time_stamps)
+        name = self.names[0]
+        rv = self.theta_posterior(None)
+        mu = UnivariateTimeSeries(time_stamps=time_stamps, values=[rv.mean()] * n, name=name)
+        sigma = UnivariateTimeSeries(time_stamps=time_stamps, values=[rv.std()] * n, name=f"{name}_stderr")
+        return mu.to_ts(), sigma.to_ts()
+
 
 class NormInvGamma(ScalarConjPrior):
     r"""
@@ -320,6 +343,14 @@ class NormInvGamma(ScalarConjPrior):
             return ret, updated
         return ret
 
+    def forecast(self, time_stamps) -> Tuple[TimeSeries, TimeSeries]:
+        n = len(time_stamps)
+        name = self.names[0]
+        rv = self.posterior(None)
+        mu = UnivariateTimeSeries(time_stamps=time_stamps, values=[rv.mean()] * n, name=name)
+        sigma = UnivariateTimeSeries(time_stamps=time_stamps, values=[rv.std()] * n, name=f"{name}_stderr")
+        return mu.to_ts(), sigma.to_ts()
+
 
 class MVNormInvWishart(ConjPrior):
     r"""
@@ -354,6 +385,8 @@ class MVNormInvWishart(ConjPrior):
         super().__init__(sample=sample)
 
     def process_time_series(self, x):
+        if x is None:
+            return None, None
         t, x = super().process_time_series(x)
         n, d = x.shape
         if self.nu == 0:
@@ -408,6 +441,27 @@ class MVNormInvWishart(ConjPrior):
             updated.update(x)
             return ret, updated
         return ret
+
+    def forecast(self, time_stamps, name="forecast") -> Tuple[TimeSeries, TimeSeries]:
+        t = time_stamps
+        n = len(t)
+        rv = self.posterior(None)
+        mu = TimeSeries(
+            [UnivariateTimeSeries(time_stamps=t, values=[x] * n, name=name) for x, name in zip(rv.loc, self.names)]
+        )
+        if rv.df > 2:
+            cov = rv.df / (rv.df - 2) * rv.shape
+            std = np.sqrt(cov.diagonal())
+        else:
+            std = np.zeros(rv.dim)
+        sigma = TimeSeries(
+            [
+                UnivariateTimeSeries(time_stamps=t, values=[s] * n, name=f"{name}_stderr")
+                for s, name in zip(std, self.names)
+            ]
+        )
+
+        return mu, sigma
 
 
 class BayesianLinReg(ConjPrior):
@@ -537,6 +591,32 @@ class BayesianLinReg(ConjPrior):
         logp = evidence + prior.item() - post.item()
         ret = logp if log else np.exp(logp)
         return (ret, updated) if return_updated else ret
+
+    def forecast(self, time_stamps) -> Tuple[TimeSeries, TimeSeries]:
+        name = self.names[0]
+        t = to_timestamp(time_stamps)
+        if self.t0 is None:
+            self.t0 = t[0]
+        if self.dt is None:
+            self.dt = t[-1] - t[0] if len(t) > 1 else 1
+        t = (t - self.t0) / self.dt
+        t_full = np.stack((t, np.ones_like(t)), axis=-1)  # [t, 2]
+        sigma2_hat = invgamma(a=self.alpha, scale=self.beta).mean()
+        w_cov = sigma2_hat * pinvh(self.Lambda_0)  # cov of [m, b]
+
+        # x = m t + b = [t, 1] @ [m, b]
+        xhat = t_full @ self.w_0
+        xhat = UnivariateTimeSeries(time_stamps=time_stamps, values=xhat, name=name)
+
+        # var(x) = [[t, 1]] @ cov([m, b]) @ [[t], [1]]
+        # diagonal of t_full @ w_cov @ t_full.T, since (A @ B)_ii = sum_j A_ij B_ji
+        sigma2 = np.sum((t_full @ w_cov) * t_full, axis=-1)
+
+        # Add sigma2_hat from the error model of the observations x, and square-root to get sigma
+        sigma = np.sqrt(sigma2 + sigma2_hat)
+        sigma = UnivariateTimeSeries(time_stamps=time_stamps, values=sigma, name=f"{name}_stderr")
+
+        return xhat.to_ts(), sigma.to_ts()
 
 
 class BayesianMVLinReg(ConjPrior):
@@ -677,3 +757,50 @@ class BayesianMVLinReg(ConjPrior):
 
         ret = logp if log else np.exp(logp)
         return (ret, updated) if return_updated else ret
+
+    def forecast(self, time_stamps) -> Tuple[TimeSeries, TimeSeries]:
+        names = self.names
+        t = to_timestamp(time_stamps)
+        if self.t0 is None:
+            self.t0 = t[0]
+        if self.dt is None:
+            self.dt = t[-1] - t[0] if len(t) > 1 else 1
+        t = (t - self.t0) / self.dt
+        t_full = np.stack((t, np.ones_like(t)), axis=-1)  # [t, 2]
+
+        Sigma_hat = invwishart(df=self.nu, scale=self.V_0).mean().reshape((self.dim, self.dim))
+
+        # x = m t + b = [t, 1] @ [m, b]
+        xhat = t_full @ self.w_0
+
+        # W ~ MatrixNormal(W_0, \Lambda^{-1}, \Sigma)
+        # W is 2xd, \Lambda is 2x2, \Sigma is dxd
+        # Let V be a tx2 matrix representing time.
+        # Then, X = V @ W --> X is t x d
+        # V @ W ~ MatrixNormal(V @ W, V @ \Lambda^{-1} @ V^T, \Sigma)
+        # vec(V @ W) ~ N(vec(V @ W), \Sigma \otimes (V @ \Lambda^{-1} @ V^T))
+        #
+        # Note: (V @ \Lambda^{-1} @ V^T) ha shape t x t, but we only want
+        # its diagonal. This is because we only care about the diagonal of
+        # np.kron(Sigma_hat, (V @ \Lambda^{-1} @ V^T)), which is just the outer
+        # product of the two matrices' diagonals.
+        #
+        # Therefore, we first compute the diagonal of (V @ \Lambda^{-1} @ V^T)
+        # using the trick (A @ B)_ii = sum_j A_ij B_ji:
+        x_Lambda_diag = np.sum((t_full @ pinvh(self.Lambda_0)) * t_full, axis=-1)
+
+        # Now we can compute the full variances of the prediction
+        sigma2 = np.outer(Sigma_hat.diagonal(), x_Lambda_diag).reshape(xhat.shape)
+        sigma = np.sqrt(sigma2 + Sigma_hat.diagonal())
+
+        # Add sigma2_hat from the error model of the actual observations x
+        xhat = TimeSeries(
+            UnivariateTimeSeries(time_stamps=time_stamps, values=xhat[:, i], name=names[i]) for i in range(self.dim)
+        )
+        sigma = TimeSeries(
+            [
+                UnivariateTimeSeries(time_stamps=time_stamps, values=sigma[:, i], name=f"{names[i]}_stderr")
+                for i in range(self.dim)
+            ]
+        )
+        return xhat, sigma

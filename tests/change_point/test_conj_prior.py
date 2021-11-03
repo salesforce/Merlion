@@ -11,7 +11,7 @@ import unittest
 import numpy as np
 
 from merlion.utils.conj_priors import BetaBernoulli, NormInvGamma, MVNormInvWishart, BayesianLinReg, BayesianMVLinReg
-from merlion.utils.time_series import TimeSeries
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +69,13 @@ class TestConjugatePriors(unittest.TestCase):
 
             # Make sure we converge to the right model after enough data
             if n > 5000:
-                posterior = dist_uni.posterior(None)
-                self.assertAlmostEqual(posterior.mean(), mu, delta=0.05)
-                self.assertAlmostEqual(posterior.std(), sigma, delta=0.05)
+                t = [0, 1, 2, 3, 4, 5]
+                xhat_u, sigma_u = dist_uni.forecast(t)
+                self.assertAlmostEqual(np.max([np.abs(np.array(x) - mu) for t, x in xhat_u]), 0, delta=0.05)
+                self.assertAlmostEqual(np.max([np.abs(np.array(s) - sigma) for t, s in sigma_u]), 0, delta=0.05)
+                xhat_m, sigma_m = dist_multi.forecast(t)
+                self.assertAlmostEqual(np.max([np.abs(np.array(x) - mu) for t, x in xhat_m]), 0, delta=0.05)
+                self.assertAlmostEqual(np.max([np.abs(np.array(s) - sigma) for t, s in sigma_m]), 0, delta=0.05)
 
     def test_mv_normal(self):
         print()
@@ -89,13 +93,18 @@ class TestConjugatePriors(unittest.TestCase):
         self.assertAlmostEqual(np.abs(mu - dist.mu_posterior(None).loc).mean(), 0, delta=0.05)
         self.assertAlmostEqual(np.abs(cov - dist.Sigma_posterior(None).mean()).mean(), 0, delta=0.05)
 
+        # Make sure the forecast is also accurate, i.e. the stderr-normalized MSE is close to 1
+        xhat, stderr = dist.forecast(data.time_stamps[-50000:])
+        zscores = (xhat.to_pd() - data[-50000:].to_pd()) / stderr.to_pd().values
+        self.assertAlmostEqual(zscores.pow(2).mean().max(), 1, delta=0.02)
+
     def test_bayesian_linreg(self):
         print()
         logger.info("test_bayesian_linreg\n" + "-" * 80 + "\n")
-        n, sigma = 100000, 1
+        n, sigma = 100000, 1.5
         m, b = np.random.randn(2)
         t = np.linspace(0, 2, 2 * n + 1)
-        x = TimeSeries.from_pd(m * t + b + np.random.randn(len(t)) * sigma)
+        x = UnivariateTimeSeries.from_pd(m * t + b + np.random.randn(len(t)) * sigma, name="test").to_ts()
         x_train = x[: n + 1]
         x_test = x[n + 1 :]
 
@@ -105,6 +114,16 @@ class TestConjugatePriors(unittest.TestCase):
         multi = BayesianMVLinReg()
         multi_posterior, multi = multi.posterior(x_train, return_updated=True)
         self.assertAlmostEqual(np.abs(uni_posterior - multi_posterior).max(), 0, places=6)
+
+        # Get forecasts for the test split. Make sure that the stderr-normalized MSE is close to 1.
+        xhat_u, sigma_u = uni.forecast(x_test.time_stamps)
+        zscore_u = (xhat_u.to_pd() - x_test.to_pd()) / sigma_u.to_pd().values
+        self.assertAlmostEqual(zscore_u.pow(2).mean().item(), 1, delta=0.01)
+
+        # Validate the multivariate forecasting capability as well.
+        xhat_m, sigma_m = multi.forecast(x_test.time_stamps)
+        zscore_m = (xhat_m.to_pd() - x_test.to_pd()) / sigma_m.to_pd().values
+        self.assertAlmostEqual(zscore_m.pow(2).mean().item(), 1, delta=0.01)
 
         # Make sure univariate & multivariate agree after an additional update
         uni_posterior = uni.posterior(x_test)
@@ -129,7 +148,7 @@ class TestConjugatePriors(unittest.TestCase):
     def test_mv_bayesian_linreg(self):
         print()
         logger.info("test_mv_bayesian_linreg\n" + "-" * 80 + "\n")
-        n, sigma = 100000, 1
+        n, sigma = 200000, 2
         for d in [2, 3, 4, 5, 10, 20]:
             m, b = np.random.randn(2, d)
             t = np.linspace(0, 2, 2 * n + 1)
@@ -150,6 +169,11 @@ class TestConjugatePriors(unittest.TestCase):
             mhat, bhat = dist.w_0
             self.assertAlmostEqual(np.abs(mhat - m).max(), 0, delta=0.05)
             self.assertAlmostEqual(np.abs(bhat - b).max(), 0, delta=0.05)
+
+            # Make sure the forecast is also accurate, i.e. the stderr-normalized MSE is close to 1
+            xhat, stderr = dist.forecast(np.arange(n + 1, 2 * n + 1))
+            zscores = (xhat.to_pd() - x_test) / stderr.to_pd().values
+            self.assertAlmostEqual(zscores.pow(2).mean().max(), 1, delta=0.02)
 
 
 if __name__ == "__main__":
