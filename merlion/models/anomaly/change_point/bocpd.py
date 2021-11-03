@@ -230,7 +230,8 @@ class BOCPD(ForecastingDetectorBase):
         # Update the final piece of the existing model (if there is one)
         t0 = changepoints.index[0] if len(self.pw_model) == 0 else self.pw_model[-1][0]
         tf = changepoints.index[-1] if len(cp_times) == 0 else cp_times[0]
-        data = self.train_data.window(t0, tf, include_tf=len(cp_times) == 0)
+        train_data = self.transform(self.train_data)
+        data = train_data.window(t0, tf, include_tf=len(cp_times) == 0)
         if len(data) > 0:
             if len(self.pw_model) == 0:
                 self.pw_model.append((t0, self.change_kind.value(data)))
@@ -240,12 +241,12 @@ class BOCPD(ForecastingDetectorBase):
         # Build a piecewise model by using the data between each subsequent change point
         t0 = tf
         for tf in cp_times[1:]:
-            data = self.train_data.window(t0, tf)
+            data = train_data.window(t0, tf)
             if len(data) > 0:
                 self.pw_model.append((t0, self.change_kind.value(data)))
                 t0 = tf
         if t0 < changepoints.index[-1]:
-            _, data = self.train_data.bisect(t0, t_in_left=False)
+            _, data = train_data.bisect(t0, t_in_left=False)
             self.pw_model.append((t0, self.change_kind.value(data)))
 
     def train_pre_process(
