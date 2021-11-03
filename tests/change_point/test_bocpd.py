@@ -5,11 +5,13 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
+import os
 from os.path import abspath, dirname, join
 import sys
 import unittest
 
 import numpy as np
+import pandas as pd
 
 from merlion.models.anomaly.change_point.bocpd import BOCPD, BOCPDConfig, ChangeKind
 from merlion.utils.time_series import TimeSeries
@@ -36,8 +38,8 @@ class TestBOCPD(unittest.TestCase):
         self.assertEqual(n_alarms, 3)
 
         # Make sure we get the same results after saving & loading
-        bocpd.save(join(rootdir, name))
-        loaded = BOCPD.load(join(rootdir, name))
+        bocpd.save(join(rootdir, "tmp", "bocpd", name))
+        loaded = BOCPD.load(join(rootdir, "tmp", "bocpd", name))
         loaded_scores = loaded.get_anomaly_score(test_data)
         self.assertSequenceEqual(list(scores), list(loaded_scores))
 
@@ -93,6 +95,24 @@ class TestBOCPD(unittest.TestCase):
 
         # Evaluate trained BOCPD model on the test data & make sure it has perfect precision & recall
         self.standard_check(bocpd=bocpd, test_data=test, n=n, name="trend_change")
+
+    def test_vis(self):
+        for fname, name in [("horizontal_level_anomaly", "level"), ("seasonal_trend_anomaly", "trend")]:
+            df = pd.read_csv(join(rootdir, "data", "synthetic_anomaly", f"{fname}.csv"))
+            df.index = pd.to_datetime(df["timestamp"], unit="s")
+            ts = TimeSeries.from_pd(df.iloc[:, 1])
+            model = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, min_likelihood=1e-10))
+            train, test = ts[:500], ts[500:5000]
+            model.train(train)
+            fig, ax = model.plot_anomaly(
+                time_series=test,
+                time_series_prev=train,
+                plot_time_series_prev=True,
+                plot_forecast=True,
+                plot_forecast_uncertainty=True,
+            )
+            os.makedirs(join(rootdir, "tmp", "bocpd"), exist_ok=True)
+            fig.savefig(join(rootdir, "tmp", "bocpd", f"{name}.png"))
 
 
 if __name__ == "__main__":

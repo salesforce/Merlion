@@ -208,7 +208,7 @@ class Figure:
         y = self.get_y()
         if y is not None:
             metric_name = y.name if metric_name is None else metric_name
-            ln = ax.plot(y.index, y.np_values, c="k", lw=1, zorder=1, label=metric_name)
+            ln = ax.plot(y.index, y.np_values, c="k", alpha=0.8, lw=1, zorder=1, label=metric_name)
             lines.extend(ln)
 
         # Dotted line to cordon off previous times from current ones
