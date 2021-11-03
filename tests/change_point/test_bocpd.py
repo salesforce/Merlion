@@ -62,7 +62,7 @@ class TestBOCPD(unittest.TestCase):
         bocpd = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, lag=1, min_likelihood=1e-12))
         train_scores = bocpd.train(train + test[:n]).to_pd().iloc[:, 0].abs()
         self.assertEqual(bocpd.change_kind, ChangeKind.LevelShift)
-        self.assertGreater(train_scores.iloc[n], 2)
+        self.assertGreater(train_scores.iloc[n - 1], 2)
 
         self.standard_check(bocpd=bocpd, test_data=test, n=n, name="level_shift")
 
@@ -91,17 +91,19 @@ class TestBOCPD(unittest.TestCase):
         bocpd = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, lag=1, min_likelihood=1e-12))
         train_scores = bocpd.train(train).to_pd().iloc[:, 0].abs()
         self.assertEqual(bocpd.change_kind, ChangeKind.TrendChange)
-        self.assertGreater(train_scores.iloc[n], 2)
+        self.assertGreater(train_scores.iloc[n - 1], 2)
 
         # Evaluate trained BOCPD model on the test data & make sure it has perfect precision & recall
         self.standard_check(bocpd=bocpd, test_data=test, n=n, name="trend_change")
 
     def test_vis(self):
-        for fname, name in [("horizontal_level_anomaly", "level"), ("seasonal_trend_anomaly", "trend")]:
+        print()
+        logger.info("test_vis\n" + "-" * 80 + "\n")
+        for fname, change in [("horizontal_level_anomaly", "LevelShift"), ("seasonal_trend_anomaly", "TrendChange")]:
             df = pd.read_csv(join(rootdir, "data", "synthetic_anomaly", f"{fname}.csv"))
             df.index = pd.to_datetime(df["timestamp"], unit="s")
             ts = TimeSeries.from_pd(df.iloc[:, 1])
-            model = BOCPD(BOCPDConfig(change_kind=ChangeKind.Auto, cp_prior=1e-2, min_likelihood=1e-10))
+            model = BOCPD(BOCPDConfig(change_kind=change, cp_prior=1e-2, min_likelihood=1e-10))
             train, test = ts[:500], ts[500:5000]
             model.train(train)
             fig, ax = model.plot_anomaly(
@@ -112,7 +114,7 @@ class TestBOCPD(unittest.TestCase):
                 plot_forecast_uncertainty=True,
             )
             os.makedirs(join(rootdir, "tmp", "bocpd"), exist_ok=True)
-            fig.savefig(join(rootdir, "tmp", "bocpd", f"{name}.png"))
+            fig.savefig(join(rootdir, "tmp", "bocpd", f"{change}.png"))
 
 
 if __name__ == "__main__":

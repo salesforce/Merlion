@@ -260,8 +260,12 @@ class BOCPD(ForecastingDetectorBase):
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
-        # We manually update self.train_data in update(), so do nothing here
+        # BOCPD doesn't _require_ target_seq_index to be specified, but train_pre_process() does.
+        # hack to make things not fail.
+        if self.target_seq_index is None and train_data.dim > 1:
+            self.config.target_seq_index = 0
         train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+        # We manually update self.train_data in update(), so do nothing here
         self.train_data = None
         return train_data
 
