@@ -1,5 +1,5 @@
-merlion.models.anomaly.change\point package
-===========================================
+merlion.models.anomaly.change\_point package
+============================================
 
 .. automodule:: merlion.models.anomaly.change_point
    :members:
@@ -12,8 +12,8 @@ merlion.models.anomaly.change\point package
 Submodules
 ----------
 
-merlion.models.anomaly.change\point.bocpd module
-------------------------------------------------
+merlion.models.anomaly.change\_point.bocpd module
+-------------------------------------------------
 
 .. automodule:: merlion.models.anomaly.change_point.bocpd
    :members:
