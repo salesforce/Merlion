@@ -99,6 +99,18 @@ class NoCalibrationDetectorConfig(DetectorConfig):
         super().__init__(enable_calibrator=enable_calibrator, **kwargs)
 
     @property
+    def calibrator(self):
+        """
+        :return: ``None``
+        """
+        return None
+
+    @calibrator.setter
+    def calibrator(self, calibrator):
+        # no-op
+        pass
+
+    @property
     def enable_calibrator(self):
         """
         :return: ``False``
@@ -132,7 +144,14 @@ class DetectorBase(ModelBase):
         from merlion.evaluate.anomaly import TSADMetric
 
         t = self.config._default_threshold.alm_threshold
-        q = None if self.config.enable_calibrator or t == 0 else 2 * norm.cdf(t) - 1
+        # self.calibrator is only None if calibration has been manually disabled
+        # and the anomaly scores are expected to be calibrated by get_anomaly_score(). If
+        # self.config.enable_calibrator, the model will return a calibrated score.
+        if self.calibrator is None or self.config.enable_calibrator or t == 0:
+            q = None
+        # otherwise, choose the quantile corresponding to the given threshold
+        else:
+            q = 2 * norm.cdf(t) - 1
         return dict(metric=TSADMetric.F1, unsup_quantile=q)
 
     @property

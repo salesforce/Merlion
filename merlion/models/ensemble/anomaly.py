@@ -55,6 +55,10 @@ class DetectorEnsembleConfig(DetectorConfig, EnsembleConfig):
 
 
 class DetectorEnsemble(EnsembleBase, DetectorBase):
+    """
+    Class representing an ensemble of multiple anomaly detection models.
+    """
+
     models: List[DetectorBase]
     config_class = DetectorEnsembleConfig
     _default_train_config = EnsembleTrainConfig(valid_frac=0.0)

@@ -23,6 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 class VectorARConfig(ForecasterConfig):
+    """
+    Config object for `VectorAR` forecaster.
+    """
+
     _default_transform = TemporalResample()
 
     """

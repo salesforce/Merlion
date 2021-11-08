@@ -28,6 +28,7 @@ Subpackages
    :maxdepth: 4
 
    merlion.models.anomaly.forecast_based
+   merlion.models.anomaly.change_point
 
 Submodules
 ----------

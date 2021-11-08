@@ -94,6 +94,10 @@ class EnsembleTrainConfig:
 
 
 class EnsembleBase(ModelBase, ABC):
+    """
+    An abstract class representing an ensemble of multiple models.
+    """
+
     models: List[ModelBase]
     config_class = EnsembleConfig
 

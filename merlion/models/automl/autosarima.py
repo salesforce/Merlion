@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class AutoSarimaConfig(SarimaConfig):
+    """
+    Configuration class for `AutoSarima`.
+    """
+
     _default_transform = TemporalResample()
 
     def __init__(
@@ -39,7 +43,6 @@ class AutoSarimaConfig(SarimaConfig):
         **kwargs,
     ):
         """
-        Configuration class for AutoSarima.
         For order and seasonal_order, 'auto' indicates automatically select the parameter.
         Now autosarima support automatically select differencing order, length of the
         seasonality cycle, seasonal differencing order, and the rest of AR, MA, seasonal AR
@@ -140,8 +143,9 @@ class AutoSarima(ForecasterAutoMLBase):
         m = seasonal_order[-1]
         if not isinstance(m, (int, float)):
             m = 1
-            warnings.warn("Set periodicity to 1, use the SeasonalityLayer()"
-                          "wrapper to automatically detect seasonality.")
+            warnings.warn(
+                "Set periodicity to 1, use the SeasonalityLayer()" "wrapper to automatically detect seasonality."
+            )
 
         #  adjust max p,q,P,Q start p,q,P,Q
         max_p = int(min(max_p, np.floor(n_samples / 3)))

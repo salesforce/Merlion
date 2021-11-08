@@ -24,7 +24,7 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 class ZMSConfig(DetectorConfig, NormalizingConfig):
     """
-    Configuration class for an ZMS anomaly detection model.
+    Configuration class for `ZMS` anomaly detection model.
     """
 
     _default_transform = TemporalResample(trainable_granularity=True)

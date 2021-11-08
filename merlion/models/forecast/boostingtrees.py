@@ -240,6 +240,10 @@ class BoostingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
 
 
 class LGBMForecasterConfig(BoostingTreeForecasterConfig):
+    """
+    Config class for `LGBMForecaster`.
+    """
+
     pass
 
 

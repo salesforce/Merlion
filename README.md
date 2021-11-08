@@ -32,9 +32,10 @@
 ## Introduction
 Merlion is a Python library for time series intelligence. It provides an end-to-end machine learning framework that
 includes loading and transforming data, building and training models, post-processing model outputs, and evaluating
-model performance. It supports various time series learning tasks, including forecasting and anomaly detection for both
-univariate and multivariate time series. This library aims to provide engineers and researchers a one-stop solution to
-rapidly develop models for their specific time series needs, and benchmark them across multiple time series datasets.
+model performance. It supports various time series learning tasks, including forecasting, anomaly detection,
+and change point detection for both univariate and multivariate time series. This library aims to provide engineers and
+researchers a one-stop solution to rapidly develop models for their specific time series needs, and benchmark them
+across multiple time series datasets.
 
 Merlion's key features are
 -  Standardized and easily extensible data loading & benchmarking for a wide range of forecasting and anomaly

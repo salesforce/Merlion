@@ -22,6 +22,7 @@ import_alias = dict(
     ArimaDetector="merlion.models.anomaly.forecast_based.arima:ArimaDetector",
     DynamicBaseline="merlion.models.anomaly.dbl:DynamicBaseline",
     IsolationForest="merlion.models.anomaly.isolation_forest:IsolationForest",
+    # Forecast-based anomaly detection models
     ETSDetector="merlion.models.anomaly.forecast_based.ets:ETSDetector",
     LSTMDetector="merlion.models.anomaly.forecast_based.lstm:LSTMDetector",
     MSESDetector="merlion.models.anomaly.forecast_based.mses:MSESDetector",
@@ -37,6 +38,8 @@ import_alias = dict(
     VAE="merlion.models.anomaly.vae:VAE",
     DAGMM="merlion.models.anomaly.dagmm:DAGMM",
     LSTMED="merlion.models.anomaly.lstm_ed:LSTMED",
+    # Change point detection models
+    BOCPD="merlion.models.anomaly.change_point.bocpd",
     # Forecasting models
     Arima="merlion.models.forecast.arima:Arima",
     ETS="merlion.models.forecast.ets:ETS",

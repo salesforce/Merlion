@@ -6,7 +6,8 @@
 #
 """
 Contains all anomaly detection models. Forecaster-based anomaly detection models
-may be found in :py:mod:`merlion.models.anomaly.forecast_based`.
+may be found in :py:mod:`merlion.models.anomaly.forecast_based`. Change-point detection models may be
+found in :py:mod:`merlion.models.anomaly.change_point`.
 
 For anomaly detection, we define an abstract `DetectorBase` class which inherits from `ModelBase` and supports the
 following interface, in addition to ``model.save`` and ``DetectorClass.load`` defined for `ModelBase`:

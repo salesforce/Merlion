@@ -79,10 +79,7 @@ class ForecasterBase(ModelBase):
 
     def __init__(self, config: ForecasterConfig):
         super().__init__(config)
-        self.timedelta = None
-        self.last_train_time = None
         self.target_name = None
-        self.train_data = None
 
     @property
     def max_forecast_steps(self):
@@ -147,7 +144,6 @@ class ForecasterBase(ModelBase):
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
-        self.train_data = train_data
         self.config.dim = train_data.dim
         train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
         if self.dim == 1:

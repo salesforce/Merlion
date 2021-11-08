@@ -32,6 +32,10 @@ class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
 
 
 class ForecasterEnsemble(EnsembleBase, ForecasterBase):
+    """
+    Class representing an ensemble of multiple forecasting models.
+    """
+
     models: List[ForecasterBase]
     config_class = ForecasterEnsembleConfig
 

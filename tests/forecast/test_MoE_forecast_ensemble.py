@@ -9,7 +9,9 @@ from os.path import abspath, dirname, join
 import sys
 import unittest
 
+import numpy as np
 import pandas as pd
+import torch
 
 from merlion.models.ensemble.MoE_forecast import *
 from merlion.models.forecast.arima import Arima
@@ -840,6 +842,8 @@ class TestMoE_ForecastEnsemble(unittest.TestCase):
         print("-" * 80)
         logger.info("test_full\n" + "-" * 80 + "\n")
         logger.info("Training model...")
+        np.random.seed(42)
+        torch.random.manual_seed(42)
         self.ensemble.train(self.train_data, train_config=self.train_config_ensemble)
 
         # extract a chunk of test data for unit tests

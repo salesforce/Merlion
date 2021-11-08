@@ -34,7 +34,17 @@ jobs:
     - name: Test with pytest
       id: test
       run: |
-        coverage run --source=merlion/ -L -m pytest -v
+        # A BLAS bug causes high-dim multivar Bayesian LR test to segfault in 3.6. Run the test first to avoid.
+        if [[ $PYTHON_VERSION == 3.6 ]]; then
+          python -m pytest -v tests/change_point/test_conj_prior.py
+          coverage run --source=merlion/ -L -m pytest -v --ignore tests/change_point/test_conj_prior.py
+        # MoE test seems to hang in 3.7. Run the test first to avoid.
+        elif [[ $PYTHON_VERSION == 3.7 ]]; then
+          python -m pytest -v tests/forecast/test_MoE_forecast_ensemble.py
+          coverage run --source=merlion/ -L -m pytest -v --ignore tests/forecast/test_MoE_forecast_ensemble.py
+        else
+          coverage run --source=merlion/ -L -m pytest -v
+        fi
 
         # Obtain code coverage from coverage report
         coverage report
@@ -56,6 +66,8 @@ jobs:
           COLOR=red
         fi
         echo "##[set-output name=color;]${COLOR}"
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Create coverage badge
       if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' }}

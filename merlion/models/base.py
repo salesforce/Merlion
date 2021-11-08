@@ -166,6 +166,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.config = deepcopy(config)
         self.last_train_time = None
         self.timedelta = None
+        self.train_data = None
 
     def reset(self):
         """
@@ -237,6 +238,7 @@ class ModelBase(metaclass=AutodocABCMeta):
 
         :return: the training data, after any necessary pre-processing has been applied
         """
+        self.train_data = train_data
         self.transform.train(train_data)
         train_data = self.transform(train_data)
 
@@ -272,10 +274,12 @@ class ModelBase(metaclass=AutodocABCMeta):
 
         :return: The transformed ``time_series``.
         """
-        t0 = time_series.t0
-        if time_series_prev is not None:
+        if time_series_prev is not None and not time_series.is_empty():
+            t0 = time_series.t0
             time_series = time_series_prev + time_series
             time_series_prev, time_series = self.transform(time_series).bisect(t0, t_in_left=False)
+        elif time_series_prev is not None:
+            time_series_prev = self.transform(time_series_prev)
         else:
             time_series = self.transform(time_series)
         return time_series, time_series_prev

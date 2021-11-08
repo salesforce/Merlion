@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 class SpectralResidualConfig(DetectorConfig):
+    """
+    Config class for `SpectralResidual` anomaly detector.
+    """
+
     _default_transform = TemporalResample(granularity=None)
 
     def __init__(self, local_wind_sz=21, q=3, estimated_points=5, predicting_points=5, target_seq_index=None, **kwargs):
@@ -61,8 +65,8 @@ class SpectralResidual(DetectorBase):
     """
     Spectral Residual Algorithm for Anomaly Detection.
 
-    Spectral Residual Anomaly Detection algorithm based on the algorithm described in this
-    `paper <https://arxiv.org/abs/1906.03821>`_. After taking the frequency spectrum, compute the
+    Spectral Residual Anomaly Detection algorithm based on the algorithm described by
+    `Ren et al. (2019) <https://arxiv.org/abs/1906.03821>`__. After taking the frequency spectrum, compute the
     log deviation from the mean. Use inverse fourier transform to obtain the saliency map. Anomaly scores
     for a point in the time series are obtained by comparing the saliency score of the point to the
     average of the previous points.
@@ -140,7 +144,7 @@ class SpectralResidual(DetectorBase):
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
+        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
 
         if train_data.dim == 1:
             self.config.target_seq_index = 0
@@ -159,5 +163,4 @@ class SpectralResidual(DetectorBase):
         self.train_post_rule(
             anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
-        self.train_data = train_data
         return train_scores

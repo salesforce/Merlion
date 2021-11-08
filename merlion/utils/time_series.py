@@ -715,7 +715,7 @@ class TimeSeries:
         return df
 
     @classmethod
-    def from_pd(cls, df: Union[pd.Series, pd.DataFrame], check_times=True, freq="1h"):
+    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, freq="1h"):
         """
         :param df: A pandas DataFrame with a DatetimeIndex. Each column
             corresponds to a different variable of the time series, and the
@@ -725,12 +725,21 @@ class TimeSeries:
             time series.
         :param check_times: whether to check that all times in the index are
             unique (up to the millisecond) and sorted.
+        :param freq: if ``df`` is not indexed by time, this is the frequency
+            at which we will assume it is sampled.
 
         :rtype: TimeSeries
         :return: the `TimeSeries` object corresponding to ``df``.
         """
         if isinstance(df, pd.Series):
             return cls({df.name: UnivariateTimeSeries.from_pd(df[~df.isna()])})
+        elif isinstance(df, np.ndarray):
+            arr = df.reshape(len(df), -1).T
+            ret = cls([UnivariateTimeSeries(time_stamps=None, values=v, freq=freq) for v in arr], check_aligned=False)
+            ret._is_aligned = True
+            return ret
+        elif not isinstance(df, pd.DataFrame):
+            df = pd.DataFrame(df)
 
         # Time series is not aligned iff there are missing values
         aligned = df.shape[1] == 1 or not df.isna().any().any()
@@ -835,6 +844,14 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: The resampled multivariate time series.
         """
+        if self.is_empty():
+            if reference is not None or granularity is not None:
+                logger.warning(
+                    "Attempting to align an empty time series to a set of reference time stamps or a "
+                    "fixed granularity. Doing nothing."
+                )
+            return self.__class__.from_pd(self.to_pd())
+
         if reference is not None or alignment_policy is AlignPolicy.FixedReference:
             if reference is None:
                 raise RuntimeError("`reference` is required when using `alignment_policy` FixedReference.")
