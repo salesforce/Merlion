@@ -281,14 +281,17 @@ class BOCPD(ForecastingDetectorBase):
     ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         if time_series_prev is not None:
             self.update(time_series_prev)
-            if return_prev:
-                time_stamps = time_series_prev.time_stamps + time_stamps
+        if isinstance(time_stamps, (int, float)):
+            time_stamps = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
+        else:
+            time_stamps = to_pd_datetime(time_stamps)
+        if return_prev and time_series_prev is not None:
+            time_stamps = to_pd_datetime(time_series_prev.time_stamps).union(time_stamps)
 
         # Initialize output accumulators
         pred_full, err_full = None, None
 
         # Split the time stamps based on which model piece should be used
-        time_stamps = to_pd_datetime(time_stamps)
         j = 0
         i = bisect.bisect_left([t0 for t0, model in self.pw_model], time_stamps[j], hi=len(self.pw_model) - 1)
         for i, (t0, posterior) in enumerate(self.pw_model[i:], i):
