@@ -34,6 +34,8 @@ class ProphetConfig(ForecasterConfig):
         weekly_seasonality: Union[bool, int] = "auto",
         daily_seasonality: Union[bool, int] = "auto",
         add_seasonality="auto",
+        seasonality_mode="additive",
+        holidays=None,
         uncertainty_samples: int = 100,
         **kwargs,
     ):
@@ -55,7 +57,14 @@ class ProphetConfig(ForecasterConfig):
             deactivated otherwise. If int, this is the number of Fourier series
             components used to model the seasonality (default = 4).
         :param add_seasonality: 'auto' indicates automatically adding extra
-            seasonaltiy by detection methods (default = None).
+            seasonality by detection methods (default = None).
+        :param seasonality_mode: 'additive' (default) or 'multiplicative'.
+        :param holidays: pd.DataFrame with columns holiday (string) and ds (date type)
+            and optionally columns lower_window and upper_window which specify a
+            range of days around the date to be included as holidays.
+            lower_window=-2 will include 2 days prior to the date as holidays. Also
+            optionally can have a column prior_scale specifying the prior scale for
+            that holiday.
         :param uncertainty_samples: The number of posterior samples to draw in
             order to calibrate the anomaly scores.
         """
@@ -64,7 +73,9 @@ class ProphetConfig(ForecasterConfig):
         self.weekly_seasonality = weekly_seasonality
         self.daily_seasonality = daily_seasonality
         self.add_seasonality = add_seasonality
+        self.seasonality_mode = seasonality_mode
         self.uncertainty_samples = uncertainty_samples
+        self.holidays = holidays
 
 
 class Prophet(ForecasterBase):
@@ -81,7 +92,9 @@ class Prophet(ForecasterBase):
             yearly_seasonality=self.yearly_seasonality,
             weekly_seasonality=self.weekly_seasonality,
             daily_seasonality=self.daily_seasonality,
+            seasonality_mode=self.seasonality_mode,
             uncertainty_samples=self.uncertainty_samples,
+            holidays=self.holidays,
         )
         self.last_forecast_time_stamps_full = None
         self.last_forecast_time_stamps = None
@@ -112,6 +125,14 @@ class Prophet(ForecasterBase):
     @property
     def add_seasonality(self):
         return self.config.add_seasonality
+
+    @property
+    def seasonality_mode(self):
+        return self.config.seasonality_mode
+
+    @property
+    def holidays(self):
+        return self.config.holidays
 
     @property
     def uncertainty_samples(self):
