@@ -264,7 +264,7 @@ class BOCPD(ForecastingDetectorBase):
         if self.target_seq_index is None and train_data.dim > 1:
             self.config.target_seq_index = 0
             logger.warning(
-                f"Received a {train_data.dim}-variate time series, but `target_seq_index` was not"
+                f"Received a {train_data.dim}-variate time series, but `target_seq_index` was not "
                 f"specified. Setting `target_seq_index = 0` so the `forecast()` method will work."
             )
         train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
