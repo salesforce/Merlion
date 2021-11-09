@@ -20,6 +20,20 @@ if [ -z "${GIT_BRANCH}" ]; then
 fi
 git stash
 
+# Set up exit handler to restore git state & delete temp branches
+function exit_handler {
+    git reset --hard
+    git checkout "${GIT_BRANCH}" --
+    git stash pop || true
+    for version in $(git tag --list 'v[0-9]*'); do
+        branch="${version}_local_docs_only"
+        if git show-ref --verify --quiet "refs/heads/$branch"; then
+            git branch -D "$branch"
+        fi
+    done
+}
+trap exit_handler EXIT
+
 # Clean up build directory and install Sphinx requirements
 pip3 install -r "${DIRNAME}/requirements.txt"
 sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
@@ -41,17 +55,19 @@ checkout_files=("${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets" "se
 for version in $(git tag --list 'v[0-9]*'); do
     versions+=("$version")
     git checkout -b "${version}_local_docs_only"
+    for f in $(git diff --name-only --diff-filter=A "tags/${version}" "${DIRNAME}/source/*.rst"); do
+        git rm "$f"
+    done
     git checkout "tags/${version}" -- "${checkout_files[@]}"
     export current_version=${version}
     pip3 install ".[plot]"
     pip3 install ts_datasets/
-    sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}"
+    sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
     rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
     pip3 uninstall -y salesforce-merlion
     pip3 uninstall -y ts_datasets
     git reset --hard
     git checkout "${GIT_BRANCH}" --
-    git branch -D "${version}_local_docs_only"
 done
 
 # Determine the latest stable version if there is one
@@ -96,7 +112,3 @@ populate the API documentation [here](https://opensource.salesforce.com/Merlion/
 
 EOF
 echo "Finished writing to build/html."
-
-# Return to original git state
-git checkout "${GIT_BRANCH}"
-git stash pop || true
