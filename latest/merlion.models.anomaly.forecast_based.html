@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly.forecast_based package &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion.models.anomaly.forecast_based package &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="merlion.models.forecast package" href="merlion.models.forecast.html" />
+    <link rel="next" title="merlion.models.anomaly.change_point package" href="merlion.models.anomaly.change_point.html" />
     <link rel="prev" title="merlion.models.anomaly package" href="merlion.models.anomaly.html" /> 
 </head>
 
@@ -62,6 +62,7 @@
 <li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
 </ul>
 </li>
+<li class="toctree-l7"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#submodules">Submodules</a></li>
@@ -80,6 +81,7 @@
 <li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
 </ul>
 </li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
 <li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.anomaly.forecast_based package</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a></li>
@@ -477,9 +479,24 @@ adapted for anomaly detection.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.arima.ArimaConfig" title="merlion.models.forecast.arima.ArimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.arima.ArimaConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
-<p>Configuration class for Arima. Just a Sarima model with seasonal order
-(0, 0, 0, 0).</p>
+<p>Configuration class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.arima.Arima" title="merlion.models.forecast.arima.Arima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Arima</span></code></a>. Just a <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> model with seasonal order <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_forecast_steps</strong> – Number of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
+univariates in a general multivariate time series) whose value we
+would like to forecast.</p></li>
+<li><p><strong>order</strong> – Order is (p, d, q) for an ARIMA(p, d, q) process. d must
+be an integer indicating the integration order of the process, while
+p and q must be integers indicating the AR and MA orders (so that
+all lags up to those orders are included).</p></li>
+<li><p><strong>seasonal_order</strong> – Seasonal order is (P, D, Q, S) for seasonal ARIMA
+process, where s is the length of the seasonality cycle (e.g. s=24
+for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -502,8 +519,7 @@ adapted for anomaly detection.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.sarima.SarimaConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
-<p>Configuration class for Sarima.</p>
+<p>Config class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> (Seasonal AutoRegressive Integrated Moving Average).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -543,8 +559,7 @@ for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETSConfig" title="merlion.models.forecast.ets.ETSConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.ets.ETSConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.NoCalibrationDetectorConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
-<p>Configuration class for ETS model. ETS model is an underlying state space
+<p>Configuration class for <code class="xref py py-class docutils literal notranslate"><span class="pre">ETS</span></code> model. ETS model is an underlying state space
 model consisting of an error term (E), a trend component (T), a seasonal
 component (S), and a level component. Each component is flexible with
 different traits with additive (‘add’) or multiplicative (‘mul’) formulation.
@@ -594,9 +609,8 @@ seasonality exists, change <code class="docutils literal notranslate"><span clas
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonality_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'additive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holidays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.prophet.ProphetConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
-<p>Configuration class for Facebook’s Prophet model, as described in this
-<a class="reference external" href="https://peerj.com/preprints/3190/">paper</a>.</p>
+<p>Configuration class for Facebook’s <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a> model, as described by
+<a class="reference external" href="https://peerj.com/preprints/3190/">Taylor &amp; Letham, 2017</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -657,7 +671,6 @@ order to calibrate the anomaly scores.</p></li>
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.lstm.</span></span><span class="sig-name descname"><span class="pre">LSTMDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_strides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.lstm.LSTMConfig" title="merlion.models.forecast.lstm.LSTMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.lstm.LSTMConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
 <p>Configuration class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.lstm.LSTM" title="merlion.models.forecast.lstm.LSTM"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LSTM</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -819,7 +832,7 @@ immediately follows the training data.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="merlion.models.anomaly.html" class="btn btn-neutral float-left" title="merlion.models.anomaly package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="merlion.models.forecast.html" class="btn btn-neutral float-right" title="merlion.models.forecast package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="merlion.models.anomaly.change_point.html" class="btn btn-neutral float-right" title="merlion.models.anomaly.change_point package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

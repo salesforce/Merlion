@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.ensemble package &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion.models.ensemble package &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -48,6 +48,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
 <li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.ensemble package</a><ul>
@@ -221,6 +222,7 @@ model means that you use the default for that model.</p></li>
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>An abstract class representing an ensemble of multiple models.</p>
 <p>Initializes the ensemble according to the specified config.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -655,6 +657,7 @@ selection.</p>
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleBase" title="merlion.models.ensemble.base.EnsembleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.ensemble.base.EnsembleBase</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorBase</span></code></a></p>
+<p>Class representing an ensemble of multiple anomaly detection models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleConfig</span></code></a>]) – model configuration</p>
@@ -764,6 +767,7 @@ would like to forecast.</p></li>
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecasterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleBase" title="merlion.models.ensemble.base.EnsembleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.ensemble.base.EnsembleBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<p>Class representing an ensemble of multiple forecasting models.</p>
 <p>Initializes the ensemble according to the specified config.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

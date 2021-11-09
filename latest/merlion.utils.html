@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.utils package &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion.utils package &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -53,6 +53,7 @@
 <li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.utils package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.conj_priors">merlion.utils.conj_priors module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.istat">merlion.utils.istat module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.misc">merlion.utils.misc module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.resample">merlion.utils.resample module</a></li>
@@ -124,6 +125,547 @@
 utilities for resampling time series.</p>
 <span class="target" id="module-merlion.utils"></span><section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-merlion.utils.conj_priors">
+<span id="merlion-utils-conj-priors-module"></span><h2>merlion.utils.conj_priors module<a class="headerlink" href="#module-merlion.utils.conj_priors" title="Permalink to this headline"></a></h2>
+<p>Implementations of Bayesian conjugate priors &amp; their online update rules.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConjPrior</span></code></a>([sample])</p></td>
+<td><p>Abstract base class for a Bayesian conjugate prior.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli" title="merlion.utils.conj_priors.BetaBernoulli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BetaBernoulli</span></code></a>([sample])</p></td>
+<td><p>Beta-Bernoulli conjugate prior for binary data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma" title="merlion.utils.conj_priors.NormInvGamma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NormInvGamma</span></code></a>([sample])</p></td>
+<td><p>Normal-InverseGamma conjugate prior.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart" title="merlion.utils.conj_priors.MVNormInvWishart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MVNormInvWishart</span></code></a>([sample])</p></td>
+<td><p>Multivariate Normal-InverseWishart conjugate prior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg" title="merlion.utils.conj_priors.BayesianLinReg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BayesianLinReg</span></code></a>([sample])</p></td>
+<td><p>Bayesian Ordinary Linear Regression conjugate prior, which models a univariate input as a function of time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg" title="merlion.utils.conj_priors.BayesianMVLinReg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BayesianMVLinReg</span></code></a>([sample])</p></td>
+<td><p>Bayesian multivariate linear regression conjugate prior, which models a multivariate input as a function of time.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">ConjPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract base class for a Bayesian conjugate prior.
+Can be used with either <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code> arrays directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.to_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.get_time_series_values">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_time_series_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.get_time_series_values" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array representing the input <code class="docutils literal notranslate"><span class="pre">x</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.process_time_series">
+<span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.process_time_series" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">x)</span></code>, where <code class="docutils literal notranslate"><span class="pre">t</span></code> is a normalized list of timestamps, and <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array
+representing the input</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.posterior">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>Predictive posterior (log) PDF for new observations, or the <code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> random variable where applicable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – value(s) to evaluate posterior at (<code class="docutils literal notranslate"><span class="pre">None</span></code> implies that we want to return the random variable)</p></li>
+<li><p><strong>return_rv</strong> – whether to return the random variable directly</p></li>
+<li><p><strong>log</strong> – whether to return the log PDF (instead of the PDF)</p></li>
+<li><p><strong>return_updated</strong> – whether to return an updated version of the conjugate prior as well</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.update">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.forecast">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ScalarConjPrior">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">ScalarConjPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ScalarConjPrior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ConjPrior</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract base class for a Bayesian conjugate prior for a scalar random variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ScalarConjPrior.process_time_series">
+<span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ScalarConjPrior.process_time_series" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">x)</span></code>, where <code class="docutils literal notranslate"><span class="pre">t</span></code> is a normalized list of timestamps, and <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array
+representing the input</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ScalarConjPrior.get_time_series_values">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_time_series_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ScalarConjPrior.get_time_series_values" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>numpy array representing the input <code class="docutils literal notranslate"><span class="pre">x</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">BetaBernoulli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior" title="merlion.utils.conj_priors.ScalarConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ScalarConjPrior</span></code></a></p>
+<p>Beta-Bernoulli conjugate prior for binary data. We assume the model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+X &amp;\sim \mathrm{Bernoulli}(\theta) \\
+\theta &amp;\sim \mathrm{Beta}(\alpha, \beta)
+\end{align*}\end{split}\]</div>
+<p>The update rule for data <span class="math notranslate nohighlight">\(x_1, \ldots, x_n\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+\alpha &amp;= \alpha + \sum_{i=1}^{n} \mathbb{I}[x_i = 1] \\
+\beta &amp;= \beta + \sum_{i=1}^{n} \mathbb{I}[x_i = 0]
+\end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.posterior">
+<span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior distribution of x is <span class="math notranslate nohighlight">\(\mathrm{Bernoulli}(\alpha / (\alpha + \beta))\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.theta_posterior">
+<span class="sig-name descname"><span class="pre">theta_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.theta_posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior distribution of <span class="math notranslate nohighlight">\(\theta\)</span> is <span class="math notranslate nohighlight">\(\mathrm{Beta}(\alpha, \beta)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">NormInvGamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior" title="merlion.utils.conj_priors.ScalarConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ScalarConjPrior</span></code></a></p>
+<p>Normal-InverseGamma conjugate prior. Following
+<a class="reference external" href="https://en.wikipedia.org/wiki/Normal-inverse-gamma_distribution">Wikipedia</a> and
+<a class="reference external" href="https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf">Murphy (2007)</a>, we assume the model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+X &amp;\sim \mathcal{N}(\mu, \sigma^2) \\
+\mu &amp;\sim \mathcal{N}(\mu_0, \sigma^2 / n) \\
+\sigma^2 &amp;\sim \mathrm{InvGamma}(\alpha, \beta)
+\end{align*}\end{split}\]</div>
+<p>The update rule for data <span class="math notranslate nohighlight">\(x_1, \ldots, x_n\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+\bar{x} &amp;= \frac{1}{n} \sum_{i = 1}^{n} x_i \\
+\alpha &amp;= \alpha + n/2 \\
+\beta &amp;= \beta + \frac{1}{2} \sum_{i = 1}^{n} (x_i - \bar{x})^2 + \frac{1}{2} (\mu_0 - \bar{x})^2 \\
+\mu_0 &amp;= \frac{n_0}{n_0 + n} \mu_0 + \frac{n}{n_0 + n} \bar{x} \\
+n_0 &amp;= n_0 + n
+\end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.mu_posterior">
+<span class="sig-name descname"><span class="pre">mu_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.mu_posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(\mu\)</span> is <span class="math notranslate nohighlight">\(\text{Student-t}_{2\alpha}(\mu_0, \beta / (n \alpha))\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.sigma2_posterior">
+<span class="sig-name descname"><span class="pre">sigma2_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.sigma2_posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(\sigma^2\)</span> is <span class="math notranslate nohighlight">\(\text{InvGamma}(\alpha, \beta)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.posterior">
+<span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(x\)</span> is <span class="math notranslate nohighlight">\(\text{Student-t}_{2\alpha}(\mu_0, (n+1) \beta / (n \alpha))\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">MVNormInvWishart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ConjPrior</span></code></a></p>
+<p>Multivariate Normal-InverseWishart conjugate prior. Multivariate equivalent of Normal-InverseGamma.
+Following <a class="reference external" href="https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf">Murphy (2007)</a>, we assume the model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+X &amp;\sim \mathcal{N}_d(\mu, \Sigma) \\
+\mu &amp;\sim \mathcal{N}_d(\mu_0, \Sigma / n) \\
+\Sigma &amp;\sim \mathrm{InvWishart}_{\nu}(\Lambda)
+\end{align*}\end{split}\]</div>
+<p>The update rule for data <span class="math notranslate nohighlight">\(x_1, \ldots, x_n\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+\bar{x} &amp;= \frac{1}{n} \sum_{i = 1}^{n} x_i \\
+\nu &amp;= \nu + n/2 \\
+\Lambda &amp;= \Lambda + \frac{n_0 n}{n_0 + n} (\mu_0 - \bar{x}) (\mu_0 - \bar{x})^T +
+\sum_{i = 1}^{n} (x_i - \bar{x}) (x_i - \bar{x})^T \\
+\mu_0 &amp;= \frac{n_0}{n_0 + n} \mu_0 + \frac{n}{n_0 + n} \bar{x} \\
+n_0 &amp;= n_0 + n
+\end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.process_time_series">
+<span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.process_time_series" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">x)</span></code>, where <code class="docutils literal notranslate"><span class="pre">t</span></code> is a normalized list of timestamps, and <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array
+representing the input</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.mu_posterior">
+<span class="sig-name descname"><span class="pre">mu_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.mu_posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(\mu\)</span> is <span class="math notranslate nohighlight">\(\text{Student-t}_{\nu-d+1}(\mu_0, \Lambda / (n (\nu - d + 1)))\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.Sigma_posterior">
+<span class="sig-name descname"><span class="pre">Sigma_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.Sigma_posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(\Sigma\)</span> is <span class="math notranslate nohighlight">\(\text{InvWishart}_{\nu}(\Lambda^{-1})\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.posterior">
+<span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>The posterior for <span class="math notranslate nohighlight">\(x\)</span> is <span class="math notranslate nohighlight">\(\text{Student-t}_{\nu-d+1}(\mu_0, (n + 1) \Lambda / (n (\nu - d + 1)))\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forecast'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">BayesianLinReg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ConjPrior</span></code></a></p>
+<p>Bayesian Ordinary Linear Regression conjugate prior, which models a univariate input as a function of time.
+Following <a class="reference external" href="https://en.wikipedia.org/wiki/Bayesian_linear_regression">Wikipedia</a>, we assume the model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+x(t) &amp;\sim \mathcal{N}(m t + b, \sigma^2) \\
+w &amp;\sim \mathcal{N}((m_0, b_0), \sigma^2 \Lambda_0^{-1}) \\
+\sigma^2 &amp;\sim \mathrm{InvGamma}(\alpha, \beta)
+\end{align*}\end{split}\]</div>
+<p>Consider new data <span class="math notranslate nohighlight">\((t_1, x_1), \ldots, (t_n, x_n)\)</span>. Let <span class="math notranslate nohighlight">\(T \in \mathbb{R}^{n \times 2}\)</span> be
+the matrix obtained by stacking the row vector of times with an all-ones row vector. Let
+<span class="math notranslate nohighlight">\(w = (m, b) \in \mathbb{R}^{2}\)</span> be the full weight vector. Let <span class="math notranslate nohighlight">\(x \in \mathbb{R}^{n}\)</span> denote
+all observed values. Then we have the update rule</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+w_{OLS} &amp;= (T^T T)^{-1} T^T x \\
+\Lambda_n &amp;= \Lambda_0 + T^T T \\
+w_n &amp;= (\Lambda_0 + T^T T)^{-1} (\Lambda_0 w_0 + T^T T w_{OLS}) \\
+\alpha_n &amp;= \alpha_0 + n / 2 \\
+\beta_n &amp;= \beta_0 + \frac{1}{2}(x^T x + w_0^T \Lambda_0 w_0 - w_n^T \Lambda_n w_n)
+\end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.posterior_explicit">
+<span class="sig-name descname"><span class="pre">posterior_explicit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.posterior_explicit" title="Permalink to this definition"></a></dt>
+<dd><p>Let <span class="math notranslate nohighlight">\(\Lambda_n, \alpha_n, \beta_n\)</span> be the posterior values obtained by updating
+the model on data <span class="math notranslate nohighlight">\((t_1, x_1), \ldots, (t_n, x_n)\)</span>. The predictive posterior has PDF</p>
+<div class="math notranslate nohighlight">
+\[\begin{align*}
+P((t, x)) &amp;= \frac{1}{(2 \pi)^{-n/2}} \sqrt{\frac{\det \Lambda_0}{\det \Lambda_n}}
+\frac{\beta_0^{\alpha_0}}{\beta_n^{\alpha_n}}\frac{\Gamma(\alpha_n)}{\Gamma(\alpha_0)}
+\end{align*}\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.posterior">
+<span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>Naive computation of the posterior using Bayes Rule, i.e.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{\sigma}^2 &amp;= \mathbb{E}[\sigma^2] \\
+\hat{w} &amp;= \mathbb{E}[w \mid \sigma^2 = \hat{\sigma}^2] \\
+p(x \mid t) &amp;= \frac{
+p(w = \hat{w}, \sigma^2 = \hat{\sigma}^2)
+p(x \mid t, w = \hat{w}, \sigma^2 = \hat{\sigma}^2)}{
+p(w = \hat{w}, \sigma^2 = \hat{\sigma}^2 \mid x, t)}\end{split}\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">BayesianMVLinReg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.conj_priors.ConjPrior</span></code></a></p>
+<p>Bayesian multivariate linear regression conjugate prior, which models a multivariate input as a function of time.
+Following <a class="reference external" href="https://en.wikipedia.org/wiki/Bayesian_multivariate_linear_regression">Wikipedia</a> and
+<a class="reference external" href="https://www.jstor.org/stable/2238083">Geisser (1965)</a>, we assume the model</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+X(t) &amp;\sim \mathcal{N}_{d}(m t + b, \Sigma) \\
+(m, b) &amp;\sim \mathcal{N}_{2d}((m_0, b_0), \Sigma \otimes \Lambda_0^{-1}) \\
+\Sigma &amp;\sim \mathrm{InvWishart}_{\nu}(V_0) \\
+\end{align*}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\((m, b)\)</span> is the concatenation of the vectors <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(b\)</span>,
+<span class="math notranslate nohighlight">\(\Lambda_0 \in \mathbb{R}^{2 \times 2}\)</span>, and <span class="math notranslate nohighlight">\(\otimes\)</span> is the Kronecker product.
+Consider new data <span class="math notranslate nohighlight">\((t_1, x_1), \ldots, (t_n, x_n)\)</span>. Let <span class="math notranslate nohighlight">\(T \in \mathbb{R}^{n \times 2}\)</span> be
+the matrix obtained by stacking the row vector of times with an all-ones row vector. Let
+<span class="math notranslate nohighlight">\(W = [m, b]^T \in \mathbb{R}^{2 \times d}\)</span> be the full weight matrix. Let
+<span class="math notranslate nohighlight">\(X \in \mathbb{R}^{n \times d}\)</span> be the matrix of observed <span class="math notranslate nohighlight">\(x\)</span> values. Then we have the update rule</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+\nu_n &amp;= \nu_0 + n \\
+W_n &amp;= (\Lambda_0 + T^T T)^{-1}(\Lambda_0 W_0 + T^T X) \\
+V_n &amp;= V_0 + (X - TW_n)^T (X - TW_n) + (W_n - W_0)^T \Lambda_0 (W_n - W_0) \\
+\Lambda_n &amp;= \Lambda_0 + T^T T \\
+\end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.process_time_series">
+<span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.process_time_series" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">x)</span></code>, where <code class="docutils literal notranslate"><span class="pre">t</span></code> is a normalized list of timestamps, and <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array
+representing the input</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the conjugate prior based on new observations x.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.posterior_explicit">
+<span class="sig-name descname"><span class="pre">posterior_explicit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior_explicit" title="Permalink to this definition"></a></dt>
+<dd><p>Let <span class="math notranslate nohighlight">\(\Lambda_n, \nu_n, V_n\)</span> be the posterior values obtained by updating
+the model on data <span class="math notranslate nohighlight">\((t_1, x_1), \ldots, (t_n, x_n)\)</span>. The predictive posterior has PDF</p>
+<div class="math notranslate nohighlight">
+\[\begin{align*}
+P((t, x)) &amp;= \frac{1}{(2 \pi)^{-nd/2}} \sqrt{\frac{\det \Lambda_0}{\det \Lambda_n}}
+\frac{\det(V_0/2)^{\nu_0/2}}{\det(V_n/2)^{\nu_n/2}}\frac{\Gamma_d(\nu_n/2)}{\Gamma_d(\nu_0 / 2)}
+\end{align*}\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.posterior">
+<span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior" title="Permalink to this definition"></a></dt>
+<dd><p>Naive computation of the posterior using Bayes Rule, i.e.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{\Sigma} &amp;= \mathbb{E}[\Sigma] \\
+\hat{W} &amp;= \mathbb{E}[W \mid \Sigma = \hat{\Sigma}] \\
+p(X \mid t) &amp;= \frac{
+p(W = \hat{W}, \Sigma = \hat{\Sigma})
+p(X \mid t, W = \hat{W}, \Sigma = \hat{\Sigma})}{
+p(W = \hat{W}, \Sigma = \hat{\Sigma} \mid x, t)}\end{split}\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.forecast">
+<span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Return a posterior predictive interval for the time stamps given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_stamps</strong> – a list of time stamps</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(forecast,</span> <span class="pre">stderr)</span></code>, where <code class="docutils literal notranslate"><span class="pre">forecast</span></code> is the expected posterior value and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> is the
+standard error of that forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-merlion.utils.istat">
 <span id="merlion-utils-istat-module"></span><h2>merlion.utils.istat module<a class="headerlink" href="#module-merlion.utils.istat" title="Permalink to this headline"></a></h2>
@@ -1231,7 +1773,7 @@ represented with NaN.</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – A pandas DataFrame with a DatetimeIndex. Each column
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A pandas DataFrame with a DatetimeIndex. Each column
 corresponds to a different variable of the time series, and the
 key of column (in sorted order) give the relative order of those
 variables (in the list self.univariates). Missing values should be
@@ -1239,6 +1781,8 @@ represented with <code class="docutils literal notranslate"><span class="pre">Na
 time series.</p></li>
 <li><p><strong>check_times</strong> – whether to check that all times in the index are
 unique (up to the millisecond) and sorted.</p></li>
+<li><p><strong>freq</strong> – if <code class="docutils literal notranslate"><span class="pre">df</span></code> is not indexed by time, this is the frequency
+at which we will assume it is sampled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

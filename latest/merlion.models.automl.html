@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.automl package &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion.models.automl package &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -48,6 +48,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
@@ -329,9 +330,8 @@ is provided.</p></li>
 <dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarimaConfig">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autosarima.</span></span><span class="sig-name descname"><span class="pre">AutoSarimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('auto',</span> <span class="pre">'auto',</span> <span class="pre">'auto')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('auto',</span> <span class="pre">'auto',</span> <span class="pre">'auto',</span> <span class="pre">'auto')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dur</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approximation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarimaConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.sarima.SarimaConfig</span></code></a></p>
-<p>Config object used to define a forecaster model.</p>
-<p>Configuration class for AutoSarima.
-For order and seasonal_order, ‘auto’ indicates automatically select the parameter.
+<p>Configuration class for <a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima" title="merlion.models.automl.autosarima.AutoSarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">AutoSarima</span></code></a>.</p>
+<p>For order and seasonal_order, ‘auto’ indicates automatically select the parameter.
 Now autosarima support automatically select differencing order, length of the
 seasonality cycle, seasonal differencing order, and the rest of AR, MA, seasonal AR
 and seasonal MA parameters. Note that automatic selection of AR, MA, seasonal AR

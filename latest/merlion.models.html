@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models package &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion.models package &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -48,6 +48,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.models package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
@@ -197,16 +198,19 @@ keyword arguments, or to load them directly from disk. For example, we may have 
 <tr class="row-even"><td><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly</span></code></a></p></td>
 <td><p>Contains all anomaly detection models.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly.forecast_based</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly.change_point</span></code></a></p></td>
+<td><p>Contains all change point detection algorithms.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly.forecast_based</span></code></a></p></td>
 <td><p>Contains all forecaster-based anomaly detectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forecast</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forecast</span></code></a></p></td>
 <td><p>Contains all forecasting models.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble</span></code></a></p></td>
 <td><p>Ensembles of models and automated model selection.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">automl</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">automl</span></code></a></p></td>
 <td><p>Contains all AutoML layers.</p></td>
 </tr>
 </tbody>
@@ -231,6 +235,11 @@ keyword arguments, or to load them directly from disk. For example, we may have 
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>

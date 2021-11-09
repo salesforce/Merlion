@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion: Time Series Intelligence &mdash; Merlion 1.0.1 documentation</title>
+  <title>merlion: Time Series Intelligence &mdash; Merlion 1.0.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -117,6 +117,7 @@ each associated with its own sub-package:</p>
 for anomaly detection and forecasting. More specifically, we have</p>
 <ul>
 <li><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>: Anomaly detection models</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point</span></code></a>: Change point detection models</p></li>
 <li><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>: Forecasting models</p></li>
 <li><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>: Forecasting models adapted for anomaly detection. Anomaly
 scores are based on the residual between the predicted and true value at each timestamp.</p></li>
@@ -170,6 +171,11 @@ for some examples on how to use these classes, or the API docs linked above for 
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>
@@ -252,6 +258,7 @@ for some examples on how to use these classes, or the API docs linked above for 
 </li>
 <li class="toctree-l1"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.conj_priors">merlion.utils.conj_priors module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.istat">merlion.utils.istat module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.misc">merlion.utils.misc module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.resample">merlion.utils.resample module</a></li>

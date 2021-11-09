@@ -62,6 +62,7 @@ Finally, we support ensembles of models in :py:mod:`merlion.models.ensemble`.
     factory
     defaults
     anomaly
+    anomaly.change_point
     anomaly.forecast_based
     forecast
     ensemble
@@ -75,6 +76,7 @@ Subpackages
    :maxdepth: 2
 
    merlion.models.anomaly
+   merlion.models.anomaly.change_point
    merlion.models.anomaly.forecast_based
    merlion.models.forecast
    merlion.models.ensemble
