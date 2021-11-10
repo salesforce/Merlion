@@ -82,7 +82,7 @@ class TestEvaluateAnomaly(unittest.TestCase):
     def test_ensemble_with_valid(self):
         print("-" * 80)
         logger.info("test_ensemble_with_valid\n" + "-" * 80 + "\n")
-        model = self.run_ensemble(valid_frac=0.50, expected_precision=9 / 60, expected_recall=9 / 9)
+        model = self.run_ensemble(valid_frac=0.50, expected_precision=9 / 59, expected_recall=9 / 9)
         self.assertSequenceEqual(model.combiner.models_used, [False, True, False])
 
         # Do a quick test of saving/loading
