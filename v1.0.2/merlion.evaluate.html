@@ -16,7 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -146,7 +146,7 @@ of time series models on different tasks.</p>
 <p>Base class for an automated model evaluation framework.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.base.</span></span><span class="sig-name descname"><span class="pre">EvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cadence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.base.</span></span><span class="sig-name descname"><span class="pre">EvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cadence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract class which defines an evaluator config.</p>
 <dl class="field-list simple">
@@ -167,7 +167,7 @@ every timestamp.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.cadence">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the cadence (interval, in number of seconds) at which we are
@@ -179,7 +179,7 @@ frequency if not explicitly provided.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.horizon">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the horizon (number of seconds) our model is predicting into
@@ -197,7 +197,7 @@ the future. Equal to the prediction cadence by default.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.base.</span></span><span class="sig-name descname"><span class="pre">EvaluatorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.base.</span></span><span class="sig-name descname"><span class="pre">EvaluatorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>An evaluator simulates the live deployment of a model on historical data.
 It trains a model on an initial time series, and then re-trains that model
@@ -223,22 +223,22 @@ anomaly detection vs. forecasting.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.train_window">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">train_window</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.train_window" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_window</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.train_window" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.retrain_freq">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">retrain_freq</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.retrain_freq" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">retrain_freq</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.retrain_freq" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.cadence">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.cadence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.cadence" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.horizon">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.horizon" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -293,7 +293,7 @@ task.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.evaluate">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.evaluate" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.evaluate" title="Permalink to this definition"></a></dt>
 <dd><p>Given the ground truth time series &amp; the model’s prediction (as produced
 by <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.get_predict" title="merlion.evaluate.base.EvaluatorBase.get_predict"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">EvaluatorBase.get_predict</span></code></a>), compute the specified evaluation
 metric. If no metric is specified, return the appropriate score
@@ -308,30 +308,30 @@ accumulator for the task. Implementation is task-specific.</p>
 <p>Metrics and utilities for evaluating time series anomaly detection models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.ScoreType">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">ScoreType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">ScoreType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>The algorithm to use to compute true/false positives/negatives. See the technical report
 for more details on each score type. Merlion’s preferred default is revised point-adjusted.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.ScoreType.Pointwise">
-<span class="sig-name descname"><span class="pre">Pointwise</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.Pointwise" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Pointwise</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.Pointwise" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.ScoreType.PointAdjusted">
-<span class="sig-name descname"><span class="pre">PointAdjusted</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.PointAdjusted" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointAdjusted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.PointAdjusted" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.ScoreType.RevisedPointAdjusted">
-<span class="sig-name descname"><span class="pre">RevisedPointAdjusted</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.RevisedPointAdjusted" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">RevisedPointAdjusted</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType.RevisedPointAdjusted" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADScoreAccumulator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADScoreAccumulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_tp_anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tp_pointwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tp_point_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_pointwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_point_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_detection_delays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_anom_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADScoreAccumulator" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADScoreAccumulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_tp_anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tp_pointwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tp_point_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_pointwise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fn_point_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_fp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_detection_delays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_anom_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADScoreAccumulator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Accumulator which maintains summary statistics describing an anomaly
 detection algorithm’s performance. Can be used to compute many different
@@ -442,91 +442,91 @@ returns a <code class="docutils literal notranslate"><span class="pre">float</sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Enumeration of evaluation metrics for time series anomaly detection.
 For each value, the name is the metric, and the value is a partial
 function of form <code class="docutils literal notranslate"><span class="pre">f(ground_truth,</span> <span class="pre">predicted,</span> <span class="pre">**kwargs)</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.MeanTimeToDetect">
-<span class="sig-name descname"><span class="pre">MeanTimeToDetect</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.mean_time_to_detect&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.MeanTimeToDetect" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MeanTimeToDetect</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.mean_time_to_detect&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.MeanTimeToDetect" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.F1">
-<span class="sig-name descname"><span class="pre">F1</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">F1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F1" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.Precision">
-<span class="sig-name descname"><span class="pre">Precision</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.Precision" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Precision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.Precision" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.Recall">
-<span class="sig-name descname"><span class="pre">Recall</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.Recall" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Recall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.Recall" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointwiseF1">
-<span class="sig-name descname"><span class="pre">PointwiseF1</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseF1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointwiseF1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseF1" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointwisePrecision">
-<span class="sig-name descname"><span class="pre">PointwisePrecision</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwisePrecision" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointwisePrecision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwisePrecision" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointwiseRecall">
-<span class="sig-name descname"><span class="pre">PointwiseRecall</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseRecall" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointwiseRecall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseRecall" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointAdjustedF1">
-<span class="sig-name descname"><span class="pre">PointAdjustedF1</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedF1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointAdjustedF1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedF1" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointAdjustedPrecision">
-<span class="sig-name descname"><span class="pre">PointAdjustedPrecision</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedPrecision" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointAdjustedPrecision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedPrecision" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.PointAdjustedRecall">
-<span class="sig-name descname"><span class="pre">PointAdjustedRecall</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedRecall" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">PointAdjustedRecall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedRecall" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.NABScore">
-<span class="sig-name descname"><span class="pre">NABScore</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScore" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">NABScore</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScore" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.NABScoreLowFN">
-<span class="sig-name descname"><span class="pre">NABScoreLowFN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fn_weight=2.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFN" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">NABScoreLowFN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fn_weight=2.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFN" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.NABScoreLowFP">
-<span class="sig-name descname"><span class="pre">NABScoreLowFP</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fp_weight=0.22))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFP" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">NABScoreLowFP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fp_weight=0.22))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFP" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.F2">
-<span class="sig-name descname"><span class="pre">F2</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=2.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">F2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=2.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F2" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric.F5">
-<span class="sig-name descname"><span class="pre">F5</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=5.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F5" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">F5</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=5.0))</span></em><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric.F5" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluatorConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorConfig</span></code></a></p>
 <p>Configuration class for a <a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator" title="merlion.evaluate.anomaly.TSADEvaluator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TSADEvaluator</span></code></a>.</p>
 <dl class="field-list simple">
@@ -543,7 +543,7 @@ seconds after its start, it is not counted as being detected.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorBase</span></code></a></p>
 <p>Simulates the live deployment of an anomaly detection model.</p>
 <dl class="field-list simple">
@@ -562,12 +562,12 @@ seconds after its start, it is not counted as being detected.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator.max_early_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_early_sec</span></span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.max_early_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_early_sec</span></span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.max_early_sec" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator.max_delay_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_delay_sec</span></span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.max_delay_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_delay_sec</span></span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.max_delay_sec" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -644,7 +644,7 @@ of the model’s anomaly scores on <code class="docutils literal notranslate"><s
 <p>Metrics and utilities for evaluating forecasting models in a continuous sense.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastScoreAccumulator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastScoreAccumulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastScoreAccumulator" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastScoreAccumulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastScoreAccumulator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Accumulator which maintains summary statistics describing a forecasting
 algorithm’s performance. Can be used to compute many different forecasting metrics.</p>
@@ -752,7 +752,7 @@ and periodicity <span class="math notranslate nohighlight">\(m\)</span>, it is c
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Enumeration of evaluation metrics for time series forecasting. For each value,
 the name is the metric, and the value is a partial function of form
@@ -761,7 +761,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 <a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator" title="merlion.evaluate.forecast.ForecastEvaluator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.MAE">
-<span class="sig-name descname"><span class="pre">MAE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.mae&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MAE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MAE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.mae&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MAE" title="Permalink to this definition"></a></dt>
 <dd><p>Mean Absolute Error (MAE) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{T}\sum_{t=1}^T{(|y_t - \hat{y}_t|)}.\]</div>
@@ -769,7 +769,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.MARRE">
-<span class="sig-name descname"><span class="pre">MARRE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.marre&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MARRE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MARRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.marre&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MARRE" title="Permalink to this definition"></a></dt>
 <dd><p>Mean Absolute Ranged Relative Error (MARRE) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[100 \cdot \frac{1}{T} \sum_{t=1}^{T} {\left| \frac{y_t
@@ -778,7 +778,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.RMSE">
-<span class="sig-name descname"><span class="pre">RMSE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.rmse&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.RMSE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">RMSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.rmse&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.RMSE" title="Permalink to this definition"></a></dt>
 <dd><p>Root Mean Squared Error (RMSE) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[\sqrt{\frac{1}{T}\sum_{t=1}^T{(y_t - \hat{y}_t)^2}}.\]</div>
@@ -786,7 +786,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.sMAPE">
-<span class="sig-name descname"><span class="pre">sMAPE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.smape&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.sMAPE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sMAPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.smape&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.sMAPE" title="Permalink to this definition"></a></dt>
 <dd><p>symmetric Mean Absolute Percentage Error (sMAPE) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[200 \cdot \frac{1}{T}\sum_{t=1}^{T}{\frac{\left| y_t
@@ -795,7 +795,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.MASE">
-<span class="sig-name descname"><span class="pre">MASE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.mase&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MASE" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.mase&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MASE" title="Permalink to this definition"></a></dt>
 <dd><p>Mean Absolute Scaled Error (MASE) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{T}\cdot\frac{\sum_{t=1}^{T}\left| y_t
@@ -804,7 +804,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.MSIS">
-<span class="sig-name descname"><span class="pre">MSIS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.msis&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MSIS" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">MSIS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.msis&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.MSIS" title="Permalink to this definition"></a></dt>
 <dd><p>Mean Scaled Interval Score (MSIS) is formulated as:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{T}\cdot\frac{\sum_{t=1}^{T} (U_t - L_t) + 100 \cdot (L_t - y_t)[y_t&lt;L_t]
@@ -815,7 +815,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">horizon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">horizon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorConfig</span></code></a></p>
 <p>Configuration class for a <a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator" title="merlion.evaluate.forecast.ForecastEvaluator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code></a></p>
 <dl class="field-list simple">
@@ -826,7 +826,7 @@ a prediction, it will predict <code class="docutils literal notranslate"><span c
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the horizon (number of seconds) our model is predicting into
@@ -837,7 +837,7 @@ the future. Defaults to the retraining frequency.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>the cadence (interval, in number of seconds) at which we are
@@ -851,7 +851,7 @@ horizon if there is one, and the retraining frequency otherwise.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluator">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorBase</span></code></a></p>
 <p>Simulates the live deployment of an forecaster model.</p>
 <dl class="field-list simple">
@@ -870,12 +870,12 @@ horizon if there is one, and the retraining frequency otherwise.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluator.horizon">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator.horizon" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluator.cadence">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator.cadence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator.cadence" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

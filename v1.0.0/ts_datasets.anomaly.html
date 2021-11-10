@@ -135,7 +135,7 @@ mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADBaseDataset</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADBaseDataset</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.base.BaseDataset</span></code></a></p>
 <p>Base dataset class for storing time series intended for anomaly detection.</p>
 <p>Each dataset supports the following features:</p>
@@ -161,7 +161,7 @@ training/validation (if <code class="docutils literal notranslate"><span class="
 </div>
 <dl class="py property">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset.max_lead_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_lead_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.max_lead_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_lead_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.max_lead_sec" title="Permalink to this definition"></a></dt>
 <dd><p>The maximum number of seconds an anomaly may be detected early, for
 this dataset. <code class="docutils literal notranslate"><span class="pre">None</span></code> signifies no early detections allowed, or that
 the user may override this value with something better suited for their
@@ -170,7 +170,7 @@ purposes.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset.max_lag_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_lag_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.max_lag_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_lag_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.max_lag_sec" title="Permalink to this definition"></a></dt>
 <dd><p>The maximum number of seconds after the start of an anomaly, that we
 consider detections to be accurate (and not ignored for being too late).
 <code class="docutils literal notranslate"><span class="pre">None</span></code> signifies that any detection in the window is acceptable, or
@@ -185,7 +185,7 @@ their purposes.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -194,7 +194,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -202,7 +202,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.IOpsCompetition">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">IOpsCompetition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">IOpsCompetition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load the dataset used for the final round of the IOPs competition
 (<a class="reference external" href="http://iops.ai/competition_detail/?competition_id=5">http://iops.ai/competition_detail/?competition_id=5</a>).</p>
@@ -222,7 +222,7 @@ the results of that automated analysis to perform algorithm/model selection.</p>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.IOpsCompetition.max_lag_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_lag_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.max_lag_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_lag_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.max_lag_sec" title="Permalink to this definition"></a></dt>
 <dd><p>The IOps competition allows anomalies to be detected up to 35min after
 they start. We are currently not using this, but we are leaving the
 override here as a placeholder, if we want to change it later.</p>
@@ -230,7 +230,7 @@ override here as a placeholder, if we want to change it later.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.IOpsCompetition.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -239,7 +239,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.IOpsCompetition.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -247,7 +247,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">NAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.NAB" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">NAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.NAB" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load datasets found in the Numenta Anomaly Benchmark
 (<a class="reference external" href="https://github.com/numenta/NAB">https://github.com/numenta/NAB</a>).</p>
@@ -262,17 +262,17 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB.valid_subsets">
-<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['all',</span> <span class="pre">'artificial',</span> <span class="pre">'artificialWithAnomaly',</span> <span class="pre">'realAWSCloudwatch',</span> <span class="pre">'realAdExchange',</span> <span class="pre">'realKnownCause',</span> <span class="pre">'realTraffic',</span> <span class="pre">'realTweets']</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.valid_subsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['all',</span> <span class="pre">'artificial',</span> <span class="pre">'artificialWithAnomaly',</span> <span class="pre">'realAWSCloudwatch',</span> <span class="pre">'realAdExchange',</span> <span class="pre">'realKnownCause',</span> <span class="pre">'realTraffic',</span> <span class="pre">'realTweets']</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.valid_subsets" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB.load_labels">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">load_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datafile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.NAB.load_labels" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datafile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.NAB.load_labels" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB.max_lead_sec">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">max_lead_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.NAB.max_lead_sec" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_lead_sec</span></span><a class="headerlink" href="#ts_datasets.anomaly.NAB.max_lead_sec" title="Permalink to this definition"></a></dt>
 <dd><p>The anomalies in the NAB dataset are already windows which permit early
 detection. So we explicitly disallow any earlier detection.</p>
 </dd></dl>
@@ -284,7 +284,7 @@ detection. So we explicitly disallow any earlier detection.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -293,7 +293,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.NAB.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -301,7 +301,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">Synthetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'anomaly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.Synthetic" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">Synthetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'anomaly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.Synthetic" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load a sythetically generated dataset.
 The dataset was generated using three base time series, each of which
@@ -313,22 +313,22 @@ Subsets can are defined by the base time series used (“horizontal”,
 injected anomalies (12) while “base” refers to all time series without them (3).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic.base_ts_subsets">
-<span class="sig-name descname"><span class="pre">base_ts_subsets</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['horizontal',</span> <span class="pre">'seasonal',</span> <span class="pre">'upward_downward']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.base_ts_subsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">base_ts_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['horizontal',</span> <span class="pre">'seasonal',</span> <span class="pre">'upward_downward']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.base_ts_subsets" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic.anomaly_subsets">
-<span class="sig-name descname"><span class="pre">anomaly_subsets</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['shock',</span> <span class="pre">'spike',</span> <span class="pre">'dip',</span> <span class="pre">'level',</span> <span class="pre">'trend']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.anomaly_subsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">anomaly_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['shock',</span> <span class="pre">'spike',</span> <span class="pre">'dip',</span> <span class="pre">'level',</span> <span class="pre">'trend']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.anomaly_subsets" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic.valid_subsets">
-<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['anomaly',</span> <span class="pre">'all',</span> <span class="pre">'base',</span> <span class="pre">'horizontal',</span> <span class="pre">'seasonal',</span> <span class="pre">'upward_downward',</span> <span class="pre">'shock',</span> <span class="pre">'spike',</span> <span class="pre">'dip',</span> <span class="pre">'level',</span> <span class="pre">'trend']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.valid_subsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['anomaly',</span> <span class="pre">'all',</span> <span class="pre">'base',</span> <span class="pre">'horizontal',</span> <span class="pre">'seasonal',</span> <span class="pre">'upward_downward',</span> <span class="pre">'shock',</span> <span class="pre">'spike',</span> <span class="pre">'dip',</span> <span class="pre">'level',</span> <span class="pre">'trend']</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.valid_subsets" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -337,7 +337,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.Synthetic.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -345,7 +345,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.UCR">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">UCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.UCR" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">UCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.UCR" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Data loader for the Hexagon ML/UC Riverside Time Series Anomaly Archive.</p>
 <p>See <a class="reference external" href="https://compete.hexagon-ml.com/practice/competition/39/">here</a> for details.</p>
@@ -355,7 +355,7 @@ Nurjahan Begum, Anthony Bagnall , Abdullah Mueen, Gustavo Batista, &amp; Hexagon
 The UCR Time Series Classification Archive. URL <a class="reference external" href="https://www.cs.ucr.edu/~eamonn/time_series_data_2018/">https://www.cs.ucr.edu/~eamonn/time_series_data_2018/</a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.UCR.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.UCR.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.UCR.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -369,7 +369,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.UCR.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.UCR.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.UCR.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -377,7 +377,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMD" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMD" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>The Server Machine Dataset (SMD) is a new 5-week-long dataset from
 a large Internet company collected and made publicly available.
@@ -388,22 +388,22 @@ SMD is divided into training set and testing set of equal size.</p>
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD.filename">
-<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'ServerMachineDataset'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.filename" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filename</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ServerMachineDataset'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.filename" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://www.dropbox.com/s/x53ph5cru62kv0f/ServerMachineDataset.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.url" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://www.dropbox.com/s/x53ph5cru62kv0f/ServerMachineDataset.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.url" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD.valid_subsets">
-<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['machine-1-1',</span> <span class="pre">'machine-1-2',</span> <span class="pre">'machine-1-3',</span> <span class="pre">'machine-1-4',</span> <span class="pre">'machine-1-5',</span> <span class="pre">'machine-1-6',</span> <span class="pre">'machine-1-7',</span> <span class="pre">'machine-1-8',</span> <span class="pre">'machine-2-1',</span> <span class="pre">'machine-2-2',</span> <span class="pre">'machine-2-3',</span> <span class="pre">'machine-2-4',</span> <span class="pre">'machine-2-5',</span> <span class="pre">'machine-2-6',</span> <span class="pre">'machine-2-7',</span> <span class="pre">'machine-2-8',</span> <span class="pre">'machine-2-9',</span> <span class="pre">'machine-3-1',</span> <span class="pre">'machine-3-2',</span> <span class="pre">'machine-3-3',</span> <span class="pre">'machine-3-4',</span> <span class="pre">'machine-3-5',</span> <span class="pre">'machine-3-6',</span> <span class="pre">'machine-3-7',</span> <span class="pre">'machine-3-8',</span> <span class="pre">'machine-3-9',</span> <span class="pre">'machine-3-10',</span> <span class="pre">'machine-3-11']</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.valid_subsets" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['machine-1-1',</span> <span class="pre">'machine-1-2',</span> <span class="pre">'machine-1-3',</span> <span class="pre">'machine-1-4',</span> <span class="pre">'machine-1-5',</span> <span class="pre">'machine-1-6',</span> <span class="pre">'machine-1-7',</span> <span class="pre">'machine-1-8',</span> <span class="pre">'machine-2-1',</span> <span class="pre">'machine-2-2',</span> <span class="pre">'machine-2-3',</span> <span class="pre">'machine-2-4',</span> <span class="pre">'machine-2-5',</span> <span class="pre">'machine-2-6',</span> <span class="pre">'machine-2-7',</span> <span class="pre">'machine-2-8',</span> <span class="pre">'machine-2-9',</span> <span class="pre">'machine-3-1',</span> <span class="pre">'machine-3-2',</span> <span class="pre">'machine-3-3',</span> <span class="pre">'machine-3-4',</span> <span class="pre">'machine-3-5',</span> <span class="pre">'machine-3-6',</span> <span class="pre">'machine-3-7',</span> <span class="pre">'machine-3-8',</span> <span class="pre">'machine-3-9',</span> <span class="pre">'machine-3-10',</span> <span class="pre">'machine-3-11']</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.valid_subsets" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -412,7 +412,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMD.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -420,7 +420,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMAP">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMAP" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMAP" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Soil Moisture Active Passive (SMAP) satellite and Mars Science Laboratory (MSL) rover Datasets.
 SMAP and MSL are two realworld public datasets, which are two real-world datasets expert-labeled by NASA.</p>
@@ -429,12 +429,12 @@ SMAP and MSL are two realworld public datasets, which are two real-world dataset
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMAP.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://www.dropbox.com/s/uv9ojw353qwzqht/SMAP.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.url" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://www.dropbox.com/s/uv9ojw353qwzqht/SMAP.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.url" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMAP.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -443,7 +443,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMAP.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.SMAP.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 
@@ -451,7 +451,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.MSL">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">MSL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.MSL" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">MSL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.MSL" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
 <p>Soil Moisture Active Passive (SMAP) satellite and Mars Science Laboratory (MSL) rover Datasets.
 SMAP and MSL are two realworld public datasets, which are two real-world datasets expert-labeled by NASA.</p>
@@ -460,12 +460,12 @@ SMAP and MSL are two realworld public datasets, which are two real-world dataset
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.MSL.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'https://www.dropbox.com/s/uv9ojw353qwzqht/SMAP.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.url" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://www.dropbox.com/s/uv9ojw353qwzqht/SMAP.tar.gz?dl=1'</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.url" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.MSL.time_series">
-<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.time_series" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.time_series" title="Permalink to this definition"></a></dt>
 <dd><p>A list of all individual time series contained in the dataset. Iterating over
 the dataset will iterate over this list. Note that for some large datasets, 
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
@@ -474,7 +474,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.MSL.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="pre">:</span> <span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.metadata" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.anomaly.MSL.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
 

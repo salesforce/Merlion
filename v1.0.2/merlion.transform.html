@@ -16,7 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -197,7 +197,7 @@ the same as the dict expected by the class method <code class="docutils literal 
 <p>Transform base classes and the <a class="reference internal" href="#merlion.transform.base.Identity" title="merlion.transform.base.Identity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Identity</span></code></a> transform.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">TransformBase</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">TransformBase</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract class for a callable data pre-processing transform.</p>
 <p>Subclasses must override the <code class="docutils literal notranslate"><span class="pre">train</span></code> method (<code class="code docutils literal notranslate"><span class="pre">pass</span></code> if
@@ -241,13 +241,13 @@ specified. This is to prevent potential user error.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.proper_inversion">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase.proper_inversion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase.proper_inversion" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a> objects do not support a proper inversion.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates whether any state <code class="docutils literal notranslate"><span class="pre">self.inversion_state</span></code> is required to
 invert the transform. Specific to each transform. <code class="docutils literal notranslate"><span class="pre">True</span></code> by default.</p>
 </dd></dl>
@@ -259,12 +259,12 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.from_dict">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.TransformBase.from_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.TransformBase.from_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.train">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.TransformBase.train" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.TransformBase.train" title="Permalink to this definition"></a></dt>
 <dd><p>Sets all trainable parameters of the transform (if any), using the input
 time series as training data.</p>
 </dd></dl>
@@ -298,7 +298,7 @@ error of accidentally using a stale state.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.base.InvertibleTransformBase">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">InvertibleTransformBase</span></span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">InvertibleTransformBase</span></span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Abstract class for a callable data pre-processing transform with a proper
 inverse.</p>
@@ -317,7 +317,7 @@ specified. This is to prevent potential user error.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.base.InvertibleTransformBase._invert">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">_invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase._invert" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase._invert" title="Permalink to this definition"></a></dt>
 <dd><p>Helper method which actually performs the inverse transform
 (when possible).</p>
 <dl class="field-list simple">
@@ -335,7 +335,7 @@ specified. This is to prevent potential user error.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.InvertibleTransformBase.proper_inversion">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase.proper_inversion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase.proper_inversion" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">InvertibleTransformBase</span></code></a> always supports a proper inversion.</p>
 </dd></dl>
 
@@ -343,12 +343,12 @@ specified. This is to prevent potential user error.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.base.Identity">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">Identity</span></span><a class="headerlink" href="#merlion.transform.base.Identity" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">Identity</span></span><a class="headerlink" href="#merlion.transform.base.Identity" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>The identity transformation. Does nothing.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.Identity.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.base.Identity.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.base.Identity.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because the identity operation is stateless to invert.</p>
 </dd></dl>
 
@@ -367,12 +367,12 @@ time series as training data.</p>
 <p>Transforms that clip the input.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.bound.LowerUpperClip">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.bound.</span></span><span class="sig-name descname"><span class="pre">LowerUpperClip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.bound.LowerUpperClip" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.bound.</span></span><span class="sig-name descname"><span class="pre">LowerUpperClip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.bound.LowerUpperClip" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Clips the values of a time series to lie between lower and upper.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.bound.LowerUpperClip.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.bound.LowerUpperClip.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.bound.LowerUpperClip.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because “inverting” value clipping is stateless.</p>
 </dd></dl>
 
@@ -391,11 +391,11 @@ time series as training data.</p>
 <p>Contains the <a class="reference internal" href="#merlion.transform.factory.TransformFactory" title="merlion.transform.factory.TransformFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformFactory</span></code></a> for instantiating transforms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.factory.TransformFactory">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.factory.</span></span><span class="sig-name descname"><span class="pre">TransformFactory</span></span><a class="headerlink" href="#merlion.transform.factory.TransformFactory" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.factory.</span></span><span class="sig-name descname"><span class="pre">TransformFactory</span></span><a class="headerlink" href="#merlion.transform.factory.TransformFactory" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.factory.TransformFactory.get_transform_class">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">get_transform_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.factory.TransformFactory.get_transform_class" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_transform_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.factory.TransformFactory.get_transform_class" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a>]</p>
@@ -405,7 +405,7 @@ time series as training data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.factory.TransformFactory.create">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.factory.TransformFactory.create" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.factory.TransformFactory.create" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a></p>
@@ -421,7 +421,7 @@ time series as training data.</p>
 <p>Transforms that compute moving averages and k-step differences.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.MovingAverage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingAverage" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingAverage" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Computes the n_steps-step moving average of the time series, with
 the given relative weights assigned to each time in the moving average
@@ -438,7 +438,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.MovingPercentile">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingPercentile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingPercentile" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingPercentile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingPercentile" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Computes the n-step moving percentile of the time series.
 For datapoints at the start of the time series which are preceded by
@@ -463,7 +463,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.ExponentialMovingAverage">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">ExponentialMovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.ExponentialMovingAverage" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">ExponentialMovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.ExponentialMovingAverage" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Computes the exponential moving average (normalized or un-normalized) of the
 time series, with smoothing factor alpha (lower alpha = more smoothing).
@@ -503,7 +503,7 @@ of the the exponential moving average as well.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.ExponentialMovingAverage.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.moving_average.ExponentialMovingAverage.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.moving_average.ExponentialMovingAverage.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because the exponential moving average is stateless to invert.</p>
 </dd></dl>
 
@@ -518,7 +518,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.DifferenceTransform">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">DifferenceTransform</span></span><a class="headerlink" href="#merlion.transform.moving_average.DifferenceTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">DifferenceTransform</span></span><a class="headerlink" href="#merlion.transform.moving_average.DifferenceTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Applies a difference transform to the input time series. We include it
 as a moving average because we can consider the difference transform
@@ -534,7 +534,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.LagTransform">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">LagTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.LagTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">LagTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.LagTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Applies a lag transform to the input time series. Each x(i) gets mapped
 to x(i) - x(i-k). We include it as a moving average because we can consider
@@ -566,12 +566,12 @@ time series as training data.</p>
 <p>Transforms that rescale the input or otherwise normalize it.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.normalize.AbsVal">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">AbsVal</span></span><a class="headerlink" href="#merlion.transform.normalize.AbsVal" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">AbsVal</span></span><a class="headerlink" href="#merlion.transform.normalize.AbsVal" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Takes the absolute value of the input time series.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.normalize.AbsVal.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.AbsVal.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.AbsVal.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because the “pseudo-inverse” is just the identity (i.e. we
 lose sign information).</p>
 </dd></dl>
@@ -587,12 +587,12 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.normalize.Rescale">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">Rescale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.Rescale" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">Rescale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.Rescale" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Rescales the bias &amp; scale of input vectors or scalars by pre-specified amounts.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.normalize.Rescale.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.Rescale.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.Rescale.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because rescaling operations are stateless to invert.</p>
 </dd></dl>
 
@@ -605,14 +605,14 @@ time series as training data.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.normalize.Rescale.is_trained">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_trained</span></span><a class="headerlink" href="#merlion.transform.normalize.Rescale.is_trained" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_trained</span></span><a class="headerlink" href="#merlion.transform.normalize.Rescale.is_trained" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.normalize.MeanVarNormalize">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">MeanVarNormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MeanVarNormalize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">MeanVarNormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MeanVarNormalize" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.normalize.Rescale" title="merlion.transform.normalize.Rescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.normalize.Rescale</span></code></a></p>
 <p>A learnable transform that rescales the values of a time series to have
 zero mean and unit variance.</p>
@@ -627,7 +627,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.normalize.MinMaxNormalize">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">MinMaxNormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MinMaxNormalize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">MinMaxNormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MinMaxNormalize" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.normalize.Rescale" title="merlion.transform.normalize.Rescale"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.normalize.Rescale</span></code></a></p>
 <p>A learnable transform that rescales the values of a time series to be
 between zero and one.</p>
@@ -642,14 +642,14 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">PowerTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lmbda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">PowerTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lmbda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Applies the Box-Cox power transform to the time series, with power lmbda.
 When lmbda &gt; 0, it is ((x + offset) ** lmbda - 1) / lmbda.
 When lmbda == 0, it is ln(lmbda + offset).</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because the Box-Cox transform does is stateless to invert.</p>
 </dd></dl>
 
@@ -669,7 +669,7 @@ time series as training data.</p>
 into vectors.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.resample.</span></span><span class="sig-name descname"><span class="pre">TemporalResample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trainable_granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_non_overlapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Interpolate'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.TemporalResample" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.resample.</span></span><span class="sig-name descname"><span class="pre">TemporalResample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trainable_granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_non_overlapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Interpolate'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.TemporalResample" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Defines a policy to temporally resample a time series at a specified
 granularity. Note that while this transform does support inversion, the
@@ -699,19 +699,19 @@ values (upsampling).</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates whether any state <code class="docutils literal notranslate"><span class="pre">self.inversion_state</span></code> is required to
 invert the transform. Specific to each transform. <code class="docutils literal notranslate"><span class="pre">True</span></code> by default.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.granularity">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">granularity</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.granularity" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">granularity</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.granularity" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.aggregation_policy">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">aggregation_policy</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">merlion.utils.resample.AggregationPolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.aggregation_policy" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aggregation_policy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">merlion.utils.resample.AggregationPolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.aggregation_policy" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregationPolicy</span></code></a></p>
@@ -721,7 +721,7 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.missing_value_policy">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">missing_value_policy</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">merlion.utils.resample.MissingValuePolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.missing_value_policy" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">missing_value_policy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">merlion.utils.resample.MissingValuePolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.missing_value_policy" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a></p>
@@ -740,7 +740,7 @@ time series as training data.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.resample.Shingle">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.resample.</span></span><span class="sig-name descname"><span class="pre">Shingle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multivar_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.Shingle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.resample.</span></span><span class="sig-name descname"><span class="pre">Shingle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multivar_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.Shingle" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Stacks adjacent observations into a single vector. Downsamples by the
 specified stride (less than or equal to the shingle size) if desired.</p>
@@ -795,19 +795,19 @@ time series as training data.</p>
 <p>Classes to compose (<a class="reference internal" href="#merlion.transform.sequence.TransformSequence" title="merlion.transform.sequence.TransformSequence"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformSequence</span></code></a>) or stack (<a class="reference internal" href="#merlion.transform.sequence.TransformStack" title="merlion.transform.sequence.TransformStack"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformStack</span></code></a>) multiple transforms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.InvertibleTransformBase</span></code></a></p>
 <p>Applies a series of data transformations sequentially.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.proper_inversion">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.proper_inversion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.proper_inversion" title="Permalink to this definition"></a></dt>
 <dd><p>A transform sequence is invertible if and only if all the transforms
 comprising it are invertible.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because inversion state is held by individual transforms.</p>
 </dd></dl>
 
@@ -823,7 +823,7 @@ comprising it are invertible.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.from_dict">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.from_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.from_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -862,20 +862,20 @@ error of accidentally using a stale state.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformStack" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformStack" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.sequence.TransformSequence" title="merlion.transform.sequence.TransformSequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.sequence.TransformSequence</span></code></a></p>
 <p>Applies a set of data transformations individually to an input time series.
 Stacks all of the results into a multivariate time series.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack.proper_inversion">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.proper_inversion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.proper_inversion" title="Permalink to this definition"></a></dt>
 <dd><p>A stacked transform is invertible if and only if at least one of the
 transforms comprising it are invertible.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack.requires_inversion_state">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> because the inversion state tells us which stacked transform to
 invert, and which part of the output time series to apply that inverse
 to.</p>
@@ -921,7 +921,7 @@ error of accidentally using a stale state.</p></li>
 <p>Transforms that inject synthetic anomalies into time series.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Anomalize">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">Anomalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anom_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natural_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.Anomalize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">Anomalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anom_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natural_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.Anomalize" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Injects anomalies into a time series with controlled randomness and returns
 both the anomalized time series along with associated anomaly labels.</p>
@@ -936,12 +936,12 @@ a particular time series must stay within.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Anomalize.natural_bounds">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">natural_bounds</span></span><a class="headerlink" href="#merlion.transform.anomalize.Anomalize.natural_bounds" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">natural_bounds</span></span><a class="headerlink" href="#merlion.transform.anomalize.Anomalize.natural_bounds" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Anomalize.is_trained">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">is_trained</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#merlion.transform.anomalize.Anomalize.is_trained" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_trained</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.transform.anomalize.Anomalize.is_trained" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -958,7 +958,7 @@ a particular time series must stay within.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Shock">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">Shock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom_width_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist_shock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.Shock" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">Shock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(3,</span> <span class="pre">6)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom_width_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist_shock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.Shock" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.anomalize.Anomalize" title="merlion.transform.anomalize.Anomalize"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.anomalize.Anomalize</span></code></a></p>
 <p>Injects random spikes or dips into a time series.</p>
 <p>Letting <code class="docutils literal notranslate"><span class="pre">y_t</span></code> be a time series, if an anomaly is injected into 
@@ -987,12 +987,12 @@ standard deviation.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Shock.anom_width_range">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">anom_width_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.Shock.anom_width_range" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anom_width_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.Shock.anom_width_range" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Shock.sd_range">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sd_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.Shock.sd_range" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sd_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.Shock.sd_range" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1020,7 +1020,7 @@ standard deviation.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.LevelShift">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">LevelShift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.LevelShift" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">LevelShift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.LevelShift" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.anomalize.Shock" title="merlion.transform.anomalize.Shock"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.anomalize.Shock</span></code></a></p>
 <p>Injects random level shift anomalies into a time series.</p>
 <p>A level shift is a sudden change of level in a time series. It is equivalent to
@@ -1041,7 +1041,7 @@ standard deviation.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.TrendChange">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">TrendChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">3.0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.TrendChange" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.anomalize.</span></span><span class="sig-name descname"><span class="pre">TrendChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_prob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">3.0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.TrendChange" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.anomalize.Anomalize" title="merlion.transform.anomalize.Anomalize"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.anomalize.Anomalize</span></code></a></p>
 <p>Injects random trend changes into a time series.</p>
 <p>At a high level, the transform tracks the velocity (trend) of a time series
@@ -1072,7 +1072,7 @@ a particular time series must stay within.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.TrendChange.scale_range">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">scale_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.TrendChange.scale_range" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale_range</span></span><a class="headerlink" href="#merlion.transform.anomalize.TrendChange.scale_range" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
