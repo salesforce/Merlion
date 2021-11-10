@@ -58,7 +58,7 @@ class TestForecastEnsemble(unittest.TestCase):
         self.run_test()
         # We expect the model selector to select Prophet because it gets the lowest validation sMAPE
         valid_smapes = np.asarray(self.ensemble.combiner.metric_values)
-        self.assertAlmostEqual(np.max(np.abs(valid_smapes - [34.65, 39.62, 30.71])), 0, delta=0.5)
+        self.assertAlmostEqual(np.max(np.abs(valid_smapes - [34.32, 40.66, 30.71])), 0, delta=0.5)
         self.assertSequenceEqual(self.ensemble.models_used, [False, False, True])
 
     def run_test(self):
