@@ -74,7 +74,7 @@ and `ts_datasets` provides standardized data loaders for multiple time series da
 time series as ``pandas.DataFrame`` s with accompanying metadata.
 
 You can install `merlion` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
-cloning this repoand calling ``pip install Merlion/``, or ``pip install -e Merlion/`` to install in editable mode.
+cloning this repo and calling ``pip install Merlion/``, or ``pip install -e Merlion/`` to install in editable mode.
 You may install additional dependencies for plotting & visualization via ``pip install salesforce-merlion[plot]``,
 or by calling ``pip install "Merlion/[plot]"`` if installing from source.
 
