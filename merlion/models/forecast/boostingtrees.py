@@ -146,10 +146,11 @@ class BoostingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                         f"'training_mode = autogression'."
                     )
                     self.config.max_forecast_steps = max_forecast_steps
-                logger.warning(
-                    f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
-                )
-                self.config.prediction_stride = self.max_forecast_steps
+                if self.prediction_stride != self.max_forecast_steps:
+                    logger.warning(
+                        f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
+                    )
+                    self.config.prediction_stride = self.max_forecast_steps
                 # process train data
                 (inputs_train, labels_train, labels_train_ts) = seq_ar_common.process_rolling_train_data(
                     train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode

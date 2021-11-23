@@ -15,6 +15,7 @@ import dill
 import os
 from typing import Dict, List, Tuple, Union
 
+import numpy as np
 import pandas as pd
 from pandas.tseries.frequencies import to_offset
 
@@ -159,7 +160,8 @@ class EnsembleBase(ModelBase, ABC):
                 horizons.append(h)
         if all(h is None for h in horizons):
             return None
-        return min([h for h in horizons if h is not None])
+        i = np.argmin([pd.to_datetime(0) + h for h in horizons if h is not None])
+        return horizons[i]
 
     def truncate_valid_data(self, transformed_valid_data: TimeSeries):
         tf = transformed_valid_data.tf
