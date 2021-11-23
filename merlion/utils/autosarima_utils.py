@@ -285,7 +285,7 @@ def nsdiffs(x, m, max_D=1, test="seas"):
     D = 0
     if max_D <= 0:
         raise ValueError("max_D must be a positive integer")
-    if np.max(x) == np.min(x):
+    if np.max(x) == np.min(x) or m < 2:
         return D
     if test == "seas":
         dodiff = seas_seasonalstationaritytest(x, m)

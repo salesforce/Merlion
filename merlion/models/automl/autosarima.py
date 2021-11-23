@@ -146,6 +146,8 @@ class AutoSarima(ForecasterAutoMLBase):
             warnings.warn(
                 "Set periodicity to 1, use the SeasonalityLayer()" "wrapper to automatically detect seasonality."
             )
+        elif m < 1:
+            m = 1
 
         #  adjust max p,q,P,Q start p,q,P,Q
         max_p = int(min(max_p, np.floor(n_samples / 3)))
