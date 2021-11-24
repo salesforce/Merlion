@@ -6,12 +6,8 @@
 #
 from abc import ABC
 from copy import deepcopy
-import json
 import os
-from os.path import join
-from typing import Tuple, Optional, Union, List
-
-import dill
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from merlion.models.automl.layer_mixin import LayerMixIn
 from merlion.models.factory import ModelFactory
@@ -78,7 +74,7 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
 
     config_class = ForecasterAutoMLConfig
 
-    def __init__(self, model: ForecasterBase = None, config: ForecasterAutoMLConfig = None, **kwargs):
+    def __init__(self, *, model: ForecasterBase = None, config: ForecasterAutoMLConfig = None, **kwargs):
         """
         Assume config also inherits ForecastConfig
         """
@@ -93,7 +89,7 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
 
     def reset(self):
         self.model.reset()
-        self.__init__(self.model)
+        self.__init__(config=self.config)
 
     @property
     def model(self):
@@ -130,47 +126,16 @@ class ForecasterAutoMLBase(ForecasterBase, LayerMixIn, ABC):
     ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         return self.model.forecast(time_stamps, time_series_prev, return_iqr, return_prev)
 
-    def save(self, dirname: str, **save_config):
-        state_dict = self.__getstate__()
-        state_dict.pop("model")
-        model_path = os.path.abspath(join(dirname, self.filename))
-        config_dict = dict()
+    def __getstate__(self):
+        state = super().__getstate__()
+        state["model"] = (type(self.model).__name__, self.model.to_bytes())
+        return state
 
-        # create the directory if needed
-        os.makedirs(dirname, exist_ok=True)
-
-        underlying_model_path = os.path.abspath(os.path.join(dirname, "model"))
-        self.model.save(underlying_model_path)
-        config_dict["model_name"] = type(self.model).__name__
-
-        with open(os.path.join(dirname, self.config_class.filename), "w") as f:
-            json.dump(config_dict, f, indent=2, sort_keys=True)
-
-        # Save the model state
-        self._save_state(state_dict, model_path, **save_config)
-
-    @classmethod
-    def load(cls, dirname: str, **kwargs):
-        # Read the config dict from json
-        config_path = os.path.join(dirname, cls.config_class.filename)
-        with open(config_path, "r") as f:
-            config_dict = json.load(f)
-
-        model_name = config_dict.pop("model_name")
-        model = ModelFactory.load(model_name, os.path.abspath(os.path.join(dirname, "model")))
-
-        # Load the state dict
-        with open(os.path.join(dirname, cls.filename), "rb") as f:
-            state_dict = dill.load(f)
-
-        return cls._from_config_state_dicts(state_dict, model, **kwargs)
-
-    @classmethod
-    def _from_config_state_dicts(cls, state_dict, model, **kwargs):
-        model = cls(model)
-        model._load_state(state_dict, **kwargs)
-
-        return model
+    def __setstate__(self, state):
+        if "model" in state:
+            model_name, model_bytes = state.pop("model")
+            self.model = ModelFactory.get_model_class(model_name).from_bytes(model_bytes)
+        super().__setstate__(state)
 
     def __getattr__(self, attr):
         try:

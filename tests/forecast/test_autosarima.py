@@ -833,7 +833,12 @@ class TestAutoSarima(unittest.TestCase):
         # test save/load
         savedir = join(rootdir, "tmp", "autosarima")
         self.model.save(dirname=savedir)
-        SeasonalityLayer.load(dirname=savedir)
+        loaded = SeasonalityLayer.load(dirname=savedir)
+
+        # make sure save/load model gets same predictions
+        loaded_pred, loaded_err = loaded.forecast(self.max_forecast_steps)
+        self.assertSequenceEqual(list(loaded_pred), list(pred))
+        self.assertSequenceEqual(list(loaded_err), list(err))
 
 
 if __name__ == "__main__":

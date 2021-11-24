@@ -383,7 +383,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :return: `ModelBase` object loaded from file
         """
         config, model_kwargs = cls.config_class.from_dict(config_dict, return_unused_kwargs=True, **kwargs)
-        model = cls(config)
+        model = cls(config=config)
         model._load_state(state_dict, **model_kwargs)
 
         return model
