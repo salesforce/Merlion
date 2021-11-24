@@ -4,24 +4,23 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+from collections import Iterator
+from copy import deepcopy
 import logging
 import warnings
-from collections import Iterator
-from typing import Tuple, Any, Optional
+from typing import Any, Optional, Tuple, Union
 
 import numpy as np
 
-from merlion.models.automl.forecasting_layer_base import ForecasterAutoMLBase
-from merlion.models.forecast.base import ForecasterBase
+from merlion.models.automl.forecasting_layer_base import ForecasterAutoMLBase, ForecasterAutoMLConfig, ForecasterBase
 from merlion.models.forecast.sarima import SarimaConfig, Sarima
 from merlion.transform.resample import TemporalResample
-from merlion.utils import TimeSeries, autosarima_utils, UnivariateTimeSeries
-from copy import deepcopy
+from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class AutoSarimaConfig(SarimaConfig):
+class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
     """
     Configuration class for `AutoSarima`.
     """
@@ -30,8 +29,7 @@ class AutoSarimaConfig(SarimaConfig):
 
     def __init__(
         self,
-        max_forecast_steps: int = None,
-        target_seq_index: int = None,
+        model: Union[Sarima, dict] = None,
         order=("auto", "auto", "auto"),
         seasonal_order=("auto", "auto", "auto", "auto"),
         periodicity_strategy: str = "max",
@@ -49,7 +47,6 @@ class AutoSarimaConfig(SarimaConfig):
         and seasonal MA parameters. Note that automatic selection of AR, MA, seasonal AR
         and seasonal MA parameters are implemented in a coupled way. Only when all these
         parameters are specified it will not trigger the automatic selection.
-
 
         :param max_forecast_steps: Max number of steps we aim to forecast
         :param target_seq_index: The index of the univariate (amongst all
@@ -74,7 +71,13 @@ class AutoSarimaConfig(SarimaConfig):
             the length off the period is too high (``periodicity > 12``).
         :param approx_iter: The number of iterations to perform in approximation mode
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        if model is None:
+            model = {}
+        if isinstance(model, dict):
+            sarima_config, _ = SarimaConfig.from_dict({**model, **kwargs}, return_unused_kwargs=True)
+            model = Sarima(sarima_config)
+        super().__init__(model=model, **kwargs)
+
         self.order = order
         self.seasonal_order = seasonal_order
         self.periodicity_strategy = periodicity_strategy
@@ -84,17 +87,26 @@ class AutoSarimaConfig(SarimaConfig):
         self.approximation = approximation
         self.approx_iter = approx_iter
 
+    @property
+    def order(self):
+        return self.model.order
+
+    @order.setter
+    def order(self, o):
+        self.model.config.order = o
+
+    @property
+    def seasonal_order(self):
+        return self.model.seasonal_order
+
+    @seasonal_order.setter
+    def seasonal_order(self, so):
+        self.model.config.seasonal_order = so
+
 
 class AutoSarima(ForecasterAutoMLBase):
 
     config_class = AutoSarimaConfig
-
-    def __init__(self, model: ForecasterBase = None, **kwargs):
-        if model is None:
-            model = {}
-        if isinstance(model, dict):
-            model = Sarima(AutoSarimaConfig.from_dict({**model, **kwargs}))
-        super().__init__(model)
 
     def _generate_sarima_parameters(self, train_data: TimeSeries) -> dict:
         y = train_data.univariates[self.target_name].np_values

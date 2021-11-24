@@ -7,6 +7,7 @@
 """
 Contains the `ModelFactory`.
 """
+import copy
 import inspect
 from typing import Type
 import dill
@@ -74,7 +75,7 @@ class ModelFactory:
         if "config" in signature.parameters:
             config, kwargs = model_class.config_class.from_dict(kwargs, return_unused_kwargs=True)
             init_kwargs = {k: v for k, v in kwargs.items() if k in signature.parameters}
-            model = model_class(config, **init_kwargs)
+            model = model_class(config=config, **init_kwargs)
             model._load_state({k: v for k, v in kwargs.items() if k not in init_kwargs})
         else:
             model = model_class(**kwargs)

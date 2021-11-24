@@ -415,7 +415,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         return cls._from_config_state_dicts(config_dict, state_dict, **kwargs)
 
     def __copy__(self):
-        new_model = self.__class__(deepcopy(self.config))
+        new_model = self.__class__(config=deepcopy(self.config))
         state_dict = self.__getstate__()
         state_dict.pop("config", None)
         new_model.__setstate__(state_dict)
