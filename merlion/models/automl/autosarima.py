@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Automatic hyperparameter selection for SARIMA.
+"""
 from collections import Iterator
 from copy import deepcopy
 import logging
@@ -12,7 +15,9 @@ from typing import Any, Optional, Tuple, Union
 
 import numpy as np
 
-from merlion.models.automl.forecasting_layer_base import ForecasterAutoMLBase, ForecasterAutoMLConfig, ForecasterBase
+from merlion.models.automl.base import AutoMLMixIn
+from merlion.models.automl.seasonality_mixin import SeasonalityModel
+from merlion.models.base import LayeredModelConfig
 from merlion.models.forecast.sarima import SarimaConfig, Sarima
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
@@ -20,7 +25,7 @@ from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 logger = logging.getLogger(__name__)
 
 
-class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
+class AutoSarimaConfig(LayeredModelConfig, SarimaConfig):
     """
     Configuration class for `AutoSarima`.
     """
@@ -32,7 +37,6 @@ class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
         model: Union[Sarima, dict] = None,
         order=("auto", "auto", "auto"),
         seasonal_order=("auto", "auto", "auto", "auto"),
-        periodicity_strategy: str = "max",
         maxiter: int = None,
         max_k: int = 100,
         max_dur: float = 3600,
@@ -59,9 +63,6 @@ class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
         :param seasonal_order: Seasonal order is (P, D, Q, S) for seasonal ARIMA
             process, where s is the length of the seasonality cycle (e.g. s=24
             for 24 hours on hourly granularity). P, D, Q are as for ARIMA.
-        :param periodicity_strategy: selection strategy when detecting multiple
-            periods. 'min' signifies to select the smallest period, while 'max' signifies to select
-            the largest period
         :param maxiter: The maximum number of iterations to perform
         :param max_k: Maximum number of models considered in the stepwise search
         :param max_dur: Maximum training time considered in the stepwise search
@@ -80,7 +81,6 @@ class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
 
         self.order = order
         self.seasonal_order = seasonal_order
-        self.periodicity_strategy = periodicity_strategy
         self.maxiter = maxiter
         self.max_k = max_k
         self.max_dur = max_dur
@@ -104,7 +104,7 @@ class AutoSarimaConfig(ForecasterAutoMLConfig, SarimaConfig):
         self.model.config.seasonal_order = so
 
 
-class AutoSarima(ForecasterAutoMLBase):
+class AutoSarima(AutoMLMixIn, SeasonalityModel):
 
     config_class = AutoSarimaConfig
 
@@ -121,7 +121,6 @@ class AutoSarima(ForecasterAutoMLBase):
         max_dur = self.config.max_dur
 
         # These should be set in config
-        periodicity_strategy = "min"
         stationary = False
         seasonal_test = "seas"
         method = "lbfgs"
@@ -307,7 +306,7 @@ class AutoSarima(ForecasterAutoMLBase):
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
-    ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
+    ) -> Tuple[Any, Optional[Sarima], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
         theta_value = thetas.__next__()
 
@@ -448,3 +447,6 @@ class AutoSarima(ForecasterAutoMLBase):
         order, seasonal_order, trend = theta
         model.config.order = order
         model.config.seasonal_order = seasonal_order
+
+    def set_seasonality(self, theta, train_data):
+        self.model.set_seasonality(theta, train_data)

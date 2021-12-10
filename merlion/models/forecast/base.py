@@ -26,6 +26,9 @@ class ForecasterConfig(Config):
     Config object used to define a forecaster model.
     """
 
+    max_forecast_steps: Optional[int]
+    target_seq_index: Optional[int]
+
     def __init__(self, max_forecast_steps: Union[int, None], target_seq_index: int = None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
@@ -38,7 +41,6 @@ class ForecasterConfig(Config):
         super().__init__(**kwargs)
         self.max_forecast_steps = max_forecast_steps
         self.target_seq_index = target_seq_index
-        self.dim = None
 
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
@@ -65,16 +67,9 @@ class ForecasterBase(ModelBase):
     """
 
     config_class = ForecasterConfig
-    timedelta: Optional[float]
+    target_name = None
     """
-    The expected number of seconds between observations in an input time series.
-    should be set in `ForecasterBase.train` if the model assumes a fixed
-    timedelta.
-    """
-    last_train_time: Optional[float]
-    """
-    The last unix timestamp of the training data. Should be set in
-    `ForecasterBase.train`.
+    The name of the target univariate to forecast.
     """
 
     def __init__(self, config: ForecasterConfig):

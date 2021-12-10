@@ -7,9 +7,9 @@
 """
 Contains the `ModelFactory`.
 """
-import copy
 import inspect
-from typing import Type
+from typing import Dict, Tuple, Type, Union
+
 import dill
 from merlion.models.base import ModelBase
 from merlion.utils import dynamic_import
@@ -69,16 +69,22 @@ class ModelFactory:
         return dynamic_import(name, import_alias)
 
     @classmethod
-    def create(cls, name, **kwargs) -> ModelBase:
+    def create(cls, name, return_unused_kwargs=False, **kwargs) -> Union[ModelBase, Tuple[ModelBase, Dict]]:
         model_class = cls.get_model_class(name)
-        signature = inspect.signature(model_class.__init__)
-        if "config" in signature.parameters:
-            config, kwargs = model_class.config_class.from_dict(kwargs, return_unused_kwargs=True)
-            init_kwargs = {k: v for k, v in kwargs.items() if k in signature.parameters}
-            model = model_class(config=config, **init_kwargs)
-            model._load_state({k: v for k, v in kwargs.items() if k not in init_kwargs})
-        else:
-            model = model_class(**kwargs)
+        config, kwargs = model_class.config_class.from_dict(kwargs, return_unused_kwargs=True)
+
+        # initialize the model
+        signature = inspect.signature(model_class)
+        init_kwargs = {k: v for k, v in kwargs.items() if k in signature.parameters}
+        kwargs = {k: v for k, v in kwargs.items() if k not in init_kwargs}
+        model = model_class(config=config, **init_kwargs)
+
+        # set model state with remaining kwargs, and return any unused kwargs if desired
+        if return_unused_kwargs:
+            state = {k: v for k, v in kwargs.items() if hasattr(model, k)}
+            model._load_state(state)
+            return model, {k: v for k, v in kwargs.items() if k not in state}
+        model._load_state(kwargs)
         return model
 
     @classmethod

@@ -20,7 +20,7 @@ from merlion.plot import Figure, MTSFigure
 from merlion.post_process.calibrate import AnomScoreCalibrator
 from merlion.post_process.factory import PostRuleFactory
 from merlion.post_process.sequence import PostRuleSequence
-from merlion.post_process.threshold import AggregateAlarms
+from merlion.post_process.threshold import AggregateAlarms, Threshold
 from merlion.utils import TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,8 @@ class DetectorConfig(Config):
     """
 
     _default_threshold = AggregateAlarms(alm_threshold=3.0)
+    calibrator: AnomScoreCalibrator
+    threshold: Threshold
 
     def __init__(
         self, max_score: float = 1000, threshold=None, enable_calibrator=True, enable_threshold=True, **kwargs

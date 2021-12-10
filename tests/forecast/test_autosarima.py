@@ -789,13 +789,11 @@ class TestAutoSarima(unittest.TestCase):
         self.max_forecast_steps = len(self.test_data)
         self.model = SeasonalityLayer(
             model=AutoSarima(
-                model=Sarima(
-                    AutoSarimaConfig(
-                        order=(15, "auto", 5),
-                        seasonal_order=(2, "auto", 1, "auto"),
-                        max_forecast_steps=self.max_forecast_steps,
-                        maxiter=5,
-                    )
+                config=AutoSarimaConfig(
+                    order=(15, "auto", 5),
+                    seasonal_order=(2, "auto", 1, "auto"),
+                    max_forecast_steps=self.max_forecast_steps,
+                    maxiter=5,
                 )
             )
         )
@@ -819,6 +817,16 @@ class TestAutoSarima(unittest.TestCase):
         self.assertEqual(len(pred), self.max_forecast_steps)
         self.assertEqual(len(err), self.max_forecast_steps)
 
+        # test save/load
+        savedir = join(rootdir, "tmp", "autosarima")
+        self.model.save(dirname=savedir)
+        loaded = SeasonalityLayer.load(dirname=savedir)
+
+        # make sure save/load model gets same predictions
+        loaded_pred, loaded_err = loaded.forecast(self.max_forecast_steps)
+        self.assertSequenceEqual(list(loaded_pred), list(pred))
+        self.assertSequenceEqual(list(loaded_err), list(err))
+
         # check the forecasting results w.r.t sMAPE
         y_true = self.test_data.univariates[k].np_values
         y_hat = pred.univariates[pred.names[0]].np_values
@@ -829,16 +837,6 @@ class TestAutoSarima(unittest.TestCase):
         # check smape in evalution
         smape_compare = ForecastMetric.sMAPE.value(self.test_data, pred)
         self.assertAlmostEqual(smape, smape_compare)
-
-        # test save/load
-        savedir = join(rootdir, "tmp", "autosarima")
-        self.model.save(dirname=savedir)
-        loaded = SeasonalityLayer.load(dirname=savedir)
-
-        # make sure save/load model gets same predictions
-        loaded_pred, loaded_err = loaded.forecast(self.max_forecast_steps)
-        self.assertSequenceEqual(list(loaded_pred), list(pred))
-        self.assertSequenceEqual(list(loaded_err), list(err))
 
 
 if __name__ == "__main__":

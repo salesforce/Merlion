@@ -5,16 +5,73 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """Default models for anomaly detection & forecasting that balance speed and performance."""
+import dill
 import logging
+import json
+import os
 from typing import List, Optional, Tuple, Union
 
 from merlion.models.factory import ModelFactory
-from merlion.models.base import Config, ModelWrapper
+from merlion.models.base import Config, ModelBase
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils import TimeSeries
+from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
+
+
+class ModelWrapper(ModelBase, metaclass=AutodocABCMeta):
+    """
+    Abstract class implementing a model that wraps around another internal model.
+    """
+
+    filename = "model"
+
+    def __init__(self, config: Config, model: ModelBase = None):
+        super().__init__(config)
+        self.model = model
+
+    def save(self, dirname: str, **save_config):
+        config_dict = self.config.to_dict()
+        config_dict["model_type"] = type(self.model).__name__
+        os.makedirs(dirname, exist_ok=True)
+        with open(os.path.join(dirname, self.config_class.filename), "w") as f:
+            json.dump(config_dict, f, indent=2, sort_keys=True)
+        self.model.save(os.path.join(dirname, self.filename), **save_config)
+
+    @classmethod
+    def load(cls, dirname: str, **kwargs):
+        from merlion.models.factory import ModelFactory
+
+        config_path = os.path.join(dirname, cls.config_class.filename)
+        with open(config_path, "r") as f:
+            config_dict = json.load(f)
+
+        model_type = config_dict.pop("model_type")
+        model = ModelFactory.load(model_type, os.path.join(dirname, cls.filename))
+        return cls._from_config_state_dicts(config_dict, model, **kwargs)
+
+    @classmethod
+    def _from_config_state_dicts(cls, config_dict, model, **kwargs):
+        config = cls.config_class.from_dict(config_dict)
+        ret = cls(config=config)
+        ret.model = model
+        return ret
+
+    def to_bytes(self, **save_config):
+        config_dict = self.config.to_dict()
+        model_tuple = self.model._to_serializable_comps(**save_config)
+        class_name = type(self).__name__
+        return dill.dumps((class_name, config_dict, model_tuple))
+
+    @classmethod
+    def from_bytes(cls, obj, **kwargs):
+        from merlion.models.factory import ModelFactory
+
+        class_name, config_dict, model_tuple = dill.loads(obj)
+        model = [ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])]
+        return cls._from_config_state_dicts(config_dict, model, **kwargs)
 
 
 class DefaultModelConfig(Config):

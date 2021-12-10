@@ -60,6 +60,8 @@ class Config(object):
 
     filename = "config.json"
     _default_transform = Identity()
+    transform: TransformBase
+    dim: Optional[int]
 
     def __init__(self, transform: TransformBase = None, **kwargs):
         """
@@ -72,6 +74,22 @@ class Config(object):
             self.transform = TransformFactory.create(**transform)
         else:
             self.transform = transform
+        self.dim = None
+
+    @property
+    def depth(self):
+        """
+        Merlion contains layered models, where a top-level model acts as a wrapper for an underlying model.
+        The depth indicates the number of layers to the overall model. Base models have depth 0.
+        """
+        return 0
+
+    @property
+    def base_model(self):
+        """
+        The base model of a base model is itself.
+        """
+        return self
 
     def to_dict(self, _skipped_keys=None):
         """
@@ -161,6 +179,11 @@ class ModelBase(metaclass=AutodocABCMeta):
     config_class = Config
     _default_train_config = None
 
+    train_data: Optional[TimeSeries] = None
+    """
+    The data used to train the model.
+    """
+
     def __init__(self, config: Config):
         assert isinstance(config, self.config_class)
         self.config = deepcopy(config)
@@ -186,6 +209,11 @@ class ModelBase(metaclass=AutodocABCMeta):
                     f"'{type(self).__name__}' object has no attribute '{name}'. "
                     f"'{name}' is an invalid kwarg for the load() method."
                 )
+
+    def __reduce__(self):
+        state_dict = self.__getstate__()
+        config = state_dict.pop("config")
+        return self.__class__, (config,), state_dict
 
     @property
     def transform(self):
@@ -425,54 +453,122 @@ class ModelBase(metaclass=AutodocABCMeta):
         return self.__copy__()
 
 
-class ModelWrapper(ModelBase, metaclass=AutodocABCMeta):
+class LayeredModelConfig(Config):
+    def __init__(self, model, **kwargs):
+        from merlion.models.factory import ModelFactory
+
+        if isinstance(model, dict):
+            kwargs["return_unused_kwargs"] = True
+            model, kwargs = ModelFactory.create(**{**model, **kwargs})
+        self.model = model
+        super().__init__(**kwargs)
+
+    @property
+    def depth(self):
+        """
+        The depth of the layered model, i.e. the number of steps until we hit a base model.
+        """
+        return self.model.config.depth + 1
+
+    @property
+    def base_model(self):
+        """
+        The base model at the heart of the full layered model.
+        """
+        model = self
+        for _ in range(self.depth):
+            model = model.model
+        return model
+
+    def to_dict(self, _skipped_keys=None):
+        _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
+        config_dict = super().to_dict(_skipped_keys.union({"model"}))
+        if "model" not in _skipped_keys:
+            config_dict["model"] = {"name": type(self.model).__name__, **self.model.config.to_dict()}
+        return config_dict
+
+    def __copy__(self):
+        config_dict = super().to_dict(_skipped_keys={"model"})
+        model = deepcopy(self.model)
+        return self.__class__(model=model, **config_dict)
+
+    def __getattr__(self, item):
+        from merlion.models.anomaly.base import DetectorBase, DetectorConfig
+        from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+
+        if isinstance(self.base_model, ForecasterBase) and hasattr(ForecasterConfig, item):
+            return getattr(self.model.config, item)
+
+        if isinstance(self.base_model, DetectorBase) and hasattr(DetectorConfig, item):
+            return getattr(self.model.config, item)
+
+        return self.__getattribute__(item)
+
+
+class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     """
     Abstract class implementing a model that wraps around another internal model.
     """
 
-    filename = "model"
+    config_class = LayeredModelConfig
 
-    def __init__(self, config: Config, model: ModelBase = None):
-        super().__init__(config)
-        self.model = model
+    def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
+        msg = f"Expected exactly one of config.model or model when initializing Layered model {type(self).__name__}."
+        if config is None and model is None:
+            raise RuntimeError(f"{msg} Received neither.")
+        elif config is not None and model is not None:
+            if config.model is None:
+                config.model = model
+            else:
+                raise RuntimeError(f"{msg} Received both.")
+        elif config is None:
+            config = self.config_class(model=model, **kwargs)
+        super().__init__(config=config)
 
-    def save(self, dirname: str, **save_config):
-        config_dict = self.config.to_dict()
-        config_dict["model_type"] = type(self.model).__name__
-        os.makedirs(dirname, exist_ok=True)
-        with open(os.path.join(dirname, self.config_class.filename), "w") as f:
-            json.dump(config_dict, f, indent=2, sort_keys=True)
-        self.model.save(os.path.join(dirname, self.filename), **save_config)
+    @property
+    def model(self):
+        return self.config.model
 
-    @classmethod
-    def load(cls, dirname: str, **kwargs):
-        from merlion.models.factory import ModelFactory
+    @model.setter
+    def model(self, model):
+        self.config.model = model
 
-        config_path = os.path.join(dirname, cls.config_class.filename)
-        with open(config_path, "r") as f:
-            config_dict = json.load(f)
+    @property
+    def base_model(self):
+        return self.config.base_model
 
-        model_type = config_dict.pop("model_type")
-        model = ModelFactory.load(model_type, os.path.join(dirname, cls.filename))
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)
+    def reset(self):
+        self.model.reset()
+        self.__init__(config=self.config)
 
-    @classmethod
-    def _from_config_state_dicts(cls, config_dict, model, **kwargs):
-        config = cls.config_class.from_dict(config_dict)
-        ret = cls(config=config)
-        ret.model = model
-        return ret
+    def __getstate__(self):
+        state = super().__getstate__()
+        state["model"] = self.model.__getstate__()
+        return state
 
-    def to_bytes(self, **save_config):
-        config_dict = self.config.to_dict()
-        model_tuple = self.model._to_serializable_comps(**save_config)
-        class_name = type(self).__name__
-        return dill.dumps((class_name, config_dict, model_tuple))
+    def __setstate__(self, state):
+        if "model" in state:
+            model_state = state.pop("model")
+            self.model.__setstate__(model_state)
+        super().__setstate__(state)
 
-    @classmethod
-    def from_bytes(cls, obj, **kwargs):
-        from merlion.models.factory import ModelFactory
+    def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
+        # don't save config for any of the sub-models
+        sub_state = state_dict
+        for d in range(self.config.depth):
+            sub_state.pop("config", None)
+            sub_state = sub_state["model"]
+        return super()._save_state(state_dict, filename, **save_config)
 
-        class_name, config_dict, model_tuple = dill.loads(obj)
-        model = [ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])]
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)
+    def __getattr__(self, item):
+        from merlion.models.anomaly.base import DetectorBase
+        from merlion.models.forecast.base import ForecasterBase
+
+        base_model = self.base_model
+        if isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item):
+            return getattr(base_model, item)
+
+        if isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item):
+            return getattr(base_model, item)
+
+        return self.__getattribute__(item)

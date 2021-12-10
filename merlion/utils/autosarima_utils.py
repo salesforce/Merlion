@@ -4,14 +4,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-import time
-import numpy as np
-import statsmodels.api as sm
-import warnings
 import functools
+import logging
+import time
+import warnings
+
+import numpy as np
 from numpy.linalg import LinAlgError
 from scipy.signal import argrelmax
-import logging
+import statsmodels.api as sm
 
 logger = logging.getLogger(__name__)
 

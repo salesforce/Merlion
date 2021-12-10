@@ -119,7 +119,7 @@ class ETS(ForecasterBase):
                 min_periodicty = 0
             if min_periodicty > 1:
                 logger.info(f"Detect seasonality {str(min_periodicty)}")
-                self.config.seasonal_periods = min_periodicty.item()
+                self.config.seasonal_periods = min_periodicty
             else:
                 self.config.seasonal = None
                 self.config.seasonal_periods = None
