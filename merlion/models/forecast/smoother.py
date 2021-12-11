@@ -80,7 +80,7 @@ class MSESConfig(ForecasterConfig):
             errors of the estimated velocities over the models; inflation=1 is equivalent
             to using the softmax function.
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
         assert 0.0 <= rho <= 1.0
         assert 1.0 <= phi
         self.max_backstep = max_forecast_steps if max_backstep is None else max_backstep
