@@ -32,14 +32,8 @@ class SarimaConfig(ForecasterConfig):
 
     _default_transform = TemporalResample(granularity=None)
 
-    def __init__(
-        self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs
-    ):
+    def __init__(self, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs):
         """
-        :param max_forecast_steps: Number of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param order: Order is (p, d, q) for an ARIMA(p, d, q) process. d must
             be an integer indicating the integration order of the process, while
             p and q must be integers indicating the AR and MA orders (so that
@@ -48,7 +42,7 @@ class SarimaConfig(ForecasterConfig):
             process, where s is the length of the seasonality cycle (e.g. s=24
             for 24 hours on hourly granularity). P, D, Q are as for ARIMA.
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        super().__init__(**kwargs)
         self.order = order
         self.seasonal_order = seasonal_order
 

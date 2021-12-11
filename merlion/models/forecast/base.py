@@ -29,11 +29,10 @@ class ForecasterConfig(Config):
     max_forecast_steps: Optional[int]
     target_seq_index: Optional[int]
 
-    def __init__(self, max_forecast_steps: Union[int, None], target_seq_index: int = None, **kwargs):
+    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
-            Required for some models which pre-compute a forecast, like ARIMA,
-            SARIMA, and LSTM.
+            Required for some models like `MSES` and `LGBMForecaster`.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.

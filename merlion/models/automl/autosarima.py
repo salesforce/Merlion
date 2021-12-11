@@ -52,10 +52,6 @@ class AutoSarimaConfig(LayeredModelConfig, SarimaConfig):
         and seasonal MA parameters are implemented in a coupled way. Only when all these
         parameters are specified it will not trigger the automatic selection.
 
-        :param max_forecast_steps: Max number of steps we aim to forecast
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param order: Order is (p, d, q) for an ARIMA(p, d, q) process. d must
             be an integer indicating the integration order of the process, while
             p and q must be integers indicating the AR and MA orders (so that

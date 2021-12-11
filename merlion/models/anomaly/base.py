@@ -98,6 +98,9 @@ class NoCalibrationDetectorConfig(DetectorConfig):
     """
 
     def __init__(self, enable_calibrator=False, **kwargs):
+        """
+        :param enable_calibrator: ``False`` because this config assumes calibrated outputs from the model.
+        """
         super().__init__(enable_calibrator=enable_calibrator, **kwargs)
 
     @property

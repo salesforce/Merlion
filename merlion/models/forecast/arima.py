@@ -24,16 +24,11 @@ class ArimaConfig(SarimaConfig):
 
     _default_transform = TemporalResample(granularity=None, trainable_granularity=True)
 
-    def __init__(self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), **kwargs):
-        if "seasonal_order" in kwargs:
-            raise ValueError("cannot specify seasonal_order for ARIMA")
-        super().__init__(
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            order=order,
-            seasonal_order=(0, 0, 0, 0),
-            **kwargs
-        )
+    def __init__(self, order=(4, 1, 2), seasonal_order=(0, 0, 0, 0), **kwargs):
+        """
+        :param seasonal_order: (0, 0, 0, 0) because ARIMA has no seasonal order.
+        """
+        super().__init__(order=order, seasonal_order=seasonal_order, **kwargs)
 
     @property
     def seasonal_order(self) -> Tuple[int, int, int, int]:

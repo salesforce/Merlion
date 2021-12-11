@@ -24,7 +24,7 @@ from merlion.transform.factory import TransformFactory
 from merlion.transform.normalize import Rescale, MeanVarNormalize
 from merlion.transform.sequence import TransformSequence
 from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, TimeSeries
-from merlion.utils.misc import AutodocABCMeta
+from merlion.utils.misc import AutodocABCMeta, ModelConfigMeta
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def override_config(config, config_dict, return_unused_kwargs=False, **kwargs):
     return config
 
 
-class Config(object):
+class Config(object, metaclass=ModelConfigMeta):
     """
     Abstract class which defines a model config.
     """
