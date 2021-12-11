@@ -51,12 +51,13 @@ class ModelConfigMeta(type):
                 prefix_, params_ = parse_init_docstring(cls_.__init__.__doc__)
                 if prefix is None and any([line != "" for line in prefix_]):
                     prefix = "\n".join(prefix_)
-                for p, docstring_lines in params_.items():
-                    if p not in params:
-                        params[p] = "\n".join(docstring_lines)
+                for param, docstring_lines in params_.items():
+                    if param not in params:
+                        params[param] = "\n".join(docstring_lines)
 
         # Update the signature and docstring of __init__
         cls.__init__.__signature__ = sig
+        params = OrderedDict((p, params[p]) for p in sig.parameters if p in params)
         cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values())
         return cls
 
@@ -99,7 +100,7 @@ def parse_init_docstring(docstring):
         line = line[indent:]
         match = re.search(r":param\s*(\w+):", line)
         if match is not None:
-            param = match.group(0)
+            param = match.group(1)
             param_dict[param] = [line]
         elif len(param_dict) == 0:
             prefix.append(line)
