@@ -27,7 +27,8 @@ class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
 
     _default_combiner = Mean(abs_score=False)
 
-    def __init__(self, max_forecast_steps=None, **kwargs):
+    def __init__(self, max_forecast_steps=None, verbose=False, **kwargs):
+        self.verbose = verbose
         super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
 
 
@@ -84,7 +85,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         # Train individual models on the training data
         preds, errs = [], []
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
-            logger.info(f"Training model {i+1}/{len(self.models)}...")
+            logger.info(f"Training model {i+1}/{len(self.models)} ({type(model).__name__})...")
             try:
                 pred, err = model.train(train, cfg)
                 preds.append(pred)
@@ -117,7 +118,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                     t0, tf = valid.t0, valid.tf
                     valid_windows = []
                     preds = [[] for _ in self.models]
-                    pbar = tqdm(total=int(tf - t0), desc="Validation")
+                    pbar = tqdm(total=int(tf - t0), desc="Validation", disable=not self.config.verbose)
                     while t0 < tf:
                         next_tf = to_pd_datetime(prev.tf) + h
                         dt = int((next_tf - to_pd_datetime(prev.tf)).total_seconds())
@@ -154,12 +155,15 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         # Re-train on the full data if we used a validation split
         full_preds, full_errs = [], []
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
-            logger.info(f"Re-training model {i+1}/{len(self.models)} on full data...")
+            logger.info(f"Re-training model {i+1}/{len(self.models)} ({type(model).__name__}) on full data...")
             model.reset()
             pred, err = model.train(full_train, cfg)
             full_preds.append(pred)
             full_errs.append(err)
         err = None if any(e is None for e in full_errs) else self.combiner(full_errs, None)
+        if not all(self.models_used):
+            used = [f"{i+1} ({type(m).__name__})" for i, (m, u) in enumerate(zip(self.models, self.models_used)) if u]
+            logger.info(f"Models used (of {len(self.models)}): {', '.join(used)}")
         return self.combiner(full_preds, None), err
 
     def forecast(

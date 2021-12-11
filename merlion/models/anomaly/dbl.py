@@ -96,7 +96,8 @@ class DynamicBaselineConfig(DetectorConfig):
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
         config_dict = super().to_dict(_skipped_keys.union({"trends"}))
-        config_dict["trends"] = [t.name for t in self.trends]
+        if "trends" not in _skipped_keys:
+            config_dict["trends"] = [t.name for t in self.trends]
         return config_dict
 
 
