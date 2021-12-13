@@ -5,103 +5,36 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """Default models for anomaly detection & forecasting that balance speed and performance."""
-import dill
 import logging
-import json
-import os
 from typing import List, Optional, Tuple, Union
 
 from merlion.models.factory import ModelFactory
-from merlion.models.base import Config, ModelBase
-from merlion.models.anomaly.base import DetectorConfig, DetectorBase
-from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
+from merlion.models.base import LayeredModel, LayeredModelConfig
+from merlion.models.anomaly.base import DetectorBase
+from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries
-from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
 
 
-class ModelWrapper(ModelBase, metaclass=AutodocABCMeta):
-    """
-    Abstract class implementing a model that wraps around another internal model.
-    """
-
-    filename = "model"
-
-    def __init__(self, config: Config, model: ModelBase = None):
-        super().__init__(config)
-        self.model = model
-
-    def save(self, dirname: str, **save_config):
-        config_dict = self.config.to_dict()
-        config_dict["model_type"] = type(self.model).__name__
-        os.makedirs(dirname, exist_ok=True)
-        with open(os.path.join(dirname, self.config_class.filename), "w") as f:
-            json.dump(config_dict, f, indent=2, sort_keys=True)
-        self.model.save(os.path.join(dirname, self.filename), **save_config)
-
-    @classmethod
-    def load(cls, dirname: str, **kwargs):
-        from merlion.models.factory import ModelFactory
-
-        config_path = os.path.join(dirname, cls.config_class.filename)
-        with open(config_path, "r") as f:
-            config_dict = json.load(f)
-
-        model_type = config_dict.pop("model_type")
-        model = ModelFactory.load(model_type, os.path.join(dirname, cls.filename))
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)
-
-    @classmethod
-    def _from_config_state_dicts(cls, config_dict, model, **kwargs):
-        config = cls.config_class.from_dict(config_dict)
-        ret = cls(config=config)
-        ret.model = model
-        return ret
-
-    def to_bytes(self, **save_config):
-        config_dict = self.config.to_dict()
-        model_tuple = self.model._to_serializable_comps(**save_config)
-        class_name = type(self).__name__
-        return dill.dumps((class_name, config_dict, model_tuple))
-
-    @classmethod
-    def from_bytes(cls, obj, **kwargs):
-        from merlion.models.factory import ModelFactory
-
-        class_name, config_dict, model_tuple = dill.loads(obj)
-        model = [ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])]
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)
-
-
-class DefaultModelConfig(Config):
-    def __init__(self, granularity=None, **kwargs):
-        super().__init__()
-        self.granularity = granularity
-
-    def to_dict(self, _skipped_keys=None):
-        _skipped_keys = set() if _skipped_keys is None else _skipped_keys
-        return super().to_dict(_skipped_keys.union("transform"))
-
-
-class DefaultDetectorConfig(DetectorConfig, DefaultModelConfig):
+class DefaultDetectorConfig(LayeredModelConfig):
     """
     Config object for default anomaly detection model.
     """
 
-    def __init__(self, granularity=None, threshold=None, n_threads: int = 1, **kwargs):
+    def __init__(self, model=None, granularity=None, n_threads: int = 1, **kwargs):
         """
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
-        :param threshold: `Threshold` object setting a default anomaly detection
-            threshold in units of z-score.
         :param n_threads: the number of parallel threads to use for relevant models
         """
-        super().__init__(granularity=granularity, threshold=threshold, enable_threshold=True, enable_calibrator=False)
+        self.granularity = granularity
         self.n_threads = n_threads
+        super().__init__(model=model, **kwargs)
+        assert isinstance(self.base_model, DetectorBase)
 
 
-class DefaultDetector(ModelWrapper, DetectorBase):
+class DefaultDetector(LayeredModel):
     """
     Default anomaly detection model that balances efficiency with performance.
     """
@@ -128,7 +61,6 @@ class DefaultDetector(ModelWrapper, DetectorBase):
         if train_data.dim > 1:
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
-                enable_threshold=False,
                 models=[
                     ModelFactory.create("VAE", transform=transform_dict),
                     ModelFactory.create(
@@ -148,7 +80,6 @@ class DefaultDetector(ModelWrapper, DetectorBase):
             ets_transform = dict(name="TemporalResample", granularity=dt)
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
-                enable_threshold=False,
                 models=[
                     ModelFactory.create(
                         "ETSDetector", damped_trend=True, max_forecast_steps=None, transform=ets_transform
@@ -166,46 +97,31 @@ class DefaultDetector(ModelWrapper, DetectorBase):
             )
 
         train_data = self.train_pre_process(train_data, False, False)
-        train_scores = self.model.train(
+        return self.model.train(
             train_data=train_data,
             anomaly_labels=anomaly_labels,
             train_config=train_config,
             post_rule_train_config=post_rule_train_config,
         )
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
-
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        # we use get_anomaly_label() because the underlying model's calibration is
-        # enabled, but its threshold is enabled
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-        return self.model.get_anomaly_label(time_series, time_series_prev)
-
-    def get_anomaly_label(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        return super().get_anomaly_label(time_series, time_series_prev)
 
 
-class DefaultForecasterConfig(ForecasterConfig, DefaultModelConfig):
+class DefaultForecasterConfig(LayeredModelConfig):
     """
     Config object for default forecasting model.
     """
 
-    def __init__(self, granularity=None, max_forecast_steps=100, target_seq_index=None, **kwargs):
+    def __init__(self, max_forecast_steps=100, target_seq_index=None, granularity=None, **kwargs):
         """
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
-        :param target_seq_index: If doing multivariate forecasting, the index of
-            univariate whose value you wish to forecast.
         """
         super().__init__(
-            granularity=granularity, max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index
+            granularity=granularity, max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs
         )
+        assert isinstance(self.base_model, ForecasterBase)
 
 
-class DefaultForecaster(ModelWrapper, ForecasterBase):
+class DefaultForecaster(LayeredModel):
     """
     Default forecasting model that balances efficiency with performance.
     """
@@ -240,40 +156,3 @@ class DefaultForecaster(ModelWrapper, ForecasterBase):
             self.model = ModelFactory.create("ETS", damped_trend=True, **kwargs)
         train_data = self.train_pre_process(train_data, False, False)
         return self.model.train(train_data=train_data, train_config=train_config)
-
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr: bool = False,
-        return_prev: bool = False,
-    ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
-        """
-        Returns the model's forecast on the timestamps given.
-
-        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for,
-            or the number of steps (``int``) we wish to forecast for.
-        :param time_series_prev: a list of (timestamp, value) pairs immediately
-            preceding ``time_series``. If given, we use it to initialize the time
-            series model. Otherwise, we assume that ``time_series`` immediately
-            follows the training data.
-        :param return_iqr: whether to return the inter-quartile range for the
-            forecast. Note that not all models support this option.
-        :param return_prev: whether to return the forecast for
-            ``time_series_prev`` (and its stderr or IQR if relevant), in addition
-            to the forecast for ``time_stamps``. Only used if ``time_series_prev``
-            is provided.
-        :return: ``(forecast, forecast_stderr)`` if ``return_iqr`` is false,
-            ``(forecast, forecast_lb, forecast_ub)`` otherwise.
-
-            - ``forecast``: the forecast for the timestamps given
-            - ``forecast_stderr``: the standard error of each forecast value.
-                May be ``None``.
-            - ``forecast_lb``: 25th percentile of forecast values for each timestamp
-            - ``forecast_ub``: 75th percentile of forecast values for each timestamp
-        """
-        if time_series_prev is not None:
-            time_series_prev = self.transform(time_series_prev)
-        return self.model.forecast(
-            time_stamps=time_stamps, time_series_prev=time_series_prev, return_iqr=return_iqr, return_prev=return_prev
-        )
