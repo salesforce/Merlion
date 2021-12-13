@@ -69,7 +69,7 @@ class AutoSarimaConfig(LayeredModelConfig):
         :param approx_iter: The number of iterations to perform in approximation mode
         """
         if model is None:
-            model = {"name": "Sarima"}
+            model = dict(name="Sarima", transform=dict(name="Identity"))
         super().__init__(model=model, **kwargs)
 
         self.order = order
@@ -97,9 +97,11 @@ class AutoSarimaConfig(LayeredModelConfig):
         self.model.config.seasonal_order = so
 
 
-class AutoSarima(AutoMLMixIn, SeasonalityModel):
+class AutoSarima(AutoMLMixIn):
 
     config_class = AutoSarimaConfig
+    require_even_sampling = True
+    require_univariate = True
 
     def _generate_sarima_parameters(self, train_data: TimeSeries) -> dict:
         y = train_data.univariates[self.target_name].np_values
@@ -440,6 +442,3 @@ class AutoSarima(AutoMLMixIn, SeasonalityModel):
         order, seasonal_order, trend = theta
         model.config.order = order
         model.config.seasonal_order = seasonal_order
-
-    def set_seasonality(self, theta, train_data):
-        self.model.set_seasonality(theta, train_data)

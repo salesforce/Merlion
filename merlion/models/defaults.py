@@ -96,8 +96,7 @@ class DefaultDetector(LayeredModel):
                 ],
             )
 
-        train_data = self.train_pre_process(train_data, False, False)
-        return self.model.train(
+        return super().train(
             train_data=train_data,
             anomaly_labels=anomaly_labels,
             train_config=train_config,
@@ -154,5 +153,4 @@ class DefaultForecaster(LayeredModel):
         # ETS for univariate data
         else:
             self.model = ModelFactory.create("ETS", damped_trend=True, **kwargs)
-        train_data = self.train_pre_process(train_data, False, False)
-        return self.model.train(train_data=train_data, train_config=train_config)
+        return super().train(train_data=train_data, train_config=train_config)

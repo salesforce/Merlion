@@ -29,13 +29,12 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     config_class = LayeredModelConfig
 
     def train(self, train_data: TimeSeries, **kwargs):
-        original_train_data = train_data
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+        train_data = self.train_pre_process(
+            train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
+        )
 
         candidate_thetas = self.generate_theta(train_data)
-        # need to call evaluate_theta on original training data since evaluate_theta often trains another model
-        # and therefore we might be applying transform twice
-        theta, model, train_result = self.evaluate_theta(candidate_thetas, original_train_data, **kwargs)
+        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, **kwargs)
         if model is not None:
             self.model = model
             return train_result
@@ -44,11 +43,11 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
             model.reset()
             self.set_theta(model, theta, train_data)
             self.model = model
-            return self.model.train(original_train_data, **kwargs)
+            return self.model.train(train_data, **kwargs)
 
     @abstractmethod
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
-        """
+        r"""
         :param train_data: Training data to use for generation of hyperparameters :math:`\theta`
 
         Returns an iterator of hyperparameter candidates for consideration with th underlying model.
@@ -59,7 +58,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
     ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
-        """
+        r"""
         :param thetas: Iterator of the hyperparameter candidates
         :param train_data: Training data
         :param train_config: Training configuration
@@ -70,7 +69,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
 
     @abstractmethod
     def set_theta(self, model, theta, train_data: TimeSeries = None):
-        """
+        r"""
         :param model: Underlying base model to which the new theta is applied
         :param theta: Hyperparameter to apply
         :param train_data: Training data (Optional)

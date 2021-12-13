@@ -7,12 +7,13 @@
 """
 Automatic seasonality detection.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 import logging
 from typing import Iterator, Tuple, Optional, Any
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import LayeredModelConfig, ModelBase
+from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries, autosarima_utils
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ class SeasonalityModel(ABC):
     behavior for seasonality processing.
     """
 
+    @abstractmethod
     def set_seasonality(self, theta, train_data):
         """
         Implement this method to do any model-specific adjustments on the seasonality that was provided by
@@ -33,10 +35,13 @@ class SeasonalityModel(ABC):
         :param train_data: Training data (or numpy array representing the target univariate)
             for any model-specific adjustments you might want to make.
         """
-        self.seasonality = theta
+        raise NotImplementedError
 
 
 class SeasonalityConfig(LayeredModelConfig):
+
+    _default_transform = TemporalResample()
+
     def __init__(self, model, periodicity_strategy="max", **kwargs):
         """
         :param periodicity_strategy: selection strategy when detecting multiple
@@ -54,6 +59,8 @@ class SeasonalityLayer(AutoMLMixIn, ABC):
     """
 
     config_class = SeasonalityConfig
+    require_univariate = True
+    require_even_sampling = True
 
     @property
     def periodicity_strategy(self):

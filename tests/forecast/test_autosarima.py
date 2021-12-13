@@ -6,7 +6,6 @@
 #
 import logging
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -16,7 +15,6 @@ import pandas as pd
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.automl.autosarima import AutoSarima, AutoSarimaConfig
 from merlion.models.automl.seasonality_mixin import SeasonalityLayer
-from merlion.models.forecast.sarima import Sarima
 from merlion.utils import TimeSeries, autosarima_utils
 
 logger = logging.getLogger(__name__)
@@ -785,6 +783,7 @@ class TestAutoSarima(unittest.TestCase):
         data = np.concatenate([train_data, test_data])
         data = TimeSeries.from_pd(pd.Series(data))
         self.train_data = data[: len(train_data)]
+        self.train_data = self.train_data[:-50] + self.train_data[-49:]  # test robustness to missing data
         self.test_data = data[len(train_data) :]
         self.max_forecast_steps = len(self.test_data)
         self.model = SeasonalityLayer(
@@ -794,6 +793,7 @@ class TestAutoSarima(unittest.TestCase):
                     seasonal_order=(2, "auto", 1, "auto"),
                     max_forecast_steps=self.max_forecast_steps,
                     maxiter=5,
+                    transform=dict(name="Identity"),
                 )
             )
         )

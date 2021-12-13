@@ -546,6 +546,8 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     """
 
     config_class = LayeredModelConfig
+    require_even_sampling = False
+    require_univariate = False
 
     def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
         msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {type(self).__name__}."
@@ -600,10 +602,43 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         from merlion.models.forecast.base import ForecasterBase
 
         base_model = self.base_model
-        if isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item):
-            return getattr(base_model, item)
+        attr = getattr(base_model, item, None)
 
-        if isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item):
-            return getattr(base_model, item)
+        # If the base model is a forecaster, we can access forecaster attributes
+        if isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item):
+            return attr
+
+        # If the base model is an anomaly detector, we can access anomaly detector attributes
+        elif isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item):
+            return attr
+
+        # We can always access callable attributes of the base model
+        elif callable(attr):
+            return attr
 
         return self.__getattribute__(item)
+
+    def train(self, train_data: TimeSeries, **kwargs):
+        train_data = self.train_pre_process(
+            train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
+        )
+        return self.model.train(train_data, **kwargs)
+
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+        from merlion.models.anomaly.base import DetectorBase
+
+        if not isinstance(self.base_model, DetectorBase):
+            raise NotImplementedError("Model does not wrap an anomaly detection model.")
+
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        return self.model.get_anomaly_score(time_series, time_series_prev)
+
+    def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
+        from merlion.models.forecast.base import ForecasterBase
+
+        if not isinstance(self.base_model, ForecasterBase):
+            raise NotImplementedError("Model does not wrap a forecasting model.")
+
+        if time_series_prev is not None:
+            time_series_prev = self.transform(time_series_prev)
+        return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)
