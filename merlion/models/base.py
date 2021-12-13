@@ -117,6 +117,9 @@ class Config(object, metaclass=ModelConfigMeta):
 
         :return: `Config` object initialized from the dict.
         """
+        dim = config_dict.pop("dim", None)
+        if "dim" not in kwargs:
+            kwargs["dim"] = dim
         config = cls(**config_dict)
         return override_config(
             config=config, config_dict=config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs
@@ -216,6 +219,10 @@ class ModelBase(metaclass=AutodocABCMeta):
         return self.__class__, (config,), state_dict
 
     @property
+    def dim(self):
+        return self.config.dim
+
+    @property
     def transform(self):
         """
         :return: The data pre-processing transform to apply on any time series,
@@ -267,6 +274,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :return: the training data, after any necessary pre-processing has been applied
         """
         self.train_data = train_data
+        self.config.dim = train_data.dim
         self.transform.train(train_data)
         train_data = self.transform(train_data)
 
@@ -454,21 +462,44 @@ class ModelBase(metaclass=AutodocABCMeta):
 
 
 class LayeredModelConfig(Config):
-    def __init__(self, model, **kwargs):
+    def __init__(self, model, model_kwargs=None, **kwargs):
         from merlion.models.factory import ModelFactory
 
+        # Model-specific kwargs override kwargs when creating the model.
+        model_kwargs = {} if model_kwargs is None else model_kwargs
         if isinstance(model, dict):
-            kwargs["return_unused_kwargs"] = True
-            model, kwargs = ModelFactory.create(**{**model, **kwargs})
+            model, kwargs = ModelFactory.create(**{**model, **kwargs, **model_kwargs, "return_unused_kwargs": True})
         self.model = model
         super().__init__(**kwargs)
+
+        # If no model was created, reserve unused kwargs to try initializing the model with
+        if model is None:
+            extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
+            self.model_kwargs = {**extra_kwargs, **model_kwargs}
+
+    @property
+    def dim(self):
+        return self.model.dim
+
+    @dim.setter
+    def dim(self, dim):
+        pass
 
     @property
     def depth(self):
         """
         The depth of the layered model, i.e. the number of steps until we hit a base model.
         """
-        return self.model.config.depth + 1
+        return 0 if self.model is None else self.model.config.depth + 1
+
+    @property
+    def model(self):
+        return self._model
+
+    @model.setter
+    def model(self, model):
+        self._model = model
+        self.model_kwargs = {}
 
     @property
     def base_model(self):
@@ -483,14 +514,18 @@ class LayeredModelConfig(Config):
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
         config_dict = super().to_dict(_skipped_keys.union({"model"}))
+        if not self.model_kwargs and "model_kwargs" in config_dict:
+            config_dict["model_kwargs"] = None
         if "model" not in _skipped_keys:
-            config_dict["model"] = {"name": type(self.model).__name__, **self.model.config.to_dict()}
+            if self.model is None:
+                config_dict["model"] = None
+            else:
+                config_dict["model"] = dict(name=type(self.model).__name__, **self.model.config.to_dict())
         return config_dict
 
     def __copy__(self):
         config_dict = super().to_dict(_skipped_keys={"model"})
-        model = deepcopy(self.model)
-        return self.__class__(model=model, **config_dict)
+        return self.__class__(model=deepcopy(self.model), **config_dict)
 
     def __getattr__(self, item):
         from merlion.models.anomaly.base import DetectorBase, DetectorConfig
@@ -513,7 +548,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     config_class = LayeredModelConfig
 
     def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
-        msg = f"Expected exactly one of config.model or model when initializing Layered model {type(self).__name__}."
+        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {type(self).__name__}."
         if config is None and model is None:
             raise RuntimeError(f"{msg} Received neither.")
         elif config is not None and model is not None:

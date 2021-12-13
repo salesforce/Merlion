@@ -25,7 +25,7 @@ from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 logger = logging.getLogger(__name__)
 
 
-class AutoSarimaConfig(LayeredModelConfig, SarimaConfig):
+class AutoSarimaConfig(LayeredModelConfig):
     """
     Configuration class for `AutoSarima`.
     """
@@ -69,10 +69,7 @@ class AutoSarimaConfig(LayeredModelConfig, SarimaConfig):
         :param approx_iter: The number of iterations to perform in approximation mode
         """
         if model is None:
-            model = {}
-        if isinstance(model, dict):
-            sarima_config, _ = SarimaConfig.from_dict({**model, **kwargs}, return_unused_kwargs=True)
-            model = Sarima(sarima_config)
+            model = {"name": "Sarima"}
         super().__init__(model=model, **kwargs)
 
         self.order = order

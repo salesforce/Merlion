@@ -76,19 +76,11 @@ class DetectorConfig(Config):
 
     @classmethod
     def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
-        # Get the calibrator, but we will set it manually after the constructor
-        config_dict = copy(config_dict)
+        # Get the calibrator, but we will set it manually after the constructor by putting it in kwargs
         calibrator_config = config_dict.pop("calibrator", None)
-        config, kwargs = super().from_dict(config_dict, return_unused_kwargs=True, **kwargs)
         if calibrator_config is not None:
-            config.calibrator = PostRuleFactory.create(**calibrator_config)
-
-        # Return unused kwargs if desired
-        if len(kwargs) > 0 and not return_unused_kwargs:
-            logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
-        elif return_unused_kwargs:
-            return config, kwargs
-        return config
+            kwargs["calibrator"] = PostRuleFactory.create(**calibrator_config)
+        return super().from_dict(config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs)
 
 
 class NoCalibrationDetectorConfig(DetectorConfig):

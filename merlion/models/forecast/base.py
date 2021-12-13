@@ -41,14 +41,6 @@ class ForecasterConfig(Config):
         self.max_forecast_steps = max_forecast_steps
         self.target_seq_index = target_seq_index
 
-    @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
-        config_dict = copy.copy(config_dict)
-        dim = config_dict.pop("dim", None)
-        if "dim" not in kwargs:
-            kwargs["dim"] = dim
-        return super().from_dict(config_dict, return_unused_kwargs, **kwargs)
-
 
 class ForecasterBase(ModelBase):
     """
@@ -86,10 +78,6 @@ class ForecasterBase(ModelBase):
             general multivariate time series) whose value we would like to forecast.
         """
         return self.config.target_seq_index
-
-    @property
-    def dim(self):
-        return self.config.dim
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
@@ -138,7 +126,6 @@ class ForecasterBase(ModelBase):
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
-        self.config.dim = train_data.dim
         train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
         if self.dim == 1:
             self.config.target_seq_index = 0
