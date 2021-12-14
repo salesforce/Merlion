@@ -32,8 +32,8 @@ class DetectorConfig(Config):
     """
 
     _default_threshold = AggregateAlarms(alm_threshold=3.0)
-    calibrator: AnomScoreCalibrator
-    threshold: Threshold
+    calibrator: AnomScoreCalibrator = None
+    threshold: Threshold = None
 
     def __init__(
         self, max_score: float = 1000, threshold=None, enable_calibrator=True, enable_threshold=True, **kwargs

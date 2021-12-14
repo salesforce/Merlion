@@ -9,7 +9,7 @@ import logging
 from typing import Optional, Tuple
 
 from merlion.models.factory import ModelFactory
-from merlion.models.layers import LayeredModel, LayeredModelConfig
+from merlion.models.layers import LayeredDetector, LayeredForecaster, LayeredModelConfig
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries
@@ -34,7 +34,7 @@ class DefaultDetectorConfig(LayeredModelConfig):
         assert self.base_model is None or isinstance(self.base_model, DetectorBase)
 
 
-class DefaultDetector(LayeredModel, DetectorBase):
+class DefaultDetector(LayeredDetector):
     """
     Default anomaly detection model that balances efficiency with performance.
     """
@@ -129,7 +129,7 @@ class DefaultForecasterConfig(LayeredModelConfig):
         assert self.base_model is None or isinstance(self.base_model, ForecasterBase)
 
 
-class DefaultForecaster(LayeredModel, ForecasterBase):
+class DefaultForecaster(LayeredForecaster):
     """
     Default forecasting model that balances efficiency with performance.
     """

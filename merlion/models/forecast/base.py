@@ -25,8 +25,8 @@ class ForecasterConfig(Config):
     Config object used to define a forecaster model.
     """
 
-    max_forecast_steps: Optional[int]
-    target_seq_index: Optional[int]
+    max_forecast_steps: Optional[int] = None
+    target_seq_index: Optional[int] = None
 
     def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
         """

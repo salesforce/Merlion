@@ -16,23 +16,31 @@ from merlion.models.base import Config, ModelBase
 from merlion.models.factory import ModelFactory
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 
 class LayeredModelConfig(Config):
+    """
+    Config object for a `LayeredModel`. See `LayeredModel` documentation for more details.
+    """
+
     def __init__(self, model: Union[ModelBase, Dict], model_kwargs=None, **kwargs):
         """
-        :param model: The model being wrapped, or a ``dict`` representing it.
+        :param model: The model being wrapped, or a dict representing it.
         :param model_kwargs: Keyword arguments used specifically to initialize the underlying model. Only used if
-            ``model`` is a ``dict``.
-        :param kwargs: Any other keyword arguments (e.g. for initializing a base class). If ``model`` is a ``dict``,
-            we will also try to pass these arguments when creating the actual underlying model.
+            ``model`` is a dict. Will override keys in the ``model`` dict if specified.
+        :param kwargs: Any other keyword arguments (e.g. for initializing a base class). If ``model`` is a dict,
+            we will also try to pass these arguments when creating the actual underlying model. However, they will
+            not override arguments in either the ``model`` dict or ``model_kwargs`` dict.
         """
         # Model-specific kwargs override kwargs when creating the model.
         model_kwargs = {} if model_kwargs is None else model_kwargs
         if isinstance(model, dict):
-            model, kwargs = ModelFactory.create(**{**model, **kwargs, **model_kwargs, "return_unused_kwargs": True})
+            model.update({k: v for k, v in kwargs.items() if k not in model and k not in model_kwargs})
+            model, extra_kwargs = ModelFactory.create(**{**model, **model_kwargs, "return_unused_kwargs": True})
+            kwargs.update(extra_kwargs)
         self.model = model
         super().__init__(**kwargs)
 
@@ -97,12 +105,56 @@ class LayeredModelConfig(Config):
 
 class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     """
-    Abstract class implementing a model that wraps around another internal model.
+    Abstract class implementing a model which wraps around another internal model.
+
+    The actual underlying model is stored in ``model.config.model``, and ``model.model`` is a property which references
+    this. This is to allow the model to retain the initializer ``LayeredModel(config)``, and to ensure that various
+    attributes do not become de-synchronized (e.g. if we were to store ``config.model_config`` and ``model.model``
+    separately).
+
+    We define the _base model_ as the non-layered model at the base of the overall model hierarchy.
+
+    The layered model is allowed to access any callable attribute of the base model,
+    e.g. ``model.set_seasonality(...)`` resolves to``model.base_model.set_seasonality(...)`` for a `SeasonalityModel`.
+    If the base model is a forecaster, the layered model will automatically inherit from `ForecasterBase`; similarly
+    for `DetectorBase` or `ForecastingDetectorBase`. The abstract methods (``forecast`` and ``get_anomaly_score``)
+    are overridden to call the underlying model.
+
+    If the base model is a forecaster, the top-level config ``model.config`` does not duplicate attributes of the
+    underlying forecaster config (e.g. ``max_forecast_steps`` or ``target_seq_index``). Instead,
+    ``model.config.max_forecast_steps`` will resolve to ``model.config.base_model.max_forecast_steps``.
+    As a result, you will only need to specify this parameter once. The same holds true for `DetectorConfig` attributes
+    (e.g. ``threshold`` or ``calibrator``) when the base model is an anomaly detector.
+
+    .. note::
+
+        For the time being, every layer of the model is allowed to have its own ``transform``.
     """
 
     config_class = LayeredModelConfig
     require_even_sampling = False
     require_univariate = False
+
+    def __new__(cls, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
+        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel."
+        if config is None and model is None:
+            raise RuntimeError(f"{msg} Received neither.")
+        elif config is not None and model is not None:
+            if config.model is None:
+                config.model = model
+            else:
+                raise RuntimeError(f"{msg} Received both.")
+        elif config is None:
+            config = cls.config_class(model=model, **kwargs)
+
+        # Dynamically inherit from the appropriate kind of base model
+        if isinstance(config.model, ForecastingDetectorBase):
+            cls = cls.__class__(cls.__name__, (cls, LayeredForecastingDetector), {})
+        elif isinstance(config.model, ForecasterBase):
+            cls = cls.__class__(cls.__name__, (cls, LayeredForecaster), {})
+        elif isinstance(config.model, DetectorBase):
+            cls = cls.__class__(cls.__name__, (cls, LayeredDetector), {})
+        return super().__new__(cls)
 
     def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
         msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {type(self).__name__}."
@@ -154,32 +206,33 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     def __getattr__(self, item):
         """
-        We can get callable attributes from the base model, as well as attributes from `ForecasterBase` or
-        `DetectorBase` if the base model is (respectively) a forecaster or anomaly detector.
+        We can get callable attributes from the base model.
         """
         base_model = self.base_model
         attr = getattr(base_model, item, None)
-        is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item)
-        is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item)
-        if callable(attr) or is_detector_attr or is_forecaster_attr:
+        if callable(attr):
             return attr
         return self.__getattribute__(item)
 
-    def train(self, train_data: TimeSeries, **kwargs):
+    def train(self, train_data: TimeSeries, *args, **kwargs):
         train_data = self.train_pre_process(
             train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
         )
-        return self.model.train(train_data, **kwargs)
+        return self.model.train(train_data, *args, **kwargs)
 
+
+class LayeredDetector(LayeredModel, DetectorBase):
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        if not isinstance(self.base_model, DetectorBase):
-            raise NotImplementedError(f"Base model is a {type(self.base_model)}, which is not an anomaly detector.")
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
+
+class LayeredForecaster(LayeredModel, ForecasterBase):
     def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
-        if not isinstance(self.base_model, ForecasterBase):
-            raise NotImplementedError(f"Base model is a {type(self.base_model)}, which is not a forecaster.")
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
         return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)
+
+
+class LayeredForecastingDetector(LayeredForecaster, ForecastingDetectorBase):
+    pass

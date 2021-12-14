@@ -7,7 +7,7 @@
 """
 Automatic seasonality detection.
 """
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import logging
 from typing import Iterator, Tuple, Optional, Any
 
@@ -16,11 +16,12 @@ from merlion.models.base import ModelBase
 from merlion.models.layers import LayeredModelConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries, autosarima_utils
+from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
 
 
-class SeasonalityModel(ABC):
+class SeasonalityModel(metaclass=AutodocABCMeta):
     """
     Class provides simple implementation to set the seasonality in a model. Extend this class to implement custom
     behavior for seasonality processing.
@@ -53,7 +54,7 @@ class SeasonalityConfig(LayeredModelConfig):
         super().__init__(model=model, **kwargs)
 
 
-class SeasonalityLayer(AutoMLMixIn, ABC):
+class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     """
     Seasonality Layer that uses AutoSARIMA-like methods to determine seasonality of your data. Can be used directly on
     any model that implements `SeasonalityModel` class.

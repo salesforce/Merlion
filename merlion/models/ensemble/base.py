@@ -7,7 +7,6 @@
 """
 Base class for ensembles of models.
 """
-from abc import ABC
 import copy
 import json
 import logging
@@ -23,6 +22,7 @@ from merlion.models.base import ModelBase, Config
 from merlion.models.ensemble.combine import CombinerBase, CombinerFactory, Mean
 from merlion.models.factory import ModelFactory
 from merlion.utils import TimeSeries
+from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ class EnsembleTrainConfig:
         self.per_model_train_configs = per_model_train_configs
 
 
-class EnsembleBase(ModelBase, ABC):
+class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
     """
     An abstract class representing an ensemble of multiple models.
     """

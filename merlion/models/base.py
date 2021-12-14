@@ -60,8 +60,8 @@ class Config(object, metaclass=ModelConfigMeta):
 
     filename = "config.json"
     _default_transform = Identity()
-    transform: TransformBase
-    dim: Optional[int]
+    transform: TransformBase = None
+    dim: Optional[int] = None
 
     def __init__(self, transform: TransformBase = None, **kwargs):
         """
