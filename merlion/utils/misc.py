@@ -53,12 +53,12 @@ class ModelConfigMeta(type):
                     prefix = "\n".join(prefix_)
                 for param, docstring_lines in params_.items():
                     if param not in params:
-                        params[param] = "\n".join(docstring_lines)
+                        params[param] = "\n".join(docstring_lines).rstrip("\n")
 
         # Update the signature and docstring of __init__
         cls.__init__.__signature__ = sig
         params = OrderedDict((p, params[p]) for p in sig.parameters if p in params)
-        cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values())
+        cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values()) + "\n"
         return cls
 
 

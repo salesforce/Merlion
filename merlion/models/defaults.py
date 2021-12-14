@@ -6,10 +6,10 @@
 #
 """Default models for anomaly detection & forecasting that balance speed and performance."""
 import logging
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Tuple
 
 from merlion.models.factory import ModelFactory
-from merlion.models.base import LayeredModel, LayeredModelConfig
+from merlion.models.layers import LayeredModel, LayeredModelConfig
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries
@@ -31,10 +31,10 @@ class DefaultDetectorConfig(LayeredModelConfig):
         self.granularity = granularity
         self.n_threads = n_threads
         super().__init__(model=model, **kwargs)
-        assert isinstance(self.base_model, DetectorBase)
+        assert self.base_model is None or isinstance(self.base_model, DetectorBase)
 
 
-class DefaultDetector(LayeredModel):
+class DefaultDetector(LayeredModel, DetectorBase):
     """
     Default anomaly detection model that balances efficiency with performance.
     """
@@ -109,18 +109,27 @@ class DefaultForecasterConfig(LayeredModelConfig):
     Config object for default forecasting model.
     """
 
-    def __init__(self, max_forecast_steps=100, target_seq_index=None, granularity=None, **kwargs):
+    def __init__(self, model=None, max_forecast_steps=100, target_seq_index=None, granularity=None, **kwargs):
         """
+        :param max_forecast_steps: Max # of steps we would like to forecast for.
+            Required for some models like `MSES` and `LGBMForecaster`.
+        :param target_seq_index: The index of the univariate (amongst all
+            univariates in a general multivariate time series) whose value we
+            would like to forecast.
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
         """
         super().__init__(
-            granularity=granularity, max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs
+            model=model,
+            max_forecast_steps=max_forecast_steps,
+            target_seq_index=target_seq_index,
+            granularity=granularity,
+            model_kwargs=kwargs,
         )
-        assert isinstance(self.base_model, ForecasterBase)
+        assert self.base_model is None or isinstance(self.base_model, ForecasterBase)
 
 
-class DefaultForecaster(LayeredModel):
+class DefaultForecaster(LayeredModel, ForecasterBase):
     """
     Default forecasting model that balances efficiency with performance.
     """
