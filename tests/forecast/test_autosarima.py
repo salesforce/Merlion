@@ -849,15 +849,15 @@ class TestAutoSarima(unittest.TestCase):
         loaded_score = loaded.get_anomaly_label(self.test_data)
         self.assertSequenceEqual(list(score), list(loaded_score))
 
-    def test_auto_pqPQ(self):
+    def test_autosarima(self):
         print("-" * 80)
-        logger.info("TestAutoSarima.test_auto_pqPQ\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=True, seasonality_layer=False, expected_sMAPE=4.5151)
-
-    def test_fixed_pqPQ(self):
-        print("-" * 80)
-        logger.info("TestAutoSarima.test_fixed_pqPQ\n" + "-" * 80 + "\n")
+        logger.info("TestAutoSarima.test_autosarima\n" + "-" * 80 + "\n")
         self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
+
+    def test_seasonality_layer(self):
+        print("-" * 80)
+        logger.info("TestAutoSarima.test_seasonality_layer\n" + "-" * 80 + "\n")
+        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.4130)
 
 
 if __name__ == "__main__":
