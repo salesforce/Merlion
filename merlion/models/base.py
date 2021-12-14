@@ -478,28 +478,23 @@ class LayeredModelConfig(Config):
             self.model_kwargs = {**extra_kwargs, **model_kwargs}
 
     @property
-    def dim(self):
-        return self.model.dim
-
-    @dim.setter
-    def dim(self, dim):
-        pass
-
-    @property
-    def depth(self):
-        """
-        The depth of the layered model, i.e. the number of steps until we hit a base model.
-        """
-        return 0 if self.model is None else self.model.config.depth + 1
-
-    @property
     def model(self):
+        """
+        The underlying model which this layer wraps.
+        """
         return self._model
 
     @model.setter
     def model(self, model):
         self._model = model
         self.model_kwargs = {}
+
+    @property
+    def depth(self):
+        """
+        The depth of the layered model, i.e. the number of layers until we hit a base model. Base models have depth 0.
+        """
+        return 0 if self.model is None else self.model.config.depth + 1
 
     @property
     def base_model(self):
@@ -531,12 +526,11 @@ class LayeredModelConfig(Config):
         from merlion.models.anomaly.base import DetectorBase, DetectorConfig
         from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 
-        if isinstance(self.base_model, ForecasterBase) and hasattr(ForecasterConfig, item):
-            return getattr(self.model.config, item)
-
-        if isinstance(self.base_model, DetectorBase) and hasattr(DetectorConfig, item):
-            return getattr(self.model.config, item)
-
+        base_model = self.base_model
+        is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorConfig, item)
+        is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, item)
+        if is_detector_attr or is_forecaster_attr:
+            return getattr(base_model.config, item)
         return self.__getattribute__(item)
 
 
@@ -598,24 +592,19 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return super()._save_state(state_dict, filename, **save_config)
 
     def __getattr__(self, item):
+        """
+        We can get callable attributes from the base model, as well as attributes from `ForecasterBase` or
+        `DetectorBase` if the base model is (respectively) a forecaster or anomaly detector.
+        """
         from merlion.models.anomaly.base import DetectorBase
         from merlion.models.forecast.base import ForecasterBase
 
         base_model = self.base_model
         attr = getattr(base_model, item, None)
-
-        # If the base model is a forecaster, we can access forecaster attributes
-        if isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item):
+        is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item)
+        is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterBase, item)
+        if callable(attr) or is_detector_attr or is_forecaster_attr:
             return attr
-
-        # If the base model is an anomaly detector, we can access anomaly detector attributes
-        elif isinstance(base_model, DetectorBase) and hasattr(DetectorBase, item):
-            return attr
-
-        # We can always access callable attributes of the base model
-        elif callable(attr):
-            return attr
-
         return self.__getattribute__(item)
 
     def train(self, train_data: TimeSeries, **kwargs):
@@ -628,8 +617,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         from merlion.models.anomaly.base import DetectorBase
 
         if not isinstance(self.base_model, DetectorBase):
-            raise NotImplementedError("Model does not wrap an anomaly detection model.")
-
+            raise NotImplementedError(f"Base model is a {type(self.base_model)}, which is not an anomaly detector.")
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
@@ -637,8 +625,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         from merlion.models.forecast.base import ForecasterBase
 
         if not isinstance(self.base_model, ForecasterBase):
-            raise NotImplementedError("Model does not wrap a forecasting model.")
-
+            raise NotImplementedError(f"Base model is a {type(self.base_model)}, which is not a forecaster.")
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
         return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)

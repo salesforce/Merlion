@@ -10,7 +10,7 @@ merlion.models.automl package
 .. autosummary::
     base
     autosarima
-    seasonality_mixin
+    seasonality
 
 Submodules
 ----------
@@ -32,10 +32,10 @@ merlion.models.automl.autosarima module
    :show-inheritance:
 
 
-merlion.models.automl.seasonality_mixin module
-----------------------------------------------
+merlion.models.automl.seasonality module
+----------------------------------------
 
-.. automodule:: merlion.models.automl.seasonality_mixin
+.. automodule:: merlion.models.automl.seasonality
    :members:
    :undoc-members:
    :show-inheritance:

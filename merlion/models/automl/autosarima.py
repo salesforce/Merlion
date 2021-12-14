@@ -16,9 +16,8 @@ from typing import Any, Optional, Tuple, Union
 import numpy as np
 
 from merlion.models.automl.base import AutoMLMixIn
-from merlion.models.automl.seasonality_mixin import SeasonalityModel
 from merlion.models.base import LayeredModelConfig
-from merlion.models.forecast.sarima import SarimaConfig, Sarima
+from merlion.models.forecast.sarima import Sarima
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 
@@ -35,8 +34,9 @@ class AutoSarimaConfig(LayeredModelConfig):
     def __init__(
         self,
         model: Union[Sarima, dict] = None,
-        order=("auto", "auto", "auto"),
-        seasonal_order=("auto", "auto", "auto", "auto"),
+        auto_pqPQ: bool = True,
+        auto_d: bool = True,
+        auto_D: bool = True,
         maxiter: int = None,
         max_k: int = 100,
         max_dur: float = 3600,
@@ -52,13 +52,9 @@ class AutoSarimaConfig(LayeredModelConfig):
         and seasonal MA parameters are implemented in a coupled way. Only when all these
         parameters are specified it will not trigger the automatic selection.
 
-        :param order: Order is (p, d, q) for an ARIMA(p, d, q) process. d must
-            be an integer indicating the integration order of the process, while
-            p and q must be integers indicating the AR and MA orders (so that
-            all lags up to those orders are included).
-        :param seasonal_order: Seasonal order is (P, D, Q, S) for seasonal ARIMA
-            process, where s is the length of the seasonality cycle (e.g. s=24
-            for 24 hours on hourly granularity). P, D, Q are as for ARIMA.
+        :param auto_pqPQ: Whether to automatically choose AR/MA orders ``p, q`` and seasonal AR/MA orders ``P, Q``.
+        :param auto_d: Whether to automatically choose the difference order ``d``.
+        :param auto_D: Whether to automatically choose the seasonal difference order ``D``.
         :param maxiter: The maximum number of iterations to perform
         :param max_k: Maximum number of models considered in the stepwise search
         :param max_dur: Maximum training time considered in the stepwise search
@@ -72,8 +68,11 @@ class AutoSarimaConfig(LayeredModelConfig):
             model = dict(name="Sarima", transform=dict(name="Identity"))
         super().__init__(model=model, **kwargs)
 
-        self.order = order
-        self.seasonal_order = seasonal_order
+        p, d, q = self.order
+        P, D, Q, m = self.seasonal_order
+        self.auto_pqPQ = auto_pqPQ or any(not isinstance(x, (int, float)) for x in (p, q, P, Q))
+        self.auto_d = auto_d or not isinstance(d, (int, float))
+        self.auto_D = auto_D or not isinstance(D, (int, float))
         self.maxiter = maxiter
         self.max_k = max_k
         self.max_dur = max_dur
@@ -84,17 +83,9 @@ class AutoSarimaConfig(LayeredModelConfig):
     def order(self):
         return self.model.order
 
-    @order.setter
-    def order(self, o):
-        self.model.config.order = o
-
     @property
     def seasonal_order(self):
         return self.model.seasonal_order
-
-    @seasonal_order.setter
-    def seasonal_order(self, so):
-        self.model.config.seasonal_order = so
 
 
 class AutoSarima(AutoMLMixIn):
@@ -135,38 +126,27 @@ class AutoSarima(AutoMLMixIn):
         trend = None
         information_criterion = "aic"
 
-        n_samples = y.shape[0]
-        if n_samples <= 3:
-            information_criterion = "aic"
-
-        # check y
-        if y.ndim > 1:
-            raise ValueError("auto_sarima can only handle univariate time series")
-        if any(np.isnan(y)):
-            raise ValueError("there exists missing values in observed time series")
-
-        # detect seasonality
-        m = seasonal_order[-1]
+        # check seasonality
+        m = max(1, seasonal_order[-1])
         if not isinstance(m, (int, float)):
             m = 1
             warnings.warn(
-                "Set periodicity to 1, use the SeasonalityLayer()" "wrapper to automatically detect seasonality."
+                "Set seasonality to 1, use the `SeasonalityLayer` wrapper to automatically detect seasonality."
             )
-        elif m < 1:
-            m = 1
 
         #  adjust max p,q,P,Q start p,q,P,Q
+        n_samples = len(y)
         max_p = int(min(max_p, np.floor(n_samples / 3)))
         max_q = int(min(max_q, np.floor(n_samples / 3)))
-        max_P = int(min(max_P, np.floor(n_samples / 3 / m))) if m != 1 else 0
-        max_Q = int(min(max_Q, np.floor(n_samples / 3 / m))) if m != 1 else 0
+        max_P = int(min(max_P, np.floor(n_samples / 3 / m)))
+        max_Q = int(min(max_Q, np.floor(n_samples / 3 / m)))
         start_p = min(start_p, max_p)
         start_q = min(start_q, max_q)
         start_P = min(start_P, max_Q)
         start_Q = min(start_Q, max_Q)
 
         #  set the seasonal differencing order with statistical test
-        D = seasonal_order[1] if seasonal_order[1] != "auto" else None
+        D = None if self.config.auto_D else seasonal_order[1]
         D = 0 if m == 1 else D
         xx = y.copy()
         if stationary:
@@ -182,7 +162,7 @@ class AutoSarima(AutoMLMixIn):
 
         #  set the differencing order by estimating the number of orders
         #  it would take in order to make the time series stationary
-        d = order[1] if order[1] != "auto" else autosarima_utils.ndiffs(dx, alpha=0.05, max_d=max_d, test=test)
+        d = autosarima_utils.ndiffs(dx, alpha=0.05, max_d=max_d, test=test) if self.config.auto_d else order[1]
         if stationary:
             d = 0
         if d > 0:
@@ -191,9 +171,7 @@ class AutoSarima(AutoMLMixIn):
 
         # pqPQ is an indicator about whether need to automatically select
         # AR, MA, seasonal AR and seasonal MA parameters
-        pqPQ = None
-        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" and seasonal_order[2] != "auto":
-            pqPQ = True
+        pqPQ = not self.config.auto_pqPQ
 
         # automatically detect whether to use approximation method and the periodicity
         if approximation is None:
@@ -284,7 +262,7 @@ class AutoSarima(AutoMLMixIn):
         if np.max(y) == np.min(y):
             order = [0, 0, 0]
             seasonal_order = [0, 0, 0, 0]
-        elif pqPQ is not None:
+        elif pqPQ:
             action = "pqPQ"
             order[1] = d
             seasonal_order[1] = D
@@ -297,7 +275,7 @@ class AutoSarima(AutoMLMixIn):
         elif stepwise:
             action = "stepwise"
 
-        return iter([{"action": action, "theta": [order, seasonal_order, trend]}])
+        return iter([{"action": action, "theta": [order, seasonal_order, trend], "val_dict": val_dict}])
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
@@ -311,36 +289,18 @@ class AutoSarima(AutoMLMixIn):
             train_config["enforce_stationarity"] = False
         if "enforce_invertibility" not in train_config:
             train_config["enforce_invertibility"] = False
-        val_dict = self._generate_sarima_parameters(train_data)
+        val_dict = theta_value["val_dict"]
         y = val_dict["y"]
         X = val_dict["X"]
-        p = val_dict["p"]
-        d = val_dict["d"]
-        q = val_dict["q"]
-        P = val_dict["P"]
-        D = val_dict["D"]
-        Q = val_dict["Q"]
-        m = val_dict["m"]
-        max_p = val_dict["max_p"]
-        max_q = val_dict["max_q"]
-        max_P = val_dict["max_P"]
-        max_Q = val_dict["max_Q"]
-        trend = val_dict["trend"]
         method = val_dict["method"]
         maxiter = val_dict["maxiter"]
         information_criterion = val_dict["information_criterion"]
         approximation = val_dict["approximation"]
-        refititer = val_dict["refititer"]
-        relative_improve = val_dict["relative_improve"]
-        max_k = val_dict["max_k"]
-        max_dur = val_dict["max_dur"]
         approx_iter = val_dict["approx_iter"]
 
         # use zero model to automatically detect the optimal maxiter
         if maxiter is None:
-            maxiter = autosarima_utils.detect_maxiter_sarima_model(
-                y=y, X=X, d=d, D=D, m=m, method=method, information_criterion=information_criterion
-            )
+            maxiter = autosarima_utils.detect_maxiter_sarima_model(**val_dict)
 
         if theta_value["action"] == "stepwise":
             refititer = maxiter
@@ -352,29 +312,7 @@ class AutoSarima(AutoMLMixIn):
                 logger.info(f"Fitting models using approximations(approx_iter is {str(maxiter)}) to speed things up")
 
             # stepwise search
-            stepwise_search = autosarima_utils._StepwiseFitWrapper(
-                y=y,
-                X=X,
-                p=p,
-                d=d,
-                q=q,
-                P=P,
-                D=D,
-                Q=Q,
-                m=m,
-                max_p=max_p,
-                max_q=max_q,
-                max_P=max_P,
-                max_Q=max_Q,
-                trend=trend,
-                method=method,
-                maxiter=maxiter,
-                information_criterion=information_criterion,
-                relative_improve=relative_improve,
-                max_k=max_k,
-                max_dur=max_dur,
-                **train_config,
-            )
+            stepwise_search = autosarima_utils._StepwiseFitWrapper(**{**val_dict, **train_config})
             filtered_models_ics = stepwise_search.stepwisesearch()
 
             if approximation:
@@ -399,11 +337,10 @@ class AutoSarima(AutoMLMixIn):
                     logger.info(f"Best model: {autosarima_utils._model_name(best_model_fit.model)}")
                 else:
                     raise ValueError("Could not successfully fit a viable SARIMA model")
+
         elif theta_value["action"] == "pqPQ":
             best_model_theta = theta_value["theta"]
-            order = theta_value["theta"][0]
-            seasonal_order = theta_value["theta"][1]
-            trend = theta_value["theta"][2]
+            order, seasonal_order, trend = theta_value["theta"]
             if seasonal_order[3] == 1:
                 seasonal_order = [0, 0, 0, 0]
             best_model_fit, fit_time, ic = autosarima_utils._fit_sarima_model(
@@ -417,6 +354,7 @@ class AutoSarima(AutoMLMixIn):
                 information_criterion=information_criterion,
                 **train_config,
             )
+
         else:
             return theta_value, None, None
 

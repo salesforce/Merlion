@@ -161,7 +161,7 @@ def _refit_sarima_model(model_fitted, approx_ic, method, inititer, maxiter, info
     return best_fit
 
 
-def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
+def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **kwargs):
     """
     run a zero model with SARIMA(2; d; 2)(1; D; 1) / ARIMA(2; d; 2) determine the optimal maxiter
     """
