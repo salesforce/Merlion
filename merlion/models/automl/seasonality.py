@@ -79,16 +79,13 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         y = train_data.univariates[self.target_name]
-
-        periodicity_strategy = self.periodicity_strategy
-
         periods = autosarima_utils.multiperiodicity_detection(y)
         if len(periods) > 0:
-            if periodicity_strategy == "min":
+            if self.periodicity_strategy == "min":
                 m = periods[0]
             else:
                 m = periods[-1]
         else:
             m = 1
         logger.info(f"Automatically detect the periodicity is {str(m)}")
-        return iter([m])
+        return iter([int(m)])

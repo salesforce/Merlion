@@ -10,13 +10,11 @@ Automatic hyperparameter selection for SARIMA.
 from collections import Iterator
 from copy import deepcopy
 import logging
-import warnings
 from typing import Any, Optional, Tuple, Union
 
 import numpy as np
 
-from merlion.models.automl.base import AutoMLMixIn
-from merlion.models.layers import LayeredModelConfig
+from merlion.models.automl.seasonality import SeasonalityConfig, SeasonalityLayer
 from merlion.models.forecast.sarima import Sarima
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
@@ -24,9 +22,17 @@ from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 logger = logging.getLogger(__name__)
 
 
-class AutoSarimaConfig(LayeredModelConfig):
+class AutoSarimaConfig(SeasonalityConfig):
     """
-    Configuration class for `AutoSarima`.
+    Configuration class for `AutoSarima`. Acts as a wrapper around a `Sarima` model, which automatically detects
+    the seasonality, (seasonal) differencing order, and (seasonal) AR/MA orders. If a non-numeric value is specified
+    for any of the relevant parameters in the order or seasonal order, we assume that the user wishes to detect that
+    parameter automatically.
+
+    .. note::
+
+        The automatic selection of AR, MA, seasonal AR, and seasonal MA parameters is implemented in a coupled way.
+        The user must specify all of these parameters explicitly to avoid automatic selection.
     """
 
     _default_transform = TemporalResample()
@@ -34,6 +40,8 @@ class AutoSarimaConfig(LayeredModelConfig):
     def __init__(
         self,
         model: Union[Sarima, dict] = None,
+        auto_seasonality: bool = True,
+        periodicity_strategy: str = "max",
         auto_pqPQ: bool = True,
         auto_d: bool = True,
         auto_D: bool = True,
@@ -45,13 +53,7 @@ class AutoSarimaConfig(LayeredModelConfig):
         **kwargs,
     ):
         """
-        For order and seasonal_order, 'auto' indicates automatically select the parameter.
-        Now autosarima support automatically select differencing order, length of the
-        seasonality cycle, seasonal differencing order, and the rest of AR, MA, seasonal AR
-        and seasonal MA parameters. Note that automatic selection of AR, MA, seasonal AR
-        and seasonal MA parameters are implemented in a coupled way. Only when all these
-        parameters are specified it will not trigger the automatic selection.
-
+        :param auto_seasonality: Whether to automatically detect the seasonality.
         :param auto_pqPQ: Whether to automatically choose AR/MA orders ``p, q`` and seasonal AR/MA orders ``P, Q``.
         :param auto_d: Whether to automatically choose the difference order ``d``.
         :param auto_D: Whether to automatically choose the seasonal difference order ``D``.
@@ -66,10 +68,11 @@ class AutoSarimaConfig(LayeredModelConfig):
         """
         if model is None:
             model = dict(name="Sarima", transform=dict(name="Identity"))
-        super().__init__(model=model, **kwargs)
+        super().__init__(model=model, periodicity_strategy=periodicity_strategy, **kwargs)
 
         p, d, q = self.order
         P, D, Q, m = self.seasonal_order
+        self.auto_seasonality = auto_seasonality or not isinstance(m, (int, float))
         self.auto_pqPQ = auto_pqPQ or any(not isinstance(x, (int, float)) for x in (p, q, P, Q))
         self.auto_d = auto_d or not isinstance(d, (int, float))
         self.auto_D = auto_D or not isinstance(D, (int, float))
@@ -88,7 +91,7 @@ class AutoSarimaConfig(LayeredModelConfig):
         return self.model.seasonal_order
 
 
-class AutoSarima(AutoMLMixIn):
+class AutoSarima(SeasonalityLayer):
 
     config_class = AutoSarimaConfig
     require_even_sampling = True
@@ -126,13 +129,12 @@ class AutoSarima(AutoMLMixIn):
         trend = None
         information_criterion = "aic"
 
-        # check seasonality
-        m = max(1, seasonal_order[-1])
-        if not isinstance(m, (int, float)):
-            m = 1
-            warnings.warn(
-                "Set seasonality to 1, use the `SeasonalityLayer` wrapper to automatically detect seasonality."
-            )
+        # auto-detect seasonality if desired, otherwise just get it from seasonal order
+        if self.config.auto_seasonality:
+            candidate_m = super().generate_theta(train_data=train_data)
+            m, _, _ = super().evaluate_theta(thetas=candidate_m, train_data=train_data)
+        else:
+            m = max(1, seasonal_order[-1])
 
         #  adjust max p,q,P,Q start p,q,P,Q
         n_samples = len(y)

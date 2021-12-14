@@ -787,20 +787,23 @@ class TestAutoSarima(unittest.TestCase):
         self.test_data = data[len(train_data) :]
         self.max_forecast_steps = len(self.test_data)
 
-    def run_test(self, auto_pqPQ, expected_sMAPE):
-        self.model = SeasonalityLayer(
-            model=AutoSarima(
-                config=AutoSarimaConfig(
-                    auto_pqPQ=auto_pqPQ,
-                    order=(15, "auto", 5),
-                    seasonal_order=(2, "auto", 1, "auto"),
-                    max_forecast_steps=self.max_forecast_steps,
-                    maxiter=5,
-                    transform=dict(name="Identity"),
-                    model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
-                )
+    def run_test(self, auto_pqPQ: bool, seasonality_layer: bool, expected_sMAPE: float):
+        model = AutoSarima(
+            config=AutoSarimaConfig(
+                auto_seasonality=not seasonality_layer,
+                auto_pqPQ=auto_pqPQ,
+                order=(15, "auto", 5),
+                seasonal_order=(2, 1, 1, 0),
+                max_forecast_steps=self.max_forecast_steps,
+                maxiter=5,
+                transform=dict(name="Identity") if seasonality_layer else None,
+                model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
             )
         )
+        if seasonality_layer:
+            self.model = SeasonalityLayer(model=model)
+        else:
+            self.model = model
 
         train_pred, train_err = self.model.train(
             self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
@@ -849,12 +852,12 @@ class TestAutoSarima(unittest.TestCase):
     def test_auto_pqPQ(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_auto_pqPQ\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=True, expected_sMAPE=4.5151)
+        self.run_test(auto_pqPQ=True, seasonality_layer=False, expected_sMAPE=4.5151)
 
     def test_fixed_pqPQ(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_fixed_pqPQ\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=False, expected_sMAPE=3.4130)
+        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
 
 
 if __name__ == "__main__":
