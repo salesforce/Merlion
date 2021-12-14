@@ -12,7 +12,7 @@ from collections import Iterator
 from copy import deepcopy
 from typing import Tuple, Optional, Any
 
-from merlion.models.base import LayeredModel, LayeredModelConfig
+from merlion.models.layers import LayeredModel, LayeredModelConfig
 from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta

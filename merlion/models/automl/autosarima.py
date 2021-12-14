@@ -16,7 +16,7 @@ from typing import Any, Optional, Tuple, Union
 import numpy as np
 
 from merlion.models.automl.base import AutoMLMixIn
-from merlion.models.base import LayeredModelConfig
+from merlion.models.layers import LayeredModelConfig
 from merlion.models.forecast.sarima import Sarima
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries

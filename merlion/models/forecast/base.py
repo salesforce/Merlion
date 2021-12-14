@@ -8,9 +8,8 @@
 Base class for forecasting models.
 """
 from abc import abstractmethod
-import copy
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import pandas as pd
 

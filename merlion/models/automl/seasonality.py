@@ -12,7 +12,8 @@ import logging
 from typing import Iterator, Tuple, Optional, Any
 
 from merlion.models.automl.base import AutoMLMixIn
-from merlion.models.base import LayeredModelConfig, ModelBase
+from merlion.models.base import ModelBase
+from merlion.models.layers import LayeredModelConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries, autosarima_utils
 
