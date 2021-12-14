@@ -136,18 +136,8 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     require_univariate = False
 
     def __new__(cls, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
-        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel."
-        if config is None and model is None:
-            raise RuntimeError(f"{msg} Received neither.")
-        elif config is not None and model is not None:
-            if config.model is None:
-                config.model = model
-            else:
-                raise RuntimeError(f"{msg} Received both.")
-        elif config is None:
-            config = cls.config_class(model=model, **kwargs)
-
         # Dynamically inherit from the appropriate kind of base model
+        config = cls._resolve_args(config=config, model=model, **kwargs)
         if isinstance(config.model, ForecastingDetectorBase):
             cls = cls.__class__(cls.__name__, (cls, LayeredForecastingDetector), {})
         elif isinstance(config.model, ForecasterBase):
@@ -157,7 +147,11 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return super().__new__(cls)
 
     def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
-        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {type(self).__name__}."
+        super().__init__(config=self._resolve_args(config=config, model=model, **kwargs))
+
+    @classmethod
+    def _resolve_args(cls, config: LayeredModelConfig, model: ModelBase, **kwargs):
+        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {cls.__name__}."
         if config is None and model is None:
             raise RuntimeError(f"{msg} Received neither.")
         elif config is not None and model is not None:
@@ -166,8 +160,8 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             else:
                 raise RuntimeError(f"{msg} Received both.")
         elif config is None:
-            config = self.config_class(model=model, **kwargs)
-        super().__init__(config=config)
+            config = cls.config_class(model=model, **kwargs)
+        return config
 
     @property
     def model(self):
@@ -222,12 +216,20 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
 
 class LayeredDetector(LayeredModel, DetectorBase):
+    """
+    Base class for a layered anomaly detector. Only to be used as a subclass.
+    """
+
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
 
 class LayeredForecaster(LayeredModel, ForecasterBase):
+    """
+    Base class for a layered forecaster. Only to be used as a subclass.
+    """
+
     def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
         if time_series_prev is not None:
             time_series_prev = self.transform(time_series_prev)
@@ -235,4 +237,8 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
 
 
 class LayeredForecastingDetector(LayeredForecaster, ForecastingDetectorBase):
+    """
+    Base class for a layered forecasting detector. Only to be used as a subclass.
+    """
+
     pass
