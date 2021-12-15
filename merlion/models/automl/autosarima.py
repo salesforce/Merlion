@@ -8,7 +8,7 @@
 Automatic hyperparameter selection for SARIMA.
 """
 from collections import Iterator
-from copy import deepcopy
+from copy import copy, deepcopy
 import logging
 from typing import Any, Optional, Tuple, Union
 
@@ -286,7 +286,7 @@ class AutoSarima(SeasonalityLayer):
         theta_value = thetas.__next__()
 
         # preprocess
-        train_config = train_config if train_config is not None else {}
+        train_config = copy(train_config) if train_config is not None else {}
         if "enforce_stationarity" not in train_config:
             train_config["enforce_stationarity"] = False
         if "enforce_invertibility" not in train_config:
@@ -312,6 +312,7 @@ class AutoSarima(SeasonalityLayer):
                 else:
                     maxiter = approx_iter
                 logger.info(f"Fitting models using approximations(approx_iter is {str(maxiter)}) to speed things up")
+            train_config["maxiter"] = maxiter
 
             # stepwise search
             stepwise_search = autosarima_utils._StepwiseFitWrapper(**{**val_dict, **train_config})
