@@ -234,7 +234,7 @@ def multiperiodicity_detection(x, max_lag=None):
     Returns a list of periods, which indicates the seasonal periods of the
     time series
     """
-    tcrit = 1.96
+    tcrit = 1.65
     if max_lag is None:
         max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
     xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
