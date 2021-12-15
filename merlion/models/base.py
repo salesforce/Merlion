@@ -125,6 +125,9 @@ class Config(object, metaclass=ModelConfigMeta):
             config=config, config_dict=config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs
         )
 
+    def __reduce__(self):
+        return self.__class__.from_dict, (self.to_dict(),)
+
     def __copy__(self):
         return self.from_dict(self.to_dict())
 

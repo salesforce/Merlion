@@ -137,13 +137,17 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     def __new__(cls, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
         # Dynamically inherit from the appropriate kind of base model
+        original_cls = cls
         config = cls._resolve_args(config=config, model=model, **kwargs)
         if isinstance(config.model, ForecastingDetectorBase):
             cls = cls.__class__(cls.__name__, (cls, LayeredForecastingDetector), {})
+            setattr(cls, "_original_cls", original_cls)
         elif isinstance(config.model, ForecasterBase):
             cls = cls.__class__(cls.__name__, (cls, LayeredForecaster), {})
+            setattr(cls, "_original_cls", original_cls)
         elif isinstance(config.model, DetectorBase):
             cls = cls.__class__(cls.__name__, (cls, LayeredDetector), {})
+            setattr(cls, "_original_cls", original_cls)
         return super().__new__(cls)
 
     def __init__(self, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
@@ -189,6 +193,11 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             model_state = state.pop("model")
             self.model.__setstate__(model_state)
         super().__setstate__(state)
+
+    def __reduce__(self):
+        state_dict = self.__getstate__()
+        config = state_dict.pop("config")
+        return getattr(self.__class__, "_original_cls", self.__class__), (config,), state_dict
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         # don't save config for any of the sub-models
