@@ -14,7 +14,7 @@ from typing import Any, Optional, Tuple, Union
 
 import numpy as np
 
-from merlion.models.automl.seasonality import SeasonalityConfig, SeasonalityLayer
+from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.models.forecast.sarima import Sarima
 from merlion.transform.resample import TemporalResample
 from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
@@ -41,7 +41,7 @@ class AutoSarimaConfig(SeasonalityConfig):
         self,
         model: Union[Sarima, dict] = None,
         auto_seasonality: bool = True,
-        periodicity_strategy: str = "max",
+        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.ACF,
         auto_pqPQ: bool = True,
         auto_d: bool = True,
         auto_D: bool = True,
@@ -283,7 +283,7 @@ class AutoSarima(SeasonalityLayer):
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
     ) -> Tuple[Any, Optional[Sarima], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
-        theta_value = thetas.__next__()
+        theta_value = next(thetas)
 
         # preprocess
         train_config = copy(train_config) if train_config is not None else {}

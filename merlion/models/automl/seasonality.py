@@ -8,8 +8,9 @@
 Automatic seasonality detection.
 """
 from abc import abstractmethod
+from enum import Enum, auto
 import logging
-from typing import Iterator, Tuple, Optional, Any
+from typing import Any, Iterator, Optional, Tuple, Union
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
@@ -19,6 +20,29 @@ from merlion.utils import TimeSeries, autosarima_utils
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
+
+
+class PeriodicityStrategy(Enum):
+    """
+    Strategy to choose the seasonality if multiple candidates are detected.
+    """
+
+    ACF = auto()
+    """
+    Select the seasonality value with the highest autocorrelation.
+    """
+    Min = auto()
+    """
+    Select the minimum seasonality.
+    """
+    Max = auto()
+    """
+    Select the maximum seasonality.
+    """
+    All = auto()
+    """
+    Use all seasonalities. Only valid for models which support multiple seasonalities.
+    """
 
 
 class SeasonalityModel(metaclass=AutodocABCMeta):
@@ -44,14 +68,47 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy="max", **kwargs):
+    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, **kwargs):
         """
-        :param periodicity_strategy: selection strategy when detecting multiple
-            periods. 'min' signifies to select the smallest period, while 'max' signifies to select
-            the largest period
+        :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
         """
         self.periodicity_strategy = periodicity_strategy
         super().__init__(model=model, **kwargs)
+
+    @property
+    def multi_seasonality(self):
+        """
+        :return: Whether the model supports multiple seasonalities.
+        """
+        return False
+
+    @property
+    def periodicity_strategy(self) -> PeriodicityStrategy:
+        """
+        :return: Strategy to choose the seasonality if multiple candidates are detected.
+        """
+        return self._periodicity_strategy
+
+    @periodicity_strategy.setter
+    def periodicity_strategy(self, p: Union[PeriodicityStrategy, str]):
+        if not isinstance(p, PeriodicityStrategy):
+            valid = {k.lower(): k for k in PeriodicityStrategy.__members__}
+            assert p.lower() in valid, f"Unsupported PeriodicityStrategy {p}. Supported strategies are: {valid.keys()}"
+            p = PeriodicityStrategy[valid[p.lower()]]
+
+        if p is PeriodicityStrategy.All and not self.multi_seasonality:
+            raise ValueError(
+                "Periodicity strategy All is not supported for a model which does not support multiple seasonalities."
+            )
+
+        self._periodicity_strategy = p
+
+    def to_dict(self, _skipped_keys=None):
+        _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
+        config_dict = super().to_dict(_skipped_keys.union({"periodicity_strategy"}))
+        if "periodicity_strategy" not in _skipped_keys:
+            config_dict["periodicity_strategy"] = self.periodicity_strategy.name
+        return config_dict
 
 
 class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
@@ -65,7 +122,17 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     require_even_sampling = True
 
     @property
+    def multi_seasonality(self):
+        """
+        :return: Whether the model supports multiple seasonalities.
+        """
+        return self.config.multi_seasonality
+
+    @property
     def periodicity_strategy(self):
+        """
+        :return: Strategy to choose the seasonality if multiple candidates are detected.
+        """
         return self.config.periodicity_strategy
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
@@ -74,18 +141,25 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
-        # assume only one seasonality is returned in this case
-        return next(thetas), None, None
+        # If multiple seasonalities are supported, return a list of all detected seasonalities
+        thetas = list(thetas)
+        if self.periodicity_strategy is PeriodicityStrategy.ACF:
+            m = [thetas[0]]
+        elif self.periodicity_strategy is PeriodicityStrategy.Min:
+            m = [min(thetas)]
+        elif self.periodicity_strategy is PeriodicityStrategy.Max:
+            m = [max(thetas)]
+        elif self.periodicity_strategy is PeriodicityStrategy.All:
+            m = thetas
+        else:
+            raise ValueError(f"Periodicity strategy {self.periodicity_strategy} not supported.")
+        theta = thetas if self.config.multi_seasonality else thetas[0]
+        logger.info(f"Automatically detect the periodicity is {str(m)}")
+        return theta, None, None
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         y = train_data.univariates[self.target_name]
         periods = autosarima_utils.multiperiodicity_detection(y)
-        if len(periods) > 0:
-            if self.periodicity_strategy == "min":
-                m = periods[0]
-            else:
-                m = periods[-1]
-        else:
-            m = 1
-        logger.info(f"Automatically detect the periodicity is {str(m)}")
-        return iter([int(m)])
+        if len(periods) == 0:
+            periods = [1]
+        return iter(periods)

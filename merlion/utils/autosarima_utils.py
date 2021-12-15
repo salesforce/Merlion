@@ -254,10 +254,9 @@ def multiperiodicity_detection(x, max_lag=None):
     clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
 
     # statistical test if acf is significant w.r.t a normal distribution
-    candidate_filter = []
-    for candidate in candidates:
-        if np.abs(xacf[candidate - 1]) > clim[candidate - 1] and candidate * 3 < x.shape[0]:
-            candidate_filter.append(candidate)
+    candidate_filter = candidates[xacf[candidates - 1] > clim[candidates - 1]]
+    # return candidate seasonalities, sorted by ACF value
+    candidate_filter = sorted(candidate_filter.tolist(), key=lambda c: xacf[c - 1], reverse=True)
     return candidate_filter
 
 
