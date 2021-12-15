@@ -314,7 +314,7 @@ def KPSS_stationaritytest(xx, alpha=0.05):
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        results = sm.tsa.stattools.kpss(xx, regression="ct", nlags=round(3 * np.sqrt(len(xx)) / 13))
+        results = sm.tsa.stattools.kpss(xx, regression="c", nlags=round(3 * np.sqrt(len(xx)) / 13))
     yout = results[1]
     return yout, yout < alpha
 
