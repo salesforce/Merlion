@@ -16,7 +16,7 @@ from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
 from merlion.models.layers import LayeredModelConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils import TimeSeries, autosarima_utils
+from merlion.utils import TimeSeries, UnivariateTimeSeries, autosarima_utils
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class SeasonalityModel(metaclass=AutodocABCMeta):
     """
 
     @abstractmethod
-    def set_seasonality(self, theta, train_data):
+    def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
         """
         Implement this method to do any model-specific adjustments on the seasonality that was provided by
         `SeasonalityLayer`.
@@ -65,6 +65,9 @@ class SeasonalityModel(metaclass=AutodocABCMeta):
 
 
 class SeasonalityConfig(LayeredModelConfig):
+    """
+    Config object for an automatic seasonality detection layer.
+    """
 
     _default_transform = TemporalResample()
 
@@ -78,7 +81,7 @@ class SeasonalityConfig(LayeredModelConfig):
     @property
     def multi_seasonality(self):
         """
-        :return: Whether the model supports multiple seasonalities.
+        :return: Whether the model supports multiple seasonalities. ``False`` unless explicitly overridden.
         """
         return False
 

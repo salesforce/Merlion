@@ -9,14 +9,15 @@ Wrapper around Facebook's popular Prophet model for time series forecasting.
 """
 import logging
 import os
-from typing import List, Tuple, Union
+from typing import Iterable, List, Tuple, Union
 
 import prophet
 import numpy as np
 import pandas as pd
 
+from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer, SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
-from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, autosarima_utils
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +68,6 @@ class ProphetConfig(ForecasterConfig):
         yearly_seasonality: Union[bool, int] = "auto",
         weekly_seasonality: Union[bool, int] = "auto",
         daily_seasonality: Union[bool, int] = "auto",
-        add_seasonality="auto",
         seasonality_mode="additive",
         holidays=None,
         uncertainty_samples: int = 100,
@@ -90,8 +90,6 @@ class ProphetConfig(ForecasterConfig):
             By default, it is activated if there are >= 2 days of history, but
             deactivated otherwise. If int, this is the number of Fourier series
             components used to model the seasonality (default = 4).
-        :param add_seasonality: 'auto' indicates automatically adding extra
-            seasonality by detection methods (default = None).
         :param seasonality_mode: 'additive' (default) or 'multiplicative'.
         :param holidays: pd.DataFrame with columns holiday (string) and ds (date type)
             and optionally columns lower_window and upper_window which specify a
@@ -106,13 +104,12 @@ class ProphetConfig(ForecasterConfig):
         self.yearly_seasonality = yearly_seasonality
         self.weekly_seasonality = weekly_seasonality
         self.daily_seasonality = daily_seasonality
-        self.add_seasonality = add_seasonality
         self.seasonality_mode = seasonality_mode
         self.uncertainty_samples = uncertainty_samples
         self.holidays = holidays
 
 
-class Prophet(ForecasterBase):
+class Prophet(SeasonalityModel, ForecasterBase):
     """
     Facebook's model for time series forecasting. See docs for `ProphetConfig`
     and `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__ for more details.
@@ -172,24 +169,18 @@ class Prophet(ForecasterBase):
     def uncertainty_samples(self):
         return self.config.uncertainty_samples
 
+    def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
+        theta = [theta] if not isinstance(theta, Iterable) else theta
+        dt = train_data.index[1] - train_data.index[0]
+        for p in theta:
+            period = p * dt.total_seconds() / 86400
+            logger.info(f"Add seasonality {str(p)} ({p * dt})")
+            self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
+
     def train(self, train_data: TimeSeries, train_config=None):
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
         series = train_data.univariates[self.target_name]
         df = pd.DataFrame({"ds": series.index, "y": series.np_values})
-
-        if self.add_seasonality == "auto":
-            periods = autosarima_utils.multiperiodicity_detection(series.np_values)
-            if len(periods) > 0:
-                max_periodicity = periods[-1]
-            else:
-                max_periodicity = 0
-            if max_periodicity > 1:
-                logger.info(f"Add seasonality {str(max_periodicity)}")
-                if hasattr(self.timedelta, "total_seconds"):
-                    period = max_periodicity * self.timedelta.total_seconds() / 86400
-                else:
-                    period = max_periodicity * (series.ds[1] - series.ds[0]).total_seconds() / 86400
-                self.model.add_seasonality(name="extra_season", period=period, fourier_order=max_periodicity)
 
         with _suppress_stdout_stderr():
             self.model.fit(df)
@@ -269,3 +260,34 @@ class Prophet(ForecasterBase):
             yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
             err = UnivariateTimeSeries(t, np.std(samples, axis=-1), f"{name}_err").to_ts()
             return yhat, err
+
+
+class AutoProphetConfig(SeasonalityConfig):
+    """
+    Config class for Prophet with automatic seasonality detection.
+    """
+
+    def __init__(
+        self,
+        model: Union[Prophet, dict] = None,
+        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.All,
+        **kwargs,
+    ):
+        model = dict(name="Prophet") if model is None else model
+        super().__init__(model=model, periodicity_strategy=periodicity_strategy, **kwargs)
+
+    @property
+    def multi_seasonality(self):
+        """
+        :return: ``True`` because Prophet supports multiple seasonality.
+        """
+        return True
+
+
+class AutoProphet(SeasonalityLayer):
+    """
+    Prophet with automatic seasonality detection. Automatically detects and adds
+    additional seasonalities that the existing Prophet may not detect (e.g. hourly).
+    """
+
+    config_class = AutoProphetConfig

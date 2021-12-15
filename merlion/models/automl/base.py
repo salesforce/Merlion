@@ -34,7 +34,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
         )
 
         candidate_thetas = self.generate_theta(train_data)
-        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, **kwargs)
+        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, kwargs)
         if model is not None:
             self.model = model
             return train_result

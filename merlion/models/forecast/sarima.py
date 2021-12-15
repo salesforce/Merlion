@@ -214,7 +214,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
             )
             return forecast, err
 
-    def set_seasonality(self, theta, train_data: np.array):
+    def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
         # Make sure seasonality is a positive int, and set it to 1 if the train data is constant
         theta = 1 if np.max(train_data) == np.min(train_data) else max(1, int(theta))
         self.config.seasonal_order = self.seasonal_order[:-1] + (theta,)

@@ -60,6 +60,7 @@ import_alias = dict(
     # Layers
     SeasonalityLayer="merlion.models.automl.seasonality:SeasonalityLayer",
     AutoSarima="merlion.models.automl.autosarima:AutoSarima",
+    AutoProphet="merlion.models.forecast.prophet:AutoProphet",
 )
 
 

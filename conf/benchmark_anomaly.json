@@ -96,6 +96,13 @@
     }
   },
 
+  "AutoProphetDetector": {"alias": "AutoProphet"},
+  "AutoProphet": {
+    "config": {
+      "default": {"model": {"name": "ProphetDetector"}}
+    }
+  },
+
   "StatThreshold": {
     "config": {
       "default": {}

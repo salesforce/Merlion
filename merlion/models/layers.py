@@ -245,7 +245,7 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
         return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)
 
 
-class LayeredForecastingDetector(LayeredForecaster, ForecastingDetectorBase):
+class LayeredForecastingDetector(LayeredForecaster, LayeredDetector, ForecastingDetectorBase):
     """
     Base class for a layered forecasting detector. Only to be used as a subclass.
     """
