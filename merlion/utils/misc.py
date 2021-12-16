@@ -36,6 +36,21 @@ class ModelConfigMeta(type):
     """
     Metaclass used to ensure that the function signatures for model `Config` initializers contain all
     relevant parameters, including those specified in the superclass. Also update docstrings accordingly.
+
+    For example, the only parameter of the base class `Config` is ``transform``. `ForecasterConfig` adds the
+    parameters ``max_forecast_steps`` and ``target_seq_index``. Because `Config` inherits from this metaclass,
+    we can declare
+
+    .. code::
+
+        class ForecasterConfig(Config):
+
+        def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
+            ...
+
+    and have the function signature for `ForecasterConfig`'s initializer include the parameter ``transform``,
+    even though we never declared it explicitly. Additionally, the docstring for ``transform`` is inherited
+    from the base class.
     """
 
     def __new__(mcs, classname, bases, cls_dict):
