@@ -63,7 +63,9 @@
 
   "AutoProphet": {
     "config": {
-      "default": {}
+      "default": {
+        "uncertainty_samples": 0
+      }
     }
   },
 
