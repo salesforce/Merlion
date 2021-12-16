@@ -62,19 +62,12 @@ class LayeredModelConfig(Config):
         self.model_kwargs = {}
 
     @property
-    def depth(self):
-        """
-        The depth of the layered model, i.e. the number of layers until we hit a base model. Base models have depth 0.
-        """
-        return 0 if self.model is None else self.model.config.depth + 1
-
-    @property
     def base_model(self):
         """
         The base model at the heart of the full layered model.
         """
         model = self.model
-        for _ in range(self.depth - 1):
+        while isinstance(model, LayeredModel):
             model = model.model
         return model
 
@@ -105,7 +98,7 @@ class LayeredModelConfig(Config):
     def get_unused_kwargs(self, **kwargs):
         config = self
         valid_keys = {"model"}.union(config.to_dict(_skipped_keys={"model"}).keys())
-        for _ in range(self.depth):
+        while isinstance(config, LayeredModelConfig):
             config = config.model.config
             valid_keys = valid_keys.union(config.to_dict(_skipped_keys={"model"}).keys())
         return {k: v for k, v in kwargs.items() if k not in valid_keys}
@@ -187,6 +180,15 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     def base_model(self):
         return self.config.base_model
 
+    @property
+    def train_data(self):
+        return None if self.model is None else self.model.train_data
+
+    @train_data.setter
+    def train_data(self, train_data):
+        if self.model is not None:
+            self.model.train_data = train_data
+
     def reset(self):
         self.model.reset()
         self.__init__(config=self.config)
@@ -209,10 +211,13 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         # don't save config for any of the sub-models
+        model = self
         sub_state = state_dict
-        for d in range(self.config.depth):
+        while isinstance(model, LayeredModel):
             sub_state.pop("config", None)
             sub_state = sub_state["model"]
+            model = model.model
+        sub_state.pop("config", None)
         return super()._save_state(state_dict, filename, **save_config)
 
     def __getattr__(self, item):

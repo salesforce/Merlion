@@ -53,14 +53,6 @@ class Config(object, metaclass=ModelConfigMeta):
         self.dim = None
 
     @property
-    def depth(self):
-        """
-        Merlion contains layered models, where a top-level model acts as a wrapper for an underlying model.
-        The depth indicates the number of layers to the overall model. Base models have depth 0.
-        """
-        return 0
-
-    @property
     def base_model(self):
         """
         The base model of a base model is itself.
