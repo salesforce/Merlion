@@ -102,6 +102,14 @@ class LayeredModelConfig(Config):
             return getattr(base_model.config, item)
         return self.__getattribute__(item)
 
+    def get_unused_kwargs(self, **kwargs):
+        config = self
+        valid_keys = {"model"}.union(config.to_dict(_skipped_keys={"model"}).keys())
+        for _ in range(self.depth):
+            config = config.model.config
+            valid_keys = valid_keys.union(config.to_dict(_skipped_keys={"model"}).keys())
+        return {k: v for k, v in kwargs.items() if k not in valid_keys}
+
 
 class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     """

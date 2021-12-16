@@ -197,6 +197,17 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         else:
             return [True] * len(self.models)
 
+    def __getstate__(self):
+        state = super().__getstate__()
+        state["models"] = [model.to_bytes() for model in self.models]
+        return state
+
+    def __setstate__(self, state):
+        models = state.pop("models", None)
+        if models is not None:
+            self.models = [ModelFactory.load_bytes(model) for model in models]
+        super().__setstate__(state)
+
     def save(self, dirname: str, save_only_used_models=False, **save_config):
         """
         Saves the ensemble of models.

@@ -29,30 +29,6 @@ from merlion.utils.misc import AutodocABCMeta, ModelConfigMeta
 logger = logging.getLogger(__name__)
 
 
-def override_config(config, config_dict, return_unused_kwargs=False, **kwargs):
-    """
-    :meta private:
-    """
-    to_remove = []
-    for key, value in kwargs.items():
-        if hasattr(config, key):
-            setattr(config, key, value)
-            to_remove.append(key)
-
-    for key in to_remove:
-        kwargs.pop(key)
-
-    for key, value in config_dict.items():
-        if key not in kwargs and not hasattr(config, key):
-            kwargs[key] = value
-
-    if len(kwargs) > 0 and not return_unused_kwargs:
-        logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
-    elif return_unused_kwargs:
-        return config, kwargs
-    return config
-
-
 class Config(object, metaclass=ModelConfigMeta):
     """
     Abstract class which defines a model config.
@@ -120,10 +96,15 @@ class Config(object, metaclass=ModelConfigMeta):
         dim = config_dict.pop("dim", None)
         if "dim" not in kwargs:
             kwargs["dim"] = dim
+        config_dict = dict(**config_dict, **kwargs)
         config = cls(**config_dict)
-        return override_config(
-            config=config, config_dict=config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs
-        )
+
+        kwargs = config.get_unused_kwargs(**config_dict)
+        if len(kwargs) > 0 and not return_unused_kwargs:
+            logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
+        elif return_unused_kwargs:
+            return config, kwargs
+        return config
 
     def __reduce__(self):
         return self.__class__.from_dict, (self.to_dict(),)
@@ -133,6 +114,9 @@ class Config(object, metaclass=ModelConfigMeta):
 
     def __deepcopy__(self, memodict={}):
         return self.__copy__()
+
+    def get_unused_kwargs(self, **kwargs):
+        return {k: v for k, v in kwargs.items() if k not in self.to_dict()}
 
 
 class NormalizingConfig(Config):
