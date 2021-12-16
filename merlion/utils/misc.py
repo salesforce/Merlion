@@ -56,16 +56,18 @@ class ModelConfigMeta(type):
     def __new__(mcs, classname, bases, cls_dict):
         sig = None
         cls = super().__new__(mcs, classname, bases, cls_dict)
-        prefix, params = None, OrderedDict()
+        prefix, suffix, params = None, None, OrderedDict()
         for cls_ in cls.__mro__:
             if isinstance(cls_, ModelConfigMeta):
                 # Combine the __init__ signatures
                 sig = combine_signatures(sig, inspect.signature(cls_.__init__))
 
                 # Parse the __init__ docstring. Use the earliest prefix/param docstring in the MRO.
-                prefix_, params_ = parse_init_docstring(cls_.__init__.__doc__)
+                prefix_, suffix_, params_ = parse_init_docstring(cls_.__init__.__doc__)
                 if prefix is None and any([line != "" for line in prefix_]):
                     prefix = "\n".join(prefix_)
+                if suffix is None and any([line != "" for line in suffix_]):
+                    suffix = "\n".join(suffix_)
                 for param, docstring_lines in params_.items():
                     if param not in params:
                         params[param] = "\n".join(docstring_lines).rstrip("\n")
@@ -73,7 +75,7 @@ class ModelConfigMeta(type):
         # Update the signature and docstring of __init__
         cls.__init__.__signature__ = sig
         params = OrderedDict((p, params[p]) for p in sig.parameters if p in params)
-        cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values()) + "\n"
+        cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values()) + "\n\n" + (suffix or "")
         return cls
 
 
@@ -108,7 +110,7 @@ def combine_signatures(sig1: Union[inspect.Signature, None], sig2: Union[inspect
 
 def parse_init_docstring(docstring):
     docstring_lines = [""] if docstring is None else docstring.split("\n")
-    prefix, param_dict = [], OrderedDict()
+    prefix, suffix, param_dict = [], [], OrderedDict()
     non_empty_lines = [line for line in docstring_lines if len(line) > 0]
     indent = 0 if len(non_empty_lines) == 0 else len(re.search(r"^\s*", non_empty_lines[0]).group(0))
     for line in docstring_lines:
@@ -119,9 +121,11 @@ def parse_init_docstring(docstring):
             param_dict[param] = [line]
         elif len(param_dict) == 0:
             prefix.append(line)
+        elif len(suffix) > 0 or re.match(r"^[^\s]", line):  # not starting a param doc, but un-indented --> suffix
+            suffix.append(line)
         else:
             param_dict[list(param_dict.keys())[-1]].append(line)
-    return prefix, param_dict
+    return prefix, suffix, param_dict
 
 
 class ValIterOrderedDict(OrderedDict):

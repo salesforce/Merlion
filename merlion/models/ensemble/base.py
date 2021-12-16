@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class EnsembleConfig(Config):
     """
-    An ensemble config contains the each individual model in the ensemble, as well as the `Combiner` object
+    An ensemble config contains the each individual model in the ensemble, as well as the Combiner object
     to combine those models' outputs. The rationale behind placing the model objects in the EnsembleConfig
     (rather than in the Ensemble itself) is discussed in more detail in the documentation for `LayeredModel`.
     """
@@ -37,7 +37,7 @@ class EnsembleConfig(Config):
     def __init__(self, models: List[Union[ModelBase, Dict]] = None, combiner: CombinerBase = None, **kwargs):
         """
         :param models: A list of models or dicts representing them.
-        :param combiner: The `Combiner` object to combine the outputs of the models in the ensemble.
+        :param combiner: The `CombinerBase` object to combine the outputs of the models in the ensemble.
         :param kwargs: Any additional kwargs for `Config`
         """
         super().__init__(**kwargs)

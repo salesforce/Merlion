@@ -5,9 +5,9 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Base class for _layered_ models. These are models which act as a wrapper around another model, often with additional
-functionality. This is the basis for :py:mod:`default models <merlion.models.defaults>` and
-:py:mod:`AutoML models <merlion.models.automl>`_.
+Base class for layered models. These are models which act as a wrapper around another model, often with additional
+functionality. This is the basis for `default models <merlion.models.defaults>`_ and
+`AutoML models <merlion.models.automl>`_.
 """
 from copy import deepcopy
 from typing import Any, Dict, Union
@@ -113,7 +113,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     attributes do not become de-synchronized (e.g. if we were to store ``config.model_config`` and ``model.model``
     separately).
 
-    We define the _base model_ as the non-layered model at the base of the overall model hierarchy.
+    We define the *base model* as the non-layered model at the base of the overall model hierarchy.
 
     The layered model is allowed to access any callable attribute of the base model,
     e.g. ``model.set_seasonality(...)`` resolves to``model.base_model.set_seasonality(...)`` for a `SeasonalityModel`.
