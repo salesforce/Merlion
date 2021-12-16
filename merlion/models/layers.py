@@ -215,13 +215,8 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         # don't save config for any of the sub-models
-        model = self
-        sub_state = state_dict
-        while isinstance(model, LayeredModel):
-            sub_state.pop("config", None)
-            sub_state = sub_state["model"]
-            model = model.model
-        sub_state.pop("config", None)
+        state_dict.pop("config", None)
+        state_dict["model"] = self.model._save_state(state_dict["model"], filename=None, **save_config)
         return super()._save_state(state_dict, filename, **save_config)
 
     def __getattr__(self, item):
