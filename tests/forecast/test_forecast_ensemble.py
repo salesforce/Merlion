@@ -14,8 +14,8 @@ import numpy as np
 from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
 from merlion.models.ensemble.combine import ModelSelector, Mean
 from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.automl.autoprophet import AutoProphet, AutoProphetConfig, PeriodicityStrategy
 from merlion.models.forecast.arima import Arima, ArimaConfig
-from merlion.models.forecast.prophet import AutoProphet, AutoProphetConfig, PeriodicityStrategy
 from merlion.models.factory import ModelFactory
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample

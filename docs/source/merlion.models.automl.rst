@@ -9,8 +9,10 @@ merlion.models.automl package
 
 .. autosummary::
     base
-    autosarima
     seasonality
+    autoets
+    autoprophet
+    autosarima
 
 Submodules
 ----------

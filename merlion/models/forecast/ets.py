@@ -17,10 +17,10 @@ import pandas as pd
 from scipy.stats import norm
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
-from merlion.models.automl.seasonality import SeasonalityConfig, SeasonalityLayer, SeasonalityModel
+from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -273,21 +273,3 @@ class ETS(SeasonalityModel, ForecasterBase):
                 .align(reference=orig_t)
             )
             return forecast, err
-
-
-class AutoETSConfig(SeasonalityConfig):
-    """
-    Config class for ETS with automatic seasonality detection.
-    """
-
-    def __init__(self, model: Union[ETS, dict] = None, **kwargs):
-        model = dict(name="ETS") if model is None else model
-        super().__init__(model=model, **kwargs)
-
-
-class AutoETS(SeasonalityLayer):
-    """
-    ETS with automatic seasonality detection.
-    """
-
-    config_class = AutoETSConfig

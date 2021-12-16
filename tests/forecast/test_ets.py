@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.forecast.ets import AutoETSConfig, AutoETS
+from merlion.models.automl.autoets import AutoETSConfig, AutoETS
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)

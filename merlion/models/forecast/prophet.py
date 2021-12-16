@@ -15,7 +15,7 @@ import prophet
 import numpy as np
 import pandas as pd
 
-from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer, SeasonalityModel
+from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime
 
@@ -261,34 +261,3 @@ class Prophet(SeasonalityModel, ForecasterBase):
             yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
             err = UnivariateTimeSeries(t, np.std(samples, axis=-1), f"{name}_err").to_ts()
             return yhat, err
-
-
-class AutoProphetConfig(SeasonalityConfig):
-    """
-    Config class for Prophet with automatic seasonality detection.
-    """
-
-    def __init__(
-        self,
-        model: Union[Prophet, dict] = None,
-        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.All,
-        **kwargs,
-    ):
-        model = dict(name="Prophet") if model is None else model
-        super().__init__(model=model, periodicity_strategy=periodicity_strategy, **kwargs)
-
-    @property
-    def multi_seasonality(self):
-        """
-        :return: ``True`` because Prophet supports multiple seasonality.
-        """
-        return True
-
-
-class AutoProphet(SeasonalityLayer):
-    """
-    Prophet with automatic seasonality detection. Automatically detects and adds
-    additional seasonalities that the existing Prophet may not detect (e.g. hourly).
-    """
-
-    config_class = AutoProphetConfig

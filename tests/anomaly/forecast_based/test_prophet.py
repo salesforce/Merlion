@@ -12,7 +12,7 @@ import unittest
 
 import numpy as np
 
-from merlion.models.forecast.prophet import AutoProphet, AutoProphetConfig
+from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
 from merlion.transform.normalize import PowerTransform
