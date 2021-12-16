@@ -89,6 +89,23 @@
     }
   },
 
+  "AutoETSDetector": {"alias": "AutoETS"},
+  "AutoETS": {
+    "config": {
+      "default": {
+        "model": {"name": "ETSDetector"},
+        "damped_trend": true,
+        "transform": {"name": "TemporalResample", "granularity": "1h"}
+      },
+      "IOpsCompetition": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      },
+      "CASP": {
+        "transform": {"name": "TemporalResample", "granularity": "5min"}
+      }
+    }
+  },
+
   "Prophet": {"alias": "ProphetDetector"},
   "ProphetDetector": {
     "config": {

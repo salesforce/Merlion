@@ -37,6 +37,14 @@
     }
   },
 
+  "AutoETS": {
+    "config": {
+      "default": {
+        "damped_trend": true
+      }
+    }
+  },
+
   "MSES": {
     "config": {
       "default": {

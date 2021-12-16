@@ -59,8 +59,9 @@ import_alias = dict(
     MoE_ForecasterEnsemble="merlion.models.ensemble.MoE_forecast:MoE_ForecasterEnsemble",
     # Layers
     SeasonalityLayer="merlion.models.automl.seasonality:SeasonalityLayer",
-    AutoSarima="merlion.models.automl.autosarima:AutoSarima",
+    AutoETS="merlion.models.forecast.ets:AutoETS",
     AutoProphet="merlion.models.forecast.prophet:AutoProphet",
+    AutoSarima="merlion.models.automl.autosarima:AutoSarima",
 )
 
 

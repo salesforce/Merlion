@@ -82,7 +82,7 @@ class DefaultDetector(LayeredDetector):
                 "DetectorEnsemble",
                 models=[
                     ModelFactory.create(
-                        "ETSDetector", damped_trend=True, max_forecast_steps=None, transform=ets_transform
+                        "AutoETS", model=dict(name="ETSDetector"), damped_trend=True, transform=ets_transform
                     ),
                     ModelFactory.create(
                         "RandomCutForest",
