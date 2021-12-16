@@ -74,7 +74,7 @@ class TestForecastEnsemble(unittest.TestCase):
         self.assertEqual(len(yhat), len(self.vals_test))
 
         logger.info("Testing save/load...")
-        self.ensemble.save(join(rootdir, "tmp", "forecast_ensemble"))
+        self.ensemble.save(join(rootdir, "tmp", "forecast_ensemble"), save_only_used_models=True)
         ensemble = ForecasterEnsemble.load(join(rootdir, "tmp", "forecast_ensemble"))
         loaded_yhat = ensemble.forecast(self.vals_test.time_stamps)[0]
         loaded_yhat = loaded_yhat.univariates[loaded_yhat.names[0]].np_values

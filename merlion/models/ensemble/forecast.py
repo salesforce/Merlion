@@ -43,7 +43,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
     _default_train_config = EnsembleTrainConfig(valid_frac=0.2)
 
     def __init__(self, config: ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None):
-        super().__init__(config, models)
+        super().__init__(config=config, models=models)
         for model in self.models:
             assert isinstance(model, ForecasterBase), (
                 f"Expected all models in {type(self).__name__} to be anomaly "

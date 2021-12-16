@@ -823,7 +823,9 @@ class TestAutoSarima(unittest.TestCase):
         self.assertEqual(len(err), self.max_forecast_steps)
 
         # test save/load
-        savedir = join(rootdir, "tmp", "autosarima" + ("_auto_pqPQ" if auto_pqPQ else "_fixed_pqPQ"))
+        logger.info("Test save/load...")
+        suffix = ("_auto_pqPQ" if auto_pqPQ else "_fixed_pqPQ") + ("_seas" if seasonality_layer else "")
+        savedir = join(rootdir, "tmp", "autosarima" + suffix)
         self.model.save(dirname=savedir)
         loaded = SeasonalityLayer.load(dirname=savedir)
 
