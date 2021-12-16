@@ -42,6 +42,7 @@ class Config(object, metaclass=ModelConfigMeta):
     def __init__(self, transform: TransformBase = None, **kwargs):
         """
         :param transform: Transformation to pre-process input time series.
+        :param dim: The dimension of the time series
         """
         super().__init__()
         if transform is None:
@@ -50,7 +51,6 @@ class Config(object, metaclass=ModelConfigMeta):
             self.transform = TransformFactory.create(**transform)
         else:
             self.transform = transform
-        self.dim = None
 
     @property
     def base_model(self):
@@ -75,21 +75,22 @@ class Config(object, metaclass=ModelConfigMeta):
         return config_dict
 
     @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, dim=None, **kwargs):
         """
         Constructs a `Config` from a Python dictionary of parameters.
 
         :param config_dict: dict that will be used to instantiate this object.
         :param return_unused_kwargs: whether to return any unused keyword args.
+        :param dim: the dimension of the time series. handled as a special case.
         :param kwargs: any additional parameters to set (overriding config_dict).
 
         :return: `Config` object initialized from the dict.
         """
-        dim = config_dict.pop("dim", None)
-        if "dim" not in kwargs:
-            kwargs["dim"] = dim
+        dim = config_dict.pop("dim", dim)
         config_dict = dict(**config_dict, **kwargs)
         config = cls(**config_dict)
+        if dim is not None:
+            config.dim = dim
 
         kwargs = config.get_unused_kwargs(**config_dict)
         if len(kwargs) > 0 and not return_unused_kwargs:
