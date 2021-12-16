@@ -71,11 +71,14 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, **kwargs):
+    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, **kwargs):
         """
         :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
+        :param pval: p-value for deciding whether a detected seasonality is statistically significant.
         """
         self.periodicity_strategy = periodicity_strategy
+        assert 0 < pval < 1
+        self.pval = pval
         super().__init__(model=model, **kwargs)
 
     @property
@@ -138,6 +141,13 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         """
         return self.config.periodicity_strategy
 
+    @property
+    def pval(self):
+        """
+        :return: p-value for deciding whether a detected seasonality is statistically significant.
+        """
+        return self.config.pval
+
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         model.set_seasonality(theta, train_data.univariates[self.target_name])
 
@@ -163,7 +173,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         y = train_data.univariates[self.target_name]
-        periods = autosarima_utils.multiperiodicity_detection(y)
+        periods = autosarima_utils.multiperiodicity_detection(y, pval=self.pval)
         if len(periods) == 0:
             periods = [1]
         return iter(periods)

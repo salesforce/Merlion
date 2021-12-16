@@ -99,7 +99,7 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = AutoETS(AutoETSConfig(error="add", trend="add", seasonal="add", damped_trend=True))
+        self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
 
     def test_forecast(self):
         # batch forecasting RMSE = 6.5612

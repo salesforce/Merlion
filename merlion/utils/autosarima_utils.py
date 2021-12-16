@@ -12,6 +12,7 @@ import warnings
 import numpy as np
 from numpy.linalg import LinAlgError
 from scipy.signal import argrelmax
+from scipy.stats import norm
 import statsmodels.api as sm
 
 logger = logging.getLogger(__name__)
@@ -226,7 +227,7 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **
     return maxiter
 
 
-def multiperiodicity_detection(x, max_lag=None):
+def multiperiodicity_detection(x, pval=0.05, max_lag=None):
     """
     Detect multiple periodicity of a time series
     The idea can be found in theta method
@@ -234,7 +235,7 @@ def multiperiodicity_detection(x, max_lag=None):
     Returns a list of periods, which indicates the seasonal periods of the
     time series
     """
-    tcrit = 1.65
+    tcrit = norm.ppf(1 - pval / 2)
     if max_lag is None:
         max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
     xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
