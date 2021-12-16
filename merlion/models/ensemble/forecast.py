@@ -87,7 +87,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
             logger.info(f"Training model {i+1}/{len(self.models)} ({type(model).__name__})...")
             try:
-                pred, err = model.train(train, cfg)
+                pred, err = model.train(train, train_config=cfg)
                 preds.append(pred)
                 errs.append(err)
             except TypeError as e:
@@ -157,7 +157,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
             logger.info(f"Re-training model {i+1}/{len(self.models)} ({type(model).__name__}) on full data...")
             model.reset()
-            pred, err = model.train(full_train, cfg)
+            pred, err = model.train(full_train, train_config=cfg)
             full_preds.append(pred)
             full_errs.append(err)
         err = None if any(e is None for e in full_errs) else self.combiner(full_errs, None)

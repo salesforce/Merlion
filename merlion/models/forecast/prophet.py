@@ -173,9 +173,10 @@ class Prophet(SeasonalityModel, ForecasterBase):
         theta = [theta] if not isinstance(theta, Iterable) else theta
         dt = train_data.index[1] - train_data.index[0]
         for p in theta:
-            period = p * dt.total_seconds() / 86400
-            logger.info(f"Add seasonality {str(p)} ({p * dt})")
-            self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
+            if p > 1:
+                period = p * dt.total_seconds() / 86400
+                logger.info(f"Add seasonality {str(p)} ({p * dt})")
+                self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
     def train(self, train_data: TimeSeries, train_config=None):
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)

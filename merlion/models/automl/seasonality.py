@@ -122,7 +122,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
     config_class = SeasonalityConfig
     require_univariate = True
-    require_even_sampling = True
+    require_even_sampling = False
 
     @property
     def multi_seasonality(self):
@@ -147,17 +147,18 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         # If multiple seasonalities are supported, return a list of all detected seasonalities
         thetas = list(thetas)
         if self.periodicity_strategy is PeriodicityStrategy.ACF:
-            m = [thetas[0]]
+            thetas = [thetas[0]]
         elif self.periodicity_strategy is PeriodicityStrategy.Min:
-            m = [min(thetas)]
+            thetas = [min(thetas)]
         elif self.periodicity_strategy is PeriodicityStrategy.Max:
-            m = [max(thetas)]
+            thetas = [max(thetas)]
         elif self.periodicity_strategy is PeriodicityStrategy.All:
-            m = thetas
+            thetas = thetas
         else:
             raise ValueError(f"Periodicity strategy {self.periodicity_strategy} not supported.")
         theta = thetas if self.config.multi_seasonality else thetas[0]
-        logger.info(f"Automatically detect the periodicity is {str(m)}")
+        if thetas != [1]:
+            logger.info(f"Automatically detect the periodicity is {str(thetas)}")
         return theta, None, None
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:

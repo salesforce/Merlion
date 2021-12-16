@@ -15,7 +15,7 @@ from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsem
 from merlion.models.ensemble.combine import ModelSelector, Mean
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.arima import Arima, ArimaConfig
-from merlion.models.forecast.prophet import Prophet, ProphetConfig
+from merlion.models.forecast.prophet import AutoProphet, AutoProphetConfig, PeriodicityStrategy
 from merlion.models.factory import ModelFactory
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
@@ -36,8 +36,9 @@ class TestForecastEnsemble(unittest.TestCase):
 
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=50))
-        model2 = Prophet(ProphetConfig(transform=Identity()))
-        model2.model.logger = None
+        model2 = AutoProphet(
+            config=AutoProphetConfig(transform=Identity(), periodicity_strategy=PeriodicityStrategy.Max)
+        )
         self.ensemble = ForecasterEnsemble(
             models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
         )
@@ -68,14 +69,9 @@ class TestForecastEnsemble(unittest.TestCase):
         # generate alarms for the test sequence using the ensemble
         # this will return an aggregated alarms from all the models inside the ensemble
         yhat, _ = self.ensemble.forecast(self.vals_test.time_stamps)
+        yhat = yhat.univariates[yhat.names[0]].np_values
         logger.info("forecast looks like " + str(yhat[:3]))
         self.assertEqual(len(yhat), len(self.vals_test))
-
-        y = self.vals_test.np_values
-        yhat = yhat.univariates[yhat.names[0]].np_values
-        smape = np.mean(200.0 * np.abs((y - yhat) / (np.abs(y) + np.abs(yhat))))
-        logger.info(f"sMAPE = {smape:.4f}")
-        self.assertAlmostEqual(smape, self.expected_smape, delta=1)
 
         logger.info("Testing save/load...")
         self.ensemble.save(join(rootdir, "tmp", "forecast_ensemble"))
@@ -90,6 +86,12 @@ class TestForecastEnsemble(unittest.TestCase):
         loaded_yhat = ensemble.forecast(self.vals_test.time_stamps)[0]
         loaded_yhat = loaded_yhat.univariates[loaded_yhat.names[0]].np_values
         self.assertSequenceEqual(list(yhat), list(loaded_yhat))
+
+        # test sMAPE
+        y = self.vals_test.np_values
+        smape = np.mean(200.0 * np.abs((y - yhat) / (np.abs(y) + np.abs(yhat))))
+        logger.info(f"sMAPE = {smape:.4f}")
+        self.assertAlmostEqual(smape, self.expected_smape, delta=1)
 
 
 if __name__ == "__main__":
