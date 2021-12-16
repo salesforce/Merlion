@@ -88,12 +88,24 @@ class LayeredModelConfig(Config):
         return self.__class__(model=deepcopy(self.model), **config_dict)
 
     def __getattr__(self, item):
+        if item in ["model", "_model", "base_model"]:
+            return super().__getattribute__(item)
         base_model = self.base_model
         is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorConfig, item)
         is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, item)
         if is_detector_attr or is_forecaster_attr:
             return getattr(base_model.config, item)
         return self.__getattribute__(item)
+
+    def __setattr__(self, key, value):
+        if hasattr(self, "_model"):
+            base_model = self.base_model
+            is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorConfig, key)
+            is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, key)
+            is_layered_attr = hasattr(LayeredModelConfig, key)
+            if not is_layered_attr and (is_detector_attr or is_forecaster_attr):
+                return setattr(self.model.config, key, value)
+        return super().__setattr__(key, value)
 
     def get_unused_kwargs(self, **kwargs):
         config = self

@@ -51,6 +51,7 @@ class Config(object, metaclass=ModelConfigMeta):
             self.transform = TransformFactory.create(**transform)
         else:
             self.transform = transform
+        self.dim = None
 
     @property
     def base_model(self):

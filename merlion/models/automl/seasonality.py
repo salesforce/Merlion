@@ -124,8 +124,11 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     """
 
     config_class = SeasonalityConfig
-    require_univariate = True
     require_even_sampling = False
+
+    @property
+    def require_univariate(self):
+        return getattr(self.config, "target_seq_index", None) is not None
 
     @property
     def multi_seasonality(self):
