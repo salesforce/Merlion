@@ -137,7 +137,11 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     require_univariate = False
 
     def __new__(cls, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
-        # Dynamically inherit from the appropriate kind of base model
+        # Dynamically inherit from the appropriate kind of base model.
+        # However, this creates a new class that isn't registered anywhere with pickle/dill. This causes
+        # serialization problems, especially when using models with multiprocessing. So we maintain this
+        # class (cls) as a class attribute _original_cls of the new, dynamically created class. This is
+        # used by the __reduce__ method when pickling a LayeredModel.
         original_cls = cls
         config = cls._resolve_args(config=config, model=model, **kwargs)
         if isinstance(config.model, ForecastingDetectorBase):
