@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.utils package &mdash; Merlion 1.0.2 documentation</title>
+  <title>merlion.utils package &mdash; Merlion 1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -902,6 +902,37 @@ recency weighted variance.</p>
 <p>Metaclass used to ensure that inherited members of an abstract base class
 also inherit docstrings for inherited methods.</p>
 </dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.utils.misc.ModelConfigMeta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.misc.</span></span><span class="sig-name descname"><span class="pre">ModelConfigMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.misc.ModelConfigMeta" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>Metaclass used to ensure that the function signatures for model <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> initializers contain all
+relevant parameters, including those specified in the superclass. Also update docstrings accordingly.</p>
+<p>For example, the only parameter of the base class <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> is <code class="docutils literal notranslate"><span class="pre">transform</span></code>. <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a> adds the
+parameters <code class="docutils literal notranslate"><span class="pre">max_forecast_steps</span></code> and <code class="docutils literal notranslate"><span class="pre">target_seq_index</span></code>. Because <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> inherits from this metaclass,
+we can declare</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ForecasterConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_forecast_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">target_seq_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>and have the function signature for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>’s initializer include the parameter <code class="docutils literal notranslate"><span class="pre">transform</span></code>,
+even though we never declared it explicitly. Additionally, the docstring for <code class="docutils literal notranslate"><span class="pre">transform</span></code> is inherited
+from the base class.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.utils.misc.combine_signatures">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.misc.</span></span><span class="sig-name descname"><span class="pre">combine_signatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.misc.combine_signatures" title="Permalink to this definition"></a></dt>
+<dd><p>Utility function which combines the signatures of two functions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.utils.misc.parse_init_docstring">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.misc.</span></span><span class="sig-name descname"><span class="pre">parse_init_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.misc.parse_init_docstring" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.misc.ValIterOrderedDict">

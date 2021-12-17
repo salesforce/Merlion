@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly.change_point package &mdash; Merlion 1.0.2 documentation</title>
+  <title>merlion.models.anomaly.change_point package &mdash; Merlion 1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -85,8 +85,9 @@
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
 </ul>
 </li>
@@ -204,9 +205,10 @@ Enum values correspond to the Bayesian <a class="reference internal" href="merli
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPDConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChangeKind.Auto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPDConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChangeKind.Auto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.NoCalibrationDetectorConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD" title="merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BOCPD</span></code></a> (Bayesian Online Change Point Detection).</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -217,6 +219,15 @@ If <code class="docutils literal notranslate"><span class="pre">lag</span></code
 <li><p><strong>min_likelihood</strong> – we will discard any hypotheses whose probability of being a change point is
 lower than this threshold. Lower values improve accuracy at the cost of time and space complexity.</p></li>
 <li><p><strong>max_forecast_steps</strong> – the maximum number of steps the model is allowed to forecast. Ignored.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
+univariates in a general multivariate time series) whose value we
+would like to forecast.</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>enable_calibrator</strong> – <code class="docutils literal notranslate"><span class="pre">False</span></code> because this config assumes calibrated outputs from the model.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
 </ul>
 </dd>
 </dl>

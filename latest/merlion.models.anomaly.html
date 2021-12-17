@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly package &mdash; Merlion 1.0.2 documentation</title>
+  <title>merlion.models.anomaly package &mdash; Merlion 1.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -79,8 +79,9 @@
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
 </ul>
 </li>
@@ -284,7 +285,7 @@ default is provided for all models.</p></li>
 <p>Base class for anomaly detectors.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.base.</span></span><span class="sig-name descname"><span class="pre">DetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.base.</span></span><span class="sig-name descname"><span class="pre">DetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
 <p>Config object used to define an anomaly detection model.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
@@ -293,14 +294,26 @@ default is provided for all models.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_score</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – maximum possible uncalibrated anomaly score</p></li>
 <li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
-<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
-when post-processing anomaly scores</p></li>
 <li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
 automatically transforms all raw anomaly scores to be z-scores
 (i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig.calibrator">
+<span class="sig-name descname"><span class="pre">calibrator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.post_process.html#merlion.post_process.calibrate.AnomScoreCalibrator" title="merlion.post_process.calibrate.AnomScoreCalibrator"><span class="pre">merlion.post_process.calibrate.AnomScoreCalibrator</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig.calibrator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.post_process.html#merlion.post_process.threshold.Threshold" title="merlion.post_process.threshold.Threshold"><span class="pre">merlion.post_process.threshold.Threshold</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig.threshold" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig.post_rule">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post_rule</span></span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig.post_rule" title="Permalink to this definition"></a></dt>
@@ -315,13 +328,14 @@ automatically transforms all raw anomaly scores to be z-scores
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig.from_dict">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_unused_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig.from_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_unused_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorConfig.from_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Constructs a <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> from a Python dictionary of parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>config_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – dict that will be used to instantiate this object.</p></li>
 <li><p><strong>return_unused_kwargs</strong> – whether to return any unused keyword args.</p></li>
+<li><p><strong>dim</strong> – the dimension of the time series. handled as a special case.</p></li>
 <li><p><strong>kwargs</strong> – any additional parameters to set (overriding config_dict).</p></li>
 </ul>
 </dd>
@@ -335,7 +349,7 @@ automatically transforms all raw anomaly scores to be z-scores
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.NoCalibrationDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.base.</span></span><span class="sig-name descname"><span class="pre">NoCalibrationDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.base.</span></span><span class="sig-name descname"><span class="pre">NoCalibrationDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">merlion.transform.base.TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Abstract config object for an anomaly detection model that should never
 perform anomaly score calibration.</p>
@@ -343,13 +357,12 @@ perform anomaly score calibration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>enable_calibrator</strong> – <code class="docutils literal notranslate"><span class="pre">False</span></code> because this config assumes calibrated outputs from the model.</p></li>
 <li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
 <li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
 <li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
 when post-processing anomaly scores</p></li>
-<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
-automatically transforms all raw anomaly scores to be z-scores
-(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -575,9 +588,10 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 <p>Dynamic Baseline anomaly detection model for time series with daily, weekly or monthly trends.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dbl.DynamicBaselineConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.dbl.</span></span><span class="sig-name descname"><span class="pre">DynamicBaselineConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.dbl.</span></span><span class="sig-name descname"><span class="pre">DynamicBaselineConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline" title="merlion.models.anomaly.dbl.DynamicBaseline"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DynamicBaseline</span></code></a>.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -589,6 +603,14 @@ the scope for a rolling dynamic baseline model.</p></li>
 parameter only applied if a daily trend is one of the trends used.</p></li>
 <li><p><strong>trends</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The list of trends to use. Supported trends are “daily”,
 “weekly” and “monthly”.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -898,9 +920,10 @@ Only used if a daily trend is one of the trends used.</p></li>
 <p>Window Statistics anomaly detection model for data with weekly seasonality.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.windstats.WindStatsConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.windstats.</span></span><span class="sig-name descname"><span class="pre">WindStatsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.windstats.WindStatsConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.windstats.</span></span><span class="sig-name descname"><span class="pre">WindStatsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">merlion.transform.base.TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.windstats.WindStatsConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats" title="merlion.models.anomaly.windstats.WindStats"><code class="xref any py py-class docutils literal notranslate"><span class="pre">WindStats</span></code></a>.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -908,6 +931,14 @@ Only used if a daily trend is one of the trends used.</p></li>
 <li><p><strong>max_day</strong> – maximum number of week days stored in memory (only mean
 and std of each window are stored). Here, the days are first
 bucketed by weekday and then by window id.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -995,9 +1026,10 @@ data.</p>
 <p>The classic isolation forest model for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForestConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest" title="merlion.models.anomaly.isolation_forest.IsolationForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">IsolationForest</span></code></a>.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1005,6 +1037,14 @@ data.</p>
 forest to train on. Specify <code class="docutils literal notranslate"><span class="pre">None</span></code> to use all samples in the
 training data.</p></li>
 <li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of trees in the isolation forest.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1093,11 +1133,12 @@ immediately follows the training data.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a>. Refer to
 <a class="reference external" href="https://github.com/aws/random-cut-forest-by-aws/tree/main/Java">https://github.com/aws/random-cut-forest-by-aws/tree/main/Java</a> for
 further documentation and defaults of the Java class.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1115,6 +1156,14 @@ samplers in this forest.</p></li>
 thread pool.</p></li>
 <li><p><strong>online_updates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to update the model while running
 using it to evaluate new data.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1212,9 +1261,10 @@ immediately follows the training data.</p></li>
 <p>Spectral Residual algorithm for anomaly detection</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.spectral_residual.SpectralResidualConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.spectral_residual.</span></span><span class="sig-name descname"><span class="pre">SpectralResidualConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicting_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.spectral_residual.SpectralResidualConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.spectral_residual.</span></span><span class="sig-name descname"><span class="pre">SpectralResidualConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_wind_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimated_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicting_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">merlion.transform.base.TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.spectral_residual.SpectralResidualConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual" title="merlion.models.anomaly.spectral_residual.SpectralResidual"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SpectralResidual</span></code></a> anomaly detector.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1223,6 +1273,14 @@ immediately follows the training data.</p></li>
 <li><p><strong>estimated_points</strong> – Number of padding points to add to the timeseries for saliency map calculations.</p></li>
 <li><p><strong>predicting_points</strong> – Number of points to consider when computing gradient for padding points</p></li>
 <li><p><strong>target_seq_index</strong> – Index of the univariate whose anomalies we want to detect.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1332,7 +1390,7 @@ data.</p>
 <p>Simple static thresholding model for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.stat_threshold.StatThresholdConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.stat_threshold.</span></span><span class="sig-name descname"><span class="pre">StatThresholdConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.stat_threshold.StatThresholdConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.stat_threshold.</span></span><span class="sig-name descname"><span class="pre">StatThresholdConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.stat_threshold.StatThresholdConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold" title="merlion.models.anomaly.stat_threshold.StatThreshold"><code class="xref any py py-class docutils literal notranslate"><span class="pre">StatThreshold</span></code></a>.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
@@ -1341,11 +1399,13 @@ data.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_score</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – maximum possible uncalibrated anomaly score</p></li>
 <li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
-<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
-when post-processing anomaly scores</p></li>
 <li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
 automatically transforms all raw anomaly scores to be z-scores
 (i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1427,14 +1487,13 @@ immediately follows the training data.</p></li>
 <p>Multiple z-score model (static thresholding at multiple time scales).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.zms.ZMSConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.zms.</span></span><span class="sig-name descname"><span class="pre">ZMSConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag_inflation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.zms.ZMSConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.zms.</span></span><span class="sig-name descname"><span class="pre">ZMSConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag_inflation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.zms.ZMSConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.zms.ZMS" title="merlion.models.anomaly.zms.ZMS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ZMS</span></code></a> anomaly detection model.</p>
-<p>Configuration class for ZMS. The transform of this config is actually a
-pre-processing step, followed by the desired number of lag transforms
-and a final mean/variance normalization step. This full transform may be
-accessed as <a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.full_transform" title="merlion.models.anomaly.zms.ZMSConfig.full_transform"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">ZMSConfig.full_transform</span></code></a>. Note that the normalization is
-inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.</p>
+<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.zms.ZMS" title="merlion.models.anomaly.zms.ZMS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ZMS</span></code></a> anomaly detection model. The transform of this config is actually a
+pre-processing step, followed by the desired number of lag transforms, and a final mean/variance
+normalization step. This full transform may be accessed as <a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.full_transform" title="merlion.models.anomaly.zms.ZMSConfig.full_transform"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">ZMSConfig.full_transform</span></code></a>. Note that
+the normalization is inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1447,6 +1506,15 @@ the lag inflation. Consider the lag inflation a measure of distrust
 toward higher lags, If <code class="docutils literal notranslate"><span class="pre">lag_inflation</span></code> &gt; 1, the higher the lag
 inflation, the less likely the model is to select a higher lag’s z-score
 as the anomaly score.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1610,6 +1678,7 @@ immediately follows the training data.</p></li>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
 <p>Configuration class for AutoEncoder. The normalization is inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.
 The input data will be standardized automatically.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1620,6 +1689,15 @@ e.g., (25, 10, 5) for encoder and (5, 10, 25) for decoder</p></li>
 <li><p><strong>lr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate during training</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size during training</p></li>
 <li><p><strong>num_epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of training epochs</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1705,6 +1783,7 @@ data.</p>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
 <p>Configuration class for VAE. The normalization is inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.
 The input data will be standardized automatically.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1718,6 +1797,15 @@ The input data will be standardized automatically.</p>
 <li><p><strong>lr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate during training</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size during training</p></li>
 <li><p><strong>num_epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of training epochs</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1803,6 +1891,7 @@ data.</p>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
 <p>Configuration class for DAGMM. The normalization is inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.
 The input data will be standardized automatically.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1814,6 +1903,15 @@ The input data will be standardized automatically.</p>
 <li><p><strong>lr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate during training</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size during training</p></li>
 <li><p><strong>num_epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of training epochs</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1900,6 +1998,7 @@ data.</p>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.NormalizingConfig</span></code></a></p>
 <p>Configuration class for LSTM-encoder-decoder. The normalization is inherited from <a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>.
 The input data will be standardized automatically.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1912,6 +2011,15 @@ The input data will be standardized automatically.</p>
 <li><p><strong>lr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate during training</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The batch size during training</p></li>
 <li><p><strong>num_epochs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of training epochs</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -1990,7 +2098,7 @@ data.</p>
 <p>Deep Point Anomaly Detector algorithm.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.deep_point_anomaly_detector.</span></span><span class="sig-name descname"><span class="pre">DeepPointAnomalyDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.deep_point_anomaly_detector.</span></span><span class="sig-name descname"><span class="pre">DeepPointAnomalyDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a></p>
 <p>Config object used to define an anomaly detection model.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
@@ -1999,11 +2107,13 @@ data.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_score</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – maximum possible uncalibrated anomaly score</p></li>
 <li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
-<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
-when post-processing anomaly scores</p></li>
 <li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
 automatically transforms all raw anomaly scores to be z-scores
 (i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 </ul>
 </dd>
 </dl>
