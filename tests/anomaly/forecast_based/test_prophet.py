@@ -12,10 +12,11 @@ import unittest
 
 import numpy as np
 
-from merlion.transform.normalize import PowerTransform
-from merlion.transform.resample import TemporalResample
+from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
+from merlion.transform.normalize import PowerTransform
+from merlion.transform.resample import TemporalResample
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(dirname(abspath(__file__)))))
@@ -33,10 +34,8 @@ class TestProphet(unittest.TestCase):
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
-        self.model = ProphetDetector(
-            ProphetDetectorConfig(
-                transform=PowerTransform(lmbda=0.0), max_forecast_steps=self.test_len, uncertainty_samples=1000
-            )
+        self.model = AutoProphet(
+            model=ProphetDetector(ProphetDetectorConfig(transform=PowerTransform(lmbda=0.0), uncertainty_samples=1000))
         )
 
     def test_full(self):
@@ -83,7 +82,7 @@ class TestProphet(unittest.TestCase):
         # posterior samples for reproducibility
         logger.info("Verifying that scores don't change much after save/load...\n")
         self.model.save(dirname=join(rootdir, "tmp", "prophet"))
-        loaded_model = ProphetDetector.load(dirname=join(rootdir, "tmp", "prophet"))
+        loaded_model = AutoProphet.load(dirname=join(rootdir, "tmp", "prophet"))
         scoresv3 = loaded_model.get_anomaly_score(self.vals_test)
         scoresv3 = scoresv3.to_pd().values.flatten()
         self.assertAlmostEqual(np.max(np.abs(scores - scoresv3)), 0, delta=1e-4)

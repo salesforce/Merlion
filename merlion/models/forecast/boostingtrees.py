@@ -65,8 +65,7 @@ class BoostingTreeForecasterConfig(ForecasterConfig):
         :param n_estimators: number of base estimators for the tree ensemble
         :param random_state: random seed for boosting
         :param max_depth: max depth of base estimators
-        :param n_jobs: num of threading, -1 or 0 indicates device default,
-            positive int indicates num of threads
+        :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
@@ -146,10 +145,11 @@ class BoostingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                         f"'training_mode = autogression'."
                     )
                     self.config.max_forecast_steps = max_forecast_steps
-                logger.warning(
-                    f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
-                )
-                self.config.prediction_stride = self.max_forecast_steps
+                if self.prediction_stride != self.max_forecast_steps:
+                    logger.warning(
+                        f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
+                    )
+                    self.config.prediction_stride = self.max_forecast_steps
                 # process train data
                 (inputs_train, labels_train, labels_train_ts) = seq_ar_common.process_rolling_train_data(
                     train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode

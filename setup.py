@@ -7,7 +7,7 @@
 from setuptools import setup, find_namespace_packages
 
 MERLION_JARS = [
-    "resources/gson-2.8.6.jar",
+    "resources/gson-2.8.9.jar",
     "resources/randomcutforest-core-1.0.jar",
     "resources/randomcutforest-serialization-json-1.0.jar",
 ]
@@ -20,7 +20,7 @@ def read_file(fname):
 
 setup(
     name="salesforce-merlion",
-    version="1.0.2",
+    version="1.1.0",
     author=", ".join(read_file("AUTHORS.md").split("\n")),
     author_email="abhatnagar@salesforce.com",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",

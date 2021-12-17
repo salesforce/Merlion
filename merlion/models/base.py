@@ -24,46 +24,25 @@ from merlion.transform.factory import TransformFactory
 from merlion.transform.normalize import Rescale, MeanVarNormalize
 from merlion.transform.sequence import TransformSequence
 from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, TimeSeries
-from merlion.utils.misc import AutodocABCMeta
+from merlion.utils.misc import AutodocABCMeta, ModelConfigMeta
 
 logger = logging.getLogger(__name__)
 
 
-def override_config(config, config_dict, return_unused_kwargs=False, **kwargs):
-    """
-    :meta private:
-    """
-    to_remove = []
-    for key, value in kwargs.items():
-        if hasattr(config, key):
-            setattr(config, key, value)
-            to_remove.append(key)
-
-    for key in to_remove:
-        kwargs.pop(key)
-
-    for key, value in config_dict.items():
-        if key not in kwargs and not hasattr(config, key):
-            kwargs[key] = value
-
-    if len(kwargs) > 0 and not return_unused_kwargs:
-        logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
-    elif return_unused_kwargs:
-        return config, kwargs
-    return config
-
-
-class Config(object):
+class Config(object, metaclass=ModelConfigMeta):
     """
     Abstract class which defines a model config.
     """
 
     filename = "config.json"
     _default_transform = Identity()
+    transform: TransformBase = None
+    dim: Optional[int] = None
 
     def __init__(self, transform: TransformBase = None, **kwargs):
         """
         :param transform: Transformation to pre-process input time series.
+        :param dim: The dimension of the time series
         """
         super().__init__()
         if transform is None:
@@ -72,6 +51,14 @@ class Config(object):
             self.transform = TransformFactory.create(**transform)
         else:
             self.transform = transform
+        self.dim = None
+
+    @property
+    def base_model(self):
+        """
+        The base model of a base model is itself.
+        """
+        return self
 
     def to_dict(self, _skipped_keys=None):
         """
@@ -89,26 +76,41 @@ class Config(object):
         return config_dict
 
     @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, dim=None, **kwargs):
         """
         Constructs a `Config` from a Python dictionary of parameters.
 
         :param config_dict: dict that will be used to instantiate this object.
         :param return_unused_kwargs: whether to return any unused keyword args.
+        :param dim: the dimension of the time series. handled as a special case.
         :param kwargs: any additional parameters to set (overriding config_dict).
 
         :return: `Config` object initialized from the dict.
         """
+        dim = config_dict.pop("dim", dim)
+        config_dict = dict(**config_dict, **kwargs)
         config = cls(**config_dict)
-        return override_config(
-            config=config, config_dict=config_dict, return_unused_kwargs=return_unused_kwargs, **kwargs
-        )
+        if dim is not None:
+            config.dim = dim
+
+        kwargs = config.get_unused_kwargs(**config_dict)
+        if len(kwargs) > 0 and not return_unused_kwargs:
+            logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
+        elif return_unused_kwargs:
+            return config, kwargs
+        return config
+
+    def __reduce__(self):
+        return self.__class__.from_dict, (self.to_dict(),)
 
     def __copy__(self):
         return self.from_dict(self.to_dict())
 
     def __deepcopy__(self, memodict={}):
         return self.__copy__()
+
+    def get_unused_kwargs(self, **kwargs):
+        return {k: v for k, v in kwargs.items() if k not in self.to_dict()}
 
 
 class NormalizingConfig(Config):
@@ -161,6 +163,11 @@ class ModelBase(metaclass=AutodocABCMeta):
     config_class = Config
     _default_train_config = None
 
+    train_data: Optional[TimeSeries] = None
+    """
+    The data used to train the model.
+    """
+
     def __init__(self, config: Config):
         assert isinstance(config, self.config_class)
         self.config = deepcopy(config)
@@ -186,6 +193,15 @@ class ModelBase(metaclass=AutodocABCMeta):
                     f"'{type(self).__name__}' object has no attribute '{name}'. "
                     f"'{name}' is an invalid kwarg for the load() method."
                 )
+
+    def __reduce__(self):
+        state_dict = self.__getstate__()
+        config = state_dict.pop("config")
+        return self.__class__, (config,), state_dict
+
+    @property
+    def dim(self):
+        return self.config.dim
 
     @property
     def transform(self):
@@ -239,6 +255,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :return: the training data, after any necessary pre-processing has been applied
         """
         self.train_data = train_data
+        self.config.dim = train_data.dim
         self.transform.train(train_data)
         train_data = self.transform(train_data)
 
@@ -383,7 +400,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :return: `ModelBase` object loaded from file
         """
         config, model_kwargs = cls.config_class.from_dict(config_dict, return_unused_kwargs=True, **kwargs)
-        model = cls(config)
+        model = cls(config=config)
         model._load_state(state_dict, **model_kwargs)
 
         return model
@@ -415,7 +432,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         return cls._from_config_state_dicts(config_dict, state_dict, **kwargs)
 
     def __copy__(self):
-        new_model = self.__class__(deepcopy(self.config))
+        new_model = self.__class__(config=deepcopy(self.config))
         state_dict = self.__getstate__()
         state_dict.pop("config", None)
         new_model.__setstate__(state_dict)
@@ -423,56 +440,3 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     def __deepcopy__(self, memodict={}):
         return self.__copy__()
-
-
-class ModelWrapper(ModelBase, metaclass=AutodocABCMeta):
-    """
-    Abstract class implementing a model that wraps around another internal model.
-    """
-
-    filename = "model"
-
-    def __init__(self, config: Config, model: ModelBase = None):
-        super().__init__(config)
-        self.model = model
-
-    def save(self, dirname: str, **save_config):
-        config_dict = self.config.to_dict()
-        config_dict["model_type"] = type(self.model).__name__
-        os.makedirs(dirname, exist_ok=True)
-        with open(os.path.join(dirname, self.config_class.filename), "w") as f:
-            json.dump(config_dict, f, indent=2, sort_keys=True)
-        self.model.save(os.path.join(dirname, self.filename), **save_config)
-
-    @classmethod
-    def load(cls, dirname: str, **kwargs):
-        from merlion.models.factory import ModelFactory
-
-        config_path = os.path.join(dirname, cls.config_class.filename)
-        with open(config_path, "r") as f:
-            config_dict = json.load(f)
-
-        model_type = config_dict.pop("model_type")
-        model = ModelFactory.load(model_type, os.path.join(dirname, cls.filename))
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)
-
-    @classmethod
-    def _from_config_state_dicts(cls, config_dict, model, **kwargs):
-        config = cls.config_class.from_dict(config_dict)
-        ret = cls(config=config)
-        ret.model = model
-        return ret
-
-    def to_bytes(self, **save_config):
-        config_dict = self.config.to_dict()
-        model_tuple = self.model._to_serializable_comps(**save_config)
-        class_name = type(self).__name__
-        return dill.dumps((class_name, config_dict, model_tuple))
-
-    @classmethod
-    def from_bytes(cls, obj, **kwargs):
-        from merlion.models.factory import ModelFactory
-
-        class_name, config_dict, model_tuple = dill.loads(obj)
-        model = [ModelFactory.get_model_class(model_tuple[0])._from_config_state_dicts(*model_tuple[1:])]
-        return cls._from_config_state_dicts(config_dict, model, **kwargs)

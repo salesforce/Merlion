@@ -6,10 +6,12 @@
 #
 from abc import ABCMeta
 from collections import OrderedDict
-import importlib
-
-import inspect
+from copy import deepcopy
 from functools import wraps
+import importlib
+import inspect
+import re
+from typing import Union
 
 
 class AutodocABCMeta(ABCMeta):
@@ -18,8 +20,8 @@ class AutodocABCMeta(ABCMeta):
     also inherit docstrings for inherited methods.
     """
 
-    def __new__(mcls, classname, bases, cls_dict):
-        cls = super().__new__(mcls, classname, bases, cls_dict)
+    def __new__(mcs, classname, bases, cls_dict):
+        cls = super().__new__(mcs, classname, bases, cls_dict)
         for name, member in cls_dict.items():
             if member.__doc__ is None:
                 for base in bases[::-1]:
@@ -28,6 +30,102 @@ class AutodocABCMeta(ABCMeta):
                         member.__doc__ = attr.__doc__
                         break
         return cls
+
+
+class ModelConfigMeta(type):
+    """
+    Metaclass used to ensure that the function signatures for model `Config` initializers contain all
+    relevant parameters, including those specified in the superclass. Also update docstrings accordingly.
+
+    For example, the only parameter of the base class `Config` is ``transform``. `ForecasterConfig` adds the
+    parameters ``max_forecast_steps`` and ``target_seq_index``. Because `Config` inherits from this metaclass,
+    we can declare
+
+    .. code::
+
+        class ForecasterConfig(Config):
+
+        def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
+            ...
+
+    and have the function signature for `ForecasterConfig`'s initializer include the parameter ``transform``,
+    even though we never declared it explicitly. Additionally, the docstring for ``transform`` is inherited
+    from the base class.
+    """
+
+    def __new__(mcs, classname, bases, cls_dict):
+        sig = None
+        cls = super().__new__(mcs, classname, bases, cls_dict)
+        prefix, suffix, params = None, None, OrderedDict()
+        for cls_ in cls.__mro__:
+            if isinstance(cls_, ModelConfigMeta):
+                # Combine the __init__ signatures
+                sig = combine_signatures(sig, inspect.signature(cls_.__init__))
+
+                # Parse the __init__ docstring. Use the earliest prefix/param docstring in the MRO.
+                prefix_, suffix_, params_ = parse_init_docstring(cls_.__init__.__doc__)
+                if prefix is None and any([line != "" for line in prefix_]):
+                    prefix = "\n".join(prefix_)
+                if suffix is None and any([line != "" for line in suffix_]):
+                    suffix = "\n".join(suffix_)
+                for param, docstring_lines in params_.items():
+                    if param not in params:
+                        params[param] = "\n".join(docstring_lines).rstrip("\n")
+
+        # Update the signature and docstring of __init__
+        cls.__init__.__signature__ = sig
+        params = OrderedDict((p, params[p]) for p in sig.parameters if p in params)
+        cls.__init__.__doc__ = (prefix or "") + "\n" + "\n".join(params.values()) + "\n\n" + (suffix or "")
+        return cls
+
+
+def combine_signatures(sig1: Union[inspect.Signature, None], sig2: Union[inspect.Signature, None]):
+    """
+    Utility function which combines the signatures of two functions.
+    """
+    if sig1 is None:
+        return sig2
+    if sig2 is None:
+        return sig1
+
+    # Get all params from sig1
+    sig1 = deepcopy(sig1)
+    params = list(sig1.parameters.values())
+    for n, param in enumerate(params):
+        if param.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
+            break
+    else:
+        n = len(params)
+
+    # Add non-overlapping params from sig2
+    for param in sig2.parameters.values():
+        if param.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
+            break
+        if param.name not in sig1.parameters:
+            params.insert(n, param)
+            n += 1
+
+    return sig1.replace(parameters=params)
+
+
+def parse_init_docstring(docstring):
+    docstring_lines = [""] if docstring is None else docstring.split("\n")
+    prefix, suffix, param_dict = [], [], OrderedDict()
+    non_empty_lines = [line for line in docstring_lines if len(line) > 0]
+    indent = 0 if len(non_empty_lines) == 0 else len(re.search(r"^\s*", non_empty_lines[0]).group(0))
+    for line in docstring_lines:
+        line = line[indent:]
+        match = re.search(r":param\s*(\w+):", line)
+        if match is not None:
+            param = match.group(1)
+            param_dict[param] = [line]
+        elif len(param_dict) == 0:
+            prefix.append(line)
+        elif len(suffix) > 0 or re.match(r"^[^\s]", line):  # not starting a param doc, but un-indented --> suffix
+            suffix.append(line)
+        else:
+            param_dict[list(param_dict.keys())[-1]].append(line)
+    return prefix, suffix, param_dict
 
 
 class ValIterOrderedDict(OrderedDict):

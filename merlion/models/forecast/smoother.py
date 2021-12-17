@@ -36,7 +36,6 @@ class MSESConfig(ForecasterConfig):
     def __init__(
         self,
         max_forecast_steps: int,
-        target_seq_index: int = None,
         max_backstep: int = None,
         recency_weight: float = 0.5,
         accel_weight: float = 1.0,
@@ -61,10 +60,6 @@ class MSESConfig(ForecasterConfig):
             \text{if} & \space\space  z_b = (b+h)^\phi \cdot \text{EMA}_w(l_{b+h,t}) \cdot \text{RWSE}_w(l_{b+h,t})\\
             \end{align*}
 
-        :param max_forecast_steps: Max number of steps to forecast ahead.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param max_backstep: Max backstep to use in forecasting. If we train with x(0),...,x(t),
             Then, the b-th model MSES uses will forecast x(t+h) by anchoring at x(t-b) and 
             predicting xhat(t+h) = x(t-b) + delta_hat(b+h).
@@ -85,7 +80,7 @@ class MSESConfig(ForecasterConfig):
             errors of the estimated velocities over the models; inflation=1 is equivalent
             to using the softmax function.
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
         assert 0.0 <= rho <= 1.0
         assert 1.0 <= phi
         self.max_backstep = max_forecast_steps if max_backstep is None else max_backstep

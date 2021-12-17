@@ -58,8 +58,9 @@ Finally, we support ensembles of models in :py:mod:`merlion.models.ensemble`.
    :show-inheritance:
 
 .. autosummary::
-    base
     factory
+    base
+    layers
     defaults
     anomaly
     anomaly.change_point
@@ -86,14 +87,6 @@ Subpackages
 Submodules
 ----------
 
-merlion.models.base module
---------------------------
-
-.. automodule:: merlion.models.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 merlion.models.factory module
 -----------------------------
 
@@ -102,6 +95,22 @@ merlion.models.factory module
    :undoc-members:
    :show-inheritance:
 
+
+merlion.models.base module
+--------------------------
+
+.. automodule:: merlion.models.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+merlion.models.layers module
+----------------------------
+
+.. automodule:: merlion.models.layers
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 merlion.models.defaults module
 ------------------------------

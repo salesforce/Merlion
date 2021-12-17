@@ -17,7 +17,7 @@ from merlion.utils import autosarima_utils
 from scipy.stats import norm
 from statsmodels.tsa.arima.model import ARIMA as sm_Sarima
 
-from merlion.models.automl.seasonality_mixin import SeasonalityModel
+from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
@@ -32,14 +32,8 @@ class SarimaConfig(ForecasterConfig):
 
     _default_transform = TemporalResample(granularity=None)
 
-    def __init__(
-        self, max_forecast_steps=None, target_seq_index=None, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs
-    ):
+    def __init__(self, order=(4, 1, 2), seasonal_order=(2, 0, 1, 24), **kwargs):
         """
-        :param max_forecast_steps: Number of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param order: Order is (p, d, q) for an ARIMA(p, d, q) process. d must
             be an integer indicating the integration order of the process, while
             p and q must be integers indicating the AR and MA orders (so that
@@ -48,7 +42,7 @@ class SarimaConfig(ForecasterConfig):
             process, where s is the length of the seasonality cycle (e.g. s=24
             for 24 hours on hourly granularity). P, D, Q are as for ARIMA.
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        super().__init__(**kwargs)
         self.order = order
         self.seasonal_order = seasonal_order
 
@@ -220,72 +214,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
             )
             return forecast, err
 
-    def set_seasonality(self, theta, train_data: np.array):
-        theta = self._correct_theta(theta, train_data)
-        self.config.seasonal_order = tuple(list(self.seasonal_order)[:-1] + [theta])
-
-    def _correct_theta(self, theta, train_data: np.array):
-        y = train_data
-
-        order = list(self.config.order)
-        seasonal_order = list(self.config.seasonal_order)
-        max_d = 2
-        max_D = 1
-        stationary = False
-        seasonal_test = "seas"
-        test = "kpss"
-
-        # pqPQ is an indicator about whether need to automatically select
-        # AR, MA, seasonal AR and seasonal MA parameters
-        d = D = pqPQ = None
-        if order[1] != "auto":
-            d = order[1]
-        if seasonal_order[1] != "auto":
-            D = seasonal_order[1]
-        if order[0] != "auto" and order[2] != "auto" and seasonal_order[0] != "auto" and seasonal_order[2] != "auto":
-            pqPQ = True
-
-        if any(np.isnan(y)):
-            raise ValueError("there exists missing values in observed time series")
-
-        # check m
-        if theta < 1:
-            theta = 1
-        else:
-            theta = int(theta)
-
-        # input time-series is completely constant
-        if np.max(y) == np.min(y):
-            return iter([0])
-
-        xx = y.copy()
-        if stationary:
-            d = D = 0
-        if theta == 1:
-            D = 0
-
-        #  set the seasonal differencing order with statistical test
-        elif D is None:
-            D = autosarima_utils.nsdiffs(xx, m=theta, max_D=max_D, test=seasonal_test)
-            if D > 0:
-                dx = autosarima_utils.diff(xx, differences=D, lag=theta)
-                if dx.shape[0] == 0:
-                    D = D - 1
-        if D > 0:
-            dx = autosarima_utils.diff(xx, differences=D, lag=theta)
-        else:
-            dx = xx
-        logger.info(f"Seasonal difference order is {str(D)}")
-
-        #  set the differencing order by estimating the number of orders
-        #  it would take in order to make the time series stationary
-        if d is None:
-            d = autosarima_utils.ndiffs(dx, alpha=0.05, max_d=max_d, test=test)
-        if d > 0:
-            dx = autosarima_utils.diff(dx, differences=d, lag=1)
-        logger.info(f"Difference order is {str(d)}")
-
-        if pqPQ is not None or np.max(dx) == np.min(dx):
-            return theta if theta != 1 else 0
-
-        return theta
+    def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
+        # Make sure seasonality is a positive int, and set it to 1 if the train data is constant
+        theta = 1 if np.max(train_data) == np.min(train_data) else max(1, int(theta))
+        self.config.seasonal_order = self.seasonal_order[:-1] + (theta,)

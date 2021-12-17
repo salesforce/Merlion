@@ -37,6 +37,14 @@
     }
   },
 
+  "AutoETS": {
+    "config": {
+      "default": {
+        "damped_trend": true
+      }
+    }
+  },
+
   "MSES": {
     "config": {
       "default": {
@@ -48,18 +56,15 @@
   "Prophet": {
     "config": {
       "default": {
-        "uncertainty_samples": 0,
-        "add_seasonality": null
+        "uncertainty_samples": 0
       }
     }
   },
 
   "AutoProphet": {
-    "model_type": "Prophet",
     "config": {
       "default": {
-        "uncertainty_samples": 0,
-        "add_seasonality": "auto"
+        "uncertainty_samples": 0
       }
     }
   },

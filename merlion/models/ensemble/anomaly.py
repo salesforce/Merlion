@@ -64,7 +64,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
     _default_train_config = EnsembleTrainConfig(valid_frac=0.0)
 
     def __init__(self, config: DetectorEnsembleConfig = None, models: List[DetectorBase] = None):
-        super().__init__(config, models)
+        super().__init__(config=config, models=models)
         for model in self.models:
             assert isinstance(model, DetectorBase), (
                 f"Expected all models in {type(self).__name__} to be anomaly "

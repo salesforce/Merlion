@@ -33,7 +33,7 @@ class JVMSingleton:
         import jpype.imports
 
         resource_dir = join(dirname(dirname(dirname(abspath(__file__)))), "resources")
-        jars = ["gson-2.8.6.jar", "randomcutforest-core-1.0.jar", "randomcutforest-serialization-json-1.0.jar"]
+        jars = ["gson-2.8.9.jar", "randomcutforest-core-1.0.jar", "randomcutforest-serialization-json-1.0.jar"]
         if not JVMSingleton._initialized:
             jpype.startJVM(classpath=[join(resource_dir, jar) for jar in jars])
             JVMSingleton._initialized = True

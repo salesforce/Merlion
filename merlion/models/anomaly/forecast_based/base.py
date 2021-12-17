@@ -7,7 +7,6 @@
 """
 Base class for anomaly detectors based on forecasting models.
 """
-from abc import ABC
 import logging
 from typing import List, Optional
 
@@ -17,11 +16,12 @@ from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.plot import Figure
 from merlion.utils import UnivariateTimeSeries, TimeSeries
+from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
 
 
-class ForecastingDetectorBase(ForecasterBase, DetectorBase, ABC):
+class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABCMeta):
     """
     Base class for a forecast-based anomaly detector.
     """

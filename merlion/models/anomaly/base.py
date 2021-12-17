@@ -20,7 +20,7 @@ from merlion.plot import Figure, MTSFigure
 from merlion.post_process.calibrate import AnomScoreCalibrator
 from merlion.post_process.factory import PostRuleFactory
 from merlion.post_process.sequence import PostRuleSequence
-from merlion.post_process.threshold import AggregateAlarms
+from merlion.post_process.threshold import AggregateAlarms, Threshold
 from merlion.utils import TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,8 @@ class DetectorConfig(Config):
     """
 
     _default_threshold = AggregateAlarms(alm_threshold=3.0)
+    calibrator: AnomScoreCalibrator = None
+    threshold: Threshold = None
 
     def __init__(
         self, max_score: float = 1000, threshold=None, enable_calibrator=True, enable_threshold=True, **kwargs
@@ -73,15 +75,14 @@ class DetectorConfig(Config):
         return PostRuleSequence(rules)
 
     @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
-        # Get the calibrator, but we will set it manually after the constructor
-        config_dict = copy(config_dict)
-        calibrator_config = config_dict.pop("calibrator", None)
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, calibrator=None, **kwargs):
+        # Get the calibrator, but we will set it manually after the constructor by putting it in kwargs
+        calibrator = config_dict.pop("calibrator", calibrator)
         config, kwargs = super().from_dict(config_dict, return_unused_kwargs=True, **kwargs)
-        if calibrator_config is not None:
-            config.calibrator = PostRuleFactory.create(**calibrator_config)
+        if calibrator is not None:
+            calibrator = PostRuleFactory.create(**calibrator)
+            config.calibrator = calibrator
 
-        # Return unused kwargs if desired
         if len(kwargs) > 0 and not return_unused_kwargs:
             logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
         elif return_unused_kwargs:
@@ -96,6 +97,9 @@ class NoCalibrationDetectorConfig(DetectorConfig):
     """
 
     def __init__(self, enable_calibrator=False, **kwargs):
+        """
+        :param enable_calibrator: ``False`` because this config assumes calibrated outputs from the model.
+        """
         super().__init__(enable_calibrator=enable_calibrator, **kwargs)
 
     @property

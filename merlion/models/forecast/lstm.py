@@ -44,19 +44,15 @@ class LSTMConfig(ForecasterConfig):
         ]
     )
 
-    def __init__(self, max_forecast_steps: int, target_seq_index: int = None, nhid=1024, model_strides=(1,), **kwargs):
+    def __init__(self, max_forecast_steps: int, nhid=1024, model_strides=(1,), **kwargs):
         """
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param nhid: hidden dimension of LSTM
         :param model_strides: tuple indicating the stride(s) at which we would
             like to subsample the input data before giving it to the model.
         """
         self.model_strides = list(model_strides)
         self.nhid = nhid
-        super().__init__(max_forecast_steps, target_seq_index, **kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
 
 
 class LSTMTrainConfig(object):
@@ -252,7 +248,6 @@ class LSTM(ForecasterBase):
         if torch.cuda.is_available():
             self.model.cuda()
         self.optimizer = None
-        self.timedelta = None
         self.seq_len = None
         self._forecast = [0.0 for _ in range(self.max_forecast_steps)]
 

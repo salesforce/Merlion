@@ -4,14 +4,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-import time
-import numpy as np
-import statsmodels.api as sm
-import warnings
 import functools
+import logging
+import time
+import warnings
+
+import numpy as np
 from numpy.linalg import LinAlgError
 from scipy.signal import argrelmax
-import logging
+from scipy.stats import norm
+import statsmodels.api as sm
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +162,7 @@ def _refit_sarima_model(model_fitted, approx_ic, method, inititer, maxiter, info
     return best_fit
 
 
-def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
+def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **kwargs):
     """
     run a zero model with SARIMA(2; d; 2)(1; D; 1) / ARIMA(2; d; 2) determine the optimal maxiter
     """
@@ -225,7 +227,7 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion):
     return maxiter
 
 
-def multiperiodicity_detection(x, max_lag=None):
+def multiperiodicity_detection(x, pval=0.05, max_lag=None):
     """
     Detect multiple periodicity of a time series
     The idea can be found in theta method
@@ -233,7 +235,7 @@ def multiperiodicity_detection(x, max_lag=None):
     Returns a list of periods, which indicates the seasonal periods of the
     time series
     """
-    tcrit = 1.96
+    tcrit = norm.ppf(1 - pval / 2)
     if max_lag is None:
         max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
     xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
@@ -253,10 +255,9 @@ def multiperiodicity_detection(x, max_lag=None):
     clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
 
     # statistical test if acf is significant w.r.t a normal distribution
-    candidate_filter = []
-    for candidate in candidates:
-        if np.abs(xacf[candidate - 1]) > clim[candidate - 1] and candidate * 3 < x.shape[0]:
-            candidate_filter.append(candidate)
+    candidate_filter = candidates[xacf[candidates - 1] > clim[candidates - 1]]
+    # return candidate seasonalities, sorted by ACF value
+    candidate_filter = sorted(candidate_filter.tolist(), key=lambda c: xacf[c - 1], reverse=True)
     return candidate_filter
 
 
@@ -285,7 +286,7 @@ def nsdiffs(x, m, max_D=1, test="seas"):
     D = 0
     if max_D <= 0:
         raise ValueError("max_D must be a positive integer")
-    if np.max(x) == np.min(x):
+    if np.max(x) == np.min(x) or m < 2:
         return D
     if test == "seas":
         dodiff = seas_seasonalstationaritytest(x, m)
@@ -313,7 +314,7 @@ def KPSS_stationaritytest(xx, alpha=0.05):
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        results = sm.tsa.stattools.kpss(xx, regression="ct", nlags=round(3 * np.sqrt(len(xx)) / 13))
+        results = sm.tsa.stattools.kpss(xx, regression="c", nlags=round(3 * np.sqrt(len(xx)) / 13))
     yout = results[1]
     return yout, yout < alpha
 

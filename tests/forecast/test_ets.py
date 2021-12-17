@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.forecast.ets import ETSConfig, ETS
+from merlion.models.automl.autoets import AutoETSConfig, AutoETS
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
@@ -99,16 +99,7 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = ETS(
-            ETSConfig(
-                max_forecast_steps=self.max_forecast_steps,
-                error="add",
-                trend="add",
-                seasonal="add",
-                damped_trend=True,
-                seasonal_periods="auto",
-            )
-        )
+        self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
 
     def test_forecast(self):
         # batch forecasting RMSE = 6.5612
@@ -122,6 +113,17 @@ class TestETS(unittest.TestCase):
         )
         logger.info(f"MSIS = {msis:.4f}")
         self.assertLessEqual(np.abs(msis - 101.6), 10)
+
+        # make sure save/load model gets same predictions
+        logger.info("Test save/load...")
+        savedir = join(rootdir, "tmp", "ets")
+        self.model.save(dirname=savedir)
+        loaded = AutoETS.load(dirname=savedir)
+
+        loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
+        self.assertSequenceEqual(list(loaded_pred), list(forecast))
+        self.assertSequenceEqual(list(loaded_lb), list(lb))
+        self.assertSequenceEqual(list(loaded_ub), list(ub))
 
         # streaming forecasting RMSE = 2.4689
         test_t = self.test_data.np_time_stamps
@@ -141,11 +143,6 @@ class TestETS(unittest.TestCase):
 
         # streaming forecasting performs better than batch forecasting
         self.assertLessEqual(rmse_onestep, rmse)
-
-        logger.info("Test save/load...")
-        savedir = join(rootdir, "tmp", "ets")
-        self.model.save(dirname=savedir)
-        ETS.load(dirname=savedir)
 
 
 if __name__ == "__main__":
