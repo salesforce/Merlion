@@ -110,7 +110,7 @@ class LayeredModelConfig(Config):
     def get_unused_kwargs(self, **kwargs):
         config = self
         valid_keys = {"model"}.union(config.to_dict(_skipped_keys={"model"}).keys())
-        while isinstance(config, LayeredModelConfig):
+        while isinstance(config, LayeredModelConfig) and config.model is not None:
             config = config.model.config
             valid_keys = valid_keys.union(config.to_dict(_skipped_keys={"model"}).keys())
         return {k: v for k, v in kwargs.items() if k not in valid_keys}
@@ -172,14 +172,17 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     @classmethod
     def _resolve_args(cls, config: LayeredModelConfig, model: ModelBase, **kwargs):
-        msg = f"Expected exactly one of `config.model` or `model` when creating LayeredModel {cls.__name__}."
         if config is None and model is None:
-            raise RuntimeError(f"{msg} Received neither.")
+            raise RuntimeError(
+                f"Expected at least one of `config` or `model` when creating {cls.__name__}. Received neither."
+            )
         elif config is not None and model is not None:
             if config.model is None:
                 config.model = model
             else:
-                raise RuntimeError(f"{msg} Received both.")
+                raise RuntimeError(
+                    f"Expected at most one of `config` or `model` when creating {cls.__name__}. Received both."
+                )
         elif config is None:
             config = cls.config_class(model=model, **kwargs)
         return config
@@ -211,13 +214,18 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     def __getstate__(self):
         state = super().__getstate__()
-        state["model"] = self.model.__getstate__()
+        state["model"] = None if self.model is None else self.model.__getstate__()
         return state
 
     def __setstate__(self, state):
         if "model" in state:
             model_state = state.pop("model")
-            self.model.__setstate__(model_state)
+            if self.model is None and model_state is not None:
+                raise ValueError(f"{type(self).__name__}.model is None, but received a non-None model state.")
+            elif self.model is None or model_state is None:
+                self.model = None
+            else:
+                self.model.__setstate__(model_state)
         super().__setstate__(state)
 
     def __reduce__(self):
@@ -226,9 +234,9 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return getattr(self.__class__, "_original_cls", self.__class__), (config,), state_dict
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
-        # don't save config for any of the sub-models
-        state_dict.pop("config", None)
-        state_dict["model"] = self.model._save_state(state_dict["model"], filename=None, **save_config)
+        state_dict.pop("config", None)  # don't save the model's config in binary
+        if self.model is not None:
+            state_dict["model"] = self.model._save_state(state_dict["model"], filename=None, **save_config)
         return super()._save_state(state_dict, filename, **save_config)
 
     def __getattr__(self, item):

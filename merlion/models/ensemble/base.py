@@ -53,10 +53,14 @@ class EnsembleConfig(Config):
         self.models = models
 
     def to_dict(self, _skipped_keys=None):
-        config_dict = super().to_dict(_skipped_keys)
-        models = config_dict["models"]
-        if models is not None:
-            config_dict["models"] = [dict(name=type(m).__name__, **m.config.to_dict()) for m in self.models]
+        _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
+        config_dict = super().to_dict(_skipped_keys.union({"models"}))
+        if self.models is None:
+            models = None
+        else:
+            models = [None if m is None else dict(name=type(m).__name__, **m.config.to_dict()) for m in self.models]
+        if "models" not in _skipped_keys:
+            config_dict["models"] = models
         return config_dict
 
 
@@ -171,15 +175,27 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
 
     def __getstate__(self):
         state = super().__getstate__()
-        state["models"] = [model.__getstate__() for model in self.models]
+        if self.models is None:
+            state["models"] = None
+        else:
+            state["models"] = [None if model is None else model.__getstate__() for model in self.models]
         return state
 
     def __setstate__(self, state):
-        model_states = state.pop("models", None)
-        if model_states is not None:
-            for model, model_state in zip(self.models, model_states):
-                if model_state is not None:
-                    model.__setstate__(model_state)
+        if "models" in state:
+            model_states = state.pop("models")
+            if self.models is None and model_states is not None:
+                raise ValueError(f"`{type(self).__name__}.models` is None, but received a non-None `models` state.")
+            elif self.models is None or model_states is None:
+                self.config.models = None
+            else:
+                for i, (model, model_state) in enumerate(zip(self.models, model_states)):
+                    if model is None and model_state is not None:
+                        raise ValueError(f"One of the Ensemble models is None, but received a non-None model state.")
+                    elif model is None or model_state is None:
+                        self.models[i] = None
+                    else:
+                        model.__setstate__(model_state)
         super().__setstate__(state)
 
     def save(self, dirname: str, save_only_used_models=False, **save_config):
@@ -204,18 +220,17 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         :param save_config: additional configurations (if needed)
         :return: The state dict to save.
         """
-
-        # don't save config for any of the sub-models
-        state_dict.pop("config", None)
-        model_states = []
-        for m, m_state, m_used in zip(self.models, state_dict["models"], self.models_used):
-            if save_only_used_models and not m_used:
-                model_states.append(None)
-            else:
-                model_states.append(
-                    m._save_state(m_state, filename=None, save_only_used_models=save_only_used_models, **save_config)
-                )
-        state_dict["models"] = model_states
+        state_dict.pop("config", None)  # don't save the model's config in binary
+        if self.models is not None:
+            model_states = []
+            for model, model_state, model_used in zip(self.models, state_dict["models"], self.models_used):
+                if save_only_used_models and not model_used:
+                    model_states.append(None)
+                else:
+                    model_states.append(
+                        model._save_state(model_state, None, save_only_used_models=save_only_used_models, **save_config)
+                    )
+            state_dict["models"] = model_states
         return super()._save_state(state_dict, filename, **save_config)
 
     def to_bytes(self, save_only_used_models=False, **save_config):
