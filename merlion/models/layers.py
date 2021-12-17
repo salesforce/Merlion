@@ -181,7 +181,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
                 config.model = model
             else:
                 raise RuntimeError(
-                    f"Expected at most one of `config` or `model` when creating {cls.__name__}. Received both."
+                    f"Expected at most one of `config.model` or `model` when creating {cls.__name__}. Received both."
                 )
         elif config is None:
             config = cls.config_class(model=model, **kwargs)
