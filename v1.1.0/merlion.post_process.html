@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion.post_process package &mdash; Merlion 1.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.evaluate package" href="merlion.evaluate.html" />
+    <link rel="prev" title="merlion.transform package" href="merlion.transform.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.post_process package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.base">merlion.post_process.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.factory">merlion.post_process.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.sequence">merlion.post_process.sequence module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.calibrate">merlion.post_process.calibrate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.threshold">merlion.post_process.threshold module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
+      <li>merlion.post_process package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.post_process.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="merlion-post-process-package">
+<h1>merlion.post_process package<a class="headerlink" href="#merlion-post-process-package" title="Permalink to this headline"></a></h1>
+<p>This package implements some simple rules to post-process the output of an
+anomaly detection model. This includes rules for reshaping a sequence to follow
+a standard normal distribution (<a class="reference internal" href="#module-merlion.post_process.calibrate" title="merlion.post_process.calibrate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.calibrate</span></code></a>), sparsifying
+a sequence based on a threshold (<a class="reference internal" href="#module-merlion.post_process.threshold" title="merlion.post_process.threshold"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.threshold</span></code></a>), and composing
+together sequences of post-processing rules (<a class="reference internal" href="#module-merlion.post_process.sequence" title="merlion.post_process.sequence"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.sequence</span></code></a>).</p>
+<span class="target" id="module-merlion.post_process"></span><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.post_process.base" title="merlion.post_process.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
+<td><p>Base class for post-processing rules in Merlion.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.post_process.factory" title="merlion.post_process.factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">factory</span></code></a></p></td>
+<td><p>Contains the <a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory" title="merlion.post_process.factory.PostRuleFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PostRuleFactory</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.post_process.sequence" title="merlion.post_process.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></td>
+<td><p>Class to compose a sequence of post-rules into a single post-rule.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.post_process.calibrate" title="merlion.post_process.calibrate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calibrate</span></code></a></p></td>
+<td><p>Post-rule to transform anomaly scores to follow a standard normal distribution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.post_process.threshold" title="merlion.post_process.threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threshold</span></code></a></p></td>
+<td><p>Rules that use a threshold to sparsify a sequence of anomaly scores.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-merlion.post_process.base">
+<span id="merlion-post-process-base-module"></span><h2>merlion.post_process.base module<a class="headerlink" href="#module-merlion.post_process.base" title="Permalink to this headline"></a></h2>
+<p>Base class for post-processing rules in Merlion.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.base.PostRuleBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.base.</span></span><span class="sig-name descname"><span class="pre">PostRuleBase</span></span><a class="headerlink" href="#merlion.post_process.base.PostRuleBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for post-processing rules in Merlion. These objects are primarily
+for post-processing the sequence of anomaly scores returned by anomaly detection
+models. All post-rules are callable objects, and they have a <code class="docutils literal notranslate"><span class="pre">train()</span></code> method
+which may accept additional implementation-specific keyword arguments.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.base.PostRuleBase.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.base.PostRuleBase.to_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.base.PostRuleBase.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.base.PostRuleBase.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.base.PostRuleBase.train">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.base.PostRuleBase.train" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.post_process.factory">
+<span id="merlion-post-process-factory-module"></span><h2>merlion.post_process.factory module<a class="headerlink" href="#module-merlion.post_process.factory" title="Permalink to this headline"></a></h2>
+<p>Contains the <a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory" title="merlion.post_process.factory.PostRuleFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PostRuleFactory</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.factory.PostRuleFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.factory.</span></span><span class="sig-name descname"><span class="pre">PostRuleFactory</span></span><a class="headerlink" href="#merlion.post_process.factory.PostRuleFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.factory.PostRuleFactory.get_post_rule_class">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_post_rule_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.factory.PostRuleFactory.get_post_rule_class" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="#merlion.post_process.base.PostRuleBase" title="merlion.post_process.base.PostRuleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostRuleBase</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.factory.PostRuleFactory.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.factory.PostRuleFactory.create" title="Permalink to this definition"></a></dt>
+<dd><p>Uses the given <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> to create a post-rule of the given name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.post_process.base.PostRuleBase" title="merlion.post_process.base.PostRuleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostRuleBase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.post_process.sequence">
+<span id="merlion-post-process-sequence-module"></span><h2>merlion.post_process.sequence module<a class="headerlink" href="#module-merlion.post_process.sequence" title="Permalink to this headline"></a></h2>
+<p>Class to compose a sequence of post-rules into a single post-rule.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.sequence.PostRuleSequence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.sequence.</span></span><span class="sig-name descname"><span class="pre">PostRuleSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">post_rules</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.sequence.PostRuleSequence" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.base.PostRuleBase" title="merlion.post_process.base.PostRuleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.base.PostRuleBase</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.sequence.PostRuleSequence.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.sequence.PostRuleSequence.train" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.sequence.PostRuleSequence.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.sequence.PostRuleSequence.to_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.sequence.PostRuleSequence.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.sequence.PostRuleSequence.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.post_process.calibrate">
+<span id="merlion-post-process-calibrate-module"></span><span id="merlion-post-process-calibrate"></span><h2>merlion.post_process.calibrate module<a class="headerlink" href="#module-merlion.post_process.calibrate" title="Permalink to this headline"></a></h2>
+<p>Post-rule to transform anomaly scores to follow a standard normal distribution.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.calibrate.AnomScoreCalibrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.calibrate.</span></span><span class="sig-name descname"><span class="pre">AnomScoreCalibrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.calibrate.AnomScoreCalibrator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.base.PostRuleBase" title="merlion.post_process.base.PostRuleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.base.PostRuleBase</span></code></a></p>
+<p>Learns a monotone function which reshapes an input sequence of anomaly scores,
+to follow a standard normal distribution. This makes the anomaly scores from
+many diverse models interpretable as z-scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_score</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – the maximum possible uncalibrated score</p></li>
+<li><p><strong>abs_score</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to consider the absolute values of the
+anomaly scores, rather than the raw value.</p></li>
+<li><p><strong>anchors</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – a sequence of (x, y) pairs mapping an uncalibrated
+anomaly score to a calibrated anomaly score. Optional, as this
+will be set by <a class="reference internal" href="#merlion.post_process.calibrate.AnomScoreCalibrator.train" title="merlion.post_process.calibrate.AnomScoreCalibrator.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">AnomScoreCalibrator.train</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.calibrate.AnomScoreCalibrator.anchors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anchors</span></span><a class="headerlink" href="#merlion.post_process.calibrate.AnomScoreCalibrator.anchors" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.calibrate.AnomScoreCalibrator.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.calibrate.AnomScoreCalibrator.train" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of raw anomaly scores that we will use
+to train the calibrator.</p></li>
+<li><p><strong>retrain_calibrator</strong> – Whether to re-train the calibrator on a new
+sequence of anomaly scores, if it has already been trained once.
+In practice, we find better results if this is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.post_process.threshold">
+<span id="merlion-post-process-threshold-module"></span><h2>merlion.post_process.threshold module<a class="headerlink" href="#module-merlion.post_process.threshold" title="Permalink to this headline"></a></h2>
+<p>Rules that use a threshold to sparsify a sequence of anomaly scores.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.threshold.</span></span><span class="sig-name descname"><span class="pre">Threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alm_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.Threshold" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.base.PostRuleBase" title="merlion.post_process.base.PostRuleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.base.PostRuleBase</span></code></a></p>
+<p>Zeroes all anomaly scores whose absolute value is less than the threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alm_threshold</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Float describing the anomaly threshold.</p></li>
+<li><p><strong>abs_score</strong> – If ‘True’, consider the absolute value instead of the raw value of score.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TSADMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enumeration of evaluation metrics for time series anomaly detection.
+For each value, the name is the metric, and the value is a partial
+function of form <code class="docutils literal notranslate"><span class="pre">f(ground_truth,</span> <span class="pre">predicted,</span> <span class="pre">**kwargs)</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.MeanTimeToDetect">
+<span class="sig-name descname"><span class="pre">MeanTimeToDetect</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.mean_time_to_detect&gt;)</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.MeanTimeToDetect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.F1">
+<span class="sig-name descname"><span class="pre">F1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.F1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.Precision">
+<span class="sig-name descname"><span class="pre">Precision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.Precision" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.Recall">
+<span class="sig-name descname"><span class="pre">Recall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.Recall" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointwiseF1">
+<span class="sig-name descname"><span class="pre">PointwiseF1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwiseF1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointwisePrecision">
+<span class="sig-name descname"><span class="pre">PointwisePrecision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwisePrecision" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointwiseRecall">
+<span class="sig-name descname"><span class="pre">PointwiseRecall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.Pointwise:</span> <span class="pre">0&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwiseRecall" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedF1">
+<span class="sig-name descname"><span class="pre">PointAdjustedF1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f1&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedF1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedPrecision">
+<span class="sig-name descname"><span class="pre">PointAdjustedPrecision</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.precision&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedPrecision" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedRecall">
+<span class="sig-name descname"><span class="pre">PointAdjustedRecall</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.recall&gt;,</span> <span class="pre">score_type=&lt;ScoreType.PointAdjusted:</span> <span class="pre">1&gt;))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedRecall" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.NABScore">
+<span class="sig-name descname"><span class="pre">NABScore</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;)</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScore" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFN">
+<span class="sig-name descname"><span class="pre">NABScoreLowFN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fn_weight=2.0))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFP">
+<span class="sig-name descname"><span class="pre">NABScoreLowFP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.nab_score&gt;,</span> <span class="pre">fp_weight=0.22))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFP" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.F2">
+<span class="sig-name descname"><span class="pre">F2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=2.0))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.F2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.TSADMetric.F5">
+<span class="sig-name descname"><span class="pre">F5</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_tsad_score&gt;,</span> <span class="pre">metric=functools.partial(&lt;function</span> <span class="pre">TSADScoreAccumulator.f_beta&gt;,</span> <span class="pre">score_type=&lt;ScoreType.RevisedPointAdjusted:</span> <span class="pre">2&gt;,</span> <span class="pre">beta=5.0))</span></em><a class="headerlink" href="#merlion.post_process.threshold.Threshold.TSADMetric.F5" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsup_quantile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_allowed_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.Threshold.train" title="Permalink to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is available, generates candidate percentiles: <code class="docutils literal notranslate"><span class="pre">[80,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">98,</span> <span class="pre">99,</span> <span class="pre">99.5,</span> <span class="pre">99.9]</span></code>.
+Also considers the user-specified candidate percentile in <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code>. Chooses the best
+percentile based on <code class="docutils literal notranslate"><span class="pre">metric</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is not provided, uses <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code> to choose the threshold. Otherwise,
+uses the default threshold specified in <code class="docutils literal notranslate"><span class="pre">alm_threshold</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
+<li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
+<li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
+to the start of an anomaly.</p></li>
+<li><p><strong>max_delay_sec</strong> – Maximum allowed delay (in seconds) from the start of an
+anomaly and a valid detection.</p></li>
+<li><p><strong>min_allowed_score</strong> – The minimum allowed value of the evaluation
+<code class="docutils literal notranslate"><span class="pre">metric</span></code>. If the best candidate threshold achieves a lower value of the
+metric, we retain with the current (default) threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.Threshold.to_simple_threshold">
+<span class="sig-name descname"><span class="pre">to_simple_threshold</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.Threshold.to_simple_threshold" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.threshold.</span></span><span class="sig-name descname"><span class="pre">AggregateAlarms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alm_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_alm_in_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alm_window_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alm_suppress_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.threshold.Threshold" title="merlion.post_process.threshold.Threshold"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.threshold.Threshold</span></code></a></p>
+<p>Applies basic post-filtering to a time series of anomaly scores</p>
+<ol class="arabic simple">
+<li><p>Determine which points are anomalies by comparing the absolute value of
+their anomaly score to <code class="docutils literal notranslate"><span class="pre">alm_threshold</span></code></p></li>
+<li><p>Only fire an alarm when <code class="docutils literal notranslate"><span class="pre">min_alm_in_window</span></code> of points (within a window
+of <code class="docutils literal notranslate"><span class="pre">alarm_window_minutes</span></code> minutes) are labeled as anomalies.</p></li>
+<li><p>If there is an alarm, then all alarms for the next <code class="docutils literal notranslate"><span class="pre">alm_suppress_minutes</span></code>
+minutes will be suppressed.</p></li>
+</ol>
+<p>Return a time series of filtered anomaly scores, where the only non-zero
+values are the anomaly scores which were marked as alarms (and not
+suppressed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alm_threshold</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Float describing the anomaly threshold.</p></li>
+<li><p><strong>abs_score</strong> – If ‘True’, consider the absolute value instead of the raw value of score.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.threshold_class">
+<span class="sig-name descname"><span class="pre">threshold_class</span></span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.threshold_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.post_process.threshold.Threshold" title="merlion.post_process.threshold.Threshold"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.threshold.Threshold</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.alm_threshold">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alm_threshold</span></span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.alm_threshold" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.abs_score">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abs_score</span></span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.abs_score" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.window_secs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">window_secs</span></span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.window_secs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.suppress_secs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suppress_secs</span></span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.suppress_secs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.filter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsup_quantile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_allowed_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.train" title="Permalink to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is available, generates candidate percentiles: <code class="docutils literal notranslate"><span class="pre">[80,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">98,</span> <span class="pre">99,</span> <span class="pre">99.5,</span> <span class="pre">99.9]</span></code>.
+Also considers the user-specified candidate percentile in <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code>. Chooses the best
+percentile based on <code class="docutils literal notranslate"><span class="pre">metric</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is not provided, uses <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code> to choose the threshold. Otherwise,
+uses the default threshold specified in <code class="docutils literal notranslate"><span class="pre">alm_threshold</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
+<li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
+<li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
+to the start of an anomaly.</p></li>
+<li><p><strong>max_delay_sec</strong> – Maximum allowed delay (in seconds) from the start of an
+anomaly and a valid detection.</p></li>
+<li><p><strong>min_allowed_score</strong> – The minimum allowed value of the evaluation
+<code class="docutils literal notranslate"><span class="pre">metric</span></code>. If the best candidate threshold achieves a lower value of the
+metric, we retain with the current (default) threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AggregateAlarms.to_simple_threshold">
+<span class="sig-name descname"><span class="pre">to_simple_threshold</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AggregateAlarms.to_simple_threshold" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.get_adaptive_thres">
+<span class="sig-prename descclassname"><span class="pre">merlion.post_process.threshold.</span></span><span class="sig-name descname"><span class="pre">get_adaptive_thres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_gap_thres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.get_adaptive_thres" title="Permalink to this definition"></a></dt>
+<dd><p>Look for gaps in the histogram of anomaly scores (i.e. histogram bins with
+zero items inside them). Set the detection threshold to the avg bin size s.t.
+the 2 bins have a gap of hist_gap_thres or more</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveThreshold">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.threshold.</span></span><span class="sig-name descname"><span class="pre">AdaptiveThreshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alm_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_hist_gap_thres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveThreshold" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.threshold.Threshold" title="merlion.post_process.threshold.Threshold"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.threshold.Threshold</span></code></a></p>
+<p>Zeroes all anomaly scores whose absolute value is less than the threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alm_threshold</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Float describing the anomaly threshold.</p></li>
+<li><p><strong>abs_score</strong> – If ‘True’, consider the absolute value instead of the raw value of score.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveThreshold.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsup_quantile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_allowed_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveThreshold.train" title="Permalink to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is available, generates candidate percentiles: <code class="docutils literal notranslate"><span class="pre">[80,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">98,</span> <span class="pre">99,</span> <span class="pre">99.5,</span> <span class="pre">99.9]</span></code>.
+Also considers the user-specified candidate percentile in <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code>. Chooses the best
+percentile based on <code class="docutils literal notranslate"><span class="pre">metric</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">metric</span></code> is not provided, uses <code class="docutils literal notranslate"><span class="pre">unsup_quantile</span></code> to choose the threshold. Otherwise,
+uses the default threshold specified in <code class="docutils literal notranslate"><span class="pre">alm_threshold</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
+<li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
+<li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
+to the start of an anomaly.</p></li>
+<li><p><strong>max_delay_sec</strong> – Maximum allowed delay (in seconds) from the start of an
+anomaly and a valid detection.</p></li>
+<li><p><strong>min_allowed_score</strong> – The minimum allowed value of the evaluation
+<code class="docutils literal notranslate"><span class="pre">metric</span></code>. If the best candidate threshold achieves a lower value of the
+metric, we retain with the current (default) threshold.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveAggregateAlarms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.threshold.</span></span><span class="sig-name descname"><span class="pre">AdaptiveAggregateAlarms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alm_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_alm_in_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alm_window_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alm_suppress_minutes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_sz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_hist_gap_thres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms" title="merlion.post_process.threshold.AggregateAlarms"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.threshold.AggregateAlarms</span></code></a></p>
+<p>Applies basic post-filtering to a time series of anomaly scores</p>
+<ol class="arabic simple">
+<li><p>Determine which points are anomalies by comparing the absolute value of
+their anomaly score to <code class="docutils literal notranslate"><span class="pre">alm_threshold</span></code></p></li>
+<li><p>Only fire an alarm when <code class="docutils literal notranslate"><span class="pre">min_alm_in_window</span></code> of points (within a window
+of <code class="docutils literal notranslate"><span class="pre">alarm_window_minutes</span></code> minutes) are labeled as anomalies.</p></li>
+<li><p>If there is an alarm, then all alarms for the next <code class="docutils literal notranslate"><span class="pre">alm_suppress_minutes</span></code>
+minutes will be suppressed.</p></li>
+</ol>
+<p>Return a time series of filtered anomaly scores, where the only non-zero
+values are the anomaly scores which were marked as alarms (and not
+suppressed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alm_threshold</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Float describing the anomaly threshold.</p></li>
+<li><p><strong>abs_score</strong> – If ‘True’, consider the absolute value instead of the raw value of score.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveAggregateAlarms.threshold_class">
+<span class="sig-name descname"><span class="pre">threshold_class</span></span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.threshold_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.post_process.threshold.AdaptiveThreshold" title="merlion.post_process.threshold.AdaptiveThreshold"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.post_process.threshold.AdaptiveThreshold</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveAggregateAlarms.bin_sz">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bin_sz</span></span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.bin_sz" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.post_process.threshold.AdaptiveAggregateAlarms.default_hist_gap_thres">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_hist_gap_thres</span></span><a class="headerlink" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.default_hist_gap_thres" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.transform.html" class="btn btn-neutral float-left" title="merlion.transform package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.evaluate.html" class="btn btn-neutral float-right" title="merlion.evaluate package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.1.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
