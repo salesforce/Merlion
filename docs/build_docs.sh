@@ -42,7 +42,7 @@ sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
 export current_version="latest"
 pip3 install ".[plot]"
 pip3 install ts_datasets/
-sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}"
+sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
 rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
 pip3 uninstall -y salesforce-merlion
 pip3 uninstall -y ts_datasets
