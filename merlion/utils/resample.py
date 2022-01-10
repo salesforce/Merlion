@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -107,7 +107,7 @@ def get_gcd_timedelta(*time_stamp_lists):
     and returns the GCD of all these timedeltas (up to units of milliseconds).
     """
     all_dt = np.concatenate([np.diff(t) for t in time_stamp_lists])
-    all_dt = np.unique((all_dt * 1000).astype(int))
+    all_dt = np.unique((all_dt * 1000).astype(np.int64))
     gcd_dt = all_dt[0]
     for dt in all_dt[1:]:
         gcd_dt = np.gcd(gcd_dt, dt)
