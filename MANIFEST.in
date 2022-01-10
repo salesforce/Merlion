@@ -1,6 +1,6 @@
 include AUTHORS.md CODE_OF_CONDUCT.md LICENSE SECURITY.md
 global-exclude *.py[cod]
-exclude benchmark*.py merlion_logo.svg
+exclude benchmark*.py
 recursive-exclude conf *
 recursive-exclude data *
 recursive-exclude docs *
