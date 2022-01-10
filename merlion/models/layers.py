@@ -48,10 +48,10 @@ class LayeredModelConfig(Config):
         self.model_kwargs = {}
         super().__init__(**kwargs)
 
-        # If no model was created, reserve unused kwargs to try initializing the model with
-        if model is None:
-            extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
-            self.model_kwargs = {**extra_kwargs, **model_kwargs}
+        # Reserve unused kwargs to try initializing the model with
+        # (useful if model is None, and can be helpful for reset())
+        extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
+        self.model_kwargs = {**extra_kwargs, **model_kwargs}
 
     @property
     def base_model(self):
