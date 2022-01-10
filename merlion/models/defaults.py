@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -72,6 +72,7 @@ class DefaultDetector(LayeredDetector):
                         max_n_samples=512,
                     ),
                 ],
+                **self.config.model_kwargs,
             )
 
         # Univariate model is ETS/RRCF/ZMS ensemble
@@ -94,6 +95,7 @@ class DefaultDetector(LayeredDetector):
                     ),
                     ModelFactory.create("ZMS", n_lags=3, transform=transform_dict),
                 ],
+                **self.config.model_kwargs,
             )
 
         return super().train(
@@ -119,12 +121,9 @@ class DefaultForecasterConfig(LayeredModelConfig):
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
         """
+        self.granularity = granularity
         super().__init__(
-            model=model,
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            granularity=granularity,
-            model_kwargs=kwargs,
+            model=model, max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs
         )
         assert self.base_model is None or isinstance(self.base_model, ForecasterBase)
 
@@ -142,9 +141,7 @@ class DefaultForecaster(LayeredForecaster):
 
     def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
-        kwargs = dict(
-            transform=transform_dict, max_forecast_steps=self.max_forecast_steps, target_seq_index=self.target_seq_index
-        )
+        kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
 
         # LGBM forecaster for multivariate data
         if train_data.dim > 1:
@@ -156,10 +153,10 @@ class DefaultForecaster(LayeredForecaster):
                 max_depth=7,
                 sampling_mode="normal",
                 learning_rate=0.1,
-                **kwargs
+                **kwargs,
             )
 
         # ETS for univariate data
         else:
-            self.model = ModelFactory.create("ETS", damped_trend=True, **kwargs)
+            self.model = ModelFactory.create("AutoETS", damped_trend=True, **kwargs)
         return super().train(train_data=train_data, train_config=train_config)
