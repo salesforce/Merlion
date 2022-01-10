@@ -51,7 +51,8 @@ class LayeredModelConfig(Config):
         # Reserve unused kwargs to try initializing the model with
         # (useful if model is None, and can be helpful for reset())
         extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
-        self.model_kwargs = {**extra_kwargs, **model_kwargs}
+        model_kwargs = {**extra_kwargs, **model_kwargs}
+        self.model_kwargs = {k: v.to_dict() if hasattr(v, "to_dict") else v for k, v in model_kwargs.items()}
 
     @property
     def base_model(self):
@@ -91,11 +92,13 @@ class LayeredModelConfig(Config):
 
     def __copy__(self):
         config_dict = super().to_dict(_skipped_keys={"model"})
-        return self.__class__(model=self.model, **config_dict)
+        config_dict["model"] = self.model
+        return self.from_dict(config_dict)
 
     def __deepcopy__(self, memodict={}):
         config_dict = super().to_dict(_skipped_keys={"model"})
-        return self.__class__(model=copy.deepcopy(self.model), **config_dict)
+        config_dict["model"] = copy.deepcopy(self.model)
+        return self.from_dict(config_dict)
 
     def __getattr__(self, item):
         if item in ["model", "_model", "base_model"]:

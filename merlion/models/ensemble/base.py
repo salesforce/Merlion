@@ -65,7 +65,8 @@ class EnsembleConfig(Config):
 
     def __copy__(self):
         config_dict = super().to_dict(_skipped_keys={"models"})
-        return self.__class__(models=self.models, **config_dict)
+        config_dict["models"] = self.models
+        return self.from_dict(config_dict)
 
     def __deepcopy__(self, memodict={}):
         copied = copy.copy(self)

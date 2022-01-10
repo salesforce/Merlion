@@ -87,6 +87,7 @@ class Config(object, metaclass=ModelConfigMeta):
 
         :return: `Config` object initialized from the dict.
         """
+        config_dict = copy.copy(config_dict)
         dim = config_dict.pop("dim", dim)
         config_dict = dict(**config_dict, **kwargs)
         config = cls(**config_dict)
