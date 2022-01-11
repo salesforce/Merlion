@@ -287,6 +287,9 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 self.optimiser = torch.optim.Adam(self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000)
             if self.lr_sch is None:
                 self.lr_sch = LRScheduler(lr_i=0.0000, lr_f=self.lr, nsteps=self.warmup_steps, optimizer=self.optimiser)
+        else:
+            self.optimiser = None
+            self.lr_sch = None
 
     @property
     def nexperts(self):
