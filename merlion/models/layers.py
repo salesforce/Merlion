@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -9,7 +9,8 @@ Base class for layered models. These are models which act as a wrapper around an
 functionality. This is the basis for `default models <merlion.models.defaults>`_ and
 `AutoML models <merlion.models.automl>`_.
 """
-from copy import deepcopy
+import copy
+import logging
 from typing import Any, Dict, Union
 
 from merlion.models.base import Config, ModelBase
@@ -19,6 +20,8 @@ from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
+
+logger = logging.getLogger(__name__)
 
 
 class LayeredModelConfig(Config):
@@ -42,24 +45,14 @@ class LayeredModelConfig(Config):
             model, extra_kwargs = ModelFactory.create(**{**model, **model_kwargs, "return_unused_kwargs": True})
             kwargs.update(extra_kwargs)
         self.model = model
+        self.model_kwargs = {}
         super().__init__(**kwargs)
 
-        # If no model was created, reserve unused kwargs to try initializing the model with
-        if model is None:
-            extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
-            self.model_kwargs = {**extra_kwargs, **model_kwargs}
-
-    @property
-    def model(self):
-        """
-        The underlying model which this layer wraps.
-        """
-        return self._model
-
-    @model.setter
-    def model(self, model):
-        self._model = model
-        self.model_kwargs = {}
+        # Reserve unused kwargs to try initializing the model with
+        # (useful if model is None, and can be helpful for reset())
+        extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
+        model_kwargs = {**extra_kwargs, **model_kwargs}
+        self.model_kwargs = {k: v.to_dict() if hasattr(v, "to_dict") else v for k, v in model_kwargs.items()}
 
     @property
     def base_model(self):
@@ -83,9 +76,29 @@ class LayeredModelConfig(Config):
                 config_dict["model"] = dict(name=type(self.model).__name__, **self.model.config.to_dict())
         return config_dict
 
+    @classmethod
+    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, dim=None, **kwargs):
+        config, kwargs = super().from_dict(config_dict=config_dict, return_unused_kwargs=True, dim=dim, **kwargs)
+        if config.model is None:
+            used = {k: v for k, v in kwargs.items() if hasattr(DetectorConfig, k) or hasattr(ForecasterConfig, k)}
+            config.model_kwargs.update(used)
+            kwargs = {k: v for k, v in kwargs.items() if k not in used}
+
+        if len(kwargs) > 0 and not return_unused_kwargs:
+            logger.warning(f"Unused kwargs: {kwargs}", stack_info=True)
+        elif return_unused_kwargs:
+            return config, kwargs
+        return config
+
     def __copy__(self):
         config_dict = super().to_dict(_skipped_keys={"model"})
-        return self.__class__(model=deepcopy(self.model), **config_dict)
+        config_dict["model"] = self.model
+        return self.from_dict(config_dict)
+
+    def __deepcopy__(self, memodict={}):
+        config_dict = super().to_dict(_skipped_keys={"model"})
+        config_dict["model"] = copy.deepcopy(self.model)
+        return self.from_dict(config_dict)
 
     def __getattr__(self, item):
         if item in ["model", "_model", "base_model"]:
@@ -95,6 +108,8 @@ class LayeredModelConfig(Config):
         is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, item)
         if is_detector_attr or is_forecaster_attr:
             return getattr(base_model.config, item)
+        elif base_model is None and item in self.model_kwargs:
+            return self.model_kwargs.get(item)
         return self.__getattribute__(item)
 
     def __setattr__(self, key, value):
