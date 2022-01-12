@@ -18,7 +18,7 @@ try:
     import torch.utils.data as data
 except ImportError as e:
     err = (
-        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[torch]` or "
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[deep-learning]` or "
         "`pip install `salesforce-merlion[all]`"
     )
     raise ImportError(str(e) + ". " + err)
