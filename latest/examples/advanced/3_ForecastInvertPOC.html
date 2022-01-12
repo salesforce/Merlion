@@ -358,7 +358,7 @@ div.rendered_html tbody tr:hover {
 <section id="Proof-of-Concept:-Inverse-Transforms-for-Forecasters">
 <h1>Proof of Concept: Inverse Transforms for Forecasters<a class="headerlink" href="#Proof-of-Concept:-Inverse-Transforms-for-Forecasters" title="Permalink to this headline"></a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -383,7 +383,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 560.91it/s]
+100%|██████████| 414/414 [00:00&lt;00:00, 648.58it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -393,8 +393,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../../_images/examples_advanced_3_ForecastInvertPOC_1_1.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_1_1.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -434,16 +434,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-plotly not installed, so plotly visualizations will not work.
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -459,16 +451,8 @@ plotly not installed, so plotly visualizations will not work.
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Importing plotly failed. Interactive plots will not work.
-</pre></div></div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -490,7 +474,6 @@ No transform...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -499,8 +482,8 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 4.79
-Test  sMAPE: 16.50
+Train sMAPE: 4.88
+Test  sMAPE: 17.83
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -511,7 +494,7 @@ Test  sMAPE: 16.50
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -528,17 +511,8 @@ Test  sMAPE: 16.50
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Normalize...
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -547,24 +521,17 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 54.02
-Test  sMAPE: 116.71
+Normalize...
+Train sMAPE: 54.41
+Test  sMAPE: 118.24
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_5_3.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_5_3.png" />
+<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_5_2.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_5_2.png" />
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -589,19 +556,19 @@ INFO:merlion.transform.base:Transform TemporalResample(aggregation_policy=Mean, 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 5.70
-Test  sMAPE: 17.03
+Train sMAPE: 5.73
+Test  sMAPE: 17.55
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_5_8.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_5_8.png" />
+<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_5_6.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_5_6.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -618,17 +585,8 @@ Test  sMAPE: 17.03
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Log transform...
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -637,15 +595,16 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+Log transform...
 Train sMAPE: 0.46
-Test  sMAPE: 1.21
+Test  sMAPE: 1.19
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_6_3.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_6_3.png" />
+<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_6_2.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_6_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -653,7 +612,6 @@ Test  sMAPE: 1.21
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -679,19 +637,19 @@ INFO:merlion.transform.base:Transform TemporalResample(aggregation_policy=Mean, 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 3.24
-Test  sMAPE: 8.75
+Train sMAPE: 3.30
+Test  sMAPE: 8.61
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_6_8.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_6_8.png" />
+<img alt="../../_images/examples_advanced_3_ForecastInvertPOC_6_7.png" src="../../_images/examples_advanced_3_ForecastInvertPOC_6_7.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -710,7 +668,6 @@ Test  sMAPE: 8.75
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -720,8 +677,8 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Moving Average...
-Train sMAPE: 5.28
-Test  sMAPE: 18.69
+Train sMAPE: 5.15
+Test  sMAPE: 17.70
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -736,7 +693,6 @@ Test  sMAPE: 18.69
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -764,8 +720,8 @@ INFO:merlion.transform.base:Transform TemporalResample(aggregation_policy=Mean, 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 185.33
-Test  sMAPE: 27.62
+Train sMAPE: 186.89
+Test  sMAPE: 23.44
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -776,7 +732,7 @@ Test  sMAPE: 27.62
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -795,7 +751,6 @@ Test  sMAPE: 27.62
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -805,8 +760,8 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Difference transform...
-Train sMAPE: 49.83
-Test  sMAPE: 43.75
+Train sMAPE: 53.17
+Test  sMAPE: 48.12
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -821,7 +776,6 @@ Test  sMAPE: 43.75
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.forecast.prophet:Add seasonality 24
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 </pre></div></div>
 </div>
@@ -847,8 +801,8 @@ INFO:merlion.transform.base:Transform TemporalResample(aggregation_policy=Mean, 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 6.51
-Test  sMAPE: 5.82
+Train sMAPE: 6.47
+Test  sMAPE: 5.71
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -859,7 +813,7 @@ Test  sMAPE: 5.82
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

@@ -418,7 +418,6 @@ Time series is 5-dimensional
 <span class="c1"># This ModelSelector combiner picks the best model based on sMAPE</span>
 <span class="n">model3</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;ForecasterEnsemble&quot;</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">],</span>
                              <span class="n">combiner</span><span class="o">=</span><span class="n">ModelSelector</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="p">))</span>
-
 <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
     <span class="n">train_pred</span><span class="p">,</span> <span class="n">train_stderr</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
@@ -428,10 +427,48 @@ Time series is 5-dimensional
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Inferred granularity 0 days 01:00:00
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Training DefaultForecaster...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Inferred granularity 0 days 01:00:00
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 Training Arima...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Inferred granularity 0 days 01:00:00
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 Training ForecasterEnsemble...
 </pre></div></div>
 </div>
@@ -440,7 +477,9 @@ Training ForecasterEnsemble...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Validation: 100%|██████████| 31550400/31550400 [00:20&lt;00:00, 1558063.14it/s]
+Inferred granularity 0 days 01:00:00
+Inferred granularity 0 days 01:00:00
+Inferred granularity 0 days 01:00:00
 </pre></div></div>
 </div>
 </section>
@@ -511,6 +550,14 @@ sMAPE: 121.1709
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Inferred granularity 0 days 01:00:00
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 DefaultForecaster Sliding Window Evaluation
@@ -521,7 +568,8 @@ DefaultForecaster Sliding Window Evaluation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-ForecastEvaluator: 100%|██████████| 31528800/31528800 [01:22&lt;00:00, 383184.32it/s]
+ForecastEvaluator: 100%|██████████| 31528800/31528800 [01:04&lt;00:00, 491549.47it/s]
+Inferred granularity 0 days 01:00:00
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -540,16 +588,24 @@ Arima Sliding Window Evaluation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-ForecastEvaluator: 100%|██████████| 31528800/31528800 [03:45&lt;00:00, 139586.71it/s]
+ForecastEvaluator: 100%|██████████| 31528800/31528800 [02:24&lt;00:00, 218558.84it/s]
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 RMSE:  13.1032
 sMAPE: 112.2607
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
 
 </pre></div></div>
 </div>

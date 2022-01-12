@@ -646,12 +646,6 @@ not override arguments in either the <code class="docutils literal notranslate">
 </dd>
 </dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.layers.LayeredModelConfig.model">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#merlion.models.layers.LayeredModelConfig.model" title="Permalink to this definition"></a></dt>
-<dd><p>The underlying model which this layer wraps.</p>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.layers.LayeredModelConfig.base_model">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_model</span></span><a class="headerlink" href="#merlion.models.layers.LayeredModelConfig.base_model" title="Permalink to this definition"></a></dt>
 <dd><p>The base model at the heart of the full layered model.</p>
@@ -663,6 +657,25 @@ not override arguments in either the <code class="docutils literal notranslate">
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>dict with keyword arguments used to initialize the config class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.layers.LayeredModelConfig.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_unused_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.layers.LayeredModelConfig.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> from a Python dictionary of parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – dict that will be used to instantiate this object.</p></li>
+<li><p><strong>return_unused_kwargs</strong> – whether to return any unused keyword args.</p></li>
+<li><p><strong>dim</strong> – the dimension of the time series. handled as a special case.</p></li>
+<li><p><strong>kwargs</strong> – any additional parameters to set (overriding config_dict).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a> object initialized from the dict.</p>
 </dd>
 </dl>
 </dd></dl>

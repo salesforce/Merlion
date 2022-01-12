@@ -432,10 +432,10 @@ Time series is 55-dimensional
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Training DefaultDetector...
- |████████████████████████████████████████| 100.0% Complete, Loss 157274.2031
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.5998
 Training IsolationForest...
 Training DetectorEnsemble...
- |████████████████████████████████████████| 100.0% Complete, Loss 156991.0312
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.6001
 </pre></div></div>
 </div>
 </section>
@@ -470,10 +470,10 @@ Training DetectorEnsemble...
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 DefaultDetector
-Precision: 0.9570
-Recall:    0.8571
-F1:        0.9043
-MTTD:      0 days 01:06:21
+Precision: 0.9659
+Recall:    0.8312
+F1:        0.8935
+MTTD:      0 days 01:21:15
 
 IsolationForest
 Precision: 0.9638
@@ -482,10 +482,10 @@ F1:        0.8856
 MTTD:      0 days 01:40:57
 
 DetectorEnsemble
-Precision: 0.9527
-Recall:    0.8708
-F1:        0.9099
-MTTD:      0 days 01:20:02
+Precision: 0.9620
+Recall:    0.8184
+F1:        0.8844
+MTTD:      0 days 01:34:51
 
 </pre></div></div>
 </div>
@@ -523,7 +523,7 @@ MTTD:      0 days 01:20:02
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 DefaultDetector Sliding Window Evaluation
- |████████████████████████████████████████| 100.0% Complete, Loss 156283.4219
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.5998
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -531,7 +531,7 @@ DefaultDetector Sliding Window Evaluation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:31&lt;00:27, 72283.89it/s]
+TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:23&lt;00:19, 101454.83it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -539,7 +539,7 @@ TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:31&lt;00:27, 722
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- |████------------------------------------| 10.0% Complete, Loss 187671.3750
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.6667
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -547,7 +547,7 @@ TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:31&lt;00:27, 722
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:50&lt;00:27, 72283.89it/s]
+TSADEvaluator: 100%|██████████| 4423680/4423680 [02:09&lt;00:00, 34157.67it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -555,26 +555,10 @@ TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:50&lt;00:27, 722
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- |████████████████████████████████████████| 100.0% Complete, Loss 174095.8906
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-TSADEvaluator: 100%|██████████| 4423680/4423680 [03:36&lt;00:00, 20417.36it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Precision: 0.9599
-Recall:    0.8571
-F1:        0.9056
-MTTD:      0 days 01:10:05
+Precision: 0.9522
+Recall:    0.8027
+F1:        0.8711
+MTTD:      0 days 01:22:46
 
 IsolationForest Sliding Window Evaluation
 </pre></div></div>
@@ -584,7 +568,7 @@ IsolationForest Sliding Window Evaluation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-TSADEvaluator: 100%|██████████| 4423680/4423680 [00:30&lt;00:00, 146126.28it/s]
+TSADEvaluator: 100%|██████████| 4423680/4423680 [00:27&lt;00:00, 160149.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -598,7 +582,7 @@ F1:        0.8943
 MTTD:      0 days 01:40:42
 
 DetectorEnsemble Sliding Window Evaluation
- |████████████████████████████████████████| 100.0% Complete, Loss 157318.1875
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.6002
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -606,7 +590,7 @@ DetectorEnsemble Sliding Window Evaluation
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:52&lt;00:33, 60470.46it/s]
+TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:28&lt;00:24, 83276.94it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -614,7 +598,7 @@ TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:52&lt;00:33, 604
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- |████████████████████████████████████████| 100.0% Complete, Loss 173354.6250
+ |████████████████████████████████████████| 100.0% Complete, Loss 0.6532
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -622,7 +606,7 @@ TSADEvaluator:  55%|█████▍    | 2419200/4423680 [00:52&lt;00:33, 604
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-TSADEvaluator: 100%|██████████| 4423680/4423680 [04:11&lt;00:00, 17618.46it/s]
+TSADEvaluator: 100%|██████████| 4423680/4423680 [02:37&lt;00:00, 28002.66it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -630,10 +614,10 @@ TSADEvaluator: 100%|██████████| 4423680/4423680 [04:11&lt;00
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Precision: 0.9638
-Recall:    0.8645
-F1:        0.9115
-MTTD:      0 days 01:28:00
+Precision: 0.9453
+Recall:    0.8209
+F1:        0.8787
+MTTD:      0 days 01:32:18
 
 </pre></div></div>
 </div>
