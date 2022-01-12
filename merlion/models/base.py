@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,7 +8,7 @@
 Contains the base classes for all models.
 """
 from abc import abstractmethod
-from copy import deepcopy
+import copy
 import json
 import logging
 import os
@@ -46,7 +46,7 @@ class Config(object, metaclass=ModelConfigMeta):
         """
         super().__init__()
         if transform is None:
-            self.transform = deepcopy(self._default_transform)
+            self.transform = copy.deepcopy(self._default_transform)
         elif isinstance(transform, dict):
             self.transform = TransformFactory.create(**transform)
         else:
@@ -72,7 +72,7 @@ class Config(object, metaclass=ModelConfigMeta):
             if hasattr(value, "to_dict"):
                 value = value.to_dict()
             if key not in skipped_keys:
-                config_dict[key] = deepcopy(value)
+                config_dict[key] = copy.deepcopy(value)
         return config_dict
 
     @classmethod
@@ -87,6 +87,7 @@ class Config(object, metaclass=ModelConfigMeta):
 
         :return: `Config` object initialized from the dict.
         """
+        config_dict = copy.copy(config_dict)
         dim = config_dict.pop("dim", dim)
         config_dict = dict(**config_dict, **kwargs)
         config = cls(**config_dict)
@@ -170,7 +171,7 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     def __init__(self, config: Config):
         assert isinstance(config, self.config_class)
-        self.config = deepcopy(config)
+        self.config = copy.copy(config)
         self.last_train_time = None
         self.timedelta = None
         self.train_data = None
@@ -182,7 +183,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.__init__(self.config)
 
     def __getstate__(self):
-        return {k: deepcopy(v) for k, v in self.__dict__.items()}
+        return {k: copy.deepcopy(v) for k, v in self.__dict__.items()}
 
     def __setstate__(self, state):
         for name, value in state.items():
@@ -432,11 +433,15 @@ class ModelBase(metaclass=AutodocABCMeta):
         return cls._from_config_state_dicts(config_dict, state_dict, **kwargs)
 
     def __copy__(self):
-        new_model = self.__class__(config=deepcopy(self.config))
+        new_model = self.__class__(config=copy.copy(self.config))
         state_dict = self.__getstate__()
         state_dict.pop("config", None)
         new_model.__setstate__(state_dict)
         return new_model
 
     def __deepcopy__(self, memodict={}):
-        return self.__copy__()
+        new_model = self.__class__(config=copy.deepcopy(self.config))
+        state_dict = self.__getstate__()
+        state_dict.pop("config", None)
+        new_model.__setstate__(state_dict)
+        return new_model
