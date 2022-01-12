@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -55,13 +55,23 @@ class EnsembleConfig(Config):
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
         config_dict = super().to_dict(_skipped_keys.union({"models"}))
-        if self.models is None:
-            models = None
-        else:
-            models = [None if m is None else dict(name=type(m).__name__, **m.config.to_dict()) for m in self.models]
         if "models" not in _skipped_keys:
+            if self.models is None:
+                models = None
+            else:
+                models = [None if m is None else dict(name=type(m).__name__, **m.config.to_dict()) for m in self.models]
             config_dict["models"] = models
         return config_dict
+
+    def __copy__(self):
+        config_dict = super().to_dict(_skipped_keys={"models"})
+        config_dict["models"] = self.models
+        return self.from_dict(config_dict)
+
+    def __deepcopy__(self, memodict={}):
+        copied = copy.copy(self)
+        copied.models = copy.deepcopy(self.models)
+        return copied
 
 
 class EnsembleTrainConfig:
