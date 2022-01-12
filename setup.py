@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -38,7 +38,7 @@ setup(
         "dill",
         "prophet",
         "GitPython",
-        "JPype1==1.0.2",
+        "py4j>=0.10.9.2",  # same minimum supported version as pyspark
         "matplotlib",
         "numpy!=1.18.*",  # 1.18 causes a bug with scipy
         "packaging",
