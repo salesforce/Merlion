@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -7,11 +7,19 @@
 """
 The LSTM-encoder-decoder-based anomaly detector for multivariate time series
 """
+try:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[torch]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
+
 import numpy as np
-import torch
-import torch.nn as nn
 from typing import Sequence
-from torch.utils.data import DataLoader
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig

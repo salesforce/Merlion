@@ -1,12 +1,19 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-import torch
-import torch.nn.functional as F
-from torch import nn
+try:
+    import torch
+    import torch.nn.functional as F
+    from torch import nn
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[torch]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
 
 
 class DimDropout(torch.nn.Module):

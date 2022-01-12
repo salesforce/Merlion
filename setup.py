@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,6 +11,14 @@ MERLION_JARS = [
     "resources/randomcutforest-core-1.0.jar",
     "resources/randomcutforest-serialization-json-1.0.jar",
 ]
+
+# optional dependencies
+extra_require = {
+    "plot": ["plotly>=4.13"],
+    "prophet": ["prophet", "pystan<3.0"],  # pystan >= 3.0 doesn't work with prophet
+    "deep-learning": ["torch>=1.1.0"],
+}
+extra_require["all"] = sum(extra_require.values(), [])
 
 
 def read_file(fname):
@@ -36,25 +44,22 @@ setup(
     install_requires=[
         "cython",
         "dill",
-        "prophet",
         "GitPython",
         "JPype1==1.0.2",
         "matplotlib",
         "numpy!=1.18.*",  # 1.18 causes a bug with scipy
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
-        'pystan<3.0"',  # >=3.0 fails with prophet
         "scikit-learn>=0.22",  # >=0.22 for changes to isolation forest algorithm
         "scipy>=1.6.0; python_version >= '3.7'",  # 1.6.0 adds multivariate_t density to scipy.stats
         "scipy>=1.5.0; python_version < '3.7'",  # however, scipy 1.6.0 requires python 3.7+
         "statsmodels>=0.12.2",
-        "torch>=1.1.0",
         "lightgbm",  # if running at MacOS, need OpenMP: "brew install libomp"
         "tqdm",
         "wheel",
         "pytest",
     ],
-    extras_require={"plot": "plotly>=4.13"},
+    extras_require=extra_require,
     python_requires=">=3.6.0",
     zip_safe=False,
 )

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -7,6 +7,18 @@
 """
 A forecaster based on a LSTM neural net.
 """
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    from torch.utils.data import DataLoader, Dataset
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[torch]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
+
 import bisect
 from copy import deepcopy
 import datetime
@@ -15,10 +27,6 @@ import os
 from typing import List, Tuple, Union
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
