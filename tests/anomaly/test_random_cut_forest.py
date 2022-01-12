@@ -57,19 +57,6 @@ class TestRandomCutForest(unittest.TestCase):
         logger.info("Training model...\n")
         self.model.train(self.vals_train)
 
-    @pytest.fixture(autouse=True)
-    def fixture(self):
-        # Necessary to avoid jpype-induced segfault due to running JVM in a thread when
-        # running this test with pytest. See the docs here:
-        # https://jpype.readthedocs.io/en/latest/userguide.html#errors-reported-by-python-fault-handler
-        try:
-            import faulthandler
-
-            faulthandler.enable()
-            faulthandler.disable()
-        except:
-            pass
-
     def test_score(self):
         self.run_init()
         print("-" * 80)

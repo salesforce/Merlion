@@ -8,7 +8,6 @@ from abc import ABC
 import logging
 import os
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -19,7 +18,7 @@ import pandas as pd
 
 from merlion.models.defaults import DefaultDetector, DefaultDetectorConfig
 from merlion.plot import plot_anoms_plotly
-from merlion.post_process.threshold import AggregateAlarms, Threshold
+from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils import TimeSeries
 from ts_datasets.anomaly import *
 
@@ -118,19 +117,6 @@ class Mixin(ABC):
 
 
 class TestUnivariate(unittest.TestCase, Mixin):
-    @pytest.fixture(autouse=True)
-    def fixture(self):
-        # Necessary to avoid jpype-induced segfault due to running JVM in a thread when
-        # running this test with pytest. See the docs here:
-        # https://jpype.readthedocs.io/en/latest/userguide.html#errors-reported-by-python-fault-handler
-        try:
-            import faulthandler
-
-            faulthandler.enable()
-            faulthandler.disable()
-        except:
-            pass
-
     def run_init(self):
         set_random_seeds()
         self.model = DefaultDetector(
