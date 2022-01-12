@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -38,9 +38,9 @@ class TestTimeSeriesGenerator(unittest.TestCase):
 
         np.random.seed(1234)
         x = np.arange(20) * 1.5 - 7
-        y_expected = ((4.5 / (1.0 + np.exp(-np.sin(x) * np.sin(3 * x)))) ** 1.3 + np.random.normal(size=20)).tolist()
+        y_expected = (4.5 / (1.0 + np.exp(-np.sin(x) * np.sin(3 * x)))) ** 1.3 + np.random.normal(size=20)
 
-        self.assertSequenceEqual(y_expected, y_generated)
+        self.assertAlmostEqual(np.max(np.abs(y_expected - y_generated)), 0, places=8)
 
     def test_generator_series(self):
         logger.info("test_generator_series\n" + "-" * 80 + "\n")
@@ -63,11 +63,9 @@ class TestTimeSeriesGenerator(unittest.TestCase):
 
         np.random.seed(1234)
         x = np.arange(21) * 1.5 - 7
-        y_expected = (
-            np.hstack((x[:3] ** 2, np.exp(-(x[3:10] % 5)), np.log(x[10:21]) * 4)) * np.random.uniform(size=21)
-        ).tolist()
+        y_expected = np.hstack((x[:3] ** 2, np.exp(-(x[3:10] % 5)), np.log(x[10:21]) * 4)) * np.random.uniform(size=21)
 
-        self.assertSequenceEqual(y_expected, y_generated)
+        self.assertAlmostEqual(np.max(np.abs(y_expected - y_generated)), 0, places=8)
 
 
 if __name__ == "__main__":
