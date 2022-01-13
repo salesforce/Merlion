@@ -47,7 +47,8 @@ setup(
         "GitPython",
         "JPype1==1.0.2",
         "matplotlib",
-        "numpy!=1.18.*",  # 1.18 causes a bug with scipy
+        "numpy>=1.21; python_version >= '3.7'",  # 1.21 remediates a security risk
+        "numpy>=1.19; python_version < '3.7'",  # however, numpy 1.20+ requires python 3.7+
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
         "scikit-learn>=0.22",  # >=0.22 for changes to isolation forest algorithm
