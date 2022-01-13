@@ -140,12 +140,6 @@ class RandomCutForest(DetectorBase):
         super().__setstate__(state)
         self.forest = forest
 
-    def _convert_point(self, point):
-        gateway = JVMSingleton.gateway()
-        java_array = gateway.new_array(gateway.jvm.double, len(point))
-        gateway.jvm.java.nio.ByteBuffer.wrap(point.tobytes()).asDoubleBuffer().get(java_array)
-        return java_array
-
     def _forest_predict(self, data: np.ndarray, online_updates: bool):
         scores = []
         n, d = data.shape
