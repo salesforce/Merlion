@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,6 +11,7 @@ import sys
 import unittest
 
 import numpy as np
+import pandas as pd
 
 from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
@@ -29,13 +30,16 @@ class TestProphet(unittest.TestCase):
         self.csv_name = join(rootdir, "data", "example.csv")
         self.data = TemporalResample("15min")(ts_csv_load(self.csv_name, n_vars=1))
         logger.info(f"Data looks like:\n{self.data[:5]}")
+        holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 
         # Test Prophet with a log transform (Box-Cox with lmbda=0)
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
         self.model = AutoProphet(
-            model=ProphetDetector(ProphetDetectorConfig(transform=PowerTransform(lmbda=0.0), uncertainty_samples=1000))
+            model=ProphetDetector(
+                ProphetDetectorConfig(transform=PowerTransform(lmbda=0.0), uncertainty_samples=1000, holidays=holidays)
+            )
         )
 
     def test_full(self):
