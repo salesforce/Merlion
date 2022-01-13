@@ -104,7 +104,7 @@ class ProphetConfig(ForecasterConfig):
             range of days around the date to be included as holidays.
             lower_window=-2 will include 2 days prior to the date as holidays. Also
             optionally can have a column prior_scale specifying the prior scale for
-            that holiday.
+            that holiday. Can also be a dict corresponding to the desired pd.DataFrame.
         :param uncertainty_samples: The number of posterior samples to draw in
             order to calibrate the anomaly scores.
         """
@@ -133,7 +133,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
             daily_seasonality=self.daily_seasonality,
             seasonality_mode=self.seasonality_mode,
             uncertainty_samples=self.uncertainty_samples,
-            holidays=self.holidays,
+            holidays=None if self.holidays is None else pd.DataFrame(self.holidays),
         )
         self.last_forecast_time_stamps_full = None
         self.last_forecast_time_stamps = None

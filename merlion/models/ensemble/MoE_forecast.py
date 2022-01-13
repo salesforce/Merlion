@@ -280,6 +280,8 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             f"greater than 0 at the same time, but one of them must be non-zero."
         )
 
+        self.optimiser = None
+        self.lr_sch = None
         self.moe_model = moe_model
 
     @property
