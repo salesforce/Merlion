@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,9 +8,8 @@
 Base class/mixin for AutoML hyperparameter search.
 """
 from abc import abstractmethod
-from collections import Iterator
 from copy import deepcopy
-from typing import Tuple, Optional, Any
+from typing import Any, Iterator, Optional, Tuple
 
 from merlion.models.layers import LayeredModel, LayeredModelConfig
 from merlion.models.forecast.base import ForecasterBase
