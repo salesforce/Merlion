@@ -27,13 +27,14 @@ and :doc:`ts_datasets <ts_datasets>` provides standardized data loaders for mult
 time series as ``pandas.DataFrame`` s with accompanying metadata.
 
 You can install ``merlion`` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
-cloning the Merlion `repo <https://github.com/salesforce/Merlion>`_ and calling ``pip install Merlion/``, or
-``pip install -e Merlion/`` to install in editable mode. You may install additional dependencies for plotting &
-visualization via ``pip install salesforce-merlion[plot]``, or by calling ``pip install "Merlion/[plot]"``
-if installing from source.
+cloning the Merlion `repo <https://github.com/salesforce/Merlion>`__ and calling ``pip install Merlion/``, or
+``pip install -e Merlion/`` to install in editable mode. You may install additional optional dependencies via
+``pip install salesforce-merlion[all]``,  or by calling ``pip install "Merlion/[all]"`` if installing from source.
+Individually, the optional dependencies include ``plotly`` for interactive plots, ``prophet`` for the popular
+`Prophet <https://github.com/facebook/prophet>`__ model, and ``deep-learning`` for all deep learning models.
 
 To install the data loading package ``ts_datasets``, clone the Merlion
-`repo <https://github.com/salesforce/Merlion>`_ and call ``pip install -e Merlion/ts_datasets/``. This package must be
+`repo <https://github.com/salesforce/Merlion>`__ and call ``pip install -e Merlion/ts_datasets/``. This package must be
 installed in editable mode (i.e. with the ``-e`` flag) if you don't want to manually specify the root directory of
 every dataset when initializing its data loader.
 
