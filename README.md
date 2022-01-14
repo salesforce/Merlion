@@ -75,7 +75,7 @@ time series as ``pandas.DataFrame`` s with accompanying metadata.
 You can install `merlion` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
 cloning this repoand calling ``pip install Merlion/``, or ``pip install -e Merlion/`` to install in editable mode.
 You may install additional dependencies via ``pip install salesforce-merlion[all]``,  or by calling
-``pip install "Merlion/[all]"`` if installing from source. Individually, the optional dependencies include ``plotly``
+``pip install "Merlion/[all]"`` if installing from source. Individually, the optional dependencies include ``plot``
 for interactive plots, ``prophet`` for the popular [Prophet](https://github.com/facebook/prophet) model,
 and ``deep-learning`` for all deep learning models.
 
