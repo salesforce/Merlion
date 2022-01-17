@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -57,19 +57,6 @@ class TestRandomCutForest(unittest.TestCase):
         logger.info("Training model...\n")
         self.model.train(self.vals_train)
 
-    @pytest.fixture(autouse=True)
-    def fixture(self):
-        # Necessary to avoid jpype-induced segfault due to running JVM in a thread when
-        # running this test with pytest. See the docs here:
-        # https://jpype.readthedocs.io/en/latest/userguide.html#errors-reported-by-python-fault-handler
-        try:
-            import faulthandler
-
-            faulthandler.enable()
-            faulthandler.disable()
-        except:
-            pass
-
     def test_score(self):
         self.run_init()
         print("-" * 80)
@@ -118,6 +105,6 @@ class TestRandomCutForest(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

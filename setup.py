@@ -45,7 +45,7 @@ setup(
         "cython",
         "dill",
         "GitPython",
-        "JPype1==1.0.2",
+        "py4j>=0.10.9.2",  # same minimum supported version as pyspark
         "matplotlib",
         "numpy>=1.21; python_version >= '3.7'",  # 1.21 remediates a security risk
         "numpy>=1.19; python_version < '3.7'",  # however, numpy 1.20+ requires python 3.7+
