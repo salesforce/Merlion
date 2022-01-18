@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorials &amp; Example Code &mdash; Merlion 1.1.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Merlion’s Data Format" href="examples/TimeSeries.html" />
+    <link rel="prev" title="ts_datasets.forecast package" href="ts_datasets.forecast.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials &amp; Example Code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/TimeSeries.html">Merlion’s Data Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/anomaly/0_AnomalyIntro.html">A Gentle Introduction to Anomaly Detection in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html">How to Use Anomaly Detectors in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/anomaly/2_AnomalyMultivariate.html">Multivariate Time Series Anomaly Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html">Adding New Anomaly Detection Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#forecasting">Forecasting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/forecast/0_ForecastIntro.html">A Gentle Introduction to Forecasting in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html">How to Use Forecasters in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/forecast/2_ForecastMultivariate.html">Multivariate Time Series Forecasting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html">Adding a New Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html">Tutorial for AutoSARIMA Forecasting Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/advanced/2_MoE_Forecasting_tutorial.html">Tutorial for Mixture of Expert (MoE) Forecasting Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/advanced/3_ForecastInvertPOC.html">Proof of Concept: Inverse Transforms for Forecasters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Tutorials &amp; Example Code</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorials.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="tutorials-example-code">
+<h1>Tutorials &amp; Example Code<a class="headerlink" href="#tutorials-example-code" title="Permalink to this headline"></a></h1>
+<section id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/TimeSeries.html">Merlion’s Data Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/TimeSeries.html#UnivariateTimeSeries:-The-Basic-Building-Block">UnivariateTimeSeries: The Basic Building Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/TimeSeries.html#TimeSeries:-Merlion’s-Standard-Data-Class">TimeSeries: Merlion’s Standard Data Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/TimeSeries.html#Time-Series-Indexing-&amp;-Alignment">Time Series Indexing &amp; Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/TimeSeries.html#TimeSeries:-A-Few-Useful-Features">TimeSeries: A Few Useful Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="anomaly-detection">
+<h2>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/anomaly/0_AnomalyIntro.html">A Gentle Introduction to Anomaly Detection in Merlion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html">How to Use Anomaly Detectors in Merlion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Model-Initialization">Model Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Model-Training">Model Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Model-Inference">Model Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Model-Visualization">Model Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Saving-&amp;-Loading-Models">Saving &amp; Loading Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/1_AnomalyFeatures.html#Simulating-Live-Model-Deployment">Simulating Live Model Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/anomaly/2_AnomalyMultivariate.html">Multivariate Time Series Anomaly Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/2_AnomalyMultivariate.html#Model-Initialization-and-Training">Model Initialization and Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/2_AnomalyMultivariate.html#Model-Inference-and-Quantitative-Evaluation">Model Inference and Quantitative Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html">Adding New Anomaly Detection Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Model-Config-Class">Model Config Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Model-Class">Model Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Running-the-Model:-A-Simple-Example">Running the Model: A Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Customizing-the-Post-Rule">Customizing the Post-Rule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/anomaly/3_AnomalyNewModel.html#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="forecasting">
+<h2>Forecasting<a class="headerlink" href="#forecasting" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/forecast/0_ForecastIntro.html">A Gentle Introduction to Forecasting in Merlion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html">How to Use Forecasters in Merlion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Model-Initialization">Model Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Model-Training">Model Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Model-Inference">Model Inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Model-Visualization-and-Quantitative-Evaluation">Model Visualization and Quantitative Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Saving-&amp;-Loading-Models">Saving &amp; Loading Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/1_ForecastFeatures.html#Simulating-Live-Model-Deployment">Simulating Live Model Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/forecast/2_ForecastMultivariate.html">Multivariate Time Series Forecasting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/2_ForecastMultivariate.html#Model-Initialization-and-Training">Model Initialization and Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/2_ForecastMultivariate.html#Model-Inference-and-Quantitative-Evaluation">Model Inference and Quantitative Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html">Adding a New Forecasting Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Model-Config-Class">Model Config Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Model-Class">Model Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Running-the-Model:-A-Simple-Example">Running the Model: A Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Visualization">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/forecast/3_ForecastNewModel.html#Defining-a-Forecaster-Based-Anomaly-Detector">Defining a Forecaster-Based Anomaly Detector</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html">Tutorial for AutoSARIMA Forecasting Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html#Prepare-dataset">Prepare dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html#Train-a-full-AutoSarima-model-with-approximation-(suggested)">Train a full AutoSarima model with approximation (suggested)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html#Train-a-full-AutoSarima-model-without-approximation">Train a full AutoSarima model without approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html#Train-a-partial-autosarima-model">Train a partial autosarima model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/1_AutoSARIMA_forecasting_tutorial.html#Train-without-enforcing-stationarity-and-invertibility-(default)">Train without enforcing stationarity and invertibility (default)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced/2_MoE_Forecasting_tutorial.html">Tutorial for Mixture of Expert (MoE) Forecasting Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/2_MoE_Forecasting_tutorial.html#Load-dataset">Load dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/2_MoE_Forecasting_tutorial.html#Create-MoE-model-composed-of-external-expert-models-and-train">Create MoE model composed of external expert models and train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/advanced/2_MoE_Forecasting_tutorial.html#Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train">Create MoE model containing free parameters (no external experts) and train</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/advanced/3_ForecastInvertPOC.html">Proof of Concept: Inverse Transforms for Forecasters</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ts_datasets.forecast.html" class="btn btn-neutral float-left" title="ts_datasets.forecast package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/TimeSeries.html" class="btn btn-neutral float-right" title="Merlion’s Data Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.1.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

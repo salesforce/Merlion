@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merlion’s Data Format &mdash; Merlion 1.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion" href="anomaly/0_AnomalyIntro.html" />
+    <link rel="prev" title="Tutorials &amp; Example Code" href="../tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#basics">Basics</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Merlion’s Data Format</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#UnivariateTimeSeries:-The-Basic-Building-Block">UnivariateTimeSeries: The Basic Building Block</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#TimeSeries:-Merlion’s-Standard-Data-Class">TimeSeries: Merlion’s Standard Data Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Time-Series-Indexing-&amp;-Alignment">Time Series Indexing &amp; Alignment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#TimeSeries:-A-Few-Useful-Features">TimeSeries: A Few Useful Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>Merlion’s Data Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/TimeSeries.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Merlion’s-Data-Format">
+<h1>Merlion’s Data Format<a class="headerlink" href="#Merlion’s-Data-Format" title="Permalink to this headline"></a></h1>
+<p>This notebook will explain how to use Merlion’s <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> classes. These classes are the core data format used throughout the repo. In general, you may think of each <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> as being a collection of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> objects, one for each variable.</p>
+<p>Let’s start by loading some data using <code class="docutils literal notranslate"><span class="pre">pandas</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;example.csv&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+       timestamp_millis       kpi  kpi_label
+0         1583140320000   667.118          0
+1         1583140380000   611.751          0
+2         1583140440000   599.456          0
+3         1583140500000   621.446          0
+4         1583140560000  1418.234          0
+...                 ...       ...        ...
+86802     1588376760000   874.214          0
+86803     1588376820000   937.929          0
+86804     1588376880000  1031.279          0
+86805     1588376940000  1099.698          0
+86806     1588377000000   935.405          0
+
+[86807 rows x 3 columns]
+</pre></div></div>
+</div>
+<p>The column <code class="docutils literal notranslate"><span class="pre">timestamp_millis</span></code> consists of Unix timestamps (in units of milliseconds), and the column <code class="docutils literal notranslate"><span class="pre">kpi</span></code> contains the value of the time series metric at each of those timestamps. We will also create a version of this dataframe that is indexed by time:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">time_idx_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">time_idx_df</span><span class="p">[</span><span class="s2">&quot;timestamp_millis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">time_idx_df</span><span class="p">[</span><span class="s2">&quot;timestamp_millis&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+<span class="n">time_idx_df</span> <span class="o">=</span> <span class="n">time_idx_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;timestamp_millis&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time_idx_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                          kpi  kpi_label
+timestamp_millis
+2020-03-02 09:12:00   667.118          0
+2020-03-02 09:13:00   611.751          0
+2020-03-02 09:14:00   599.456          0
+2020-03-02 09:15:00   621.446          0
+2020-03-02 09:16:00  1418.234          0
+...                       ...        ...
+2020-05-01 23:46:00   874.214          0
+2020-05-01 23:47:00   937.929          0
+2020-05-01 23:48:00  1031.279          0
+2020-05-01 23:49:00  1099.698          0
+2020-05-01 23:50:00   935.405          0
+
+[86807 rows x 2 columns]
+</pre></div></div>
+</div>
+<section id="UnivariateTimeSeries:-The-Basic-Building-Block">
+<h2>UnivariateTimeSeries: The Basic Building Block<a class="headerlink" href="#UnivariateTimeSeries:-The-Basic-Building-Block" title="Permalink to this headline"></a></h2>
+<p>The most transparent way to initialize a <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> is to use its constructor. The constructor takes two arguments: <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>, a list of Unix timestamps (in units of seconds) or datetime objects, and <code class="docutils literal notranslate"><span class="pre">values</span></code>, a list of the actual time series values. You may optionally provide a name as well.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">UnivariateTimeSeries</span>
+
+<span class="n">kpi</span> <span class="o">=</span> <span class="n">UnivariateTimeSeries</span><span class="p">(</span>
+    <span class="n">time_stamps</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">timestamp_millis</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># timestamps in units of seconds</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">kpi</span><span class="p">,</span>                         <span class="c1"># time series values</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;kpi&quot;</span>                             <span class="c1"># optional: a name for this univariate</span>
+<span class="p">)</span>
+
+<span class="n">kpi_label</span> <span class="o">=</span> <span class="n">UnivariateTimeSeries</span><span class="p">(</span>
+    <span class="n">time_stamps</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">timestamp_millis</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span>  <span class="c1"># timestamps in units of seconds</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">kpi_label</span>                    <span class="c1"># time series values</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Alternatively, you may initialize a <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> directly from a time-indexed <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kpi_equivalent</span> <span class="o">=</span> <span class="n">UnivariateTimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_idx_df</span><span class="o">.</span><span class="n">kpi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Are the two UnivariateTimeSeries equal? </span><span class="si">{</span><span class="p">(</span><span class="n">kpi</span> <span class="o">==</span> <span class="n">kpi_equivalent</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Are the two UnivariateTimeSeries equal? True
+</pre></div></div>
+</div>
+<p>We implement the <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> as a <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> with a <code class="docutils literal notranslate"><span class="pre">DatetimeIndex</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">kpi</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> an instance of pd.Series? &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">kpi</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Is UnivariateTimeSeries an instance of pd.Series? True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">kpi</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2020-03-02 09:12:00     667.118
+2020-03-02 09:13:00     611.751
+2020-03-02 09:14:00     599.456
+2020-03-02 09:15:00     621.446
+2020-03-02 09:16:00    1418.234
+                         ...
+2020-05-01 23:46:00     874.214
+2020-05-01 23:47:00     937.929
+2020-05-01 23:48:00    1031.279
+2020-05-01 23:49:00    1099.698
+2020-05-01 23:50:00     935.405
+Name: kpi, Length: 86807, dtype: float64
+</pre></div></div>
+</div>
+<p>You can also convert a <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> back to a regular <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;type(kpi.to_pd()) = </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">kpi</span><span class="o">.</span><span class="n">to_pd</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+type(kpi.to_pd()) = &lt;class &#39;pandas.core.series.Series&#39;&gt;
+</pre></div></div>
+</div>
+<p>You can access the timestamps (either as timestamps or datetime objects) and values independently:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get the Unix timestamps (first 5 for brevity)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kpi</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1583140320.0, 1583140380.0, 1583140440.0, 1583140500.0, 1583140560.0]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get the datetimes (this is just the index of the UnivariateTimeSeries,</span>
+<span class="c1"># since we inherit from pd.Series)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kpi</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+DatetimeIndex([&#39;2020-03-02 09:12:00&#39;, &#39;2020-03-02 09:13:00&#39;,
+               &#39;2020-03-02 09:14:00&#39;, &#39;2020-03-02 09:15:00&#39;,
+               &#39;2020-03-02 09:16:00&#39;],
+              dtype=&#39;datetime64[ns]&#39;, freq=None)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Get the values</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kpi</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[667.118, 611.751, 599.456, 621.446, 1418.234]
+</pre></div></div>
+</div>
+<p>You may index into a <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> to obtain a tuple of <code class="docutils literal notranslate"><span class="pre">(timestamp,</span> <span class="pre">value)</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kpi[0] = </span><span class="si">{</span><span class="n">kpi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+kpi[0] = (1583140320.0, 667.118)
+</pre></div></div>
+</div>
+<p>If you instead use a slice index, you will obtain a new <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;type(kpi[1:5]) = </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">kpi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kpi[1:5] = </span><span class="se">\n\n</span><span class="si">{</span><span class="n">kpi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+type(kpi[1:5]) = &lt;class &#39;merlion.utils.time_series.UnivariateTimeSeries&#39;&gt;
+
+kpi[1:5] =
+
+2020-03-02 09:13:00     611.751
+2020-03-02 09:14:00     599.456
+2020-03-02 09:15:00     621.446
+2020-03-02 09:16:00    1418.234
+Name: kpi, dtype: float64
+</pre></div></div>
+</div>
+<p>Iterating over a <code class="docutils literal notranslate"><span class="pre">UnivaraiateTimeSeries</span></code> will iterate over tuples of <code class="docutils literal notranslate"><span class="pre">(timestamp,</span> <span class="pre">value)</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">kpi</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(1583140320.0, 667.118)
+(1583140380.0, 611.751)
+(1583140440.0, 599.456)
+(1583140500.0, 621.446)
+(1583140560.0, 1418.234)
+</pre></div></div>
+</div>
+</section>
+<section id="TimeSeries:-Merlion’s-Standard-Data-Class">
+<h2>TimeSeries: Merlion’s Standard Data Class<a class="headerlink" href="#TimeSeries:-Merlion’s-Standard-Data-Class" title="Permalink to this headline"></a></h2>
+<p>Because Merlion is a general-purpose library that handles both univariate and multivariate time series, our standard data class is <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>. This class acts as a wrapper around a collection of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code>. We choose this format rather than a vector-based approach because this approach is much more robust to missing values, or different univariates being sampled at different rates.</p>
+<p>The most transparent way to initialize a <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> is with its constructor, which takes a collection (list or (ordered) dictionary) of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> its only argument:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="n">time_series_list</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">univariates</span><span class="o">=</span><span class="p">[</span><span class="n">kpi</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">kpi_label</span><span class="o">.</span><span class="n">copy</span><span class="p">()])</span>
+<span class="n">time_series_dict</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span>
+    <span class="n">univariates</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">([(</span><span class="s2">&quot;kpi_renamed&quot;</span><span class="p">,</span> <span class="n">kpi</span><span class="o">.</span><span class="n">copy</span><span class="p">()),</span>
+                             <span class="p">(</span><span class="s2">&quot;kpi_label&quot;</span><span class="p">,</span> <span class="n">kpi_label</span><span class="o">.</span><span class="n">copy</span><span class="p">())]))</span>
+</pre></div>
+</div>
+</div>
+<p>Alternatively, you may initialize a <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> from a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> and convert a <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> to a <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">time_series</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_idx_df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;type(TimeSeries.from_pd(time_idx_df)) = </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">recovered_time_idx_df</span> <span class="o">=</span> <span class="n">time_series</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(recovered_time_idx_df == time_idx_df).all()&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">recovered_time_idx_df</span> <span class="o">==</span> <span class="n">time_idx_df</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+type(TimeSeries.from_pd(time_idx_df)) = &lt;class &#39;merlion.utils.time_series.TimeSeries&#39;&gt;
+
+(recovered_time_idx_df == time_idx_df).all()
+kpi          True
+kpi_label    True
+dtype: bool
+</pre></div></div>
+</div>
+<p>We may access the names of the individual univariates with <code class="docutils literal notranslate"><span class="pre">time_series.names</span></code>, access a specific univariate via <code class="docutils literal notranslate"><span class="pre">time_series.univariates[name]</span></code>, and iterate over univariates by iterating <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">univariate</span> <span class="pre">in</span> <span class="pre">time_series.univariates</span></code>. Concretely:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># When we use a list of univariates, we retain the names of the univariates</span>
+<span class="c1"># where possible. If a univariate is unnamed, we set its name to its integer</span>
+<span class="c1"># index in the list of all univariates given. Here, kpi_label was</span>
+<span class="c1"># originally unnamed, so we set its name to 1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time_series_list</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;kpi&#39;, &#39;kpi_label&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># If we pass a dictionary instead of a list, all univariates will have</span>
+<span class="c1"># their specified names. The order is retained from the OrderedDict.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time_series_dict</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;kpi_renamed&#39;, &#39;kpi_label&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># We can access the KPI like so:</span>
+<span class="n">kpi1</span> <span class="o">=</span> <span class="n">time_series_list</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="s2">&quot;kpi&quot;</span><span class="p">]</span>
+<span class="n">kpi2</span> <span class="o">=</span> <span class="n">time_series_dict</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="s2">&quot;kpi_renamed&quot;</span><span class="p">]</span>
+
+<span class="c1"># kpi1 and kpi2 are the same univariate, just with different names</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">kpi1</span> <span class="o">==</span> <span class="n">kpi2</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># We can iterate over all univariates like so:</span>
+<span class="k">for</span> <span class="n">univariate</span> <span class="ow">in</span> <span class="n">time_series_dict</span><span class="o">.</span><span class="n">univariates</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">univariate</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2020-03-02 09:12:00     667.118
+2020-03-02 09:13:00     611.751
+2020-03-02 09:14:00     599.456
+2020-03-02 09:15:00     621.446
+2020-03-02 09:16:00    1418.234
+                         ...
+2020-05-01 23:46:00     874.214
+2020-05-01 23:47:00     937.929
+2020-05-01 23:48:00    1031.279
+2020-05-01 23:49:00    1099.698
+2020-05-01 23:50:00     935.405
+Name: kpi_renamed, Length: 86807, dtype: float64
+
+2020-03-02 09:12:00    0.0
+2020-03-02 09:13:00    0.0
+2020-03-02 09:14:00    0.0
+2020-03-02 09:15:00    0.0
+2020-03-02 09:16:00    0.0
+                      ...
+2020-05-01 23:46:00    0.0
+2020-05-01 23:47:00    0.0
+2020-05-01 23:48:00    0.0
+2020-05-01 23:49:00    0.0
+2020-05-01 23:50:00    0.0
+Name: kpi_label, Length: 86807, dtype: float64
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># We can also iterate over all univariates &amp; names like so:</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">univariate</span> <span class="ow">in</span> <span class="n">time_series_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Univariate </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">univariate</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Univariate kpi_renamed
+2020-03-02 09:12:00     667.118
+2020-03-02 09:13:00     611.751
+2020-03-02 09:14:00     599.456
+2020-03-02 09:15:00     621.446
+2020-03-02 09:16:00    1418.234
+                         ...
+2020-05-01 23:46:00     874.214
+2020-05-01 23:47:00     937.929
+2020-05-01 23:48:00    1031.279
+2020-05-01 23:49:00    1099.698
+2020-05-01 23:50:00     935.405
+Name: kpi_renamed, Length: 86807, dtype: float64
+
+Univariate kpi_label
+2020-03-02 09:12:00    0.0
+2020-03-02 09:13:00    0.0
+2020-03-02 09:14:00    0.0
+2020-03-02 09:15:00    0.0
+2020-03-02 09:16:00    0.0
+                      ...
+2020-05-01 23:46:00    0.0
+2020-05-01 23:47:00    0.0
+2020-05-01 23:48:00    0.0
+2020-05-01 23:49:00    0.0
+2020-05-01 23:50:00    0.0
+Name: kpi_label, Length: 86807, dtype: float64
+
+</pre></div></div>
+</div>
+</section>
+<section id="Time-Series-Indexing-&amp;-Alignment">
+<h2>Time Series Indexing &amp; Alignment<a class="headerlink" href="#Time-Series-Indexing-&-Alignment" title="Permalink to this headline"></a></h2>
+<p>An important concept of <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> in Merlion is <em>alignment</em>. We call a time series <em>aligned</em> if all of its univariates are sampled at the same time stamps. We illustrate examples of time series that are and aren’t aligned below:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">aligned</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">({</span><span class="s2">&quot;kpi&quot;</span><span class="p">:</span> <span class="n">kpi</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="s2">&quot;kpi_label&quot;</span><span class="p">:</span> <span class="n">kpi_label</span><span class="o">.</span><span class="n">copy</span><span class="p">()})</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is aligned? </span><span class="si">{</span><span class="n">aligned</span><span class="o">.</span><span class="n">is_aligned</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Is aligned? True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">not_aligned</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">({</span><span class="s2">&quot;kpi&quot;</span><span class="p">:</span> <span class="n">kpi</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>                <span class="c1"># 2020-03-02 09:13:00 to 2020-05-01 23:50:00</span>
+                          <span class="s2">&quot;kpi_label&quot;</span><span class="p">:</span> <span class="n">kpi_label</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>  <span class="c1"># 2020-03-02 09:12:00 to 2020-05-01 23:49:00</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is aligned? </span><span class="si">{</span><span class="n">not_aligned</span><span class="o">.</span><span class="n">is_aligned</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Is aligned? False
+</pre></div></div>
+</div>
+<p>If your time series is aligned, you may use an integer index to obtain a tuple <code class="docutils literal notranslate"><span class="pre">(timestamp,</span> <span class="pre">(value_1,</span> <span class="pre">...,</span> <span class="pre">value_k))</span></code>, or a slice index to obtain a sub-<code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">aligned</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(1583140320.0, (667.118, 0.0))
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;type(aligned[1:5]) = </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;aligned[1:5] = </span><span class="se">\n</span><span class="si">{</span><span class="n">aligned</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+type(aligned[1:5]) = &lt;class &#39;merlion.utils.time_series.TimeSeries&#39;&gt;
+
+aligned[1:5] =
+                          kpi  kpi_label
+2020-03-02 09:13:00   611.751        0.0
+2020-03-02 09:14:00   599.456        0.0
+2020-03-02 09:15:00   621.446        0.0
+2020-03-02 09:16:00  1418.234        0.0
+</pre></div></div>
+</div>
+<p>You may also iterate over an aligned time series as <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">timestamp,</span> <span class="pre">(value_1,</span> <span class="pre">...,</span> <span class="pre">value_k)</span> <span class="pre">in</span> <span class="pre">time_series</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(1583140320.0, (667.118, 0.0))
+(1583140380.0, (611.751, 0.0))
+(1583140440.0, (599.456, 0.0))
+(1583140500.0, (621.446, 0.0))
+(1583140560.0, (1418.234, 0.0))
+</pre></div></div>
+</div>
+<p>Note that Merlion will throw an error if you try to do any of these things with a time series that isn’t aligned! For example,</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">not_aligned</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+RuntimeError: The univariates comprising this time series are not aligned (they have different time stamps), but alignment is required to index into the time series.
+</pre></div></div>
+</div>
+<p>You can still get the length/shape of a misaligned time series, but Merlion will emit a warning.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">not_aligned</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/abhatnagar/Desktop/Merlion_public/merlion/utils/time_series.py:617: UserWarning: The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
+  warnings.warn(warning)
+The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+86807
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">not_aligned</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(2, 86807)
+</pre></div></div>
+</div>
+<p>However, you may call <code class="docutils literal notranslate"><span class="pre">time_series.align()</span></code> to automatically resample the individual univariates of a time series to make it aligned. By default, this will take the union of all the time stamps present in any of the individual univariates, but this is customizable.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is not_aligned.align() aligned? </span><span class="si">{</span><span class="n">not_aligned</span><span class="o">.</span><span class="n">align</span><span class="p">()</span><span class="o">.</span><span class="n">is_aligned</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Is not_aligned.align() aligned? True
+</pre></div></div>
+</div>
+</section>
+<section id="TimeSeries:-A-Few-Useful-Features">
+<h2>TimeSeries: A Few Useful Features<a class="headerlink" href="#TimeSeries:-A-Few-Useful-Features" title="Permalink to this headline"></a></h2>
+<p>We provide much more information on the <code class="docutils literal notranslate"><span class="pre">merlion.utils.time_series.TimeSeries</span></code> class in the API docs, but we highlight two more useful features here. These work regardless of whether a time series is aligned!</p>
+<p>You may obtain the subset of a time series between times <code class="docutils literal notranslate"><span class="pre">t0</span></code> and <code class="docutils literal notranslate"><span class="pre">tf</span></code> by calling <code class="docutils literal notranslate"><span class="pre">time_series.window(t0,</span> <span class="pre">tf)</span></code>. <code class="docutils literal notranslate"><span class="pre">t0</span></code> and <code class="docutils literal notranslate"><span class="pre">tf</span></code> may be any reasonable format of datetime, or a Unix timestamp.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">aligned</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="s2">&quot;2020-03-05 12:00:00&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                          kpi  kpi_label
+2020-03-05 12:00:00  1166.819        0.0
+2020-03-05 12:01:00  1345.504        0.0
+2020-03-05 12:02:00  1061.391        0.0
+2020-03-05 12:03:00  1260.874        0.0
+2020-03-05 12:04:00  1202.009        0.0
+...                       ...        ...
+2020-03-31 23:55:00  1154.397        0.0
+2020-03-31 23:56:00  1270.292        0.0
+2020-03-31 23:57:00  1160.761        0.0
+2020-03-31 23:58:00  1082.076        0.0
+2020-03-31 23:59:00  1167.297        0.0
+
+[38160 rows x 2 columns]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Note that the first value of the KPI (which is missing in not_aligned) is NaN</span>
+<span class="n">not_aligned</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="mi">1583140320</span><span class="p">,</span> <span class="mi">1583226720</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                          kpi  kpi_label
+2020-03-02 09:12:00       NaN        0.0
+2020-03-02 09:13:00   611.751        0.0
+2020-03-02 09:14:00   599.456        0.0
+2020-03-02 09:15:00   621.446        0.0
+2020-03-02 09:16:00  1418.234        0.0
+...                       ...        ...
+2020-03-03 09:07:00  1132.564        0.0
+2020-03-03 09:08:00  1087.037        0.0
+2020-03-03 09:09:00   984.432        0.0
+2020-03-03 09:10:00  1085.008        0.0
+2020-03-03 09:11:00  1020.937        0.0
+
+[1440 rows x 2 columns]
+</pre></div></div>
+</div>
+<p>You may also bisect a time series into a left and right portion, at any timestamp.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">aligned</span><span class="o">.</span><span class="n">bisect</span><span class="p">(</span><span class="s2">&quot;2020-05-01&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Left</span><span class="se">\n</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Right</span><span class="se">\n</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Left
+                          kpi  kpi_label
+2020-03-02 09:12:00   667.118        0.0
+2020-03-02 09:13:00   611.751        0.0
+2020-03-02 09:14:00   599.456        0.0
+2020-03-02 09:15:00   621.446        0.0
+2020-03-02 09:16:00  1418.234        0.0
+...                       ...        ...
+2020-04-30 23:55:00  1296.091        0.0
+2020-04-30 23:56:00  1323.743        0.0
+2020-04-30 23:57:00  1203.672        0.0
+2020-04-30 23:58:00  1278.720        0.0
+2020-04-30 23:59:00  1217.877        0.0
+
+[85376 rows x 2 columns]
+
+
+Right
+                          kpi  kpi_label
+2020-05-01 00:00:00  1381.110        0.0
+2020-05-01 00:01:00  1807.039        0.0
+2020-05-01 00:02:00  1833.385        0.0
+2020-05-01 00:03:00  1674.412        0.0
+2020-05-01 00:04:00  1683.194        0.0
+...                       ...        ...
+2020-05-01 23:46:00   874.214        0.0
+2020-05-01 23:47:00   937.929        0.0
+2020-05-01 23:48:00  1031.279        0.0
+2020-05-01 23:49:00  1099.698        0.0
+2020-05-01 23:50:00   935.405        0.0
+
+[1431 rows x 2 columns]
+
+</pre></div></div>
+</div>
+<p>Please refer to the API docs on <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> for more information.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials &amp; Example Code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="anomaly/0_AnomalyIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Anomaly Detection in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.1.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../v1.1.1/index.html">v1.1.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
