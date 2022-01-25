@@ -339,8 +339,6 @@ class ModelBase(metaclass=AutodocABCMeta):
         """
         state_dict = self.__getstate__()
         config_dict = self.config.to_dict()
-        model_path = abspath(join(dirname, self.filename))
-        config_dict["model_path"] = model_path
 
         # create the directory if needed
         os.makedirs(dirname, exist_ok=True)
@@ -350,7 +348,7 @@ class ModelBase(metaclass=AutodocABCMeta):
             json.dump(config_dict, f, indent=2, sort_keys=True)
 
         # Save the model state
-        self._save_state(state_dict, model_path, **save_config)
+        self._save_state(state_dict, abspath(join(dirname, self.filename)), **save_config)
 
     def _load_state(self, state_dict: Dict[str, Any], **kwargs):
         """
@@ -383,9 +381,8 @@ class ModelBase(metaclass=AutodocABCMeta):
         config_path = join(dirname, cls.config_class.filename)
         with open(config_path, "r") as f:
             config_dict = json.load(f)
-        model_path = config_dict.pop("model_path")
         # Load the state
-        state_dict = cls._load_state_dict(model_path)
+        state_dict = cls._load_state_dict(join(dirname, cls.filename))
 
         return cls._from_config_state_dicts(config_dict, state_dict, **kwargs)
 
