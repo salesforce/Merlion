@@ -413,8 +413,8 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
-Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -959,7 +959,6 @@ IsolationForest Config
  &#39;enable_calibrator&#39;: True,
  &#39;enable_threshold&#39;: True,
  &#39;max_n_samples&#39;: 1.0,
- &#39;model_path&#39;: &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/anomaly/models/isf/model.pkl&#39;,
  &#39;n_estimators&#39;: 100,
  &#39;threshold&#39;: {&#39;abs_score&#39;: True,
                &#39;alm_suppress_minutes&#39;: 120,
@@ -1014,7 +1013,6 @@ Ensemble Config
  &#39;dim&#39;: 1,
  &#39;enable_calibrator&#39;: False,
  &#39;enable_threshold&#39;: True,
- &#39;model_path&#39;: &#39;/Users/abhatnagar/Desktop/Merlion_public/examples/anomaly/models/ensemble/model.pkl&#39;,
  &#39;models&#39;: [{&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
                             &#39;anchors&#39;: [[0.38992633996347176, 0.0],
                                         [0.4187750781361715, 0.5],
@@ -1151,16 +1149,16 @@ a maximum amount of data (<code class="docutils literal notranslate"><span class
 <div class="highlight"><pre>
 INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
 INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1308065.16it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  21%|██        | 1209600/5783700 [00:03&lt;00:15, 303431.98it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:08&lt;00:22, 174237.12it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:12&lt;00:19, 168379.01it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:18&lt;00:20, 133019.12it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:22&lt;00:15, 136749.99it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:28&lt;00:12, 127762.32it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:33&lt;00:07, 121900.46it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:41&lt;00:03, 106659.23it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator: 100%|██████████| 5783700/5783700 [00:48&lt;00:00, 118129.27it/s]
+TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1501940.88it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  21%|██        | 1209600/5783700 [00:02&lt;00:10, 421704.52it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:05&lt;00:13, 293996.29it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:08&lt;00:13, 241431.47it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:13&lt;00:14, 185310.19it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:16&lt;00:11, 186082.04it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:20&lt;00:09, 168778.34it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:24&lt;00:05, 166406.09it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:30&lt;00:02, 138865.20it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator: 100%|██████████| 5783700/5783700 [00:36&lt;00:00, 160502.25it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
