@@ -24,19 +24,16 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 class ZMSConfig(DetectorConfig, NormalizingConfig):
     """
-    Configuration class for `ZMS` anomaly detection model.
+    Configuration class for `ZMS` anomaly detection model. The transform of this config is actually a
+    pre-processing step, followed by the desired number of lag transforms, and a final mean/variance
+    normalization step. This full transform may be accessed as `ZMSConfig.full_transform`. Note that
+    the normalization is inherited from `NormalizingConfig`.
     """
 
     _default_transform = TemporalResample(trainable_granularity=True)
 
     def __init__(self, base: int = 2, n_lags: int = None, lag_inflation: float = 1.0, **kwargs):
         r"""
-        Configuration class for ZMS. The transform of this config is actually a
-        pre-processing step, followed by the desired number of lag transforms
-        and a final mean/variance normalization step. This full transform may be
-        accessed as `ZMSConfig.full_transform`. Note that the normalization is
-        inherited from `NormalizingConfig`.
-
         :param base: The base to use for computing exponentially distant lags.
         :param n_lags: The number of lags to be used. If None, n_lags will be
             chosen later as the maximum number of lags possible for the initial

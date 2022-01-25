@@ -25,8 +25,7 @@ from merlion.models.ensemble.combine import CombinerBase, Mean, ModelSelector, M
 from merlion.models.ensemble.forecast import ForecasterEnsembleConfig, ForecasterEnsemble
 from merlion.models.factory import ModelFactory
 from merlion.models.forecast.base import ForecasterBase
-from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import granularity_str_to_seconds
+from merlion.transform.resample import TemporalResample, granularity_str_to_seconds
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.utils.resample import get_gcd_timedelta
 

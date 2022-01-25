@@ -1,6 +1,6 @@
 GitPython
 ipykernel
-nbsphinx
+nbsphinx==0.8.7
 pandoc
 sphinx
 sphinx_autodoc_typehints

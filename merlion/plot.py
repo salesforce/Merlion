@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -24,7 +24,10 @@ try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except ImportError:
-    logger.warning("plotly not installed, so plotly visualizations will not work.")
+    logger.warning(
+        "plotly not installed, so plotly visualizations will not work. Try installing Merlion with optional "
+        "dependencies using `pip install salesforce-merlion[plot]` or `pip install `salesforce-merlion[all]`."
+    )
 
 
 def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):

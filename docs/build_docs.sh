@@ -40,9 +40,9 @@ sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
 
 # Build API docs for current head
 export current_version="latest"
-pip3 install ".[plot]"
+pip3 install ".[all]"
 pip3 install ts_datasets/
-sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}"
+sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
 rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
 pip3 uninstall -y salesforce-merlion
 pip3 uninstall -y ts_datasets
@@ -60,7 +60,7 @@ for version in $(git tag --list 'v[0-9]*'); do
     done
     git checkout "tags/${version}" -- "${checkout_files[@]}"
     export current_version=${version}
-    pip3 install ".[plot]"
+    pip3 install ".[all]"
     pip3 install ts_datasets/
     sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
     rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"

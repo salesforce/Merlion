@@ -1,21 +1,27 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """Mixture of Expert forecasters."""
 __author__ = "Devansh Arpit"
-import json
-import logging
-import os
-from typing import List, Optional, Tuple
 
-import dill
+try:
+    import torch
+    from torch import nn
+    from torch.utils.data import Dataset
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[deep-learning]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
+
+import logging
+from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
-import torch
-from torch import nn
-from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from merlion.models.base import NormalizingConfig
@@ -23,7 +29,6 @@ from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, En
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.models.ensemble.MoE_networks import TransformerModel, LRScheduler
-from merlion.models.factory import ModelFactory
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +105,6 @@ def sorted_preds(preds):
     """
     if preds == []:
         return []
-    out = []
     s = sorted(range(len(preds)), key=lambda x: preds[x])
     out = [preds[i][1] for i in s]
     return out
@@ -181,7 +185,7 @@ def smape_f1_loss(output, std, target, thres=0.1):
 ########################## End helper functions ##########################
 
 
-class MoE_ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig, NormalizingConfig):
+class MoE_ForecasterEnsembleConfig(EnsembleConfig, ForecasterConfig, NormalizingConfig):
     """
     Config class for MoE (mixture of experts) forecaster.
     """
@@ -260,29 +264,45 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             (B x nexperts x max_forecast_steps). The second variable is None if nfree_experts=0, else has size
             (nfree_experts x max_forecast_steps) which is the forecasted values by nfree_experts number of experts.
         """
-        super().__init__(config, models)
-        self.loss_list = []
-
-        condition1 = config.nfree_experts > 0
-        condition2 = len(models) > 0
-        assert (not (condition1 and condition2)) and (condition1 or condition2), (
-            f"Number of free experts (nfree_experts={config.nfree_experts}) "
-            f"and number of external experts (#models={len(models)}) cannot be "
-            f"greater than 0 at the same time, but one of them must be non-zero."
-        )
-
-        self.moe_model = moe_model
-        if self.moe_model is not None:
-            self.optimiser = torch.optim.Adam(self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000)
-            self.lr_sch = LRScheduler(lr_i=0.0000, lr_f=self.lr, nsteps=self.warmup_steps, optimizer=self.optimiser)
-
-        self.nexperts = len(models)
-
+        super().__init__(config=config, models=models)
         for model in self.models:
             assert isinstance(model, ForecasterBase), (
                 f"Expected all models in {type(self).__name__} to be anomaly "
                 f"detectors, but got a {type(model).__name__}."
             )
+        self.loss_list = []
+
+        condition1 = self.config.nfree_experts > 0
+        condition2 = len(self.models) > 0
+        assert (not (condition1 and condition2)) and (condition1 or condition2), (
+            f"Number of free experts (nfree_experts={self.config.nfree_experts}) "
+            f"and number of external experts (#models={len(self.models)}) cannot be "
+            f"greater than 0 at the same time, but one of them must be non-zero."
+        )
+
+        self.optimiser = None
+        self.lr_sch = None
+        self.moe_model = moe_model
+
+    @property
+    def moe_model(self):
+        return self._moe_model
+
+    @moe_model.setter
+    def moe_model(self, moe_model):
+        self._moe_model = moe_model
+        if self.moe_model is not None:
+            if self.optimiser is None:
+                self.optimiser = torch.optim.Adam(self.moe_model.parameters(), lr=self.lr, weight_decay=0.00000)
+            if self.lr_sch is None:
+                self.lr_sch = LRScheduler(lr_i=0.0000, lr_f=self.lr, nsteps=self.warmup_steps, optimizer=self.optimiser)
+        else:
+            self.optimiser = None
+            self.lr_sch = None
+
+    @property
+    def nexperts(self):
+        return len(self.models)
 
     @property
     def batch_size(self) -> int:
@@ -927,26 +947,8 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         :param dirname: directory to save the model
         :param save_config: additional configurations (if needed)
         """
-        state_dict = self.__getstate__()
-        # remove items that should not be saved
-        for key in ["config", "train_data", "models", "moe_model", "mn", "std", "optimiser", "lr_sch"]:
-            state_dict.pop(key)
-
-        config_dict = self.config.to_dict()
-        # create the directory if needed
-        os.makedirs(dirname, exist_ok=True)
-
-        paths = []
-        for i, model in enumerate(self.models):
-            path = os.path.abspath(os.path.join(dirname, str(i)))
-            paths.append(path)
-            model.save(path)
-
-        # Add model paths to the config dict, and save it
-        config_dict["model_paths"] = [(type(m).__name__, p) for m, p in zip(self.models, paths)]
-        with open(os.path.join(dirname, self.config.filename), "w") as f:
-            json.dump(config_dict, f, indent=2, sort_keys=True)
-
+        # Save MoE transformer state separately from the rest of the model state
+        super().save(dirname, **save_config)
         state = {
             "model_params": self.moe_model.state_dict(),
             "optimiser": self.optimiser.state_dict(),
@@ -956,13 +958,12 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         with open(dirname + "/torch_params.pth.tar", "wb") as f:
             torch.save(state, f)
 
-        # Save the remaining ensemble state
-        self._save_state(
-            state_dict=state_dict,
-            filename=os.path.join(dirname, self.filename),
-            save_only_used_models=False,
-            **save_config,
-        )
+    def _save_state(
+        self, state_dict: Dict[str, Any], filename: str = None, save_only_used_models=False, **save_config
+    ) -> Dict[str, Any]:
+        for key in ["train_data", "_moe_model", "mn", "std", "optimiser", "lr_sch"]:
+            state_dict.pop(key)
+        return super()._save_state(state_dict, filename, save_only_used_models=save_only_used_models, **save_config)
 
     @classmethod
     def load(cls, dirname: str, **kwargs):
@@ -970,27 +971,21 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         Note: if a user specified model was used while saving the MoE ensemble, specify argument
         ``moe_model`` when calling the load function with the pytorch model that was used in the original MoE ensemble.
         If ``moe_model`` is not specified, it will be assumed that the default Pytorch network was used. Any
-        discrepency between the saved model state and model used here will raise an error.
+        discrepancy between the saved model state and model used here will raise an error.
 
-        :param dirname: directory to save the model
+        :param dirname: directory to load the model from
         """
-        config_path = os.path.join(dirname, cls.config_class.filename)
-        with open(config_path, "r") as f:
-            config_dict = json.load(f)
-        config_dict.pop("max_forecast_steps")
-        # Load all the models from the config dict
-        model_paths = config_dict.pop("model_paths")
-        models = [ModelFactory.load(name=name, model_path=path) for name, path in model_paths]
+        loaded_ensemble = super().load(dirname, **kwargs)
 
-        config = MoE_ForecasterEnsembleConfig.from_dict(config_dict)
-
+        # Load the MoE model state
+        config = loaded_ensemble.config
         if "moe_model" in kwargs:
-            moe_model = kwargs["moe_model"]
+            loaded_ensemble.moe_model = kwargs["moe_model"]
         else:
-            moe_model = TransformerModel(
+            loaded_ensemble.moe_model = TransformerModel(
                 input_dim=config.dim,
                 lookback_len=config.lookback_len,
-                nexperts=len(models),
+                nexperts=loaded_ensemble.nexperts,
                 output_dim=config.max_forecast_steps,
                 nfree_experts=config.nfree_experts,
                 hid_dim=256,
@@ -1001,8 +996,6 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 time_step_dropout=0,
             )
 
-        loaded_ensemble = cls(config=config, models=models, moe_model=moe_model)
-
         state = torch.load(dirname + "/torch_params.pth.tar", map_location="cuda:0" if config.use_gpu else "cpu")
         try:
             loaded_ensemble.moe_model.load_state_dict(state["model_params"])
@@ -1011,9 +1004,4 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
             raise RuntimeError(f"Found error while loading parameter states/optimizer states of the moe_model: {e}")
         loaded_ensemble.mn = state["mean"]
         loaded_ensemble.std = state["std"]
-
-        # Load the state dict
-        with open(os.path.join(dirname, loaded_ensemble.filename), "rb") as f:
-            state_dict = dill.load(f)
-        loaded_ensemble._load_state(state_dict)
         return loaded_ensemble

@@ -6,7 +6,6 @@
 #
 import logging
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -15,8 +14,7 @@ import pandas as pd
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.automl.autosarima import AutoSarima, AutoSarimaConfig
-from merlion.models.automl.seasonality_mixin import SeasonalityLayer
-from merlion.models.forecast.sarima import Sarima
+from merlion.models.automl.seasonality import SeasonalityLayer
 from merlion.utils import TimeSeries, autosarima_utils
 
 logger = logging.getLogger(__name__)
@@ -785,23 +783,28 @@ class TestAutoSarima(unittest.TestCase):
         data = np.concatenate([train_data, test_data])
         data = TimeSeries.from_pd(pd.Series(data))
         self.train_data = data[: len(train_data)]
+        self.train_data = self.train_data[:-50] + self.train_data[-49:]  # test robustness to missing data
         self.test_data = data[len(train_data) :]
         self.max_forecast_steps = len(self.test_data)
-        self.model = SeasonalityLayer(
-            model=AutoSarima(
-                model=Sarima(
-                    AutoSarimaConfig(
-                        order=(15, "auto", 5),
-                        seasonal_order=(2, "auto", 1, "auto"),
-                        max_forecast_steps=self.max_forecast_steps,
-                        maxiter=5,
-                    )
-                )
+
+    def run_test(self, auto_pqPQ: bool, seasonality_layer: bool, expected_sMAPE: float):
+        model = AutoSarima(
+            config=AutoSarimaConfig(
+                auto_seasonality=not seasonality_layer,
+                auto_pqPQ=auto_pqPQ,
+                order=(15, "auto", 5),
+                seasonal_order=(2, 1, 1, 0),
+                max_forecast_steps=self.max_forecast_steps,
+                maxiter=5,
+                transform=dict(name="Identity") if seasonality_layer else None,
+                model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
             )
         )
+        if seasonality_layer:
+            self.model = SeasonalityLayer(model=model)
+        else:
+            self.model = model
 
-    def test_forecast(self):
-        # sMAPE = 3.1810 with pqPQ
         train_pred, train_err = self.model.train(
             self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
         )
@@ -819,21 +822,44 @@ class TestAutoSarima(unittest.TestCase):
         self.assertEqual(len(pred), self.max_forecast_steps)
         self.assertEqual(len(err), self.max_forecast_steps)
 
+        # test save/load
+        logger.info("Test save/load...")
+        suffix = ("_auto_pqPQ" if auto_pqPQ else "_fixed_pqPQ") + ("_seas" if seasonality_layer else "")
+        savedir = join(rootdir, "tmp", "autosarima" + suffix)
+        self.model.save(dirname=savedir)
+        loaded = SeasonalityLayer.load(dirname=savedir)
+
+        # make sure save/load model gets same predictions
+        loaded_pred, loaded_err = loaded.forecast(self.max_forecast_steps)
+        self.assertSequenceEqual(list(loaded_pred), list(pred))
+        self.assertSequenceEqual(list(loaded_err), list(err))
+
         # check the forecasting results w.r.t sMAPE
         y_true = self.test_data.univariates[k].np_values
         y_hat = pred.univariates[pred.names[0]].np_values
-        smape = np.mean(200.0 * np.abs((y_true - y_hat) / (np.abs(y_true) + np.abs(y_hat))))
+        smape = np.mean(200.0 * np.abs((y_true - y_hat) / (np.abs(y_true) + np.abs(y_hat)))).item()
         logger.info(f"sMAPE = {smape:.4f}")
-        self.assertLessEqual(smape, 4.5)
+        self.assertAlmostEqual(smape, expected_sMAPE, delta=0.0001)
 
         # check smape in evalution
         smape_compare = ForecastMetric.sMAPE.value(self.test_data, pred)
         self.assertAlmostEqual(smape, smape_compare)
 
-        # test save/load
-        savedir = join(rootdir, "tmp", "autosarima")
-        self.model.save(dirname=savedir)
-        SeasonalityLayer.load(dirname=savedir)
+        # check that we can also get the anomaly score (since model is SarimaDetector)
+        logger.info("Check that we can also calculate the anomaly score...")
+        score = self.model.get_anomaly_label(self.test_data)
+        loaded_score = loaded.get_anomaly_label(self.test_data)
+        self.assertSequenceEqual(list(score), list(loaded_score))
+
+    def test_autosarima(self):
+        print("-" * 80)
+        logger.info("TestAutoSarima.test_autosarima\n" + "-" * 80 + "\n")
+        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
+
+    def test_seasonality_layer(self):
+        print("-" * 80)
+        logger.info("TestAutoSarima.test_seasonality_layer\n" + "-" * 80 + "\n")
+        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.4130)
 
 
 if __name__ == "__main__":

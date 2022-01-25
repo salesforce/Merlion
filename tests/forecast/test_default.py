@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -13,14 +13,20 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.automl.autoets import AutoETSConfig, AutoETS
+from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
+from merlion.models.forecast.seq_ar_common import gen_next_seq_label_pairs
+from merlion.transform.bound import LowerUpperClip
+from merlion.transform.normalize import MinMaxNormalize
+from merlion.transform.resample import TemporalResample
+from merlion.transform.sequence import TransformSequence
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
+from ts_datasets.forecast import SeattleTrail
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 
 
-class TestETS(unittest.TestCase):
+class TestUnivariate(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         data = [
@@ -99,7 +105,7 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
+        self.model = DefaultForecaster(DefaultForecasterConfig())
 
     def test_forecast(self):
         # batch forecasting RMSE = 6.5612
@@ -118,7 +124,7 @@ class TestETS(unittest.TestCase):
         logger.info("Test save/load...")
         savedir = join(rootdir, "tmp", "ets")
         self.model.save(dirname=savedir)
-        loaded = AutoETS.load(dirname=savedir)
+        loaded = DefaultForecaster.load(dirname=savedir)
 
         loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
         self.assertSequenceEqual(list(loaded_pred), list(forecast))
@@ -143,6 +149,62 @@ class TestETS(unittest.TestCase):
 
         # streaming forecasting performs better than batch forecasting
         self.assertLessEqual(rmse_onestep, rmse)
+
+
+class TestMultivariate(unittest.TestCase):
+    """
+    we test data loading, model instantiation, forecasting consistency, in particular
+    (1) load a testing data
+    (2) transform data
+    (3) instantiate the model and train
+    (4) forecast, and the forecasting result agrees with the reference
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.max_forecast_steps = 10
+        self.i = 0
+
+        dataset = "seattle_trail"
+        d, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", dataset))[0]
+        t = int(d[md["trainval"]].index[-1].to_pydatetime().timestamp())
+        data = TimeSeries.from_pd(d)
+        cleanup_transform = TransformSequence(
+            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300)]
+        )
+        cleanup_transform.train(data)
+        data = cleanup_transform(data)
+
+        train_data, test_data = data.bisect(t)
+
+        minmax_transform = MinMaxNormalize()
+        minmax_transform.train(train_data)
+        self.train_data_norm = minmax_transform(train_data)
+        self.test_data_norm = minmax_transform(test_data)
+
+        self.model = DefaultForecaster(
+            DefaultForecasterConfig(max_forecast_steps=self.max_forecast_steps, target_seq_index=self.i)
+        )
+
+    def test_forecast(self):
+        logger.info("Training model...")
+        yhat, _ = self.model.train(self.train_data_norm)
+
+        maxlags = self.model.model.config.maxlags
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, maxlags, self.max_forecast_steps)
+        testing_instance, testing_label = next(testing_data_gen)
+        pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
+        self.assertEqual(len(pred), self.max_forecast_steps)
+        smape = ForecastMetric.sMAPE.value(predict=pred, ground_truth=testing_label.to_ts())
+        logger.info(f"SMAPE = {smape}")
+
+        # save and load
+        self.model.save(dirname=join(rootdir, "tmp", "lgbmforecaster"))
+        loaded_model = DefaultForecaster.load(dirname=join(rootdir, "tmp", "lgbmforecaster"))
+        new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
+        new_smape = ForecastMetric.sMAPE.value(predict=new_pred, ground_truth=testing_label.to_ts())
+        self.assertAlmostEqual(smape, new_smape, places=4)
 
 
 if __name__ == "__main__":

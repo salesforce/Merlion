@@ -8,9 +8,8 @@
 Base class for forecasting models.
 """
 from abc import abstractmethod
-import copy
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import pandas as pd
 
@@ -26,11 +25,13 @@ class ForecasterConfig(Config):
     Config object used to define a forecaster model.
     """
 
-    def __init__(self, max_forecast_steps: Union[int, None], target_seq_index: int = None, **kwargs):
+    max_forecast_steps: Optional[int] = None
+    target_seq_index: Optional[int] = None
+
+    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
-            Required for some models which pre-compute a forecast, like ARIMA,
-            SARIMA, and LSTM.
+            Required for some models like `MSES` and `LGBMForecaster`.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.
@@ -38,15 +39,6 @@ class ForecasterConfig(Config):
         super().__init__(**kwargs)
         self.max_forecast_steps = max_forecast_steps
         self.target_seq_index = target_seq_index
-        self.dim = None
-
-    @classmethod
-    def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, **kwargs):
-        config_dict = copy.copy(config_dict)
-        dim = config_dict.pop("dim", None)
-        if "dim" not in kwargs:
-            kwargs["dim"] = dim
-        return super().from_dict(config_dict, return_unused_kwargs, **kwargs)
 
 
 class ForecasterBase(ModelBase):
@@ -65,16 +57,9 @@ class ForecasterBase(ModelBase):
     """
 
     config_class = ForecasterConfig
-    timedelta: Optional[float]
+    target_name = None
     """
-    The expected number of seconds between observations in an input time series.
-    should be set in `ForecasterBase.train` if the model assumes a fixed
-    timedelta.
-    """
-    last_train_time: Optional[float]
-    """
-    The last unix timestamp of the training data. Should be set in
-    `ForecasterBase.train`.
+    The name of the target univariate to forecast.
     """
 
     def __init__(self, config: ForecasterConfig):
@@ -92,10 +77,6 @@ class ForecasterBase(ModelBase):
             general multivariate time series) whose value we would like to forecast.
         """
         return self.config.target_seq_index
-
-    @property
-    def dim(self):
-        return self.config.dim
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
@@ -144,7 +125,6 @@ class ForecasterBase(ModelBase):
     def train_pre_process(
         self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
     ) -> TimeSeries:
-        self.config.dim = train_data.dim
         train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
         if self.dim == 1:
             self.config.target_seq_index = 0

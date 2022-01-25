@@ -1,5 +1,4 @@
 <div align="center">
-<img alt="Logo" src="https://github.com/salesforce/Merlion/raw/main/merlion_logo.svg" width="80%"/>
 </div>
 
 <div align="center">
@@ -75,8 +74,10 @@ time series as ``pandas.DataFrame`` s with accompanying metadata.
 
 You can install `merlion` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
 cloning this repoand calling ``pip install Merlion/``, or ``pip install -e Merlion/`` to install in editable mode.
-You may install additional dependencies for plotting & visualization via ``pip install salesforce-merlion[plot]``,
-or by calling ``pip install "Merlion/[plot]"`` if installing from source.
+You may install additional dependencies via ``pip install salesforce-merlion[all]``,  or by calling
+``pip install "Merlion/[all]"`` if installing from source. Individually, the optional dependencies include ``plot``
+for interactive plots, ``prophet`` for the popular [Prophet](https://github.com/facebook/prophet) model,
+and ``deep-learning`` for all deep learning models.
 
 To install the data loading package `ts_datasets`, clone this repo and call ``pip install -e Merlion/ts_datasets/``.
 This package must be installed in editable mode (i.e. with the ``-e`` flag) if you don't want to manually specify the

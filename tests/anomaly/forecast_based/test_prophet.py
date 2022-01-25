@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,11 +11,13 @@ import sys
 import unittest
 
 import numpy as np
+import pandas as pd
 
-from merlion.transform.normalize import PowerTransform
-from merlion.transform.resample import TemporalResample
+from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.time_series import ts_csv_load, TimeSeries
+from merlion.transform.normalize import PowerTransform
+from merlion.transform.resample import TemporalResample
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(dirname(abspath(__file__)))))
@@ -28,14 +30,15 @@ class TestProphet(unittest.TestCase):
         self.csv_name = join(rootdir, "data", "example.csv")
         self.data = TemporalResample("15min")(ts_csv_load(self.csv_name, n_vars=1))
         logger.info(f"Data looks like:\n{self.data[:5]}")
+        holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 
         # Test Prophet with a log transform (Box-Cox with lmbda=0)
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
-        self.model = ProphetDetector(
-            ProphetDetectorConfig(
-                transform=PowerTransform(lmbda=0.0), max_forecast_steps=self.test_len, uncertainty_samples=1000
+        self.model = AutoProphet(
+            model=ProphetDetector(
+                ProphetDetectorConfig(transform=PowerTransform(lmbda=0.0), uncertainty_samples=1000, holidays=holidays)
             )
         )
 
@@ -83,7 +86,7 @@ class TestProphet(unittest.TestCase):
         # posterior samples for reproducibility
         logger.info("Verifying that scores don't change much after save/load...\n")
         self.model.save(dirname=join(rootdir, "tmp", "prophet"))
-        loaded_model = ProphetDetector.load(dirname=join(rootdir, "tmp", "prophet"))
+        loaded_model = AutoProphet.load(dirname=join(rootdir, "tmp", "prophet"))
         scoresv3 = loaded_model.get_anomaly_score(self.vals_test)
         scoresv3 = scoresv3.to_pd().values.flatten()
         self.assertAlmostEqual(np.max(np.abs(scores - scoresv3)), 0, delta=1e-4)

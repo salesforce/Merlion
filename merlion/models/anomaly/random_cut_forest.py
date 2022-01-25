@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -10,9 +10,10 @@ Wrapper around AWS's Random Cut Forest anomaly detection model.
 import bisect
 import copy
 import logging
-from os.path import abspath, join, dirname
+from os.path import abspath, dirname, join, pathsep
 
 import numpy as np
+from py4j.java_gateway import JavaGateway
 
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.transform.moving_average import DifferenceTransform
@@ -26,17 +27,18 @@ logger = logging.getLogger(__name__)
 
 
 class JVMSingleton:
-    _initialized = False
+    _gateway = None
 
-    def __init__(self):
-        import jpype
-        import jpype.imports
-
+    @classmethod
+    def gateway(cls):
         resource_dir = join(dirname(dirname(dirname(abspath(__file__)))), "resources")
-        jars = ["gson-2.8.6.jar", "randomcutforest-core-1.0.jar", "randomcutforest-serialization-json-1.0.jar"]
-        if not JVMSingleton._initialized:
-            jpype.startJVM(classpath=[join(resource_dir, jar) for jar in jars])
-            JVMSingleton._initialized = True
+        jars = ["gson-2.8.9.jar", "randomcutforest-core-1.0.jar", "randomcutforest-serialization-json-1.0.jar"]
+        classpath = pathsep.join(join(resource_dir, jar) for jar in jars)
+        if cls._gateway is None:
+            # --add-opens necessary to avoid exceptions in newer Java versions
+            javaopts = ["--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.nio=ALL-UNNAMED"]
+            cls._gateway = JavaGateway.launch_gateway(classpath=classpath, javaopts=javaopts)
+        return cls._gateway
 
 
 class RandomCutForestConfig(DetectorConfig):
@@ -118,9 +120,6 @@ class RandomCutForest(DetectorBase):
         return self.config.online_updates
 
     def __getstate__(self):
-        JVMSingleton()
-        from com.amazon.randomcutforest.serialize import RandomCutForestSerDe
-
         # Copy state, remove forest, and then deepcopy
         # (since we can't deepcopy the forest)
         state = copy.copy(self.__dict__)
@@ -129,38 +128,27 @@ class RandomCutForest(DetectorBase):
 
         # Set the forest in the copied state to the serialized version
         # The transform is specified the config, so don't save it
-        state["forest"] = str(RandomCutForestSerDe().toJson(forest))
+        RCFSerDe = JVMSingleton.gateway().jvm.com.amazon.randomcutforest.serialize.RandomCutForestSerDe
+        state["forest"] = str(RCFSerDe().toJson(forest))
         return state
 
     def __setstate__(self, state):
-        JVMSingleton()
-        from com.amazon.randomcutforest.serialize import RandomCutForestSerDe
-
         # Remove the serialized forest from the state before setting it
         # Set the forest manually after deserializing it
-        forest = RandomCutForestSerDe().fromJson(state.pop("forest", None))
+        RCFSerDe = JVMSingleton.gateway().jvm.com.amazon.randomcutforest.serialize.RandomCutForestSerDe
+        forest = RCFSerDe().fromJson(state.pop("forest", None))
         super().__setstate__(state)
         self.forest = forest
-
-    def _convert_point(self, point):
-        import jpype
-
-        return jpype.types.JArray.of(point)
-
-    def _forest_train(self, train_data: np.ndarray):
-        n, d = train_data.shape
-        scores = []
-        for i in range(n):
-            jpoint = self._convert_point(train_data[i, :])
-            scores.append(self.forest.getAnomalyScore(jpoint))
-            self.forest.update(jpoint)
-        return np.array(scores)
 
     def _forest_predict(self, data: np.ndarray, online_updates: bool):
         scores = []
         n, d = data.shape
+        gateway = JVMSingleton.gateway()
+        data_bytes = data.astype(dtype=">d").tobytes()
+        data_jarray = gateway.new_array(gateway.jvm.double, n * d)
+        gateway.jvm.java.nio.ByteBuffer.wrap(data_bytes).asDoubleBuffer().get(data_jarray)
         for i in range(n):
-            jpoint = self._convert_point(data[i, :])
+            jpoint = data_jarray[d * i : d * (i + 1)]
             scores.append(self.forest.getAnomalyScore(jpoint))
             if online_updates:
                 self.forest.update(jpoint)
@@ -175,16 +163,14 @@ class RandomCutForest(DetectorBase):
         train_values = np.asarray(train_values)
 
         # Initialize the RRCF, now that we know the dimension of the data
-        JVMSingleton()
-        from com.amazon.randomcutforest import RandomCutForest as JRCF
-
+        JRCF = JVMSingleton.gateway().jvm.com.amazon.randomcutforest.RandomCutForest
         forest = JRCF.builder()
         forest = forest.dimensions(dim)
         for k, v in self.config.java_params.items():
             forest = getattr(forest, k)(v)
         self.forest = forest.build()
 
-        train_scores = self._forest_train(train_values)
+        train_scores = self._forest_predict(train_values, online_updates=True)
         train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
         self.train_post_rule(
             anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -17,9 +17,10 @@ import pandas as pd
 from scipy.stats import norm
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
+from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class ETSConfig(ForecasterConfig):
         trend="add",
         damped_trend=True,
         seasonal="add",
-        seasonal_periods="auto",
+        seasonal_periods=None,
         **kwargs,
     ):
         """
@@ -56,9 +57,7 @@ class ETSConfig(ForecasterConfig):
         :param trend: The trend component. "add", "mul" or None.
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
-        :param seasonal_periods: The length of the seasonality cycle. 'auto'
-            indicates automatically select the seasonality cycle. If no
-            seasonality exists, change ``seasonal`` to ``None``.
+        :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.error = error
@@ -68,7 +67,7 @@ class ETSConfig(ForecasterConfig):
         self.seasonal_periods = seasonal_periods
 
 
-class ETS(ForecasterBase):
+class ETS(SeasonalityModel, ForecasterBase):
     """
     Implementation of the classic local statistical model ETS (Error, Trend, Seasonal) for forecasting.
     """
@@ -102,6 +101,13 @@ class ETS(ForecasterBase):
     def seasonal_periods(self):
         return self.config.seasonal_periods
 
+    def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
+        if theta > 1:
+            self.config.seasonal_periods = int(theta)
+        else:
+            self.config.seasonal = None
+            self.config.seasonal_periods = None
+
     def train(self, train_data: TimeSeries, train_config=None):
         # Train the transform & transform the training data
         train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
@@ -111,25 +117,13 @@ class ETS(ForecasterBase):
         train_data = train_data.univariates[name].to_pd()
         times = train_data.index
 
-        if self.seasonal_periods == "auto":
-            periods = autosarima_utils.multiperiodicity_detection(train_data.to_numpy())
-            if len(periods) > 0:
-                min_periodicty = periods[0]
-            else:
-                min_periodicty = 0
-            if min_periodicty > 1:
-                logger.info(f"Detect seasonality {str(min_periodicty)}")
-                self.config.seasonal_periods = min_periodicty.item()
-            else:
-                self.config.seasonal = None
-                self.config.seasonal_periods = None
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.model = ETSModel(
                 train_data,
                 error=self.error,
                 trend=self.trend,
-                seasonal=self.seasonal,
+                seasonal=None if self.seasonal_periods is None else self.seasonal,
                 damped_trend=self.damped_trend,
                 seasonal_periods=self.seasonal_periods,
             ).fit(disp=False)
@@ -176,10 +170,10 @@ class ETS(ForecasterBase):
 
         if time_series_prev is None:
             forecast_result = self.model.get_prediction(
-                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="simulated"
+                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="exact"
             )
             forecast = forecast_result.predicted_mean
-            err = forecast_result._results.simulation_results.std(axis=1)
+            err = np.sqrt(forecast_result.var_pred_mean)
             if any(np.isnan(forecast)):
                 logger.warning(
                     "Trained ETS model is producing NaN forecast. Use the last "

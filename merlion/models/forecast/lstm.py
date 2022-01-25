@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -7,6 +7,18 @@
 """
 A forecaster based on a LSTM neural net.
 """
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    from torch.utils.data import DataLoader, Dataset
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[deep-learning]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
+
 import bisect
 from copy import deepcopy
 import datetime
@@ -15,10 +27,6 @@ import os
 from typing import List, Tuple, Union
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
@@ -44,19 +52,15 @@ class LSTMConfig(ForecasterConfig):
         ]
     )
 
-    def __init__(self, max_forecast_steps: int, target_seq_index: int = None, nhid=1024, model_strides=(1,), **kwargs):
+    def __init__(self, max_forecast_steps: int, nhid=1024, model_strides=(1,), **kwargs):
         """
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
         :param nhid: hidden dimension of LSTM
         :param model_strides: tuple indicating the stride(s) at which we would
             like to subsample the input data before giving it to the model.
         """
         self.model_strides = list(model_strides)
         self.nhid = nhid
-        super().__init__(max_forecast_steps, target_seq_index, **kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
 
 
 class LSTMTrainConfig(object):
@@ -252,7 +256,6 @@ class LSTM(ForecasterBase):
         if torch.cuda.is_available():
             self.model.cuda()
         self.optimizer = None
-        self.timedelta = None
         self.seq_len = None
         self._forecast = [0.0 for _ in range(self.max_forecast_steps)]
 

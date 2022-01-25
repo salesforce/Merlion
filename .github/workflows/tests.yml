@@ -28,7 +28,7 @@ jobs:
         python -m pip install pytest coverage
         sudo apt-get install bc openjdk-11-jdk
         python -m build
-        for f in dist/*.whl; do pip install $f[plot]; done
+        for f in dist/*.whl; do pip install $f[all]; done
         pip install -e ts_datasets/
 
     - name: Test with pytest

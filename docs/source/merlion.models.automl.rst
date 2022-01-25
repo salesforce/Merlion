@@ -1,3 +1,4 @@
+
 merlion.models.automl package
 ==============================
 
@@ -7,26 +8,19 @@ merlion.models.automl package
    :show-inheritance:
 
 .. autosummary::
-    layer_mixin
-    forecasting_layer_base
+    base
+    seasonality
+    autoets
+    autoprophet
     autosarima
-    seasonality_mixin
 
 Submodules
 ----------
 
-merlion.models.automl.layer_mixin module
----------------------------------------------------
+merlion.models.automl.base module
+---------------------------------
 
-.. automodule:: merlion.models.automl.layer_mixin
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.models.automl.forecasting_layer_base module
----------------------------------------------------
-
-.. automodule:: merlion.models.automl.forecasting_layer_base
+.. automodule:: merlion.models.automl.base
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,10 +34,10 @@ merlion.models.automl.autosarima module
    :show-inheritance:
 
 
-merlion.models.automl.seasonality_mixin module
-----------------------------------------------
+merlion.models.automl.seasonality module
+----------------------------------------
 
-.. automodule:: merlion.models.automl.seasonality_mixin
+.. automodule:: merlion.models.automl.seasonality
    :members:
    :undoc-members:
    :show-inheritance:

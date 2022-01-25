@@ -17,10 +17,14 @@ from merlion.utils.time_series import TimeSeries
 
 
 class MSESDetectorConfig(MSESConfig, DetectorConfig):
+    """
+    Configuration class for an MSES forecasting model adapted for anomaly detection.
+    """
+
     _default_threshold = AggregateAlarms(alm_threshold=2)
 
-    def __init__(self, online_updates: bool = True, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, max_forecast_steps: int, online_updates: bool = True, **kwargs):
+        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
         self.online_updates = online_updates
 
 
