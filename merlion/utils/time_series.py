@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -293,15 +293,17 @@ class UnivariateTimeSeries(pd.Series):
         """
         return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
 
-    def to_ts(self):
+    def to_ts(self, name=None):
         """
+        :name: a name to assign the univariate when converting it to a time series. Can override the existing name.
         :rtype: TimeSeries
         :return: A `TimeSeries` representing this univariate time series.
         """
-        if self.name is None:
+        if self.name is None and name is None:
             return TimeSeries([self])
         else:
-            return TimeSeries({self.name: self})
+            name = name if self.name is None else self.name
+            return TimeSeries({name: self})
 
     @classmethod
     def empty(cls, name=None):
