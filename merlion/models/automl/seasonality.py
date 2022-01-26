@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -128,7 +128,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
     @property
     def require_univariate(self):
-        return getattr(self.config, "target_seq_index", None) is not None
+        return getattr(self.config, "target_seq_index", None) is None
 
     @property
     def multi_seasonality(self):
