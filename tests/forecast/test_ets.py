@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -108,6 +108,10 @@ class TestETS(unittest.TestCase):
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast)
         logger.info(f"RMSE = {rmse:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse, 6.5, delta=1)
+        rmspe = ForecastMetric.RMSPE.value(self.test_data, forecast)
+        logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
+        smape = ForecastMetric.sMAPE.value(self.test_data, forecast)
+        logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting")
         msis = ForecastMetric.MSIS.value(
             ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
         )
