@@ -16,7 +16,9 @@ import pandas as pd
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 
-def minT_reconciliation(forecasts: List[TimeSeries], errs: List[TimeSeries], sum_matrix: np.ndarray, n_leaves: int):
+def minT_reconciliation(
+    forecasts: List[TimeSeries], errs: List[TimeSeries], sum_matrix: np.ndarray, n_leaves: int
+) -> List[TimeSeries]:
     """
     Computes the minimum trace reconciliation for hierarchical time series, as described by
     `Wickramasuriya et al. 2018 <https://robjhyndman.com/papers/mint.pdf>`__. This algorithm assumes that
@@ -24,12 +26,15 @@ def minT_reconciliation(forecasts: List[TimeSeries], errs: List[TimeSeries], sum
     and we obtain independent forecasts at each level of the hierarchy. Minimum trace reconciliation finds the optimal
     way to adjust (reconcile) the forecasts to reduce the variance of the estimation.
 
-    :param forecasts: forecast for each level of the hierarchy
-    :param errs: standard errors of forecasts for each level of the hierarchy
+    :param forecasts: forecast for each aggregation level of the hierarchy
+    :param errs: standard errors of forecasts for each level of the hierarchy. While not strictly necessary,
+        reconciliation performs better if all forecasts are accompanied by uncertainty estimates.
     :param sum_matrix: matrix describing how the hierarchy is aggregated
     :param n_leaves: the number of leaf forecasts (i.e. the number of forecasts at the most dis-aggregated level
         of the hierarchy). We assume that the leaf forecasts are last in the lists ``forecasts`` & ``stderrs``,
         and that ``sum_matrix`` reflects this fact.
+
+    :return: reconciled forecasts for each aggregation level of the hierarchy
     """
     m = len(forecasts)
     n = n_leaves
@@ -45,15 +50,22 @@ def minT_reconciliation(forecasts: List[TimeSeries], errs: List[TimeSeries], sum
     t_ref = forecasts.time_stamps
     H = len(forecasts)
 
-    # Matrix of stderrs (if any) at each prediction horizon. shape is [m, H]
+    # Matrix of stderrs (if any) at each prediction horizon. shape is [m, H].
+    # If no stderrs are given, we the estimation error is proportional to the number of leaf nodes being combined.
+    coefs = sum_matrix.sum(axis=1)
     if all(e is None for e in errs):
-        Wh = [np.diag(sum_matrix.sum(axis=1)) for _ in range(H)]
+        # FIXME: This heuristic can be improved if training errors are given.
+        #        However, the model code should probably be responsible for this, not the reconciliation code.
+        Wh = [np.diag(coefs) for _ in range(H)]
     else:
+        coefs = coefs.reshape(-1, 1)
         errs = np.asarray(
-            [np.full(H, np.nan) if e is None else e.align(reference=t_ref).to_pd().values.flatten()[:H] for e in errs]
+            [np.full(H, np.nan) if e is None else e.align(reference=t_ref).to_pd().values.flatten() for e in errs]
         )  # [m, H]
         # Replace NaN's w/ the mean of non-NaN stderrs & create diagonal error matrices
-        errs[np.isnan(errs[:, 0])] = np.nanmean(errs, axis=0)
+        nan_errs = np.isnan(errs[:, 0])
+        if nan_errs.any():
+            errs[nan_errs] = np.nanmean(errs / coefs, axis=0) * coefs[nan_errs]
         Wh = [np.diag(errs[:, h]) for h in range(H)]
 
     # Create other supplementary matrices
@@ -71,11 +83,9 @@ def minT_reconciliation(forecasts: List[TimeSeries], errs: List[TimeSeries], sum
         Ph.append(P)
 
     # Compute reconciled forecasts
-    time_stamps = []
     reconciled = []
     for (t, yhat_h), P in zip(forecasts, Ph):
-        time_stamps.append(t)
         reconciled.append(sum_matrix @ (P @ yhat_h))
-    reconciled = pd.DataFrame(np.asarray(reconciled), index=to_pd_datetime(time_stamps))
+    reconciled = pd.DataFrame(np.asarray(reconciled), index=to_pd_datetime(t_ref))
 
     return [u.to_ts(name=name) for u, name in zip(TimeSeries.from_pd(reconciled).univariates, names)]
