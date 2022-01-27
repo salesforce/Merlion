@@ -60,7 +60,7 @@ def minT_reconciliation(
     else:
         coefs = coefs.reshape(-1, 1)
         errs = np.asarray(
-            [np.full(H, np.nan) if e is None else e.align(reference=t_ref).to_pd().values.flatten() for e in errs]
+            [np.full(H, np.nan) if e is None else e.align(reference=t_ref).to_pd().values.flatten() ** 2 for e in errs]
         )  # [m, H]
         # Replace NaN's w/ the mean of non-NaN stderrs & create diagonal error matrices
         nan_errs = np.isnan(errs[:, 0])
