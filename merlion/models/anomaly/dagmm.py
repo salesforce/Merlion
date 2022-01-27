@@ -121,7 +121,7 @@ class DAGMM(DetectorBase):
         self.optimizer.step()
         return total_loss, sample_energy, recon_error, cov_diag
 
-    def _train(self, X):
+    def _train(self, X, incremental=False):
         """
         :param X: The input time series, a numpy array.
         """
@@ -129,12 +129,13 @@ class DAGMM(DetectorBase):
         data_loader = DataLoader(
             dataset=dataset, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
         )
-        self.dagmm = self._build_model(X.shape[1]).to(self.device)
-        self.optimizer = torch.optim.Adam(self.dagmm.parameters(), lr=self.lr)
+        if (self.dagmm is None and self.optimizer is None) or not incremental:
+            self.dagmm = self._build_model(X.shape[1]).to(self.device)
+            self.optimizer = torch.optim.Adam(self.dagmm.parameters(), lr=self.lr)
+            self.dagmm.train()
         self.data_dim = X.shape[1]
         bar = ProgressBar(total=self.num_epochs)
 
-        self.dagmm.train()
         for epoch in range(self.num_epochs):
             total_loss, recon_error = 0, 0
             for input_data in data_loader:
@@ -174,7 +175,8 @@ class DAGMM(DetectorBase):
         return self.sequence_length
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config: Dict = dict(),
+        post_rule_train_config=None
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
@@ -182,8 +184,9 @@ class DAGMM(DetectorBase):
         :param train_data: A `TimeSeries` of metric values to train the model.
         :param anomaly_labels: A `TimeSeries` indicating which timestamps are
             anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
+        :param train_config: Additional training configs as dictionary with keys:
+            `incremental`: bool - if True, model continues training when `train`
+                method is called seqentially.
         :param post_rule_train_config: The config to use for training the
             model's post-rule. The model's default post-rule train config is
             used if none is supplied here.
@@ -192,9 +195,11 @@ class DAGMM(DetectorBase):
             data.
         """
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-
         train_df = train_data.align().to_pd()
-        self._train(train_df.values)
+
+        incremental = train_config.get("incremental", False)
+
+        self._train(train_df.values, incremental)
         scores = batch_detect(self, train_df.values)
 
         train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
