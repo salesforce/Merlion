@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Implementation of `TimeSeries` class.
+"""
 from bisect import bisect_left, bisect_right
 import itertools
 import logging

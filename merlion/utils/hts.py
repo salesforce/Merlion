@@ -31,7 +31,7 @@ def minT_reconciliation(
         reconciliation performs better if all forecasts are accompanied by uncertainty estimates.
     :param sum_matrix: matrix describing how the hierarchy is aggregated
     :param n_leaves: the number of leaf forecasts (i.e. the number of forecasts at the most dis-aggregated level
-        of the hierarchy). We assume that the leaf forecasts are last in the lists ``forecasts`` & ``stderrs``,
+        of the hierarchy). We assume that the leaf forecasts are last in the lists ``forecasts`` & ``errs``,
         and that ``sum_matrix`` reflects this fact.
 
     :return: reconciled forecasts for each aggregation level of the hierarchy

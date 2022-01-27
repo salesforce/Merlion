@@ -1,9 +1,12 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Miscellaneous low-level utilities (not for end users).
+"""
 from abc import ABCMeta
 from collections import OrderedDict
 from copy import deepcopy
@@ -109,6 +112,9 @@ def combine_signatures(sig1: Union[inspect.Signature, None], sig2: Union[inspect
 
 
 def parse_init_docstring(docstring):
+    """
+    Parse the docstring of a model config's ``__init__``.
+    """
     docstring_lines = [""] if docstring is None else docstring.split("\n")
     prefix, suffix, param_dict = [], [], OrderedDict()
     non_empty_lines = [line for line in docstring_lines if len(line) > 0]

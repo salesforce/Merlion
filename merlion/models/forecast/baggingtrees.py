@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -109,7 +109,7 @@ class BaggingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
         if self.dim == 1:
             logger.info(
                 f"Model is working on a univariate dataset, "
-                f"hybrid of sequence and autoregression training strategy will be adopted"
+                f"hybrid of sequence and autoregression training strategy will be adopted "
                 f"with prediction_stride = {self.prediction_stride} "
             )
             if self.sampling_mode != "normal":

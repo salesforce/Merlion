@@ -1,9 +1,12 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Generators for synthetic time series.
+"""
 import numpy as np
 import pandas as pd
 
@@ -17,6 +20,8 @@ from merlion.utils.time_series import UnivariateTimeSeries, TimeSeries
 class TimeSeriesGenerator:
     """
     An abstract base class for generating synthetic time series data.
+    Generates a 1-dimensional grid x(0), x(1), ..., x(n-1), where x(i) = x0 + i * step.
+    Then generates a time series y(0), y(1), ..., y(n-1), where y(i) = f(x(i)) + noise.
     """
 
     def __init__(
@@ -46,9 +51,6 @@ class TimeSeriesGenerator:
             TimeSeries object.
         :param tdelta: the time delta to use when wrapping the generated values into a
             TimeSeries object.
-
-        Generates a 1-dimensional grid x(0), x(1), ..., x(n-1), where x(i) = x0 + i * step.
-        Then generates a time series y(0), y(1), ..., y(n-1), where y(i) = f(x(i)) + noise.
         """
         assert step > 0, f"step must be a postive real number but is {step}."
         assert scale > 0, f"scale must be a postive real number but is {scale}."
@@ -163,6 +165,12 @@ class GeneratorConcatenator(GeneratorComposer):
     fundamental changes to it's behavior that certain points in time.
     For example, with this class one could generate a time series that begins
     as linear and then becomes stationary.
+
+    For example, let f = 0 with for 3 steps 0,1,2 and g = 2 * x for the next three
+    steps 3,4,5. generate() returns:
+
+    - [0, 0, 0, 6, 8, 10] if string_outputs is False
+    - [0, 0, 0, 2, 4, 6]  if string_outputs is True.
     """
 
     def __init__(self, string_outputs: bool = True, **kwargs):
@@ -172,12 +180,6 @@ class GeneratorConcatenator(GeneratorComposer):
             two generating functions f, and g belonging to consecutive generators. If
             True, adjust g by a constant c such that f(x) = g(x) at the last point x
             that f uses to generate its series.
-
-        For example, let f = 0 with for 3 steps 0,1,2 and g = 2 * x for the next three
-        steps 3,4,5. generate() returns:
-            [0, 0, 0, 6, 8, 10] if string_outputs is False
-            [0, 0, 0, 2, 4, 6]  if string_outputs is True.
-
         """
         kwargs["f"] = None
         kwargs["n"] = 1

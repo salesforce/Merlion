@@ -8,28 +8,21 @@ utilities for resampling time series.
    :undoc-members:
    :show-inheritance:
 
+.. autosummary::
+    time_series
+    resample
+    hts
+    ts_generator
+    conj_priors
+    istat
+
 Submodules
 ----------
 
-merlion.utils.conj_priors module
---------------------------------
-.. automodule:: merlion.utils.conj_priors
-   :members:
-   :undoc-members:
-   :show-inheritance:
+merlion.utils.time\_series module
+---------------------------------
 
-merlion.utils.istat module
---------------------------
-
-.. automodule:: merlion.utils.istat
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.utils.misc module
--------------------------
-
-.. automodule:: merlion.utils.misc
+.. automodule:: merlion.utils.time_series
    :members:
    :undoc-members:
    :show-inheritance:
@@ -42,10 +35,33 @@ merlion.utils.resample module
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.time\_series module
----------------------------------
+merlion.utils.hts module
+------------------------
 
-.. automodule:: merlion.utils.time_series
+.. automodule:: merlion.utils.hts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+merlion.utils.ts\_generator module
+----------------------------------
+
+.. automodule:: merlion.utils.ts_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+merlion.utils.conj_priors module
+--------------------------------
+.. automodule:: merlion.utils.conj_priors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+merlion.utils.istat module
+--------------------------
+
+.. automodule:: merlion.utils.istat
    :members:
    :undoc-members:
    :show-inheritance:

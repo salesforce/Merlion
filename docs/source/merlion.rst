@@ -31,6 +31,8 @@ each associated with its own sub-package:
 -   :py:mod:`merlion.evaluate`: Evaluation metrics & pipelines to simulate the live deployment of a time series model
     for any task.
 -   :py:mod:`merlion.plot`: Automated visualization of model outputs for univariate time series
+-   :py:mod:`merlion.utils`: Various utilities, including the `TimeSeries` class, resampling functions,
+    Bayesian conjugate priors, reconciliation for hierarchical time series, and more.
 
 The key classes for input and output are `merlion.utils.time_series.TimeSeries` and
 `merlion.utils.time_series.UnivariateTimeSeries`. Notably, these classes have transparent inter-operability
