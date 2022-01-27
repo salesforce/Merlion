@@ -7,6 +7,8 @@
 """
 Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM)
 """
+from typing import Dict, Any
+
 try:
     import torch
     import torch.nn as nn
@@ -175,7 +177,7 @@ class DAGMM(DetectorBase):
         return self.sequence_length
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config: Dict = dict(),
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config: Dict[str, Any] = dict(),
         post_rule_train_config=None
     ) -> TimeSeries:
         """
