@@ -182,6 +182,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
+
         :param train_data: A `TimeSeries` of metric values to train the model.
         :param anomaly_labels: A `TimeSeries` indicating which timestamps are
             anomalous. Optional.
