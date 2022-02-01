@@ -7,7 +7,8 @@
 """
 Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM)
 """
-from typing import Dict, Any
+import random
+from typing import Dict, Any, List
 
 try:
     import torch
@@ -25,7 +26,7 @@ import numpy as np
 
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
-from merlion.models.anomaly.base import DetectorBase, DetectorConfig
+from merlion.models.anomaly.base import DetectorBase, DetectorConfig, MultipleTimeseriesDetectorMixin
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
 from merlion.models.anomaly.utils import InputData, batch_detect
@@ -65,7 +66,7 @@ class DAGMMConfig(DetectorConfig, NormalizingConfig):
         super().__init__(**kwargs)
 
 
-class DAGMM(DetectorBase):
+class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     """
     Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM).
     DAGMM combines an autoencoder with a Gaussian mixture model to model the distribution
@@ -123,7 +124,7 @@ class DAGMM(DetectorBase):
         self.optimizer.step()
         return total_loss, sample_energy, recon_error, cov_diag
 
-    def _train(self, X, incremental=False):
+    def _train(self, X):
         """
         :param X: The input time series, a numpy array.
         """
@@ -131,7 +132,7 @@ class DAGMM(DetectorBase):
         data_loader = DataLoader(
             dataset=dataset, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
         )
-        if (self.dagmm is None and self.optimizer is None) or not incremental:
+        if self.dagmm is None and self.optimizer is None:
             self.dagmm = self._build_model(X.shape[1]).to(self.device)
             self.optimizer = torch.optim.Adam(self.dagmm.parameters(), lr=self.lr)
             self.dagmm.train()
@@ -177,31 +178,25 @@ class DAGMM(DetectorBase):
         return self.sequence_length
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config: Dict[str, Any] = dict(),
-        post_rule_train_config=None
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Train a multivariate time series anomaly detector.
-
         :param train_data: A `TimeSeries` of metric values to train the model.
         :param anomaly_labels: A `TimeSeries` indicating which timestamps are
             anomalous. Optional.
-        :param train_config: Additional training configs as dictionary with keys:
-            `incremental`: bool - if True, model continues training when `train`
-                method is called seqentially.
+        :param train_config: Additional training configs, if needed. Only
+            required for some models.
         :param post_rule_train_config: The config to use for training the
             model's post-rule. The model's default post-rule train config is
             used if none is supplied here.
-
         :return: A `TimeSeries` of the model's anomaly scores on the training
             data.
         """
         train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+
         train_df = train_data.align().to_pd()
-
-        incremental = train_config.get("incremental", False)
-
-        self._train(train_df.values, incremental)
+        self._train(train_df.values)
         scores = batch_detect(self, train_df.values)
 
         train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
@@ -209,6 +204,46 @@ class DAGMM(DetectorBase):
             anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return train_scores
+
+    def train_multiple(
+        self, train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
+        train_config=None, post_rule_train_config=None
+    ) -> List[TimeSeries]:
+        """
+        Trains the anomaly detector (unsupervised) and its post-rule
+        (supervised, if labels are given) on the input multiple time series.
+
+        :param train_data: a list of `TimeSeries` of metric values to train the model.
+        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
+            anomalous. Optional.
+        :param train_config: Additional training config dict:
+            "n_epochs": int indicating how many times the model must be trained on the `train_data`
+            "shuffle": bool indicating if the `train_data` should be shuffled before every epoch
+        :param post_rule_train_config: The config to use for training the
+            model's post-rule. The model's default post-rule train config is
+            used if none is supplied here.
+
+        :return: A list of `TimeSeries` of the model's anomaly scores on the training
+            data with each element corresponds to time series from `train_data`.
+        """
+        if anomaly_labels is not None:
+            assert len(train_data) == len(anomaly_labels)
+        else:
+            anomaly_labels = [None] * len(train_data)
+        n_epochs = train_config.pop("n_epochs", 1)
+        shuffle = train_config.pop("shuffle", False)
+        train_scores_list = []
+        for _ in range(n_epochs):
+            if shuffle:
+                random.shuffle(train_data)
+            for train_series, anomaly_series in zip(train_data, anomaly_labels):
+                train_scores_list.append(
+                    self.train(
+                        train_data=train_series, anomaly_labels=anomaly_series,
+                        train_config=train_config, post_rule_train_config=post_rule_train_config
+                    )
+                )
+        return train_scores_list
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """
