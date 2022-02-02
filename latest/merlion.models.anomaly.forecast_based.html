@@ -491,7 +491,7 @@ p and q must be integers indicating the AR and MA orders (so that
 all lags up to those orders are included).</p></li>
 <li><p><strong>seasonal_order</strong> – (0, 0, 0, 0) because ARIMA has no seasonal order.</p></li>
 <li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.
-Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.LGBMForecaster" title="merlion.models.forecast.boostingtrees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
+Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
@@ -541,7 +541,7 @@ all lags up to those orders are included).</p></li>
 process, where s is the length of the seasonality cycle (e.g. s=24
 for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 <li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.
-Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.LGBMForecaster" title="merlion.models.forecast.boostingtrees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
+Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
@@ -698,7 +698,7 @@ when post-processing anomaly scores</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.
-Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.LGBMForecaster" title="merlion.models.forecast.boostingtrees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
+Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
 <li><p><strong>nhid</strong> – hidden dimension of LSTM</p></li>
 <li><p><strong>model_strides</strong> – tuple indicating the stride(s) at which we would
 like to subsample the input data before giving it to the model.</p></li>
@@ -759,7 +759,7 @@ and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></c
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.
-Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.boostingtrees.LGBMForecaster" title="merlion.models.forecast.boostingtrees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
+Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
 <li><p><strong>max_backstep</strong> – Max backstep to use in forecasting. If we train with x(0),…,x(t),
 Then, the b-th model MSES uses will forecast x(t+h) by anchoring at x(t-b) and 
 predicting xhat(t+h) = x(t-b) + delta_hat(b+h).</p></li>
