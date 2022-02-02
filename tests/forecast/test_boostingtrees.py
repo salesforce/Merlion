@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -16,7 +16,7 @@ from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.models.forecast.boostingtrees import LGBMForecaster, LGBMForecasterConfig
+from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
 from merlion.models.forecast.seq_ar_common import gen_next_seq_label_pairs
 
 logger = logging.getLogger(__name__)

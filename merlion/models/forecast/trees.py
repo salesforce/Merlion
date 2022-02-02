@@ -1,30 +1,31 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Boosting Tree-based models for multivariate time series forecasting.
-LightGBM
+Tree-based models for multivariate time series forecasting.
 """
 import logging
-from typing import List, Tuple, Union
+from typing import List
 
 import numpy as np
 from lightgbm import LGBMRegressor
+from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
+
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
-from merlion.utils.time_series import assert_equal_timedeltas, TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 from merlion.models.forecast.autoregression_utils import MultiVariateAutoRegressionMixin
 from merlion.models.forecast import seq_ar_common
 
 logger = logging.getLogger(__name__)
 
 
-class BoostingTreeForecasterConfig(ForecasterConfig):
+class TreeEnsembleForecasterConfig(ForecasterConfig):
     """
-    Configuration class for boosting Tree-based forecaster model.
+    Configuration class for bagging tree-based forecaster model.
     """
 
     def __init__(
@@ -34,19 +35,17 @@ class BoostingTreeForecasterConfig(ForecasterConfig):
         target_seq_index: int = None,
         sampling_mode: str = "normal",
         prediction_stride: int = 1,
-        learning_rate=0.1,
-        n_estimators=100,
+        n_estimators: int = 100,
         random_state=None,
         max_depth=None,
-        n_jobs=-1,
         **kwargs,
     ):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
+        :param maxlags: Max # of lags for forecasting
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.
-        :param maxlags: Max # of lags for forecasting
         :param sampling_mode: how to process time series data for the tree model. If "normal",
             then concatenate all sequences over the window. If "stats", then give statistics
             measures over the window. Note: "stats" mode is statistical summary for a multivariate dataset,
@@ -61,33 +60,29 @@ class BoostingTreeForecasterConfig(ForecasterConfig):
 
                 - if = 1: the autoregression with the stride unit of 1
                 - if > 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps
-        :param learning_rate: learning rate for boosting
         :param n_estimators: number of base estimators for the tree ensemble
-        :param random_state: random seed for boosting
+        :param random_state: random seed for bagging
         :param max_depth: max depth of base estimators
-        :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
         self.sampling_mode = sampling_mode
         self.prediction_stride = prediction_stride
-        self.learning_rate = learning_rate
         self.n_estimators = n_estimators
-        self.max_depth = max_depth
         self.random_state = random_state
-        self.n_jobs = n_jobs
+        self.max_depth = max_depth
 
 
-class BoostingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
+class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
     """
     Tree model for multivariate time series forecasting.
     """
 
-    config_class = BoostingTreeForecasterConfig
+    config_class = TreeEnsembleForecasterConfig
 
     model = None
 
-    def __init__(self, config: BoostingTreeForecasterConfig):
+    def __init__(self, config: TreeEnsembleForecasterConfig):
         super().__init__(config)
         self._forecast = np.zeros(self.max_forecast_steps)
         self._input_already_transformed = False
@@ -239,15 +234,91 @@ class BoostingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
         self._input_already_transformed = False
 
 
-class LGBMForecasterConfig(BoostingTreeForecasterConfig):
+class RandomForestForecasterConfig(TreeEnsembleForecasterConfig):
+    """
+    Config class for `RandomForestForecaster`.
+    """
+
+    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+        """
+        :param min_samples_split: min split for tree leaves
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.min_samples_split = min_samples_split
+
+
+class RandomForestForecaster(TreeEnsembleForecaster):
+    """
+    Random Forest Regressor for time series forecasting
+
+    Random Forest is a meta estimator that fits a number of classifying decision
+    trees on various sub-samples of the dataset, and uses averaging to improve
+    the predictive accuracy and control over-fitting.
+    """
+
+    config_class = RandomForestForecasterConfig
+
+    def __init__(self, config: RandomForestForecasterConfig):
+        super().__init__(config)
+        self.model = RandomForestRegressor(
+            n_estimators=self.config.n_estimators,
+            max_depth=self.config.max_depth,
+            min_samples_split=self.config.min_samples_split,
+            random_state=self.config.random_state,
+        )
+
+
+class ExtraTreesForecasterConfig(TreeEnsembleForecasterConfig):
+    """
+    Config class for `ExtraTreesForecaster`.
+    """
+
+    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+        """
+        :param min_samples_split: min split for tree leaves
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.min_samples_split = min_samples_split
+
+
+class ExtraTreesForecaster(TreeEnsembleForecaster):
+    """
+    Extra Trees Regressor for time series forecasting
+
+    Extra Trees Regressor implements a meta estimator that fits a number of
+    randomized decision trees (a.k.a. extra-trees) on various sub-samples of
+    the dataset and uses averaging to improve the predictive accuracy and
+    control over-fitting.
+    """
+
+    config_class = ExtraTreesForecasterConfig
+
+    def __init__(self, config: ExtraTreesForecasterConfig):
+        super().__init__(config)
+        self.model = ExtraTreesRegressor(
+            n_estimators=self.config.n_estimators,
+            max_depth=self.config.max_depth,
+            min_samples_split=self.config.min_samples_split,
+            random_state=self.config.random_state,
+        )
+
+
+class LGBMForecasterConfig(TreeEnsembleForecasterConfig):
     """
     Config class for `LGBMForecaster`.
     """
 
-    pass
+    def __init__(self, max_forecast_steps: int, maxlags: int, learning_rate=0.1, n_jobs=-1, **kwargs):
+        """
+        :param learning_rate: learning rate for boosting
+        :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.learning_rate = learning_rate
+        self.n_jobs = n_jobs
 
 
-class LGBMForecaster(BoostingTreeForecaster):
+class LGBMForecaster(TreeEnsembleForecaster):
     """
     Light gradient boosting (LGBM) regressor for time series forecasting
 
