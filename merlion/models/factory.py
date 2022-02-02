@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -50,9 +50,9 @@ import_alias = dict(
     Sarima="merlion.models.forecast.sarima:Sarima",
     StatThreshold="merlion.models.anomaly.stat_threshold:StatThreshold",
     VectorAR="merlion.models.forecast.vector_ar:VectorAR",
-    RandomForestForecaster="merlion.models.forecast.baggingtrees:RandomForestForecaster",
-    ExtraTreesForecaster="merlion.models.forecast.baggingtrees:ExtraTreesForecaster",
-    LGBMForecaster="merlion.models.forecast.boostingtrees:LGBMForecaster",
+    RandomForestForecaster="merlion.models.forecast.trees:RandomForestForecaster",
+    ExtraTreesForecaster="merlion.models.forecast.trees:ExtraTreesForecaster",
+    LGBMForecaster="merlion.models.forecast.trees:LGBMForecaster",
     # Ensembles
     DetectorEnsemble="merlion.models.ensemble.anomaly:DetectorEnsemble",
     ForecasterEnsemble="merlion.models.ensemble.forecast:ForecasterEnsemble",

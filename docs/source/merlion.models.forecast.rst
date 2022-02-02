@@ -14,8 +14,7 @@ merlion.models.forecast package
     prophet
     smoother
     vector_ar
-    baggingtrees
-    boostingtrees
+    trees
     lstm
 
 
@@ -78,19 +77,10 @@ merlion.models.forecast.vector\_ar module
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.baggingtrees module
--------------------------------------------
+merlion.models.forecast.trees module
+------------------------------------
 
-.. automodule:: merlion.models.forecast.baggingtrees
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-merlion.models.forecast.boostingtrees module
---------------------------------------------
-
-.. automodule:: merlion.models.forecast.boostingtrees
+.. automodule:: merlion.models.forecast.trees
    :members:
    :undoc-members:
    :show-inheritance:
