@@ -208,7 +208,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
 
     def train_multiple(
         self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
-        train_config=dict(), post_rule_train_config=None
+        train_config=None, post_rule_train_config=None
     ) -> List[TimeSeries]:
         """
         Trains the anomaly detector (unsupervised) and its post-rule
@@ -230,12 +230,15 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         :return: A list of `TimeSeries` of the model's anomaly scores on the training
             data with each element corresponds to time series from ``multiple_train_data``.
         """
+        if train_config is None:
+            train_config = dict()
+        n_epochs = train_config.pop("n_epochs", 1)
+        shuffle = train_config.pop("shuffle", n_epochs > 1)
+
         if anomaly_labels is not None:
             assert len(multiple_train_data) == len(anomaly_labels)
         else:
             anomaly_labels = [None] * len(multiple_train_data)
-        n_epochs = train_config.pop("n_epochs", 1)
-        shuffle = train_config.pop("shuffle", n_epochs > 1)
         train_scores_list = []
         for _ in range(n_epochs):
             if shuffle:
