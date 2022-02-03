@@ -360,14 +360,14 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
     """
     @abstractmethod
     def train_multiple(
-        self, train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
+        self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
         train_config=None, post_rule_train_config=None
     ) -> List[TimeSeries]:
         """
         Trains the anomaly detector (unsupervised) and its post-rule
         (supervised, if labels are given) on the input multiple time series.
 
-        :param train_data: a list of `TimeSeries` of metric values to train the model.
+        :param multiple_train_data: a list of `TimeSeries` of metric values to train the model.
         :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
             anomalous. Optional.
         :param train_config: Additional training configs, if needed. Only
@@ -377,6 +377,6 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
             used if none is supplied here.
 
         :return: A list of `TimeSeries` of the model's anomaly scores on the training
-            data with each element corresponds to time series from `train_data`.
+            data with each element corresponds to time series from ``multiple_train_data``.
         """
         raise NotImplementedError

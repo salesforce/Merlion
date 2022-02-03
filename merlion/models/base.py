@@ -449,12 +449,12 @@ class MultipleTimeseriesModelMixin(metaclass=AutodocABCMeta):
     Abstract mixin for models supporting training on multiple time series.
     """
     @abstractmethod
-    def train_multiple(self, train_data: List[TimeSeries], train_config=None):
+    def train_multiple(self, multiple_train_data: List[TimeSeries], train_config=None):
         """
         Trains the model on multiple time series, optionally with some
         additional implementation-specific config options ``train_config``.
 
-        :param train_data: a list of `TimeSeries` to use as a training set
+        :param multiple_train_data: a list of `TimeSeries` to use as a training set
         :param train_config: additional configurations (if needed)
         """
         raise NotImplementedError
