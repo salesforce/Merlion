@@ -47,6 +47,9 @@ class TestDAGMM(unittest.TestCase):
         train_ts = TimeSeries.from_pd(self.train_df)
         self.model.train(train_ts)
 
+        logger.info("Training multiple timeseries model...\n")
+        self.model.train_multiple([train_ts] * 10)
+
     def test_score(self):
         print("-" * 80)
         logger.info("test_score\n" + "-" * 80 + "\n")
