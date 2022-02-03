@@ -208,7 +208,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
 
     def train_multiple(
         self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
-        train_config=None, post_rule_train_config=None
+        train_config=dict(), post_rule_train_config=None
     ) -> List[TimeSeries]:
         """
         Trains the anomaly detector (unsupervised) and its post-rule
