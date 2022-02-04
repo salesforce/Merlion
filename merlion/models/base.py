@@ -13,7 +13,7 @@ import json
 import logging
 import os
 from os.path import abspath, join
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, List
 
 import dill
 import pandas as pd
@@ -442,3 +442,19 @@ class ModelBase(metaclass=AutodocABCMeta):
         state_dict.pop("config", None)
         new_model.__setstate__(state_dict)
         return new_model
+
+
+class MultipleTimeseriesModelMixin(metaclass=AutodocABCMeta):
+    """
+    Abstract mixin for models supporting training on multiple time series.
+    """
+    @abstractmethod
+    def train_multiple(self, multiple_train_data: List[TimeSeries], train_config=None):
+        """
+        Trains the model on multiple time series, optionally with some
+        additional implementation-specific config options ``train_config``.
+
+        :param multiple_train_data: a list of `TimeSeries` to use as a training set
+        :param train_config: additional configurations (if needed)
+        """
+        raise NotImplementedError

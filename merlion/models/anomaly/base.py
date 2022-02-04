@@ -11,11 +11,11 @@ from abc import abstractmethod
 from copy import copy, deepcopy
 import inspect
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from scipy.stats import norm
 
-from merlion.models.base import Config, ModelBase
+from merlion.models.base import Config, ModelBase, MultipleTimeseriesModelMixin
 from merlion.plot import Figure, MTSFigure
 from merlion.post_process.calibrate import AnomScoreCalibrator
 from merlion.post_process.factory import PostRuleFactory
@@ -352,3 +352,31 @@ class DetectorBase(ModelBase):
         scores = f(time_series, time_series_prev=time_series_prev)
         fig = MTSFigure(y=time_series, y_prev=time_series_prev, anom=scores)
         return fig.plot_plotly(title=title, figsize=figsize)
+
+
+class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
+    """
+    Abstract mixin for anomaly detectors supporting training on multiple time series.
+    """
+    @abstractmethod
+    def train_multiple(
+        self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
+        train_config=None, post_rule_train_config=None
+    ) -> List[TimeSeries]:
+        """
+        Trains the anomaly detector (unsupervised) and its post-rule
+        (supervised, if labels are given) on the input multiple time series.
+
+        :param multiple_train_data: a list of `TimeSeries` of metric values to train the model.
+        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
+            anomalous. Optional.
+        :param train_config: Additional training configs, if needed. Only
+            required for some models.
+        :param post_rule_train_config: The config to use for training the
+            model's post-rule. The model's default post-rule train config is
+            used if none is supplied here.
+
+        :return: A list of `TimeSeries` of the model's anomaly scores on the training
+            data with each element corresponds to time series from ``multiple_train_data``.
+        """
+        raise NotImplementedError
