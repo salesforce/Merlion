@@ -620,6 +620,28 @@ additional implementation-specific config options <code class="docutils literal 
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.base.MultipleTimeseriesModelMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">MultipleTimeseriesModelMixin</span></span><a class="headerlink" href="#merlion.models.base.MultipleTimeseriesModelMixin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract mixin for models supporting training on multiple time series.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.base.MultipleTimeseriesModelMixin.train_multiple">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.MultipleTimeseriesModelMixin.train_multiple" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the model on multiple time series, optionally with some
+additional implementation-specific config options <code class="docutils literal notranslate"><span class="pre">train_config</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiple_train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> to use as a training set</p></li>
+<li><p><strong>train_config</strong> – additional configurations (if needed)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-merlion.models.layers">
 <span id="merlion-models-layers-module"></span><h2>merlion.models.layers module<a class="headerlink" href="#module-merlion.models.layers" title="Permalink to this headline"></a></h2>

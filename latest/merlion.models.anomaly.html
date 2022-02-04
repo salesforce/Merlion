@@ -582,6 +582,41 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.base.</span></span><span class="sig-name descname"><span class="pre">MultipleTimeseriesDetectorMixin</span></span><a class="headerlink" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.MultipleTimeseriesModelMixin" title="merlion.models.base.MultipleTimeseriesModelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.MultipleTimeseriesModelMixin</span></code></a></p>
+<p>Abstract mixin for anomaly detectors supporting training on multiple time series.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the anomaly detector (unsupervised) and its post-rule
+(supervised, if labels are given) on the input multiple time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiple_train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are
+anomalous. Optional.</p></li>
+<li><p><strong>train_config</strong> – Additional training configs, if needed. Only
+required for some models.</p></li>
+<li><p><strong>post_rule_train_config</strong> – The config to use for training the
+model’s post-rule. The model’s default post-rule train config is
+used if none is supplied here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the model’s anomaly scores on the training
+data with each element corresponds to time series from <code class="docutils literal notranslate"><span class="pre">multiple_train_data</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-merlion.models.anomaly.dbl">
 <span id="merlion-models-anomaly-dbl-module"></span><h2>merlion.models.anomaly.dbl module<a class="headerlink" href="#module-merlion.models.anomaly.dbl" title="Permalink to this headline"></a></h2>
@@ -1925,7 +1960,7 @@ when post-processing anomaly scores</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dagmm.DAGMM">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.dagmm.</span></span><span class="sig-name descname"><span class="pre">DAGMM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dagmm.DAGMM" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorBase</span></code></a>, <a class="reference internal" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin" title="merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin</span></code></a></p>
 <p>Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM).
 DAGMM combines an autoencoder with a Gaussian mixture model to model the distribution
 of the reconstruction errors. DAGMM jointly optimizes the parameters of the deep autoencoder
@@ -1934,11 +1969,6 @@ and the mixture model simultaneously in an end-to-end fashion.</p>
 <li><p>paper: <a class="reference external" href="https://openreview.net/forum?id=BJJLHbb0-">Bo Zong, Qi Song, Martin Renqiang Min, Wei Cheng, Cristian Lumezanu, Daeki Cho and Haifeng Chen.
 Deep Autoencoding Gaussian Mixture Model for Unsupervised Anomaly Detection. 2018.</a>.</p></li>
 </ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMMConfig" title="merlion.models.anomaly.dagmm.DAGMMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DAGMMConfig</span></code></a>) – model configuration</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dagmm.DAGMM.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.dagmm.DAGMM.config_class" title="Permalink to this definition"></a></dt>
@@ -1968,6 +1998,46 @@ used if none is supplied here.</p></li>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the model’s anomaly scores on the training
 data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.dagmm.DAGMM.train_multiple">
+<span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dagmm.DAGMM.train_multiple" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the anomaly detector (unsupervised) and its post-rule
+(supervised, if labels are given) on the input multiple time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multiple_train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are
+anomalous. Optional.</p></li>
+<li><p><strong>train_config</strong> – <p>Additional training config dict with keys:</p>
+<ul>
+<li><div class="line-block">
+<div class="line">”n_epochs”: <code class="docutils literal notranslate"><span class="pre">int</span></code> indicating how many times the model must be</div>
+<div class="line">trained on the timeseries in <code class="docutils literal notranslate"><span class="pre">multiple_train_data</span></code>. Defaults to 1.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">”shuffle”: <code class="docutils literal notranslate"><span class="pre">bool</span></code> indicating if the <code class="docutils literal notranslate"><span class="pre">multiple_train_data</span></code> collection</div>
+<div class="line">should be shuffled before every epoch. Defaults to True if “n_epochs” &gt; 1.</div>
+</div>
+</li>
+</ul>
+</p></li>
+<li><p><strong>post_rule_train_config</strong> – The config to use for training the
+model’s post-rule. The model’s default post-rule train config is
+used if none is supplied here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the model’s anomaly scores on the training
+data with each element corresponds to time series from <code class="docutils literal notranslate"><span class="pre">multiple_train_data</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
