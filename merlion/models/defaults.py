@@ -111,7 +111,7 @@ class DefaultForecasterConfig(LayeredModelConfig):
     Config object for default forecasting model.
     """
 
-    def __init__(self, model=None, max_forecast_steps=100, target_seq_index=None, granularity=None, **kwargs):
+    def __init__(self, model=None, max_forecast_steps=None, target_seq_index=None, granularity=None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
             Required for some models like `MSES` and `LGBMForecaster`.

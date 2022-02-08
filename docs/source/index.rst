@@ -47,7 +47,7 @@ Note the following external dependencies:
    If using Mac, please install `Homebrew <https://brew.sh/>`_ and call ``brew install libomp`` so that the
    OpenMP libary is available for the model.
    This is relevant for the
-   :py:class:`LGBMForecaster <merlion.models.forecast.boostingtrees.LGBMForecaster>`,
+   :py:class:`LGBMForecaster <merlion.models.forecast.trees.LGBMForecaster>`,
    which is also used as a part of the :py:class:`DefaultForecaster <merlion.models.defaults.DefaultForecaster>`.
 
 2. Some of our anomaly detection models depend on having the Java Development Kit (JDK) installed. For Ubuntu, call

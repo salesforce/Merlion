@@ -5,27 +5,27 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Bagging Tree-based models for multivariate time series forecasting.
-Random Forest
-ExtraTreesRegressor
+Tree-based models for multivariate time series forecasting.
 """
 import logging
-from typing import List, Tuple, Union
+from typing import List
 
 import numpy as np
+from lightgbm import LGBMRegressor
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
+from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
-from merlion.utils.time_series import assert_equal_timedeltas, TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries
 from merlion.models.forecast.autoregression_utils import MultiVariateAutoRegressionMixin
 from merlion.models.forecast import seq_ar_common
 
 logger = logging.getLogger(__name__)
 
 
-class BaggingTreeForecasterConfig(ForecasterConfig):
+class TreeEnsembleForecasterConfig(ForecasterConfig):
     """
-    Configuration class for bagging Tree-based forecaster model.
+    Configuration class for bagging tree-based forecaster model.
     """
 
     def __init__(
@@ -38,7 +38,6 @@ class BaggingTreeForecasterConfig(ForecasterConfig):
         n_estimators: int = 100,
         random_state=None,
         max_depth=None,
-        min_samples_split=2,
         **kwargs,
     ):
         """
@@ -64,28 +63,26 @@ class BaggingTreeForecasterConfig(ForecasterConfig):
         :param n_estimators: number of base estimators for the tree ensemble
         :param random_state: random seed for bagging
         :param max_depth: max depth of base estimators
-        :param min_samples_split: min split for tree leaves
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
         self.sampling_mode = sampling_mode
         self.prediction_stride = prediction_stride
         self.n_estimators = n_estimators
-        self.max_depth = max_depth
-        self.min_samples_split = min_samples_split
         self.random_state = random_state
+        self.max_depth = max_depth
 
 
-class BaggingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
+class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
     """
     Tree model for multivariate time series forecasting.
     """
 
-    config_class = BaggingTreeForecasterConfig
+    config_class = TreeEnsembleForecasterConfig
 
     model = None
 
-    def __init__(self, config: BaggingTreeForecasterConfig):
+    def __init__(self, config: TreeEnsembleForecasterConfig):
         super().__init__(config)
         self._forecast = np.zeros(self.max_forecast_steps)
         self._input_already_transformed = False
@@ -237,15 +234,20 @@ class BaggingTreeForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
         self._input_already_transformed = False
 
 
-class RandomForestForecasterConfig(BaggingTreeForecasterConfig):
+class RandomForestForecasterConfig(TreeEnsembleForecasterConfig):
     """
     Config class for `RandomForestForecaster`.
     """
 
-    pass
+    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+        """
+        :param min_samples_split: min split for tree leaves
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.min_samples_split = min_samples_split
 
 
-class RandomForestForecaster(BaggingTreeForecaster):
+class RandomForestForecaster(TreeEnsembleForecaster):
     """
     Random Forest Regressor for time series forecasting
 
@@ -266,15 +268,20 @@ class RandomForestForecaster(BaggingTreeForecaster):
         )
 
 
-class ExtraTreesForecasterConfig(BaggingTreeForecasterConfig):
+class ExtraTreesForecasterConfig(TreeEnsembleForecasterConfig):
     """
-    Config cass for `ExtraTreesForecaster`.
+    Config class for `ExtraTreesForecaster`.
     """
 
-    pass
+    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+        """
+        :param min_samples_split: min split for tree leaves
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.min_samples_split = min_samples_split
 
 
-class ExtraTreesForecaster(BaggingTreeForecaster):
+class ExtraTreesForecaster(TreeEnsembleForecaster):
     """
     Extra Trees Regressor for time series forecasting
 
@@ -293,4 +300,43 @@ class ExtraTreesForecaster(BaggingTreeForecaster):
             max_depth=self.config.max_depth,
             min_samples_split=self.config.min_samples_split,
             random_state=self.config.random_state,
+        )
+
+
+class LGBMForecasterConfig(TreeEnsembleForecasterConfig):
+    """
+    Config class for `LGBMForecaster`.
+    """
+
+    def __init__(self, max_forecast_steps: int, maxlags: int, learning_rate=0.1, n_jobs=-1, **kwargs):
+        """
+        :param learning_rate: learning rate for boosting
+        :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
+        """
+        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        self.learning_rate = learning_rate
+        self.n_jobs = n_jobs
+
+
+class LGBMForecaster(TreeEnsembleForecaster):
+    """
+    Light gradient boosting (LGBM) regressor for time series forecasting
+
+    LightGBM is a light weight and fast gradient boosting framework that uses tree based learning algorithms, for more
+    details, please refer to the document https://lightgbm.readthedocs.io/en/latest/Features.html
+    """
+
+    config_class = LGBMForecasterConfig
+
+    def __init__(self, config: LGBMForecasterConfig):
+        super().__init__(config)
+        self.model = MultiOutputRegressor(
+            LGBMRegressor(
+                learning_rate=self.config.learning_rate,
+                n_estimators=self.config.n_estimators,
+                max_depth=self.config.max_depth,
+                random_state=self.config.random_state,
+                n_jobs=self.config.n_jobs,
+            ),
+            n_jobs=1,
         )
