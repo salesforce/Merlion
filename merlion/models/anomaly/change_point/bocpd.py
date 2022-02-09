@@ -95,7 +95,7 @@ class BOCPDConfig(ForecasterConfig, NoCalibrationDetectorConfig):
         change_kind: Union[str, ChangeKind] = ChangeKind.Auto,
         cp_prior=1e-2,
         lag=None,
-        min_likelihood=1e-12,
+        min_likelihood=1e-16,
         max_forecast_steps=None,
         **kwargs,
     ):
