@@ -416,9 +416,9 @@ performance metrics for time series anomaly detection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ground_truth</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – A time series indicating whether each time step
+<li><p><strong>ground_truth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – A time series indicating whether each time step
 corresponds to an anomaly.</p></li>
-<li><p><strong>predict</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – A time series with the anomaly score predicted for each
+<li><p><strong>predict</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – A time series with the anomaly score predicted for each
 time step. Detections correspond to nonzero scores.</p></li>
 <li><p><strong>max_early_sec</strong> – The maximum amount of time (in seconds) the anomaly
 detection is allowed to occur before the actual incidence. If None, no
@@ -651,17 +651,13 @@ algorithm’s performance. Can be used to compute many different forecasting met
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ground_truth</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – ground truth time series</p></li>
-<li><p><strong>predict</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – predicted truth time series</p></li>
-<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> (<em>lb</em>) – time series used for training model.
-This value is used for computing MSES, MSIS</p></li>
+<li><p><strong>ground_truth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – ground truth time series</p></li>
+<li><p><strong>predict</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – predicted truth time series</p></li>
+<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> (<em>lb</em>) – time series used for training model. This value is used for computing MSES, MSIS</p></li>
 <li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – periodicity. m=1 indicates the non-seasonal time series,
-whereas m&gt;1 indicates seasonal time series.
-This value is used for computing MSES, MSIS.</p></li>
-<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – upper bound of 95% prediction interval. This value is used for
-computing MSIS</p></li>
-<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – lower bound of 95% prediction interval. This value is used for
-computing MSIS</p></li>
+whereas m&gt;1 indicates seasonal time series. This value is used for computing MSES, MSIS.</p></li>
+<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – upper bound of 95% prediction interval. This value is used for computing MSIS</p></li>
+<li><p><strong>(</strong><strong>optional</strong><strong>)</strong> – lower bound of 95% prediction interval. This value is used for computing MSIS</p></li>
 </ul>
 </dd>
 </dl>
