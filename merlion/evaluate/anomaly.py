@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
-from merlion.utils import TimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 
 def scaled_sigmoid(x, scale=2.5):
@@ -168,7 +168,11 @@ class TSADScoreAccumulator:
 
 
 def accumulate_tsad_score(
-    ground_truth: TimeSeries, predict: TimeSeries, max_early_sec=None, max_delay_sec=None, metric=None
+    ground_truth: Union[TimeSeries, UnivariateTimeSeries],
+    predict: Union[TimeSeries, UnivariateTimeSeries],
+    max_early_sec=None,
+    max_delay_sec=None,
+    metric=None,
 ) -> Union[TSADScoreAccumulator, float]:
     """
     Computes the components required to compute multiple different types of
@@ -191,6 +195,8 @@ def accumulate_tsad_score(
         returns a ``float``. The `TSADScoreAccumulator` object is returned if
         ``metric`` is ``None``.
     """
+    ground_truth = ground_truth.to_ts() if isinstance(ground_truth, UnivariateTimeSeries) else ground_truth
+    predict = predict.to_ts() if isinstance(predict, UnivariateTimeSeries) else predict
     assert (
         ground_truth.dim == 1 and predict.dim == 1
     ), "Can only evaluate anomaly scores when ground truth and prediction are single-variable time series."

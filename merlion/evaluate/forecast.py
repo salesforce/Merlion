@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -16,7 +16,7 @@ import numpy as np
 
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
 from merlion.models.forecast.base import ForecasterBase
-from merlion.utils import TimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.utils.resample import granularity_str_to_seconds
 
 
@@ -29,9 +29,9 @@ class ForecastScoreAccumulator:
 
     def __init__(
         self,
-        ground_truth: TimeSeries,
-        predict: TimeSeries,
-        insample: TimeSeries = None,
+        ground_truth: Union[UnivariateTimeSeries, TimeSeries],
+        predict: Union[UnivariateTimeSeries, TimeSeries],
+        insample: Union[UnivariateTimeSeries, TimeSeries] = None,
         periodicity: int = 1,
         ub: TimeSeries = None,
         lb: TimeSeries = None,
@@ -39,16 +39,15 @@ class ForecastScoreAccumulator:
         """
         :param ground_truth: ground truth time series
         :param predict: predicted truth time series
-        :param insample (optional): time series used for training model.
-            This value is used for computing MSES, MSIS
+        :param insample (optional): time series used for training model. This value is used for computing MSES, MSIS
         :param periodicity (optional): periodicity. m=1 indicates the non-seasonal time series,
-            whereas m>1 indicates seasonal time series.
-            This value is used for computing MSES, MSIS.
-        :param ub (optional): upper bound of 95% prediction interval. This value is used for
-            computing MSIS
-        :param lb (optional): lower bound of 95% prediction interval. This value is used for
-            computing MSIS
+            whereas m>1 indicates seasonal time series. This value is used for computing MSES, MSIS.
+        :param ub (optional): upper bound of 95% prediction interval. This value is used for computing MSIS
+        :param lb (optional): lower bound of 95% prediction interval. This value is used for computing MSIS
         """
+        ground_truth = ground_truth.to_ts() if isinstance(ground_truth, UnivariateTimeSeries) else ground_truth
+        predict = predict.to_ts() if isinstance(predict, UnivariateTimeSeries) else predict
+        insample = insample.to_ts() if isinstance(insample, UnivariateTimeSeries) else insample
         t0, tf = predict.t0, predict.tf
         ground_truth = ground_truth.window(t0, tf, include_tf=True).align()
         self.ground_truth = ground_truth
