@@ -1,3 +1,4 @@
+
 merlion.utils package
 =====================
 This package contains various utilities, including the `TimeSeries` class and
@@ -11,6 +12,7 @@ utilities for resampling time series.
 .. autosummary::
     time_series
     resample
+    data_io
     hts
     ts_generator
     conj_priors
@@ -34,6 +36,15 @@ merlion.utils.resample module
    :members:
    :undoc-members:
    :show-inheritance:
+
+merlion.utils.data\_io module
+-----------------------------
+
+.. automodule:: merlion.utils.data_io
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 merlion.utils.hts module
 ------------------------
