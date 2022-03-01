@@ -66,7 +66,7 @@ class ModelConfigMeta(type):
                 sig = combine_signatures(sig, inspect.signature(cls_.__init__))
 
                 # Parse the __init__ docstring. Use the earliest prefix/param docstring in the MRO.
-                prefix_, suffix_, params_ = parse_init_docstring(cls_.__init__.__doc__)
+                prefix_, suffix_, params_ = parse_basic_docstring(cls_.__init__.__doc__)
                 if prefix is None and any([line != "" for line in prefix_]):
                     prefix = "\n".join(prefix_)
                 if suffix is None and any([line != "" for line in suffix_]):
@@ -111,9 +111,9 @@ def combine_signatures(sig1: Union[inspect.Signature, None], sig2: Union[inspect
     return sig1.replace(parameters=params)
 
 
-def parse_init_docstring(docstring):
+def parse_basic_docstring(docstring):
     """
-    Parse the docstring of a model config's ``__init__``.
+    Parse the docstring of a model config's ``__init__``, or other basic docstring.
     """
     docstring_lines = [""] if docstring is None else docstring.split("\n")
     prefix, suffix, param_dict = [], [], OrderedDict()

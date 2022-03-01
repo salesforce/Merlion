@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -14,9 +14,10 @@ import unittest
 import numpy as np
 from numpy.core.fromnumeric import mean
 
-from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import UnivariateTimeSeries, ts_csv_load
 from merlion.models.forecast.smoother import MSES, MSESConfig, MSESTrainConfig
+from merlion.transform.resample import TemporalResample
+from merlion.utils.data_io import csv_to_time_series
+from merlion.utils.time_series import UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -27,7 +28,7 @@ class TestMSES(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         csv_name = join(rootdir, "data", "example.csv")
-        self.data = TemporalResample("1h")(ts_csv_load(csv_name, n_vars=1))
+        self.data = TemporalResample("1h")(csv_to_time_series(csv_name, timestamp_unit="ms", data_cols="kpi"))
         logger.info(f"Data looks like: {self.data[:5]}")
 
         n = math.ceil(len(self.data) / 5)

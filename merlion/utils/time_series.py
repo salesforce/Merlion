@@ -29,6 +29,7 @@ from merlion.utils.resample import (
 )
 
 logger = logging.getLogger(__name__)
+_time_col_name = "time"
 
 
 class UnivariateTimeSeries(pd.Series):
@@ -113,6 +114,7 @@ class UnivariateTimeSeries(pd.Series):
             super().__init__(np.asarray(values), index=index, name=name, dtype=float)
             if len(self) >= 3 and self.index.freq is None:
                 self.index.freq = pd.infer_freq(self.index)
+            self.index.name = _time_col_name
 
     @property
     def np_time_stamps(self):
@@ -714,10 +716,14 @@ class TimeSeries:
         for _, var in univariates:
             t = t.union(var.index)
         t = t.sort_values()
+        t.name = _time_col_name
         df = pd.DataFrame(np.full((len(t), len(univariates)), np.nan), index=t, columns=self.names)
         for name, var in univariates:
             df.loc[var.index, name] = var[~var.index.duplicated()]
         return df
+
+    def to_csv(self, file_name):
+        self.to_pd().to_csv(file_name)
 
     @classmethod
     def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, freq="1h"):
@@ -956,48 +962,6 @@ class TimeSeries:
 
         else:
             raise RuntimeError(f"Alignment policy {alignment_policy.name} not supported")
-
-
-def ts_csv_load(file_name: str, ms=True, n_vars=None) -> TimeSeries:
-    """
-    :param file_name: a csv file starting with the field timestamp followed by
-        all the all variable names.
-    :param ms: whether the timestamps are in milliseconds (rather than seconds)
-    :return: A merlion `TimeSeries` object.
-    """
-    with open(file_name, "r") as f:
-        header = True
-        for line in f:
-            if header:
-                header = False
-                names = line.strip().split(",")[1:]
-                vars = {name: [] for name in names}
-                stamps = []
-                continue
-            if not line:
-                continue
-            words = line.strip().split(",")
-            stamp, vals = int(words[0]), words[1:]
-            if ms:
-                stamp = stamp / 1000
-            stamps += [stamp]
-            for name, val in zip(names, vals):
-                vars[name] += [float(val)]
-
-    return TimeSeries([UnivariateTimeSeries(stamps, vals, name) for name, vals in vars.items()][:n_vars])
-
-
-def ts_to_csv(time_series: TimeSeries, file_name: str):
-    """
-    :param time_series: the `TimeSeries` object to write to a csv.
-    :param file_name: the name to assign the csv file.
-    """
-    with open(file_name, "w") as f:
-        header = ",".join(["timestamp"] + time_series.names)
-        f.write(f"{header}\n")
-        for t, x in time_series:
-            vals = ",".join([str(v) for v in (int(t),) + x])
-            f.write(f"{vals}\n")
 
 
 def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float = None):

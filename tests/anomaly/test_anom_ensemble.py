@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -15,9 +15,8 @@ from merlion.models.anomaly.windstats import WindStats, WindStatsConfig
 from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleConfig
 from merlion.models.ensemble.combine import Mean, Median
 from merlion.models.factory import ModelFactory
-from merlion.post_process.threshold import AggregateAlarms
 from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -28,7 +27,7 @@ class TestMedianAnomEnsemble(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # load the time series sequence [(t1,v1), (t2, v2),...]
-        data = ts_csv_load(csv_name, n_vars=1)
+        data = csv_to_time_series(csv_name, timestamp_unit="ms", data_cols=["kpi"])
 
         # split the sequence into train and test
         self.vals_train = data[:-32768]
@@ -89,7 +88,7 @@ class TestMeanAnomEnsemble(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # load the time series sequence [(t1,v1), (t2, v2),...]
-        data = ts_csv_load(csv_name, n_vars=1)
+        data = csv_to_time_series(csv_name, timestamp_unit="ms", data_cols=["kpi"])
 
         # split the sequence into train and test
         self.vals_train = data[:-32768]

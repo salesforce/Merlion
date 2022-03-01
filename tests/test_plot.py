@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -15,7 +15,7 @@ from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.plot import plot_anoms, plot_anoms_plotly
-from merlion.utils.time_series import ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(abspath(__file__)))
@@ -26,7 +26,7 @@ class TestPlot(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.csv_name = join(rootdir, "data", "example.csv")
-        data = ts_csv_load(self.csv_name)
+        data = csv_to_time_series(self.csv_name, timestamp_unit="ms")
         self.data = TemporalResample("15min")(data.univariates[data.names[0]].to_ts())
         self.labels = data.univariates[data.names[1]].to_ts()
         logger.info(f"Data looks like:\n{self.data[:5]}")

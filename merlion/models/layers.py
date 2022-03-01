@@ -73,7 +73,7 @@ class LayeredModelConfig(Config):
             if self.model is None:
                 config_dict["model"] = None
             else:
-                config_dict["model"] = dict(name=type(self.model).__name__, **self.model.config.to_dict())
+                config_dict["model"] = dict(name=type(self.model).__name__, **self.model.config.to_dict(_skipped_keys))
         return config_dict
 
     @classmethod

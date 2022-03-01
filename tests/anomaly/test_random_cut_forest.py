@@ -7,7 +7,6 @@
 import logging
 import math
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -19,7 +18,7 @@ from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.normalize import MeanVarNormalize
 from merlion.transform.resample import Shingle, TemporalResample
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
 
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 logger = logging.getLogger(__name__)
@@ -29,7 +28,7 @@ class TestRandomCutForest(unittest.TestCase):
     def run_init(self):
         # Resample @ 5min granularity b/c default (1min) takes too long to train
         self.csv_name = join(rootdir, "data", "example.csv")
-        self.data = ts_csv_load(self.csv_name, n_vars=1)
+        self.data = csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols=["kpi"])
         self.test_len = math.ceil(len(self.data) / 5)
 
         logger.info(f"Data looks like:\n{self.data[:5]}")

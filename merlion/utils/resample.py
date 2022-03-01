@@ -61,8 +61,7 @@ class MissingValuePolicy(Enum):
 
 def to_pd_datetime(timestamp):
     """
-    Converts a timestamp (or list/iterable of timestamps) to pandas Datetime,
-    truncated at the millisecond.
+    Converts a timestamp (or list/iterable of timestamps) to pandas Datetime, truncated at the millisecond.
     """
     if isinstance(timestamp, pd.DatetimeIndex):
         return timestamp

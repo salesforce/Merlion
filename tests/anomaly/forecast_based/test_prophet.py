@@ -15,7 +15,8 @@ import pandas as pd
 
 from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
-from merlion.utils.time_series import ts_csv_load, TimeSeries
+from merlion.utils.data_io import csv_to_time_series
+from merlion.utils.time_series import TimeSeries
 from merlion.transform.normalize import PowerTransform
 from merlion.transform.resample import TemporalResample
 
@@ -28,7 +29,7 @@ class TestProphet(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.csv_name = join(rootdir, "data", "example.csv")
-        self.data = TemporalResample("15min")(ts_csv_load(self.csv_name, n_vars=1))
+        self.data = TemporalResample("15min")(csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols=["kpi"]))
         logger.info(f"Data looks like:\n{self.data[:5]}")
         holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 

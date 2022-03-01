@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -15,7 +15,8 @@ from merlion.models.ensemble.combine import MetricWeightedMean
 from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
 from merlion.models.forecast.arima import ArimaConfig, Arima
 from merlion.transform.base import Identity
-from merlion.utils.time_series import UnivariateTimeSeries, ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
+from merlion.utils.time_series import UnivariateTimeSeries
 
 
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class TestEvaluateForecast(unittest.TestCase):
         logger.info("test_ensemble\n" + "-" * 80 + "\n")
 
         csv_name = join(rootdir, "data", "example.csv")
-        ts = ts_csv_load(csv_name, ms=True, n_vars=1).align(granularity="1h")
+        ts = csv_to_time_series(csv_name, timestamp_unit="ms", data_cols=["kpi"]).align(granularity="1h")
         n_test = len(ts) // 5
         train, test = ts[:-n_test], ts[-n_test:]
 

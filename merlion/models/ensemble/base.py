@@ -59,7 +59,10 @@ class EnsembleConfig(Config):
             if self.models is None:
                 models = None
             else:
-                models = [None if m is None else dict(name=type(m).__name__, **m.config.to_dict()) for m in self.models]
+                models = [
+                    None if m is None else dict(name=type(m).__name__, **m.config.to_dict(_skipped_keys))
+                    for m in self.models
+                ]
             config_dict["models"] = models
         return config_dict
 

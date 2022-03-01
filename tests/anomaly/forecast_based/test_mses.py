@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -14,7 +14,8 @@ import numpy as np
 
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.mses import MSESDetector, MSESDetectorConfig
-from merlion.utils.time_series import ts_csv_load, TimeSeries
+from merlion.utils.data_io import csv_to_time_series
+from merlion.utils.time_series import TimeSeries
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(dirname(abspath(__file__)))))
@@ -26,7 +27,7 @@ class TestMSES(unittest.TestCase):
 
         # Re-sample to 1hr because default (1min) takes too long to train
         self.csv_name = join(rootdir, "data", "example.csv")
-        self.data = ts_csv_load(self.csv_name, n_vars=1)
+        self.data = csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols=["kpi"])
         logger.info(f"Data looks like:\n{self.data[:5]}")
 
         self.test_len = math.ceil(len(self.data) / 10)
