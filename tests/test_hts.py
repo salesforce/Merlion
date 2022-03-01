@@ -10,6 +10,7 @@ import sys
 import unittest
 
 import numpy as np
+import pandas as pd
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.factory import ModelFactory
@@ -19,6 +20,7 @@ from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.data_io import df_to_time_series
 from merlion.utils.hts import minT_reconciliation
 from ts_datasets.forecast import SeattleTrail
 
@@ -60,8 +62,8 @@ class TestHTS(unittest.TestCase):
         minmax_transform.train(train_data)
         self.train_data_norm = minmax_transform(train_data[-2000:])
         self.test_data_norm = minmax_transform(test_data[:h])
-        self.train_data_agg = TimeSeries.from_pd(self.train_data_norm.to_pd().sum(axis=1))
-        self.test_data_agg = TimeSeries.from_pd(self.test_data_norm.to_pd().sum(axis=1))
+        self.train_data_agg = UnivariateTimeSeries.from_pd(self.train_data_norm.to_pd().sum(axis=1), name="val").to_ts()
+        self.test_data_agg = UnivariateTimeSeries.from_pd(self.test_data_norm.to_pd().sum(axis=1), name="val").to_ts()
 
         self.models = [ModelFactory.create("AutoETS", target_seq_index=i) for i in range(test_data.dim)]
         self.agg_model = ModelFactory.create("LGBMForecaster", max_forecast_steps=h, maxlags=100)
@@ -95,6 +97,18 @@ class TestHTS(unittest.TestCase):
         logger.info(f"minT reconciliation RMSE: {minT:.4f}")
         self.assertLess(direct, naive)
         self.assertLess(minT, direct)
+
+    def test_data_io(self):
+        print("=" * 80)
+        logger.info("test_data_io" + "\n" + "=" * 80)
+        df = self.train_data_norm.to_pd()
+        df_hierarchical = pd.concat(
+            [pd.DataFrame({"name": c, "val": df[c].values}, index=df.index) for c in df.columns]
+        )
+        df_hierarchical.index.name = None
+        ts_agg = df_to_time_series(df_hierarchical, index_cols=["name"])
+        max_delta = (ts_agg.to_pd() - self.train_data_agg.to_pd()).abs().max().item()
+        self.assertLessEqual(max_delta, 1e-8)
 
 
 if __name__ == "__main__":

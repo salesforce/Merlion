@@ -47,7 +47,8 @@ def df_to_time_series(
     of all distinct values. This is also true if ``"weights"`` is not specified for a particular index key.
 
     :param df: the dataframe to parse
-    :param time_col: the name of the column specifying time. The first dataframe column is used if none is specified.
+    :param time_col: the name of the column specifying time. If none is specified, the existing index is used if it
+        is a ``DatetimeIndex``. Otherwise, the first column is used..
     :param timestamp_unit: if the time column is in Unix timestamps, this is the unit of the timestamp.
     :param index_cols: the columns to be interpreted as a hierarchical index, if desired.
     :param data_cols: the columns representing the actual data values of interest.
@@ -63,15 +64,24 @@ def df_to_time_series(
         raise KeyError(f"Expected each of index_cols to be in {df.columns}. Got {index_cols}.")
 
     # Set up a hierarchical index for the dataframe, with the timestamp first
-    if time_col is None:
-        time_col = df.columns[0]
-    df[time_col] = pd.to_datetime(df[time_col], unit=None if df[time_col].dtype == "O" else timestamp_unit)
-    df = df.set_index([time_col] + index_cols).sort_index()
+    if time_col is None and isinstance(df.index, pd.DatetimeIndex):
+        df = df.set_index([df.index] + index_cols).sort_index()
+        if df.index.names[0] is None:
+            df.index.set_names("time", level=0, inplace=True)
+        time_col = df.index.names[0]
+    else:
+        if time_col is None:
+            time_col = df.columns[0]
+        elif time_col not in df.columns:
+            raise KeyError(f"Expected time_col to be in {df.columns}. Got {time_col}.")
+        df[time_col] = pd.to_datetime(df[time_col], unit=None if df[time_col].dtype == "O" else timestamp_unit)
+        df = df.set_index([time_col] + index_cols).sort_index()
 
     # Determine the values & weights used to restrict & aggregate the dataframe
     vals_seq = [slice(None)]
-    weights = pd.Series(1, index=df.index)
-    for c in index_cols or []:
+    weights = pd.Series(1.0, index=df.index)
+    index_conditions = index_conditions or {}
+    for c in index_cols:
         cond = index_conditions.get(c, {})
         if not isinstance(cond, Mapping):
             cond = {"vals": cond}
@@ -90,6 +100,8 @@ def df_to_time_series(
             weights *= df[w]
         elif w is not None:
             all_vals = df.index.get_level_values(c)
+            if len(w) != len(vals):
+                raise ValueError(f"For index column {c}, expected weights of length {len(vals)}. Got {len(w)}.")
             w = pd.concat((pd.Series(w, index=vals), pd.Series(0, index=all_vals.unique().difference(vals))))
             weights *= w.loc[all_vals].values
 
@@ -101,13 +113,14 @@ def df_to_time_series(
         df = df[data_cols]
 
     # Restrict & aggregate the dataframe
-    ilocs = df.index.get_locs(vals_seq)
-    df = df.iloc[ilocs]
-    weights = weights.iloc[ilocs]
-    if index_agg_average:
-        df = df.groupby(time_col).agg(lambda x: np.average(x, weights=weights.loc[x.index]))
-    else:
-        df = (df * weights.values.reshape(-1, 1)).groupby(time_col).sum()
+    if len(index_cols) > 0:
+        ilocs = df.index.get_locs(vals_seq)
+        df = df.iloc[ilocs]
+        weights = weights.iloc[ilocs]
+        if index_agg_average:
+            df = df.groupby(time_col).agg(lambda x: np.average(x, weights=weights.loc[x.index]))
+        else:
+            df = (df * weights.values.reshape(-1, 1)).groupby(time_col).sum()
 
     # Convert the dataframe to a time series & return it
     return TimeSeries.from_pd(df)
