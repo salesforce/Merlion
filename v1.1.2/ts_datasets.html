@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ts_datasets: Easy Data Loading &mdash; Merlion 1.1.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ts_datasets.anomaly package" href="ts_datasets.anomaly.html" />
+    <link rel="prev" title="merlion.utils package" href="merlion.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ts_datasets: Easy Data Loading</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html">ts_datasets.anomaly package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.forecast.html">ts_datasets.forecast package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ts_datasets.base">datasets.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>ts_datasets: Easy Data Loading</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ts_datasets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="ts-datasets-easy-data-loading">
+<h1>ts_datasets: Easy Data Loading<a class="headerlink" href="#ts-datasets-easy-data-loading" title="Permalink to this headline"></a></h1>
+<p><a class="reference internal" href="#module-ts_datasets" title="ts_datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ts_datasets</span></code></a> implements Python classes that manipulate numerous time series datasets
+into standardized <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> s. The sub-modules are <a class="reference internal" href="ts_datasets.anomaly.html#module-ts_datasets.anomaly" title="ts_datasets.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ts_datasets.anomaly</span></code></a>
+for time series anomaly detection, and <a class="reference internal" href="ts_datasets.forecast.html#module-ts_datasets.forecast" title="ts_datasets.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ts_datasets.forecast</span></code></a> for time series forecasting.
+Simply install the package by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">ts_datasets/</span></code> from the root directory of Merlion.
+Then, you can load a dataset (e.g. the “realAWSCloudwatch” split of the Numenta Anomaly Benchmark
+or the “Hourly” subset of the M4 dataset) by calling</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">NAB</span>
+<span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
+<span class="n">anom_dataset</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;realAWSCloudwatch&quot;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_NAB</span><span class="p">)</span>
+<span class="n">forecast_dataset</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;Hourly&quot;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_M4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you install this package in editable mode (i.e. specify <code class="docutils literal notranslate"><span class="pre">-e</span></code> when calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">ts_datasets/</span></code>),
+there is no need to specify a <code class="docutils literal notranslate"><span class="pre">rootdir</span></code> for any of the data loaders.</p>
+<p>The core features of general data loaders (e.g. for forecasting) are outlined in the API doc for
+<a class="reference internal" href="#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.base.BaseDataset</span></code></a>, and the features for time series anomaly detection data loaders
+are outlined in the API doc for <a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.TSADBaseDataset</span></code></a>.</p>
+<span class="target" id="module-ts_datasets"></span><p>This package implements Python classes that manipulate numerous time series
+datasets (both open source and internal) into standardized <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> s.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="ts_datasets.anomaly.html#module-ts_datasets.anomaly" title="ts_datasets.anomaly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly</span></code></a></p></td>
+<td><p>Datasets for time series anomaly detection (TSAD).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ts_datasets.forecast.html#module-ts_datasets.forecast" title="ts_datasets.forecast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forecast</span></code></a></p></td>
+<td><p>Datasets for time series forecasting.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.anomaly.html">ts_datasets.anomaly package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.forecast.html">ts_datasets.forecast package</a></li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-ts_datasets.base">
+<span id="datasets-base-module"></span><h2>datasets.base module<a class="headerlink" href="#module-ts_datasets.base" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.base.BaseDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.base.</span></span><span class="sig-name descname"><span class="pre">BaseDataset</span></span><a class="headerlink" href="#ts_datasets.base.BaseDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base dataset class for storing time series as <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> s.
+Each dataset supports the following features:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__getitem__</span></code>: you may call <code class="docutils literal notranslate"><span class="pre">ts,</span> <span class="pre">metadata</span> <span class="pre">=</span> <span class="pre">dataset[i]</span></code>. <code class="docutils literal notranslate"><span class="pre">ts</span></code> is a time-indexed <code class="docutils literal notranslate"><span class="pre">pandas</span></code> DataFrame, with
+each column representing a different variable (in the case of multivariate time series). <code class="docutils literal notranslate"><span class="pre">metadata</span></code> is a dict or
+<code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with the same index as <code class="docutils literal notranslate"><span class="pre">ts</span></code>, with different keys indicating different dataset-specific
+metadata (train/test split, anomaly labels, etc.) for each timestamp.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__len__</span></code>:  Calling <code class="docutils literal notranslate"><span class="pre">len(dataset)</span></code> will return the number of time series in the dataset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__iter__</span></code>: You may iterate over the <code class="docutils literal notranslate"><span class="pre">pandas</span></code> representations of the time series in the dataset with
+<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">ts,</span> <span class="pre">metadata</span> <span class="pre">in</span> <span class="pre">dataset:</span> <span class="pre">...</span></code></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For each time series, the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> will always have the key <code class="docutils literal notranslate"><span class="pre">trainval</span></code>, which is a 
+<code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> of <code class="docutils literal notranslate"><span class="pre">bool</span></code> indicating whether each timestamp of the time series should be
+training/validation (if <code class="docutils literal notranslate"><span class="pre">True</span></code>) or testing (if <code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.base.BaseDataset.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.base.BaseDataset.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.base.BaseDataset.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.base.BaseDataset.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ts_datasets.base.BaseDataset.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.base.BaseDataset.describe" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.utils.html" class="btn btn-neutral float-left" title="merlion.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ts_datasets.anomaly.html" class="btn btn-neutral float-right" title="ts_datasets.anomaly package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.1.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

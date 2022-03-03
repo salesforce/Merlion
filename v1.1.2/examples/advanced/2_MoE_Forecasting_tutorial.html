@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial for Mixture of Expert (MoE) Forecasting Model &mdash; Merlion 1.1.2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Proof of Concept: Inverse Transforms for Forecasters" href="3_ForecastInvertPOC.html" />
+    <link rel="prev" title="Tutorial for AutoSARIMA Forecasting Model" href="1_AutoSARIMA_forecasting_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.1.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../tutorials.html#advanced-features">Advanced Features</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_AutoSARIMA_forecasting_tutorial.html">Tutorial for AutoSARIMA Forecasting Model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tutorial for Mixture of Expert (MoE) Forecasting Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Load-dataset">Load dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Create-MoE-model-composed-of-external-expert-models-and-train">Create MoE model composed of external expert models and train</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#Specify-hyper-parameters">Specify hyper-parameters</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Create-expert-models-and-MoE-ensembler-and-train">Create expert models and MoE ensembler and train</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Load-the-saved-ensemble-model">Load the saved ensemble model</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Forecast-using-the-loaded-model">Forecast using the loaded model</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model">Retrieve forecasts of individual experts along with their confidence from the loaded model</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Evaluate-MoE">Evaluate MoE</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train">Create MoE model containing free parameters (no external experts) and train</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#id1">Specify hyper-parameters</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#Create-MoE-ensembler-and-train">Create MoE ensembler and train</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#id2">Evaluate MoE</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#id3">Load the saved ensemble model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3_ForecastInvertPOC.html">Proof of Concept: Inverse Transforms for Forecasters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>Tutorial for Mixture of Expert (MoE) Forecasting Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/advanced/2_MoE_Forecasting_tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Tutorial-for-Mixture-of-Expert-(MoE)-Forecasting-Model">
+<h1>Tutorial for Mixture of Expert (MoE) Forecasting Model<a class="headerlink" href="#Tutorial-for-Mixture-of-Expert-(MoE)-Forecasting-Model" title="Permalink to this headline"></a></h1>
+<p>This notebook provides a minimal example on how to use the MoE forecasting model.</p>
+<p>MoE runs in 2 settings: 1. Using external expert models 2. Using free parameters (no external experts)</p>
+<p>Example codes are provided for both cases below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># workaround to enable info-level logging in Jupyter notebook</span>
+<span class="o">%</span><span class="k">config</span> Application.log_level=&#39;WORKAROUND&#39;
+<span class="o">%</span><span class="k">config</span> Application.log_level=&#39;INFO&#39;
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+ERROR:root:The &#39;log_level&#39; trait of an IPKernelApp instance expected any of [0, 10, 20, 30, 40, 50, &#39;DEBUG&#39;, &#39;INFO&#39;, &#39;WARN&#39;, &#39;ERROR&#39;, &#39;CRITICAL&#39;], not the str &#39;WORKAROUND&#39;.
+</pre></div></div>
+</div>
+<section id="Load-dataset">
+<h2>Load dataset<a class="headerlink" href="#Load-dataset" title="Permalink to this headline"></a></h2>
+<p>Note: change data dir below if inappropriate</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">M4</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time_series</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:numexpr.utils:Note: NumExpr detected 16 cores but &#34;NUMEXPR_MAX_THREADS&#34; not set, so enforcing safe limit of 8.
+INFO:numexpr.utils:NumExpr defaulting to 8 threads.
+100%|██████████| 414/414 [00:00&lt;00:00, 610.42it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(748, 1)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<p>Now, we’ll split the data into train &amp; test splits. Visualize the 0th dim of the data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+<span class="n">test_data</span>  <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;train timeseries shape: &#39;</span><span class="p">,</span> <span class="n">train_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;test timeseries shape: &#39;</span><span class="p">,</span> <span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">column_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="n">idx</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">tr</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()[</span><span class="n">column_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">te</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()[</span><span class="n">column_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">te</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+train timeseries shape:  (700, 1)
+test timeseries shape:  (48, 1)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_5_1.png" src="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_5_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7fda90599730&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_5_3.png" src="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_5_3.png" />
+</div>
+</div>
+</section>
+<section id="Create-MoE-model-composed-of-external-expert-models-and-train">
+<h2>Create MoE model composed of external expert models and train<a class="headerlink" href="#Create-MoE-model-composed-of-external-expert-models-and-train" title="Permalink to this headline"></a></h2>
+<section id="Specify-hyper-parameters">
+<h3>Specify hyper-parameters<a class="headerlink" href="#Specify-hyper-parameters" title="Permalink to this headline"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># save directory for ensemble state. Replace it with your own choice.</span>
+<span class="n">save_dir</span> <span class="o">=</span> <span class="s1">&#39;models/moe&#39;</span>
+
+<span class="c1">###</span>
+<span class="n">nfree_experts</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># &lt;- no free parameters provided</span>
+<span class="n">lookback_len</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">max_forecast_steps</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">target_seq_index</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span>
+<span class="c1">###</span>
+
+
+<span class="c1">## Pytorch network hyper-params. These are the also the hyper-params that are used in case moe_model=None is passed to MoE_ForecasterEnsemble.</span>
+<span class="n">hidden_dim</span><span class="o">=</span><span class="mi">256</span>
+<span class="n">dim_head</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">mlp_dim</span><span class="o">=</span><span class="mi">256</span>
+<span class="n">dim_dropout</span><span class="o">=</span><span class="mf">0.</span> <span class="c1"># if data is multi-dimensionsal, this can be set to a non-zero value to allow model to handle missing dimensions during test time</span>
+<span class="n">time_step_dropout</span><span class="o">=</span><span class="mi">0</span>
+<span class="c1">## Pytorch network hyper-params</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Create-expert-models-and-MoE-ensembler-and-train">
+<h3>Create expert models and MoE ensembler and train<a class="headerlink" href="#Create-expert-models-and-MoE-ensembler-and-train" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.models.factory</span> <span class="kn">import</span> <span class="n">ModelFactory</span>
+<span class="kn">from</span> <span class="nn">merlion.models.ensemble.MoE_forecast</span> <span class="kn">import</span> <span class="n">MoE_ForecasterEnsemble</span><span class="p">,</span> <span class="n">MoE_ForecasterEnsembleConfig</span><span class="p">,</span> <span class="n">TransformerModel</span>
+<span class="kn">from</span> <span class="nn">merlion.models.ensemble.base</span> <span class="kn">import</span> <span class="n">EnsembleTrainConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.base</span> <span class="kn">import</span> <span class="n">Identity</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.resample</span> <span class="kn">import</span> <span class="n">TemporalResample</span>
+
+
+<span class="c1">## Define configs for all the experts as well as the MoE ensembler</span>
+<span class="n">conf_sarima</span> <span class="o">=</span>  <span class="p">{</span>
+        <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="s2">&quot;seasonal_order&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">],</span>
+        <span class="s2">&quot;max_forecast_steps&quot;</span><span class="p">:</span> <span class="n">max_forecast_steps</span><span class="p">,</span>
+        <span class="s2">&quot;target_seq_index&quot;</span><span class="p">:</span><span class="n">target_seq_index</span><span class="p">,</span>
+        <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="n">Identity</span><span class="p">()</span>
+        <span class="p">}</span>
+
+<span class="n">config_arima</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="s2">&quot;max_forecast_steps&quot;</span><span class="p">:</span> <span class="n">max_forecast_steps</span><span class="p">,</span>
+        <span class="s2">&quot;target_seq_index&quot;</span><span class="p">:</span> <span class="n">target_seq_index</span><span class="p">,</span>
+        <span class="s2">&quot;transform&quot;</span><span class="p">:</span> <span class="n">Identity</span><span class="p">()</span>
+    <span class="p">}</span>
+
+<span class="n">config_vector_ar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;max_forecast_steps&quot;</span><span class="p">:</span> <span class="n">max_forecast_steps</span><span class="p">,</span> <span class="s2">&quot;target_seq_index&quot;</span><span class="p">:</span> <span class="n">target_seq_index</span><span class="p">,</span> <span class="s2">&quot;maxlags&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+
+<span class="n">config_ensemble</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsembleConfig</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>\
+                                            <span class="n">nfree_experts</span><span class="o">=</span><span class="n">nfree_experts</span><span class="p">,</span> <span class="n">epoch_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>\
+                                            <span class="n">lookback_len</span><span class="o">=</span><span class="n">lookback_len</span><span class="p">,</span>\
+                                            <span class="n">max_forecast_steps</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span>\
+                                            <span class="n">target_seq_index</span><span class="o">=</span><span class="n">target_seq_index</span><span class="p">,</span>
+                                            <span class="n">use_gpu</span><span class="o">=</span><span class="n">use_gpu</span><span class="p">,</span>\
+                                            <span class="n">transform</span><span class="o">=</span><span class="n">TemporalResample</span><span class="p">())</span>
+
+<span class="n">train_config_ensemble</span> <span class="o">=</span> <span class="n">EnsembleTrainConfig</span><span class="p">(</span><span class="n">valid_frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Define expert models</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Sarima&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">conf_sarima</span><span class="p">)</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Arima&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">config_arima</span><span class="p">)</span>
+<span class="n">model3</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;VectorAR&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">config_vector_ar</span><span class="p">)</span>
+
+<span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">]</span>
+<span class="n">nexperts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Instantiate deep network for MoE. It can also be instantiated as None. In that case, the default Pytorch network</span>
+<span class="sd">specified in the MoE_ForecasterEnsemble class will be used. FYI, the network below is used as the default network in</span>
+<span class="sd">MoE_ForecasterEnsemble.</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">moe_model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">lookback_len</span><span class="o">=</span><span class="n">lookback_len</span><span class="p">,</span> <span class="n">nexperts</span><span class="o">=</span><span class="n">nexperts</span><span class="p">,</span>\
+                    <span class="n">output_dim</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span> <span class="n">nfree_experts</span><span class="o">=</span><span class="n">nfree_experts</span><span class="p">,</span>\
+                    <span class="n">hid_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dim_head</span> <span class="o">=</span> <span class="n">dim_head</span><span class="p">,</span> <span class="n">mlp_dim</span><span class="o">=</span><span class="n">mlp_dim</span><span class="p">,</span>\
+                     <span class="n">pool</span><span class="o">=</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="n">dim_dropout</span><span class="o">=</span><span class="n">dim_dropout</span><span class="p">,</span>\
+                    <span class="n">time_step_dropout</span><span class="o">=</span><span class="n">time_step_dropout</span><span class="p">)</span>
+<span class="c1"># moe_model = None # use me if you want to see the default model in use</span>
+
+<span class="c1"># create MoE forecaster model</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsemble</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config_ensemble</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span> <span class="n">models</span><span class="p">,</span> <span class="n">moe_model</span><span class="o">=</span><span class="n">moe_model</span><span class="p">)</span>
+
+<span class="c1"># train &amp; save MoE</span>
+<span class="n">loss_list</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_config</span> <span class="o">=</span> <span class="n">train_config_ensemble</span><span class="p">)</span>
+<span class="n">ensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:merlion.models.ensemble.MoE_forecast:Training model 1/3...
+INFO:merlion.models.ensemble.MoE_forecast:Training model 2/3...
+INFO:merlion.models.ensemble.MoE_forecast:Training model 3/3...
+INFO:merlion.models.ensemble.MoE_forecast:Extracting and storing expert predictions
+  0%|          | 0/6 [00:00&lt;?, ?it/s]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+ 17%|█▋        | 1/6 [00:06&lt;00:33,  6.78s/it]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+ 33%|███▎      | 2/6 [00:10&lt;00:19,  4.91s/it]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+ 50%|█████     | 3/6 [00:14&lt;00:13,  4.52s/it]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+ 67%|██████▋   | 4/6 [00:17&lt;00:08,  4.11s/it]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+ 83%|████████▎ | 5/6 [00:22&lt;00:04,  4.34s/it]INFO:merlion.models.ensemble.MoE_forecast:Getting model 1/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 2/3 predictions...
+INFO:merlion.models.ensemble.MoE_forecast:Getting model 3/3 predictions...
+100%|██████████| 6/6 [00:23&lt;00:00,  3.91s/it]
+Epoch 1 Loss: 1.304425: 100%|██████████| 6/6 [00:03&lt;00:00,  1.92it/s]
+Epoch 2 Loss: 1.326118: 100%|██████████| 6/6 [00:03&lt;00:00,  1.85it/s]
+Epoch 3 Loss: 1.285732: 100%|██████████| 6/6 [00:03&lt;00:00,  1.61it/s]
+Epoch 4 Loss: 1.239944: 100%|██████████| 6/6 [00:03&lt;00:00,  1.86it/s]
+Epoch 5 Loss: 1.217539: 100%|██████████| 6/6 [00:03&lt;00:00,  1.92it/s]
+Epoch 6 Loss: 1.194959: 100%|██████████| 6/6 [00:04&lt;00:00,  1.43it/s]
+Epoch 7 Loss: 1.182055: 100%|██████████| 6/6 [00:03&lt;00:00,  1.86it/s]
+Epoch 8 Loss: 1.175249: 100%|██████████| 6/6 [00:02&lt;00:00,  2.15it/s]
+Epoch 9 Loss: 1.173702: 100%|██████████| 6/6 [00:02&lt;00:00,  2.43it/s]
+Epoch 10 Loss: 1.186111: 100%|██████████| 6/6 [00:02&lt;00:00,  2.36it/s]
+Epoch 11 Loss: 1.184515: 100%|██████████| 6/6 [00:02&lt;00:00,  2.08it/s]
+Epoch 12 Loss: 1.169571: 100%|██████████| 6/6 [00:02&lt;00:00,  2.29it/s]
+Epoch 13 Loss: 1.174548: 100%|██████████| 6/6 [00:02&lt;00:00,  2.42it/s]
+Epoch 14 Loss: 1.180143: 100%|██████████| 6/6 [00:02&lt;00:00,  2.30it/s]
+Epoch 15 Loss: 1.186909: 100%|██████████| 6/6 [00:03&lt;00:00,  1.95it/s]
+Epoch 16 Loss: 1.175635: 100%|██████████| 6/6 [00:02&lt;00:00,  2.36it/s]
+Epoch 17 Loss: 1.189920: 100%|██████████| 6/6 [00:02&lt;00:00,  2.23it/s]
+Epoch 18 Loss: 1.182831: 100%|██████████| 6/6 [00:03&lt;00:00,  1.88it/s]
+Epoch 19 Loss: 1.176439: 100%|██████████| 6/6 [00:03&lt;00:00,  1.90it/s]
+Epoch 20 Loss: 1.174525: 100%|██████████| 6/6 [00:02&lt;00:00,  2.06it/s]
+Epoch 21 Loss: 1.172877: 100%|██████████| 6/6 [00:02&lt;00:00,  2.07it/s]
+Epoch 22 Loss: 1.182378: 100%|██████████| 6/6 [00:03&lt;00:00,  1.80it/s]
+Epoch 23 Loss: 1.165431: 100%|██████████| 6/6 [00:02&lt;00:00,  2.23it/s]
+Epoch 24 Loss: 1.178699: 100%|██████████| 6/6 [00:02&lt;00:00,  2.48it/s]
+Epoch 25 Loss: 1.179477: 100%|██████████| 6/6 [00:02&lt;00:00,  2.32it/s]
+Epoch 26 Loss: 1.174176: 100%|██████████| 6/6 [00:02&lt;00:00,  2.10it/s]
+Epoch 27 Loss: 1.187021: 100%|██████████| 6/6 [00:02&lt;00:00,  2.32it/s]
+Epoch 28 Loss: 1.175006: 100%|██████████| 6/6 [00:02&lt;00:00,  2.47it/s]
+Epoch 29 Loss: 1.179644: 100%|██████████| 6/6 [00:02&lt;00:00,  2.39it/s]
+Epoch 30 Loss: 1.172667: 100%|██████████| 6/6 [00:02&lt;00:00,  2.01it/s]
+Epoch 31 Loss: 1.166672: 100%|██████████| 6/6 [00:02&lt;00:00,  2.45it/s]
+Epoch 32 Loss: 1.180196: 100%|██████████| 6/6 [00:02&lt;00:00,  2.21it/s]
+Epoch 33 Loss: 1.180659: 100%|██████████| 6/6 [00:02&lt;00:00,  2.03it/s]
+Epoch 34 Loss: 1.172211: 100%|██████████| 6/6 [00:02&lt;00:00,  2.04it/s]
+Epoch 35 Loss: 1.179359: 100%|██████████| 6/6 [00:02&lt;00:00,  2.39it/s]
+Epoch 36 Loss: 1.171128: 100%|██████████| 6/6 [00:03&lt;00:00,  1.97it/s]
+Epoch 37 Loss: 1.175621: 100%|██████████| 6/6 [00:03&lt;00:00,  1.65it/s]
+Epoch 38 Loss: 1.178169: 100%|██████████| 6/6 [00:02&lt;00:00,  2.02it/s]
+Epoch 39 Loss: 1.171359: 100%|██████████| 6/6 [00:03&lt;00:00,  1.94it/s]
+Epoch 40 Loss: 1.178329: 100%|██████████| 6/6 [00:02&lt;00:00,  2.09it/s]
+Epoch 41 Loss: 1.183362: 100%|██████████| 6/6 [00:03&lt;00:00,  1.99it/s]
+Epoch 42 Loss: 1.192560: 100%|██████████| 6/6 [00:02&lt;00:00,  2.57it/s]
+Epoch 43 Loss: 1.180345: 100%|██████████| 6/6 [00:02&lt;00:00,  2.41it/s]
+Epoch 44 Loss: 1.173638: 100%|██████████| 6/6 [00:02&lt;00:00,  2.13it/s]
+Epoch 45 Loss: 1.152926: 100%|██████████| 6/6 [00:02&lt;00:00,  2.26it/s]
+Epoch 46 Loss: 1.173875: 100%|██████████| 6/6 [00:02&lt;00:00,  2.49it/s]
+Epoch 47 Loss: 1.164550: 100%|██████████| 6/6 [00:02&lt;00:00,  2.30it/s]
+Epoch 48 Loss: 1.159929: 100%|██████████| 6/6 [00:03&lt;00:00,  1.90it/s]
+Epoch 49 Loss: 1.153424: 100%|██████████| 6/6 [00:02&lt;00:00,  2.29it/s]
+Epoch 50 Loss: 1.154480: 100%|██████████| 6/6 [00:02&lt;00:00,  2.25it/s]
+Epoch 51 Loss: 1.140436: 100%|██████████| 6/6 [00:02&lt;00:00,  2.04it/s]
+Epoch 52 Loss: 1.146496: 100%|██████████| 6/6 [00:03&lt;00:00,  1.67it/s]
+Epoch 53 Loss: 1.103287: 100%|██████████| 6/6 [00:03&lt;00:00,  1.95it/s]
+Epoch 54 Loss: 1.126842: 100%|██████████| 6/6 [00:03&lt;00:00,  1.91it/s]
+Epoch 55 Loss: 1.090270: 100%|██████████| 6/6 [00:03&lt;00:00,  1.89it/s]
+Epoch 56 Loss: 1.083246: 100%|██████████| 6/6 [00:02&lt;00:00,  2.12it/s]
+Epoch 57 Loss: 1.103495: 100%|██████████| 6/6 [00:02&lt;00:00,  2.47it/s]
+Epoch 58 Loss: 1.081064: 100%|██████████| 6/6 [00:02&lt;00:00,  2.38it/s]
+Epoch 59 Loss: 1.031706: 100%|██████████| 6/6 [00:02&lt;00:00,  2.14it/s]
+Epoch 60 Loss: 1.028626: 100%|██████████| 6/6 [00:02&lt;00:00,  2.26it/s]
+Epoch 61 Loss: 1.070291: 100%|██████████| 6/6 [00:02&lt;00:00,  2.40it/s]
+Epoch 62 Loss: 1.070380: 100%|██████████| 6/6 [00:02&lt;00:00,  2.25it/s]
+Epoch 63 Loss: 1.057747: 100%|██████████| 6/6 [00:03&lt;00:00,  1.96it/s]
+Epoch 64 Loss: 1.022432: 100%|██████████| 6/6 [00:02&lt;00:00,  2.37it/s]
+Epoch 65 Loss: 1.092833: 100%|██████████| 6/6 [00:02&lt;00:00,  2.26it/s]
+Epoch 66 Loss: 1.046667: 100%|██████████| 6/6 [00:02&lt;00:00,  2.01it/s]
+Epoch 67 Loss: 1.024409: 100%|██████████| 6/6 [00:03&lt;00:00,  1.95it/s]
+Epoch 68 Loss: 1.006745: 100%|██████████| 6/6 [00:02&lt;00:00,  2.12it/s]
+Epoch 69 Loss: 1.026753: 100%|██████████| 6/6 [00:03&lt;00:00,  1.99it/s]
+Epoch 70 Loss: 1.035914: 100%|██████████| 6/6 [00:03&lt;00:00,  1.78it/s]
+Epoch 71 Loss: 1.011550: 100%|██████████| 6/6 [00:03&lt;00:00,  1.76it/s]
+Epoch 72 Loss: 1.025698: 100%|██████████| 6/6 [00:02&lt;00:00,  2.32it/s]
+Epoch 73 Loss: 1.021778: 100%|██████████| 6/6 [00:02&lt;00:00,  2.44it/s]
+Epoch 74 Loss: 0.999083: 100%|██████████| 6/6 [00:02&lt;00:00,  2.38it/s]
+Epoch 75 Loss: 1.003671: 100%|██████████| 6/6 [00:02&lt;00:00,  2.02it/s]
+Epoch 76 Loss: 1.007998: 100%|██████████| 6/6 [00:02&lt;00:00,  2.34it/s]
+Epoch 77 Loss: 0.992967: 100%|██████████| 6/6 [00:02&lt;00:00,  2.45it/s]
+Epoch 78 Loss: 1.039574: 100%|██████████| 6/6 [00:02&lt;00:00,  2.33it/s]
+Epoch 79 Loss: 0.979768: 100%|██████████| 6/6 [00:03&lt;00:00,  1.85it/s]
+Epoch 80 Loss: 0.980897: 100%|██████████| 6/6 [00:02&lt;00:00,  2.22it/s]
+Epoch 81 Loss: 1.021148: 100%|██████████| 6/6 [00:02&lt;00:00,  2.36it/s]
+Epoch 82 Loss: 0.964973: 100%|██████████| 6/6 [00:02&lt;00:00,  2.26it/s]
+Epoch 83 Loss: 0.970942: 100%|██████████| 6/6 [00:03&lt;00:00,  1.83it/s]
+Epoch 84 Loss: 0.996262: 100%|██████████| 6/6 [00:03&lt;00:00,  1.74it/s]
+Epoch 85 Loss: 0.961435: 100%|██████████| 6/6 [00:02&lt;00:00,  2.04it/s]
+Epoch 86 Loss: 0.975354: 100%|██████████| 6/6 [00:02&lt;00:00,  2.07it/s]
+Epoch 87 Loss: 0.980454: 100%|██████████| 6/6 [00:02&lt;00:00,  2.06it/s]
+Epoch 88 Loss: 0.957371: 100%|██████████| 6/6 [00:02&lt;00:00,  2.04it/s]
+Epoch 89 Loss: 0.940112: 100%|██████████| 6/6 [00:02&lt;00:00,  2.39it/s]
+Epoch 90 Loss: 0.939432: 100%|██████████| 6/6 [00:02&lt;00:00,  2.41it/s]
+Epoch 91 Loss: 0.952867: 100%|██████████| 6/6 [00:02&lt;00:00,  2.38it/s]
+Epoch 92 Loss: 0.973232: 100%|██████████| 6/6 [00:02&lt;00:00,  2.08it/s]
+Epoch 93 Loss: 0.988913: 100%|██████████| 6/6 [00:02&lt;00:00,  2.53it/s]
+Epoch 94 Loss: 0.954114: 100%|██████████| 6/6 [00:02&lt;00:00,  2.44it/s]
+Epoch 95 Loss: 0.906431: 100%|██████████| 6/6 [00:02&lt;00:00,  2.29it/s]
+Epoch 96 Loss: 0.909996: 100%|██████████| 6/6 [00:03&lt;00:00,  1.94it/s]
+Epoch 97 Loss: 0.945528: 100%|██████████| 6/6 [00:02&lt;00:00,  2.18it/s]
+Epoch 98 Loss: 0.922009: 100%|██████████| 6/6 [00:02&lt;00:00,  2.39it/s]
+Epoch 99 Loss: 0.920070: 100%|██████████| 6/6 [00:02&lt;00:00,  2.21it/s]
+Epoch 100 Loss: 0.912859: 100%|██████████| 6/6 [00:03&lt;00:00,  1.72it/s]
+</pre></div></div>
+</div>
+</section>
+<section id="Load-the-saved-ensemble-model">
+<h3>Load the saved ensemble model<a class="headerlink" href="#Load-the-saved-ensemble-model" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ensemble_loaded</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:merlion.models.ensemble.base:When initializing an ensemble, you must either provide the dict `model_configs` (mapping each model&#39;s name to its config) when creating the `DetectorEnsembleConfig`, or provide a list of `models` to the constructor of `EnsembleBase`. Received both. Overriding `model_configs` with the configs belonging to `models`.
+</pre></div></div>
+</div>
+</section>
+<section id="Forecast-using-the-loaded-model">
+<h3>Forecast using the loaded model<a class="headerlink" href="#Forecast-using-the-loaded-model" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lookback_len</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">forecast_len</span><span class="o">=</span><span class="mi">3</span>
+
+<span class="n">sample_length</span> <span class="o">=</span> <span class="n">lookback_len</span> <span class="o">+</span> <span class="n">forecast_len</span>
+
+<span class="n">target_seq_index</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">end_idx</span> <span class="o">=</span> <span class="n">sample_length</span>
+
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="n">test_data</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">end_idx</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">end_idx</span><span class="p">]</span>
+
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">lookback_len</span><span class="p">:]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">lookback_len</span><span class="p">]</span>
+<span class="n">x_ts</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">start_idx</span><span class="o">+</span> <span class="n">lookback_len</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">lookback_len</span><span class="p">:,</span> <span class="n">target_seq_index</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;True output:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># perform single forecast</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Performing single forecast:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">forecast</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">time_stamps</span><span class="o">=</span><span class="n">timestamps</span><span class="p">,</span>
+                 <span class="n">time_series_prev</span><span class="o">=</span><span class="n">x_ts</span><span class="p">,</span> <span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Forecast</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Standard Error</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">se</span><span class="p">)</span>
+
+<span class="c1"># perform batch forecast (for simplicity, just feeding a list of single sample)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Performing batch forecast (notice the output is a list):</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">forecast</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">batch_forecast</span><span class="p">(</span><span class="n">time_stamps_list</span><span class="o">=</span><span class="p">[</span><span class="n">timestamps</span><span class="p">],</span>
+                 <span class="n">time_series_prev_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_ts</span><span class="p">],</span> <span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Forecasts</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Standard Errors</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">se</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True output:
+
+[803. 769. 751.]
+Performing single forecast:
+
+Forecast
+                              H1
+1677-10-28 00:00:00  810.339722
+1677-10-28 01:00:00  796.296448
+1677-10-28 02:00:00  760.550842
+Standard Error
+                          H1_err
+1677-10-28 00:00:00   42.765224
+1677-10-28 01:00:00  198.829971
+1677-10-28 02:00:00  350.278381
+
+
+Performing batch forecast (notice the output is a list):
+
+Forecasts
+ [                           H1_0
+1677-10-28 00:00:00  810.339722
+1677-10-28 01:00:00  796.296448
+1677-10-28 02:00:00  760.550842]
+Standard Errors
+ [                       H1_err_0
+1677-10-28 00:00:00   42.765224
+1677-10-28 01:00:00  198.829971
+1677-10-28 02:00:00  350.278381]
+</pre></div></div>
+</div>
+</section>
+<section id="Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model">
+<h3>Retrieve forecasts of individual experts along with their confidence from the loaded model<a class="headerlink" href="#Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># perform forecast at the beginning of the test_data timestamp of length 3 and lookback=20</span>
+<span class="n">lookback_len</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">forecast_len</span><span class="o">=</span><span class="mi">3</span>
+
+<span class="n">sample_length</span> <span class="o">=</span> <span class="n">lookback_len</span> <span class="o">+</span> <span class="n">forecast_len</span>
+
+<span class="n">target_seq_index</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">end_idx</span> <span class="o">=</span> <span class="n">sample_length</span>
+
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">univariates</span><span class="p">[</span><span class="n">test_data</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">end_idx</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">end_idx</span><span class="p">]</span>
+
+<span class="n">timestamps</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">lookback_len</span><span class="p">:]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">lookback_len</span><span class="p">]</span> <span class="c1"># shape (20,1)</span>
+<span class="n">x_ts</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span> <span class="n">start_idx</span><span class="o">+</span> <span class="n">lookback_len</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">lookback_len</span><span class="p">:,</span> <span class="n">target_seq_index</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;True output:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># perform single forecast</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getting individual expert forecast and standard deviation for single data (notice the array shape):</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">forecast</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">_forecast</span><span class="p">(</span><span class="n">time_stamps</span><span class="o">=</span><span class="n">timestamps</span><span class="p">,</span>
+                 <span class="n">time_series_prev</span><span class="o">=</span><span class="n">x_ts</span><span class="p">,</span> <span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Forecast (shape: </span><span class="si">{</span><span class="n">forecast</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Standard deviation (shape: </span><span class="si">{</span><span class="n">std</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span>
+
+<span class="c1"># perform batch forecast (for simplicity, just feeding a list of single sample)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Getting individual expert forecast and standard deviation for a batch of data (notice the array shape):</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">forecast</span><span class="p">,</span> <span class="n">std</span> <span class="o">=</span> <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">_batch_forecast</span><span class="p">(</span><span class="n">time_stamps_list</span><span class="o">=</span><span class="p">[</span><span class="n">timestamps</span><span class="p">],</span>
+                 <span class="n">time_series_prev_array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="c1"># shape (1,20,1)</span>
+                 <span class="n">time_series_prev_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_ts</span><span class="p">],</span> <span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Forecast (shape: </span><span class="si">{</span><span class="n">forecast</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Standard deviation (shape: </span><span class="si">{</span><span class="n">std</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">std</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True output:
+
+[803. 769. 751.]
+Getting individual expert forecast and standard deviation for single data (notice the array shape):
+
+Forecast (shape: (3, 3))
+ [[828.93043244 796.29646378 760.5508621 ]
+ [812.10700752 760.22152836 709.16665671]
+ [810.33973458 757.56872591 700.9503937 ]]
+Standard deviation (shape: (3, 3))
+ [[0.361902   0.47081903 0.7306497 ]
+ [0.26711744 0.3186435  0.14048512]
+ [0.3709806  0.21053748 0.12886517]]
+
+
+Getting individual expert forecast and standard deviation for a batch of data (notice the array shape):
+
+Forecast (shape: (1, 3, 3))
+ [[[828.93043244 796.29646378 760.5508621 ]
+  [812.10700752 760.22152836 709.16665671]
+  [810.33973458 757.56872591 700.9503937 ]]]
+Standard deviation (shape: (1, 3, 3))
+ [[[0.361902   0.47081903 0.7306497 ]
+  [0.26711744 0.3186435  0.14048512]
+  [0.3709806  0.21053748 0.12886517]]]
+</pre></div></div>
+</div>
+</section>
+<section id="Evaluate-MoE">
+<h3>Evaluate MoE<a class="headerlink" href="#Evaluate-MoE" title="Permalink to this headline"></a></h3>
+<p>The code below shows how to evaluate MoE.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+
+<span></span><span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span>
+<span class="c1"># if expert_idx=None, MoE uses all the experts provided and uses the &#39;mode&#39; strategy specified below to forecast</span>
+<span class="c1"># if value is int (E.g. 0), MoE only uses the external expert at the corresponding index of `models` to make forecasts</span>
+<span class="n">mode</span><span class="o">=</span><span class="s1">&#39;max&#39;</span> <span class="c1"># either mean or max. Max picks the expert with the highest confidence; mean computes the weighted average.</span>
+<span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># set True if GPU available for faster speed</span>
+<span class="n">use_batch_forecast</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># set True for higher speed</span>
+
+<span class="n">y_pred_list</span><span class="p">,</span> <span class="n">std_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">,</span> <span class="n">sMAPE_conf</span><span class="p">,</span> <span class="n">sMAPE_not_conf</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">overall_sMAPE</span> <span class="o">=</span>\
+                <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">expert_idx</span><span class="o">=</span><span class="n">expert_idx</span><span class="p">,</span>\
+                                         <span class="n">use_gpu</span><span class="o">=</span><span class="n">use_gpu</span><span class="p">,</span> <span class="n">use_batch_forecast</span><span class="o">=</span><span class="n">use_batch_forecast</span><span class="p">,</span> <span class="n">confidence_thres</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">out_idx</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># plot this idx of all the steps forecasted by MoE</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_pred_list</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_pred_list</span><span class="p">[:</span><span class="mi">100</span><span class="p">,</span> <span class="n">out_idx</span><span class="p">],</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># plotting 1st 100 for clarity</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_list</span><span class="p">[:</span><span class="mi">100</span><span class="p">,</span> <span class="n">out_idx</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># plt.fill_between(range(y_pred_list[:100, out_idx].shape[0]), y_pred_list[:100, out_idx]-std_list[:100, out_idx],\</span>
+<span class="c1">#                  y_pred_list[:100, out_idx]+std_list[:100, out_idx]) # standard deviation error band</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on confident samples: </span><span class="si">{</span><span class="n">sMAPE_conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on not confident samples: </span><span class="si">{</span><span class="n">sMAPE_not_conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Percentage of samples on which MoE was confident: </span><span class="si">{</span><span class="n">recall</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">%  (use a different confidence_thres to change this)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on all samples: </span><span class="si">{</span><span class="n">overall_sMAPE</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+  0%|          | 0/1 [00:00&lt;?, ?it/s]
+  0%|          | 0/1 [00:00&lt;?, ?it/s]
+
+sMAPE_conf: 2.184 sMAPE_not_conf: 0.000 recall: 100.000% | Plain sMAPE 2.184:   0%|          | 0/1 [00:01&lt;?, ?it/s]
+sMAPE_conf: 2.184 sMAPE_not_conf: 0.000 recall: 100.000% | Plain sMAPE 2.184: 100%|██████████| 1/1 [00:01&lt;00:00,  1.71s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+torch.Size([25, 3])
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_18_2.png" src="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_18_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+sMAPE on confident samples: 2.18
+sMAPE on not confident samples: 0.00
+Percentage of samples on which MoE was confident: 100.00%  (use a different confidence_thres to change this)
+sMAPE on all samples: 2.18
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train">
+<h2>Create MoE model containing free parameters (no external experts) and train<a class="headerlink" href="#Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train" title="Permalink to this headline"></a></h2>
+<section id="id1">
+<h3>Specify hyper-parameters<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># save directory for ensemble state. Replace it with your own choice.</span>
+<span class="n">save_dir</span> <span class="o">=</span> <span class="s1">&#39;models/moe2&#39;</span>
+
+<span class="c1">###</span>
+<span class="n">nfree_experts</span><span class="o">=</span> <span class="mi">3000</span> <span class="c1"># &lt;- number of free experts</span>
+<span class="n">lookback_len</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">max_forecast_steps</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">target_seq_index</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span>
+<span class="c1">###</span>
+
+
+<span class="c1">## Pytorch network hyper-params. These are the also the hyper-params that are used in case moe_model=None is passed to MoE_ForecasterEnsemble.</span>
+<span class="n">hidden_dim</span><span class="o">=</span><span class="mi">256</span>
+<span class="n">dim_head</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">mlp_dim</span><span class="o">=</span><span class="mi">256</span>
+<span class="n">dim_dropout</span><span class="o">=</span><span class="mf">0.</span> <span class="c1"># if data is multi-dimensionsal, this can be set to a non-zero value to allow model to handle missing dimensions during test time</span>
+<span class="n">time_step_dropout</span><span class="o">=</span><span class="mi">0</span>
+<span class="c1">## Pytorch network hyper-params</span>
+
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Create-MoE-ensembler-and-train">
+<h3>Create MoE ensembler and train<a class="headerlink" href="#Create-MoE-ensembler-and-train" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config_ensemble</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsembleConfig</span><span class="p">(</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">nfree_experts</span><span class="o">=</span><span class="n">nfree_experts</span><span class="p">,</span> <span class="n">epoch_max</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">lookback_len</span><span class="o">=</span><span class="n">lookback_len</span><span class="p">,</span> <span class="n">max_forecast_steps</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span>
+    <span class="n">target_seq_index</span><span class="o">=</span><span class="n">target_seq_index</span><span class="p">,</span> <span class="n">use_gpu</span><span class="o">=</span><span class="n">use_gpu</span><span class="p">,</span>
+    <span class="n">transform</span><span class="o">=</span><span class="n">TemporalResample</span><span class="p">())</span>
+
+<span class="n">train_config_ensemble</span> <span class="o">=</span> <span class="n">EnsembleTrainConfig</span><span class="p">(</span><span class="n">valid_frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># Define expert models</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># &lt;- no external experts provided</span>
+<span class="n">nexperts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+
+<span class="c1"># instantiate deep network for MoE</span>
+<span class="n">moe_model</span> <span class="o">=</span> <span class="n">TransformerModel</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">names</span><span class="p">),</span> <span class="n">lookback_len</span><span class="o">=</span><span class="n">lookback_len</span><span class="p">,</span> <span class="n">nexperts</span><span class="o">=</span><span class="n">nexperts</span><span class="p">,</span>\
+                    <span class="n">output_dim</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span> <span class="n">nfree_experts</span><span class="o">=</span><span class="n">nfree_experts</span><span class="p">,</span>\
+                    <span class="n">hid_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dim_head</span> <span class="o">=</span> <span class="n">dim_head</span><span class="p">,</span> <span class="n">mlp_dim</span><span class="o">=</span><span class="n">mlp_dim</span><span class="p">,</span>\
+                     <span class="n">pool</span><span class="o">=</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="n">dim_dropout</span><span class="o">=</span><span class="n">dim_dropout</span><span class="p">,</span>\
+                    <span class="n">time_step_dropout</span><span class="o">=</span><span class="n">time_step_dropout</span><span class="p">)</span>
+<span class="n">moe_model</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># use me if you want to see the default model in use</span>
+
+<span class="c1"># create MoE forecaster model</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsemble</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config_ensemble</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span> <span class="n">models</span><span class="p">,</span> <span class="n">moe_model</span><span class="o">=</span><span class="n">moe_model</span><span class="p">)</span>
+
+<span class="c1"># train MoE</span>
+<span class="n">loss_list</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_config</span> <span class="o">=</span> <span class="n">train_config_ensemble</span><span class="p">)</span>
+
+<span class="n">ensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Epoch 1 Loss: 8.253956: 100%|██████████| 11/11 [00:03&lt;00:00,  3.00it/s]
+Epoch 2 Loss: 8.215341: 100%|██████████| 11/11 [00:03&lt;00:00,  3.09it/s]
+Epoch 3 Loss: 8.140997: 100%|██████████| 11/11 [00:03&lt;00:00,  3.37it/s]
+Epoch 4 Loss: 8.030143: 100%|██████████| 11/11 [00:02&lt;00:00,  3.70it/s]
+Epoch 5 Loss: 7.880345: 100%|██████████| 11/11 [00:03&lt;00:00,  3.66it/s]
+Epoch 6 Loss: 7.679686: 100%|██████████| 11/11 [00:03&lt;00:00,  3.23it/s]
+Epoch 7 Loss: 7.431627: 100%|██████████| 11/11 [00:03&lt;00:00,  3.65it/s]
+Epoch 8 Loss: 7.121155: 100%|██████████| 11/11 [00:03&lt;00:00,  3.66it/s]
+Epoch 9 Loss: 6.788598: 100%|██████████| 11/11 [00:03&lt;00:00,  3.32it/s]
+Epoch 10 Loss: 6.469567: 100%|██████████| 11/11 [00:03&lt;00:00,  2.98it/s]
+Epoch 11 Loss: 6.230416: 100%|██████████| 11/11 [00:03&lt;00:00,  3.48it/s]
+Epoch 12 Loss: 6.048095: 100%|██████████| 11/11 [00:03&lt;00:00,  3.60it/s]
+Epoch 13 Loss: 5.915649: 100%|██████████| 11/11 [00:03&lt;00:00,  2.79it/s]
+Epoch 14 Loss: 5.811184: 100%|██████████| 11/11 [00:04&lt;00:00,  2.69it/s]
+Epoch 15 Loss: 5.744193: 100%|██████████| 11/11 [00:03&lt;00:00,  3.31it/s]
+Epoch 16 Loss: 5.686575: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 17 Loss: 5.657169: 100%|██████████| 11/11 [00:03&lt;00:00,  3.31it/s]
+Epoch 18 Loss: 5.635586: 100%|██████████| 11/11 [00:03&lt;00:00,  3.36it/s]
+Epoch 19 Loss: 5.627381: 100%|██████████| 11/11 [00:03&lt;00:00,  3.62it/s]
+Epoch 20 Loss: 5.592227: 100%|██████████| 11/11 [00:03&lt;00:00,  3.46it/s]
+Epoch 21 Loss: 5.565175: 100%|██████████| 11/11 [00:03&lt;00:00,  3.18it/s]
+Epoch 22 Loss: 5.561776: 100%|██████████| 11/11 [00:03&lt;00:00,  3.66it/s]
+Epoch 23 Loss: 5.541681: 100%|██████████| 11/11 [00:03&lt;00:00,  3.61it/s]
+Epoch 24 Loss: 5.545103: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 25 Loss: 5.522188: 100%|██████████| 11/11 [00:03&lt;00:00,  3.21it/s]
+Epoch 26 Loss: 5.508581: 100%|██████████| 11/11 [00:03&lt;00:00,  3.52it/s]
+Epoch 27 Loss: 5.489652: 100%|██████████| 11/11 [00:03&lt;00:00,  3.46it/s]
+Epoch 28 Loss: 5.476248: 100%|██████████| 11/11 [00:04&lt;00:00,  2.51it/s]
+Epoch 29 Loss: 5.466399: 100%|██████████| 11/11 [00:03&lt;00:00,  3.08it/s]
+Epoch 30 Loss: 5.475472: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 31 Loss: 5.461387: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 32 Loss: 5.433480: 100%|██████████| 11/11 [00:03&lt;00:00,  3.43it/s]
+Epoch 33 Loss: 5.417164: 100%|██████████| 11/11 [00:03&lt;00:00,  3.66it/s]
+Epoch 34 Loss: 5.391122: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 35 Loss: 5.355259: 100%|██████████| 11/11 [00:03&lt;00:00,  3.24it/s]
+Epoch 36 Loss: 5.324664: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 37 Loss: 5.289907: 100%|██████████| 11/11 [00:03&lt;00:00,  3.53it/s]
+Epoch 38 Loss: 5.252770: 100%|██████████| 11/11 [00:03&lt;00:00,  3.27it/s]
+Epoch 39 Loss: 5.224870: 100%|██████████| 11/11 [00:03&lt;00:00,  3.06it/s]
+Epoch 40 Loss: 5.189947: 100%|██████████| 11/11 [00:03&lt;00:00,  3.58it/s]
+Epoch 41 Loss: 5.141784: 100%|██████████| 11/11 [00:03&lt;00:00,  3.42it/s]
+Epoch 42 Loss: 5.089564: 100%|██████████| 11/11 [00:03&lt;00:00,  2.83it/s]
+Epoch 43 Loss: 5.053859: 100%|██████████| 11/11 [00:03&lt;00:00,  2.92it/s]
+Epoch 44 Loss: 5.017187: 100%|██████████| 11/11 [00:03&lt;00:00,  3.16it/s]
+Epoch 45 Loss: 4.980298: 100%|██████████| 11/11 [00:03&lt;00:00,  2.88it/s]
+Epoch 46 Loss: 4.946596: 100%|██████████| 11/11 [00:03&lt;00:00,  2.99it/s]
+Epoch 47 Loss: 4.913864: 100%|██████████| 11/11 [00:03&lt;00:00,  3.65it/s]
+Epoch 48 Loss: 4.886967: 100%|██████████| 11/11 [00:03&lt;00:00,  3.64it/s]
+Epoch 49 Loss: 4.860845: 100%|██████████| 11/11 [00:03&lt;00:00,  3.38it/s]
+Epoch 50 Loss: 4.831104: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 51 Loss: 4.816362: 100%|██████████| 11/11 [00:03&lt;00:00,  3.58it/s]
+Epoch 52 Loss: 4.779174: 100%|██████████| 11/11 [00:03&lt;00:00,  3.39it/s]
+Epoch 53 Loss: 4.736116: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 54 Loss: 4.717974: 100%|██████████| 11/11 [00:03&lt;00:00,  3.40it/s]
+Epoch 55 Loss: 4.690528: 100%|██████████| 11/11 [00:03&lt;00:00,  3.47it/s]
+Epoch 56 Loss: 4.657373: 100%|██████████| 11/11 [00:04&lt;00:00,  2.68it/s]
+Epoch 57 Loss: 4.630430: 100%|██████████| 11/11 [00:04&lt;00:00,  2.64it/s]
+Epoch 58 Loss: 4.626685: 100%|██████████| 11/11 [00:03&lt;00:00,  3.33it/s]
+Epoch 59 Loss: 4.576031: 100%|██████████| 11/11 [00:03&lt;00:00,  3.12it/s]
+Epoch 60 Loss: 4.536126: 100%|██████████| 11/11 [00:03&lt;00:00,  3.28it/s]
+Epoch 61 Loss: 4.522658: 100%|██████████| 11/11 [00:03&lt;00:00,  3.41it/s]
+Epoch 62 Loss: 4.482119: 100%|██████████| 11/11 [00:02&lt;00:00,  3.70it/s]
+Epoch 63 Loss: 4.440992: 100%|██████████| 11/11 [00:03&lt;00:00,  3.66it/s]
+Epoch 64 Loss: 4.420945: 100%|██████████| 11/11 [00:03&lt;00:00,  3.26it/s]
+Epoch 65 Loss: 4.380464: 100%|██████████| 11/11 [00:03&lt;00:00,  3.59it/s]
+Epoch 66 Loss: 4.354569: 100%|██████████| 11/11 [00:03&lt;00:00,  3.41it/s]
+Epoch 67 Loss: 4.330108: 100%|██████████| 11/11 [00:03&lt;00:00,  3.27it/s]
+Epoch 68 Loss: 4.302790: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 69 Loss: 4.276388: 100%|██████████| 11/11 [00:03&lt;00:00,  3.63it/s]
+Epoch 70 Loss: 4.252587: 100%|██████████| 11/11 [00:03&lt;00:00,  3.08it/s]
+Epoch 71 Loss: 4.220399: 100%|██████████| 11/11 [00:03&lt;00:00,  2.80it/s]
+Epoch 72 Loss: 4.197742: 100%|██████████| 11/11 [00:03&lt;00:00,  2.84it/s]
+Epoch 73 Loss: 4.184703: 100%|██████████| 11/11 [00:03&lt;00:00,  3.26it/s]
+Epoch 74 Loss: 4.177047: 100%|██████████| 11/11 [00:03&lt;00:00,  3.37it/s]
+Epoch 75 Loss: 4.132162: 100%|██████████| 11/11 [00:03&lt;00:00,  3.12it/s]
+Epoch 76 Loss: 4.098515: 100%|██████████| 11/11 [00:03&lt;00:00,  3.65it/s]
+Epoch 77 Loss: 4.085912: 100%|██████████| 11/11 [00:03&lt;00:00,  3.63it/s]
+Epoch 78 Loss: 4.072778: 100%|██████████| 11/11 [00:03&lt;00:00,  3.48it/s]
+Epoch 79 Loss: 4.026296: 100%|██████████| 11/11 [00:03&lt;00:00,  3.13it/s]
+Epoch 80 Loss: 4.000065: 100%|██████████| 11/11 [00:03&lt;00:00,  3.65it/s]
+Epoch 81 Loss: 3.971918: 100%|██████████| 11/11 [00:03&lt;00:00,  3.48it/s]
+Epoch 82 Loss: 3.954153: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 83 Loss: 3.924814: 100%|██████████| 11/11 [00:03&lt;00:00,  3.21it/s]
+Epoch 84 Loss: 3.895262: 100%|██████████| 11/11 [00:03&lt;00:00,  3.16it/s]
+Epoch 85 Loss: 3.874157: 100%|██████████| 11/11 [00:03&lt;00:00,  3.06it/s]
+Epoch 86 Loss: 3.862910: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+Epoch 87 Loss: 3.845997: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 88 Loss: 3.811604: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 89 Loss: 3.794181: 100%|██████████| 11/11 [00:03&lt;00:00,  3.51it/s]
+Epoch 90 Loss: 3.760030: 100%|██████████| 11/11 [00:03&lt;00:00,  3.47it/s]
+Epoch 91 Loss: 3.738671: 100%|██████████| 11/11 [00:03&lt;00:00,  3.12it/s]
+Epoch 92 Loss: 3.720268: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 93 Loss: 3.713584: 100%|██████████| 11/11 [00:02&lt;00:00,  3.70it/s]
+Epoch 94 Loss: 3.671633: 100%|██████████| 11/11 [00:03&lt;00:00,  3.62it/s]
+Epoch 95 Loss: 3.651652: 100%|██████████| 11/11 [00:03&lt;00:00,  3.31it/s]
+Epoch 96 Loss: 3.639432: 100%|██████████| 11/11 [00:03&lt;00:00,  3.07it/s]
+Epoch 97 Loss: 3.607364: 100%|██████████| 11/11 [00:03&lt;00:00,  3.26it/s]
+Epoch 98 Loss: 3.583107: 100%|██████████| 11/11 [00:03&lt;00:00,  3.33it/s]
+Epoch 99 Loss: 3.562718: 100%|██████████| 11/11 [00:03&lt;00:00,  3.03it/s]
+Epoch 100 Loss: 3.548420: 100%|██████████| 11/11 [00:03&lt;00:00,  2.93it/s]
+Epoch 101 Loss: 3.531171: 100%|██████████| 11/11 [00:04&lt;00:00,  2.66it/s]
+Epoch 102 Loss: 3.509029: 100%|██████████| 11/11 [00:03&lt;00:00,  3.47it/s]
+Epoch 103 Loss: 3.485391: 100%|██████████| 11/11 [00:03&lt;00:00,  3.54it/s]
+Epoch 104 Loss: 3.450888: 100%|██████████| 11/11 [00:03&lt;00:00,  3.43it/s]
+Epoch 105 Loss: 3.424491: 100%|██████████| 11/11 [00:03&lt;00:00,  3.10it/s]
+Epoch 106 Loss: 3.403693: 100%|██████████| 11/11 [00:02&lt;00:00,  3.74it/s]
+Epoch 107 Loss: 3.390665: 100%|██████████| 11/11 [00:03&lt;00:00,  3.58it/s]
+Epoch 108 Loss: 3.359253: 100%|██████████| 11/11 [00:03&lt;00:00,  3.43it/s]
+Epoch 109 Loss: 3.345198: 100%|██████████| 11/11 [00:03&lt;00:00,  2.97it/s]
+Epoch 110 Loss: 3.349600: 100%|██████████| 11/11 [00:03&lt;00:00,  3.52it/s]
+Epoch 111 Loss: 3.329763: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 112 Loss: 3.303129: 100%|██████████| 11/11 [00:03&lt;00:00,  3.32it/s]
+Epoch 113 Loss: 3.266704: 100%|██████████| 11/11 [00:03&lt;00:00,  2.82it/s]
+Epoch 114 Loss: 3.240781: 100%|██████████| 11/11 [00:03&lt;00:00,  2.94it/s]
+Epoch 115 Loss: 3.215163: 100%|██████████| 11/11 [00:03&lt;00:00,  3.25it/s]
+Epoch 116 Loss: 3.198615: 100%|██████████| 11/11 [00:03&lt;00:00,  2.92it/s]
+Epoch 117 Loss: 3.169775: 100%|██████████| 11/11 [00:03&lt;00:00,  3.29it/s]
+Epoch 118 Loss: 3.152784: 100%|██████████| 11/11 [00:03&lt;00:00,  3.47it/s]
+Epoch 119 Loss: 3.128009: 100%|██████████| 11/11 [00:03&lt;00:00,  3.60it/s]
+Epoch 120 Loss: 3.106502: 100%|██████████| 11/11 [00:03&lt;00:00,  3.67it/s]
+Epoch 121 Loss: 3.093420: 100%|██████████| 11/11 [00:03&lt;00:00,  3.51it/s]
+Epoch 122 Loss: 3.078810: 100%|██████████| 11/11 [00:03&lt;00:00,  3.31it/s]
+Epoch 123 Loss: 3.050844: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 124 Loss: 3.052847: 100%|██████████| 11/11 [00:03&lt;00:00,  3.52it/s]
+Epoch 125 Loss: 3.025279: 100%|██████████| 11/11 [00:03&lt;00:00,  3.37it/s]
+Epoch 126 Loss: 3.009476: 100%|██████████| 11/11 [00:03&lt;00:00,  3.38it/s]
+Epoch 127 Loss: 2.985609: 100%|██████████| 11/11 [00:04&lt;00:00,  2.57it/s]
+Epoch 128 Loss: 2.966175: 100%|██████████| 11/11 [00:03&lt;00:00,  2.95it/s]
+Epoch 129 Loss: 2.948951: 100%|██████████| 11/11 [00:03&lt;00:00,  3.23it/s]
+Epoch 130 Loss: 2.939453: 100%|██████████| 11/11 [00:03&lt;00:00,  3.16it/s]
+Epoch 131 Loss: 2.932430: 100%|██████████| 11/11 [00:03&lt;00:00,  3.57it/s]
+Epoch 132 Loss: 2.893917: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 133 Loss: 2.855756: 100%|██████████| 11/11 [00:03&lt;00:00,  3.59it/s]
+Epoch 134 Loss: 2.839368: 100%|██████████| 11/11 [00:02&lt;00:00,  3.70it/s]
+Epoch 135 Loss: 2.817158: 100%|██████████| 11/11 [00:03&lt;00:00,  3.30it/s]
+Epoch 136 Loss: 2.791486: 100%|██████████| 11/11 [00:03&lt;00:00,  3.09it/s]
+Epoch 137 Loss: 2.780610: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 138 Loss: 2.761558: 100%|██████████| 11/11 [00:03&lt;00:00,  3.42it/s]
+Epoch 139 Loss: 2.750291: 100%|██████████| 11/11 [00:03&lt;00:00,  3.31it/s]
+Epoch 140 Loss: 2.730247: 100%|██████████| 11/11 [00:03&lt;00:00,  3.28it/s]
+Epoch 141 Loss: 2.698439: 100%|██████████| 11/11 [00:04&lt;00:00,  2.67it/s]
+Epoch 142 Loss: 2.685364: 100%|██████████| 11/11 [00:03&lt;00:00,  3.15it/s]
+Epoch 143 Loss: 2.662411: 100%|██████████| 11/11 [00:03&lt;00:00,  2.98it/s]
+Epoch 144 Loss: 2.658126: 100%|██████████| 11/11 [00:03&lt;00:00,  2.92it/s]
+Epoch 145 Loss: 2.632239: 100%|██████████| 11/11 [00:03&lt;00:00,  3.14it/s]
+Epoch 146 Loss: 2.610601: 100%|██████████| 11/11 [00:03&lt;00:00,  3.34it/s]
+Epoch 147 Loss: 2.583837: 100%|██████████| 11/11 [00:03&lt;00:00,  3.65it/s]
+Epoch 148 Loss: 2.556195: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 149 Loss: 2.547484: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 150 Loss: 2.525524: 100%|██████████| 11/11 [00:02&lt;00:00,  3.67it/s]
+Epoch 151 Loss: 2.514556: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 152 Loss: 2.501829: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 153 Loss: 2.478203: 100%|██████████| 11/11 [00:03&lt;00:00,  3.21it/s]
+Epoch 154 Loss: 2.457710: 100%|██████████| 11/11 [00:03&lt;00:00,  3.10it/s]
+Epoch 155 Loss: 2.436375: 100%|██████████| 11/11 [00:03&lt;00:00,  3.06it/s]
+Epoch 156 Loss: 2.412483: 100%|██████████| 11/11 [00:03&lt;00:00,  2.77it/s]
+Epoch 157 Loss: 2.394380: 100%|██████████| 11/11 [00:03&lt;00:00,  3.07it/s]
+Epoch 158 Loss: 2.380202: 100%|██████████| 11/11 [00:03&lt;00:00,  3.58it/s]
+Epoch 159 Loss: 2.355152: 100%|██████████| 11/11 [00:03&lt;00:00,  3.50it/s]
+Epoch 160 Loss: 2.347697: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 161 Loss: 2.345931: 100%|██████████| 11/11 [00:03&lt;00:00,  3.60it/s]
+Epoch 162 Loss: 2.296478: 100%|██████████| 11/11 [00:03&lt;00:00,  3.64it/s]
+Epoch 163 Loss: 2.282725: 100%|██████████| 11/11 [00:03&lt;00:00,  3.58it/s]
+Epoch 164 Loss: 2.249418: 100%|██████████| 11/11 [00:03&lt;00:00,  3.25it/s]
+Epoch 165 Loss: 2.241911: 100%|██████████| 11/11 [00:03&lt;00:00,  3.60it/s]
+Epoch 166 Loss: 2.215718: 100%|██████████| 11/11 [00:03&lt;00:00,  3.45it/s]
+Epoch 167 Loss: 2.194424: 100%|██████████| 11/11 [00:03&lt;00:00,  3.08it/s]
+Epoch 168 Loss: 2.184618: 100%|██████████| 11/11 [00:03&lt;00:00,  3.13it/s]
+Epoch 169 Loss: 2.156022: 100%|██████████| 11/11 [00:03&lt;00:00,  3.27it/s]
+Epoch 170 Loss: 2.152164: 100%|██████████| 11/11 [00:03&lt;00:00,  3.05it/s]
+Epoch 171 Loss: 2.128624: 100%|██████████| 11/11 [00:03&lt;00:00,  2.82it/s]
+Epoch 172 Loss: 2.109892: 100%|██████████| 11/11 [00:03&lt;00:00,  2.82it/s]
+Epoch 173 Loss: 2.137191: 100%|██████████| 11/11 [00:02&lt;00:00,  3.74it/s]
+Epoch 174 Loss: 2.118212: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 175 Loss: 2.092953: 100%|██████████| 11/11 [00:03&lt;00:00,  3.12it/s]
+Epoch 176 Loss: 2.065081: 100%|██████████| 11/11 [00:03&lt;00:00,  3.61it/s]
+Epoch 177 Loss: 2.064701: 100%|██████████| 11/11 [00:02&lt;00:00,  3.69it/s]
+Epoch 178 Loss: 2.061531: 100%|██████████| 11/11 [00:03&lt;00:00,  3.42it/s]
+Epoch 179 Loss: 2.041025: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 180 Loss: 1.999497: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 181 Loss: 1.953928: 100%|██████████| 11/11 [00:03&lt;00:00,  3.42it/s]
+Epoch 182 Loss: 1.929946: 100%|██████████| 11/11 [00:03&lt;00:00,  2.86it/s]
+Epoch 183 Loss: 1.923069: 100%|██████████| 11/11 [00:03&lt;00:00,  2.93it/s]
+Epoch 184 Loss: 1.905399: 100%|██████████| 11/11 [00:03&lt;00:00,  3.23it/s]
+Epoch 185 Loss: 1.892242: 100%|██████████| 11/11 [00:03&lt;00:00,  3.06it/s]
+Epoch 186 Loss: 1.869357: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+Epoch 187 Loss: 1.840604: 100%|██████████| 11/11 [00:03&lt;00:00,  3.59it/s]
+Epoch 188 Loss: 1.837614: 100%|██████████| 11/11 [00:02&lt;00:00,  3.68it/s]
+Epoch 189 Loss: 1.816457: 100%|██████████| 11/11 [00:03&lt;00:00,  3.57it/s]
+Epoch 190 Loss: 1.786459: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 191 Loss: 1.776885: 100%|██████████| 11/11 [00:02&lt;00:00,  3.79it/s]
+Epoch 192 Loss: 1.766457: 100%|██████████| 11/11 [00:03&lt;00:00,  3.61it/s]
+Epoch 193 Loss: 1.742621: 100%|██████████| 11/11 [00:03&lt;00:00,  3.39it/s]
+Epoch 194 Loss: 1.723335: 100%|██████████| 11/11 [00:03&lt;00:00,  2.79it/s]
+Epoch 195 Loss: 1.708375: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 196 Loss: 1.692905: 100%|██████████| 11/11 [00:03&lt;00:00,  3.27it/s]
+Epoch 197 Loss: 1.694218: 100%|██████████| 11/11 [00:03&lt;00:00,  2.89it/s]
+Epoch 198 Loss: 1.677686: 100%|██████████| 11/11 [00:03&lt;00:00,  2.96it/s]
+Epoch 199 Loss: 1.644678: 100%|██████████| 11/11 [00:03&lt;00:00,  3.09it/s]
+Epoch 200 Loss: 1.632020: 100%|██████████| 11/11 [00:03&lt;00:00,  3.16it/s]
+Epoch 201 Loss: 1.604089: 100%|██████████| 11/11 [00:03&lt;00:00,  3.53it/s]
+Epoch 202 Loss: 1.597124: 100%|██████████| 11/11 [00:03&lt;00:00,  3.08it/s]
+Epoch 203 Loss: 1.580226: 100%|██████████| 11/11 [00:02&lt;00:00,  3.74it/s]
+Epoch 204 Loss: 1.577800: 100%|██████████| 11/11 [00:03&lt;00:00,  3.62it/s]
+Epoch 205 Loss: 1.556550: 100%|██████████| 11/11 [00:03&lt;00:00,  3.33it/s]
+Epoch 206 Loss: 1.531670: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 207 Loss: 1.524184: 100%|██████████| 11/11 [00:03&lt;00:00,  3.55it/s]
+Epoch 208 Loss: 1.504326: 100%|██████████| 11/11 [00:03&lt;00:00,  3.43it/s]
+Epoch 209 Loss: 1.495385: 100%|██████████| 11/11 [00:03&lt;00:00,  3.06it/s]
+Epoch 210 Loss: 1.477028: 100%|██████████| 11/11 [00:03&lt;00:00,  2.92it/s]
+Epoch 211 Loss: 1.466456: 100%|██████████| 11/11 [00:03&lt;00:00,  3.16it/s]
+Epoch 212 Loss: 1.437730: 100%|██████████| 11/11 [00:03&lt;00:00,  2.97it/s]
+Epoch 213 Loss: 1.439750: 100%|██████████| 11/11 [00:04&lt;00:00,  2.70it/s]
+Epoch 214 Loss: 1.427772: 100%|██████████| 11/11 [00:03&lt;00:00,  3.19it/s]
+Epoch 215 Loss: 1.417080: 100%|██████████| 11/11 [00:03&lt;00:00,  3.54it/s]
+Epoch 216 Loss: 1.403871: 100%|██████████| 11/11 [00:03&lt;00:00,  3.40it/s]
+Epoch 217 Loss: 1.374399: 100%|██████████| 11/11 [00:03&lt;00:00,  3.29it/s]
+Epoch 218 Loss: 1.362701: 100%|██████████| 11/11 [00:02&lt;00:00,  3.83it/s]
+Epoch 219 Loss: 1.348216: 100%|██████████| 11/11 [00:02&lt;00:00,  3.76it/s]
+Epoch 220 Loss: 1.337092: 100%|██████████| 11/11 [00:03&lt;00:00,  3.51it/s]
+Epoch 221 Loss: 1.331288: 100%|██████████| 11/11 [00:03&lt;00:00,  3.04it/s]
+Epoch 222 Loss: 1.322314: 100%|██████████| 11/11 [00:03&lt;00:00,  3.54it/s]
+Epoch 223 Loss: 1.303005: 100%|██████████| 11/11 [00:03&lt;00:00,  3.46it/s]
+Epoch 224 Loss: 1.308330: 100%|██████████| 11/11 [00:03&lt;00:00,  2.86it/s]
+Epoch 225 Loss: 1.307320: 100%|██████████| 11/11 [00:05&lt;00:00,  2.17it/s]
+Epoch 226 Loss: 1.259610: 100%|██████████| 11/11 [00:04&lt;00:00,  2.59it/s]
+Epoch 227 Loss: 1.247879: 100%|██████████| 11/11 [00:04&lt;00:00,  2.44it/s]
+Epoch 228 Loss: 1.232500: 100%|██████████| 11/11 [00:03&lt;00:00,  2.84it/s]
+Epoch 229 Loss: 1.223805: 100%|██████████| 11/11 [00:04&lt;00:00,  2.71it/s]
+Epoch 230 Loss: 1.210760: 100%|██████████| 11/11 [00:03&lt;00:00,  3.23it/s]
+Epoch 231 Loss: 1.193618: 100%|██████████| 11/11 [00:03&lt;00:00,  3.09it/s]
+Epoch 232 Loss: 1.186537: 100%|██████████| 11/11 [00:03&lt;00:00,  3.09it/s]
+Epoch 233 Loss: 1.159970: 100%|██████████| 11/11 [00:03&lt;00:00,  2.82it/s]
+Epoch 234 Loss: 1.156743: 100%|██████████| 11/11 [00:03&lt;00:00,  3.41it/s]
+Epoch 235 Loss: 1.146074: 100%|██████████| 11/11 [00:03&lt;00:00,  2.96it/s]
+Epoch 236 Loss: 1.151413: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 237 Loss: 1.131100: 100%|██████████| 11/11 [00:03&lt;00:00,  3.30it/s]
+Epoch 238 Loss: 1.122501: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 239 Loss: 1.099850: 100%|██████████| 11/11 [00:03&lt;00:00,  2.81it/s]
+Epoch 240 Loss: 1.086024: 100%|██████████| 11/11 [00:04&lt;00:00,  2.57it/s]
+Epoch 241 Loss: 1.072572: 100%|██████████| 11/11 [00:03&lt;00:00,  2.93it/s]
+Epoch 242 Loss: 1.068453: 100%|██████████| 11/11 [00:03&lt;00:00,  3.37it/s]
+Epoch 243 Loss: 1.044812: 100%|██████████| 11/11 [00:03&lt;00:00,  3.52it/s]
+Epoch 244 Loss: 1.030824: 100%|██████████| 11/11 [00:03&lt;00:00,  3.23it/s]
+Epoch 245 Loss: 1.019708: 100%|██████████| 11/11 [00:03&lt;00:00,  3.34it/s]
+Epoch 246 Loss: 1.011575: 100%|██████████| 11/11 [00:03&lt;00:00,  3.59it/s]
+Epoch 247 Loss: 0.990726: 100%|██████████| 11/11 [00:03&lt;00:00,  3.46it/s]
+Epoch 248 Loss: 0.986041: 100%|██████████| 11/11 [00:03&lt;00:00,  2.91it/s]
+Epoch 249 Loss: 0.981658: 100%|██████████| 11/11 [00:03&lt;00:00,  3.21it/s]
+Epoch 250 Loss: 0.980595: 100%|██████████| 11/11 [00:03&lt;00:00,  3.37it/s]
+Epoch 251 Loss: 0.968010: 100%|██████████| 11/11 [00:03&lt;00:00,  3.13it/s]
+Epoch 252 Loss: 0.962707: 100%|██████████| 11/11 [00:03&lt;00:00,  2.80it/s]
+Epoch 253 Loss: 0.942022: 100%|██████████| 11/11 [00:03&lt;00:00,  3.11it/s]
+Epoch 254 Loss: 0.944430: 100%|██████████| 11/11 [00:03&lt;00:00,  2.89it/s]
+Epoch 255 Loss: 0.929161: 100%|██████████| 11/11 [00:03&lt;00:00,  2.88it/s]
+Epoch 256 Loss: 0.937370: 100%|██████████| 11/11 [00:03&lt;00:00,  2.90it/s]
+Epoch 257 Loss: 0.903115: 100%|██████████| 11/11 [00:03&lt;00:00,  3.54it/s]
+Epoch 258 Loss: 0.883225: 100%|██████████| 11/11 [00:03&lt;00:00,  3.25it/s]
+Epoch 259 Loss: 0.879743: 100%|██████████| 11/11 [00:03&lt;00:00,  2.87it/s]
+Epoch 260 Loss: 0.868025: 100%|██████████| 11/11 [00:03&lt;00:00,  3.35it/s]
+Epoch 261 Loss: 0.871274: 100%|██████████| 11/11 [00:03&lt;00:00,  3.52it/s]
+Epoch 262 Loss: 0.845327: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+Epoch 263 Loss: 0.830346: 100%|██████████| 11/11 [00:03&lt;00:00,  2.75it/s]
+Epoch 264 Loss: 0.824749: 100%|██████████| 11/11 [00:03&lt;00:00,  3.36it/s]
+Epoch 265 Loss: 0.825509: 100%|██████████| 11/11 [00:03&lt;00:00,  3.28it/s]
+Epoch 266 Loss: 0.826433: 100%|██████████| 11/11 [00:04&lt;00:00,  2.64it/s]
+Epoch 267 Loss: 0.803352: 100%|██████████| 11/11 [00:04&lt;00:00,  2.58it/s]
+Epoch 268 Loss: 0.803057: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+Epoch 269 Loss: 0.779101: 100%|██████████| 11/11 [00:03&lt;00:00,  3.00it/s]
+Epoch 270 Loss: 0.776825: 100%|██████████| 11/11 [00:03&lt;00:00,  3.17it/s]
+Epoch 271 Loss: 0.781099: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 272 Loss: 0.785840: 100%|██████████| 11/11 [00:03&lt;00:00,  3.28it/s]
+Epoch 273 Loss: 0.802700: 100%|██████████| 11/11 [00:03&lt;00:00,  3.29it/s]
+Epoch 274 Loss: 0.772463: 100%|██████████| 11/11 [00:03&lt;00:00,  3.00it/s]
+Epoch 275 Loss: 0.764557: 100%|██████████| 11/11 [00:03&lt;00:00,  3.41it/s]
+Epoch 276 Loss: 0.756142: 100%|██████████| 11/11 [00:03&lt;00:00,  3.40it/s]
+Epoch 277 Loss: 0.749000: 100%|██████████| 11/11 [00:03&lt;00:00,  3.18it/s]
+Epoch 278 Loss: 0.727899: 100%|██████████| 11/11 [00:03&lt;00:00,  2.91it/s]
+Epoch 279 Loss: 0.736639: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 280 Loss: 0.732949: 100%|██████████| 11/11 [00:04&lt;00:00,  2.73it/s]
+Epoch 281 Loss: 0.714376: 100%|██████████| 11/11 [00:03&lt;00:00,  2.79it/s]
+Epoch 282 Loss: 0.706372: 100%|██████████| 11/11 [00:04&lt;00:00,  2.62it/s]
+Epoch 283 Loss: 0.718250: 100%|██████████| 11/11 [00:03&lt;00:00,  3.10it/s]
+Epoch 284 Loss: 0.702688: 100%|██████████| 11/11 [00:03&lt;00:00,  3.32it/s]
+Epoch 285 Loss: 0.683941: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+Epoch 286 Loss: 0.669917: 100%|██████████| 11/11 [00:03&lt;00:00,  3.04it/s]
+Epoch 287 Loss: 0.657017: 100%|██████████| 11/11 [00:03&lt;00:00,  3.44it/s]
+Epoch 288 Loss: 0.645382: 100%|██████████| 11/11 [00:03&lt;00:00,  3.27it/s]
+Epoch 289 Loss: 0.646296: 100%|██████████| 11/11 [00:03&lt;00:00,  3.01it/s]
+Epoch 290 Loss: 0.640179: 100%|██████████| 11/11 [00:03&lt;00:00,  2.87it/s]
+Epoch 291 Loss: 0.632041: 100%|██████████| 11/11 [00:03&lt;00:00,  3.20it/s]
+Epoch 292 Loss: 0.623746: 100%|██████████| 11/11 [00:03&lt;00:00,  3.01it/s]
+Epoch 293 Loss: 0.606923: 100%|██████████| 11/11 [00:04&lt;00:00,  2.67it/s]
+Epoch 294 Loss: 0.608943: 100%|██████████| 11/11 [00:04&lt;00:00,  2.50it/s]
+Epoch 295 Loss: 0.607394: 100%|██████████| 11/11 [00:03&lt;00:00,  2.89it/s]
+Epoch 296 Loss: 0.594561: 100%|██████████| 11/11 [00:04&lt;00:00,  2.60it/s]
+Epoch 297 Loss: 0.581359: 100%|██████████| 11/11 [00:04&lt;00:00,  2.61it/s]
+Epoch 298 Loss: 0.581903: 100%|██████████| 11/11 [00:03&lt;00:00,  3.34it/s]
+Epoch 299 Loss: 0.572175: 100%|██████████| 11/11 [00:03&lt;00:00,  3.24it/s]
+Epoch 300 Loss: 0.570626: 100%|██████████| 11/11 [00:03&lt;00:00,  3.02it/s]
+</pre></div></div>
+</div>
+</section>
+<section id="id2">
+<h3>Evaluate MoE<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<p>The code below shows how to evaluate MoE.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ensemble_loaded</span> <span class="o">=</span> <span class="n">MoE_ForecasterEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:merlion.models.ensemble.base:When initializing an ensemble, you must either provide the dict `model_configs` (mapping each model&#39;s name to its config) when creating the `DetectorEnsembleConfig`, or provide a list of `models` to the constructor of `EnsembleBase`. Received both. Overriding `model_configs` with the configs belonging to `models`.
+</pre></div></div>
+</div>
+</section>
+<section id="id3">
+<h3>Load the saved ensemble model<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+
+<span></span><span class="n">expert_idx</span><span class="o">=</span><span class="kc">None</span>
+<span class="c1"># when no external experts are used, the value of expert_idx is not used in the</span>
+<span class="c1"># forecast/batch_forecast/evaluate functions</span>
+<span class="n">mode</span><span class="o">=</span><span class="s1">&#39;max&#39;</span> <span class="c1"># either mean or max. Max picks the expert with the highest confidence; mean computes the weighted average.</span>
+<span class="n">use_gpu</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># set True if GPU available for faster speed</span>
+<span class="n">use_batch_forecast</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># set True for higher speed</span>
+
+<span class="n">y_pred_list</span><span class="p">,</span> <span class="n">std_list</span><span class="p">,</span> <span class="n">y_list</span><span class="p">,</span> <span class="n">sMAPE_conf</span><span class="p">,</span> <span class="n">sMAPE_not_conf</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">overall_sMAPE</span> <span class="o">=</span>\
+                    <span class="n">ensemble_loaded</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">expert_idx</span><span class="o">=</span><span class="n">expert_idx</span><span class="p">,</span>\
+                                         <span class="n">use_gpu</span><span class="o">=</span><span class="n">use_gpu</span><span class="p">,</span> <span class="n">use_batch_forecast</span><span class="o">=</span><span class="n">use_batch_forecast</span><span class="p">,</span> <span class="n">confidence_thres</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+
+<span class="n">out_idx</span><span class="o">=</span><span class="mi">0</span> <span class="c1"># plot this idx of all the steps forecasted by MoE</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_pred_list</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_pred_list</span><span class="p">[:</span><span class="mi">100</span><span class="p">,</span> <span class="n">out_idx</span><span class="p">],</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y_list</span><span class="p">[:</span><span class="mi">100</span><span class="p">,</span> <span class="n">out_idx</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># plt.fill_between(range(y_pred_list[:100, out_idx].shape[0]), y_pred_list[:100, out_idx]-std_list[:100, out_idx],\</span>
+<span class="c1">#                  y_pred_list[:100, out_idx]+std_list[:100, out_idx]) # standard deviation error band</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on confident samples: </span><span class="si">{</span><span class="n">sMAPE_conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on not confident samples: </span><span class="si">{</span><span class="n">sMAPE_not_conf</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Percentage of samples on which MoE was confident: </span><span class="si">{</span><span class="n">recall</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">% (use a different confidence_thres to change this)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sMAPE on all samples: </span><span class="si">{</span><span class="n">overall_sMAPE</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+  0%|          | 0/1 [00:00&lt;?, ?it/s]
+  0%|          | 0/1 [00:00&lt;?, ?it/s]
+
+sMAPE_conf: 1.872 sMAPE_not_conf: 2.411 recall: 21.333% | Plain sMAPE 2.296: 100%|██████████| 1/1 [00:00&lt;00:00, 37.30it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+torch.Size([25, 3])
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_27_2.png" src="../../_images/examples_advanced_2_MoE_Forecasting_tutorial_27_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+sMAPE on confident samples: 1.87
+sMAPE on not confident samples: 2.41
+Percentage of samples on which MoE was confident: 21.33% (use a different confidence_thres to change this)
+sMAPE on all samples: 2.30
+</pre></div></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1_AutoSARIMA_forecasting_tutorial.html" class="btn btn-neutral float-left" title="Tutorial for AutoSARIMA Forecasting Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_ForecastInvertPOC.html" class="btn btn-neutral float-right" title="Proof of Concept: Inverse Transforms for Forecasters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.1.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
