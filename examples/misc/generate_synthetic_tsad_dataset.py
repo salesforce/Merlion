@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,7 +11,6 @@ import os
 import numpy as np
 from math import floor, ceil
 
-from merlion.utils.time_series import ts_to_csv
 from merlion.utils.ts_generator import GeneratorConcatenator, TimeSeriesGenerator
 from merlion.transform.anomalize import LevelShift, Shock, TrendChange
 
@@ -64,13 +63,13 @@ def main():
     for i, ts in enumerate(ts_list):
         # write original ts
         csv = join(anom_dir, f"{ts.names[0]}.csv")
-        ts_to_csv(ts, csv)
+        ts.to_csv(csv)
         # anomalize ts with each anomalizer
         for j, (name, anom) in enumerate(anomalizers.items()):
             np.random.seed(1000 * i + j)
             anom_ts = anom(ts)
             csv = join(anom_dir, f"{anom_ts.names[0]}_{name}_anomaly.csv")
-            ts_to_csv(anom_ts, csv)
+            anom_ts.to_csv(csv)
 
 
 if __name__ == "__main__":

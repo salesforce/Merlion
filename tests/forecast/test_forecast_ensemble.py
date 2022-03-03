@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -19,7 +19,7 @@ from merlion.models.forecast.arima import Arima, ArimaConfig
 from merlion.models.factory import ModelFactory
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -30,7 +30,7 @@ class TestForecastEnsemble(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.csv_name = join(rootdir, "data", "example.csv")
         self.test_len = 2048
-        data = ts_csv_load(self.csv_name, n_vars=1)[::10]
+        data = csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols=["kpi"])[::10]
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :].univariates[data.names[0]]
 

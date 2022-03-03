@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -17,7 +17,8 @@ from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.lstm import LSTMDetector, LSTMTrainConfig, LSTMDetectorConfig
 from merlion.models.forecast.lstm import auto_stride
 from merlion.post_process.threshold import AggregateAlarms
-from merlion.utils.time_series import ts_csv_load, TimeSeries
+from merlion.utils.time_series import TimeSeries
+from merlion.utils.data_io import csv_to_time_series
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(dirname(abspath(__file__)))))
@@ -27,7 +28,7 @@ class TestLSTM(unittest.TestCase):
     def test_full(self):
         file_name = join(rootdir, "data", "example.csv")
 
-        sequence = TemporalResample("15min")(ts_csv_load(file_name, n_vars=1))
+        sequence = TemporalResample("15min")(csv_to_time_series(file_name, timestamp_unit="ms", data_cols=["kpi"]))
         logger.info(f"Data looks like:\n{sequence[:5]}")
 
         time_stamps = sequence.univariates[sequence.names[0]].time_stamps

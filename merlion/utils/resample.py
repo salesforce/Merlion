@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Code for resampling time series.
+"""
 from enum import Enum
 from functools import partial
 import logging
@@ -58,8 +61,7 @@ class MissingValuePolicy(Enum):
 
 def to_pd_datetime(timestamp):
     """
-    Converts a timestamp (or list/iterable of timestamps) to pandas Datetime,
-    truncated at the millisecond.
+    Converts a timestamp (or list/iterable of timestamps) to pandas Datetime, truncated at the millisecond.
     """
     if isinstance(timestamp, pd.DatetimeIndex):
         return timestamp

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -13,7 +13,7 @@ import numpy as np
 
 from merlion.models.anomaly.spectral_residual import SpectralResidual, SpectralResidualConfig
 from merlion.post_process.threshold import AggregateAlarms
-from merlion.utils.time_series import ts_csv_load
+from merlion.utils.data_io import csv_to_time_series
 
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class TestSpectralResidual(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.csv_name = join(rootdir, "data", "example.csv")
         self.test_len = 32768
-        self.data = ts_csv_load(self.csv_name)
+        self.data = csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols="kpi")
         logger.info(f"Data looks like:\n{self.data[:5]}")
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
