@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.evaluate package &mdash; Merlion 1.1.1 documentation</title>
+  <title>merlion.evaluate package &mdash; Merlion 1.1.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -709,6 +709,16 @@ and predicted time series <span class="math notranslate nohighlight">\(\hat{y}\)
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastScoreAccumulator.rmspe">
+<span class="sig-name descname"><span class="pre">rmspe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.rmspe" title="Permalink to this definition"></a></dt>
+<dd><p>Root Mean Squared Percent Error (RMSPE)</p>
+<p>For ground truth time series <span class="math notranslate nohighlight">\(y\)</span> and predicted time series <span class="math notranslate nohighlight">\(\hat{y}\)</span>
+of length <span class="math notranslate nohighlight">\(T\)</span>, it is computed as</p>
+<div class="math notranslate nohighlight">
+\[100 \cdot \sqrt{\frac{1}{T}\sum_{t=1}^T\frac{(y_t - \hat{y}_t)}{y_t}^2}.\]</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastScoreAccumulator.mase">
 <span class="sig-name descname"><span class="pre">mase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.mase" title="Permalink to this definition"></a></dt>
 <dd><p>Mean Absolute Scaled Error (MASE)
@@ -787,6 +797,14 @@ original time series, and <code class="docutils literal notranslate"><span class
 <div class="math notranslate nohighlight">
 \[200 \cdot \frac{1}{T}\sum_{t=1}^{T}{\frac{\left| y_t
 - \hat{y}_t \right|}{\left| y_t \right| + \left| \hat{y}_t \right|}}.\]</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric.RMSPE">
+<span class="sig-name descname"><span class="pre">RMSPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">accumulate_forecast_score&gt;,</span> <span class="pre">metric=&lt;function</span> <span class="pre">ForecastScoreAccumulator.rmspe&gt;)</span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric.RMSPE" title="Permalink to this definition"></a></dt>
+<dd><p>Root Mean Square Percent Error is formulated as:</p>
+<div class="math notranslate nohighlight">
+\[100 \cdot \sqrt{\frac{1}{T}\sum_{t=1}^T\frac{(y_t - \hat{y}_t)}{y_t}^2}.\]</div>
 </dd></dl>
 
 <dl class="py attribute">
