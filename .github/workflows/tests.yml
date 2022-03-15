@@ -24,9 +24,10 @@ jobs:
 
     - name: Install Merlion
       run: |
+        sudo apt-get update -y
+        sudo apt-get install bc openjdk-11-jre-headless -y --fix-missing
         python -m pip install --upgrade pip setuptools wheel build
         python -m pip install pytest coverage
-        sudo apt-get install bc openjdk-11-jdk
         python -m build
         for f in dist/*.whl; do pip install $f[all]; done
         pip install -e ts_datasets/
