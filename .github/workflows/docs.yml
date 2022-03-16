@@ -23,9 +23,9 @@ jobs:
         python-version: '3.9'
     - name: Install dependencies
       run: |
+        sudo apt-get update -y
+        sudo apt-get install openjdk-11-jre-headless pandoc --fix-missing
         python -m pip install --upgrade pip setuptools wheel
-        sudo apt-get install openjdk-11-jdk
-        sudo apt-get install pandoc
     - name: Build Sphinx docs
       run: |
         docs/build_docs.sh

@@ -207,7 +207,7 @@ class ETS(SeasonalityModel, ForecasterBase):
                 val_prev,
                 error=self.error,
                 trend=self.trend,
-                seasonal=self.seasonal,
+                seasonal=None if self.seasonal_periods is None else self.seasonal,
                 damped_trend=self.damped_trend,
                 seasonal_periods=self.seasonal_periods,
             )
