@@ -1,4 +1,5 @@
 <div align="center">
+<img alt="Logo" src="https://github.com/salesforce/Merlion/raw/main/merlion_logo.svg" width="80%"/>
 </div>
 
 <div align="center">
