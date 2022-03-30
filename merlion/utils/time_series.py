@@ -296,7 +296,12 @@ class UnivariateTimeSeries(pd.Series):
         :rtype: UnivariateTimeSeries
         :return: the `UnivariateTimeSeries` represented by series.
         """
-        return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
+        if series is None:
+            return None
+        elif isinstance(series, UnivariateTimeSeries):
+            return series
+        else:
+            return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
 
     def to_ts(self, name=None):
         """
@@ -742,7 +747,13 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: the `TimeSeries` object corresponding to ``df``.
         """
-        if isinstance(df, pd.Series):
+        if df is None:
+            return None
+        elif isinstance(df, TimeSeries):
+            return df
+        elif isinstance(df, UnivariateTimeSeries):
+            return cls({df.name: df})
+        elif isinstance(df, pd.Series):
             return cls({df.name: UnivariateTimeSeries.from_pd(df[~df.isna()])})
         elif isinstance(df, np.ndarray):
             arr = df.reshape(len(df), -1).T
