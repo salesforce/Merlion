@@ -10,8 +10,9 @@ Tree-based models for multivariate time series forecasting.
 import logging
 from typing import List
 
-import numpy as np
 from lightgbm import LGBMRegressor
+import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
@@ -54,8 +55,8 @@ class TreeEnsembleForecasterConfig(ForecasterConfig):
             the model will automatically adopt "normal" mode.
         :param prediction_stride: the prediction step for training and forecasting
 
-            - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will be
-              done by means of autoregression with the stride unit of prediction_stride
+            - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
+              be done autoregressively, with the stride unit of prediction_stride
             - If multivariate:
 
                 - if = 1: the autoregression with the stride unit of 1
@@ -99,8 +100,16 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
     def prediction_stride(self) -> int:
         return self.config.prediction_stride
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
+    @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
+
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        train_data = TimeSeries.from_pd(train_data)
 
         # univariate case, hybrid of sequence + autoregression
         if self.dim == 1:
@@ -113,7 +122,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                 logger.warning('For univariate dataset, only supports "normal" sampling mode')
                 self.config.sampling_mode = "normal"
             # process train data
-            (inputs_train, labels_train, labels_train_ts) = seq_ar_common.process_rolling_train_data(
+            inputs_train, labels_train, labels_train_ts = seq_ar_common.process_rolling_train_data(
                 train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode
             )
             self.model.fit(inputs_train, labels_train)
@@ -146,7 +155,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                     )
                     self.config.prediction_stride = self.max_forecast_steps
                 # process train data
-                (inputs_train, labels_train, labels_train_ts) = seq_ar_common.process_rolling_train_data(
+                inputs_train, labels_train, labels_train_ts = seq_ar_common.process_rolling_train_data(
                     train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode
                 )
                 self.model.fit(inputs_train, labels_train)
@@ -162,7 +171,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                 )
                 self._forecast = prior_forecast
 
-        return (UnivariateTimeSeries(labels_train_ts, pred, self.target_name).to_ts(), None)
+        return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
 
     def forecast(
         self, time_stamps: List[int], time_series_prev: TimeSeries = None, return_iqr=False, return_prev=False
@@ -214,7 +223,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
 
     def _hybrid_forecast(self, inputs, steps=None):
         """
-        n-step autoregression method for univairate data, each regression step updates n_prediction_steps data points
+        n-step autoregression method for univariate data, each regression step updates n_prediction_steps data points
         :param inputs: regression inputs [n_samples, maxlags]
         :return: pred of target_seq_index for steps [n_samples, steps]
         """

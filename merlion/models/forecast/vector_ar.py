@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,6 +11,7 @@ import logging
 from typing import List, Tuple, Union
 
 import numpy as np
+import pandas as pd
 from scipy.stats import norm
 from statsmodels.tsa.api import VAR as sm_VAR
 from statsmodels.tsa.arima.model import ARIMA as sm_ARIMA
@@ -61,21 +62,19 @@ class VectorAR(ForecasterBase):
         self._input_already_transformed = False
 
     @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
     def maxlags(self) -> int:
         return self.config.maxlags
 
-    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, TimeSeries]:
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-
-        i = self.target_seq_index
-        times = train_data.univariates[self.target_name].time_stamps
-
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # train model
-        df = train_data.to_pd()
         if self.dim == 1:
-            df = df.iloc[:, 0]
+            train_data = train_data.iloc[:, 0]
             self.model = sm_ARIMA(
-                df,
+                train_data,
                 order=(self.maxlags, 0, 0),
                 enforce_stationarity=False,
                 enforce_invertibility=False,
@@ -83,28 +82,29 @@ class VectorAR(ForecasterBase):
             )
             self.model = self.model.fit(method="yule_walker", cov_type="oim")
         else:
-            self.model = sm_VAR(df).fit(self.maxlags)
+            self.model = sm_VAR(train_data).fit(self.maxlags)
 
         # FORECASTING: forecast for next n steps using VAR model
+        i = self.target_seq_index
         n = self.max_forecast_steps
         resid = self.model.resid
-        pred = df - resid if self.dim == 1 else (df - resid).iloc[:, i]
+        pred = train_data - resid if self.dim == 1 else (train_data - resid).iloc[:, i]
+        nanpred = pred.isna()
+        if nanpred.any():
+            pred[nanpred] = train_data.loc[nanpred, self.target_name]
         if self.dim == 1:
             forecast_result = self.model.get_forecast(steps=n)
-            forecast = forecast_result.predicted_mean
-            err = forecast_result.se_mean
+            self._forecast = forecast_result.predicted_mean
+            self._forecast_err = forecast_result.se_mean
             pred_err = [np.sqrt(self.model.params["sigma2"])] * len(pred)
         else:
-            forecast = self.model.forecast(df[-self.maxlags :].values, steps=n)[:, i]
-            err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
+            self._forecast = self.model.forecast(train_data.values[-self.maxlags :], steps=n)[:, i]
+            self._forecast_err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
             pred_err = [self.model.cov_ybar()[i, i]] * len(pred)
-        self._forecast = forecast
-        self._forecast_err = err
 
-        return (
-            UnivariateTimeSeries(times, pred, self.target_name).to_ts(),
-            UnivariateTimeSeries(times, pred_err, f"{self.target_name}_err").to_ts(),
-        )
+        pred = pd.DataFrame(pred, index=train_data.index, columns=[self.target_name])
+        pred_err = pd.DataFrame(pred_err, index=train_data.index, columns=[f"{self.target_name}_err"])
+        return pred, pred_err
 
     def forecast(
         self,

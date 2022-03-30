@@ -22,6 +22,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 from merlion.models.base import NormalizingConfig
@@ -285,6 +286,10 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
         self.moe_model = moe_model
 
     @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
     def moe_model(self):
         return self._moe_model
 
@@ -332,18 +337,18 @@ class MoE_ForecasterEnsemble(EnsembleBase, ForecasterBase):
     def lookback_len(self) -> int:
         return self.config.lookback_len
 
-    def train(
-        self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
+    def _train(
+        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], Optional[TimeSeries]]:
         if self.use_gpu:
             torch.cuda.empty_cache()
-        full_train = self.train_pre_process(train_data, False, False)
+        train_data = TimeSeries.from_pd(train_data)
         if self.nexperts > 0:
-            t0 = min(v.np_time_stamps[0] for v in full_train.univariates)
-            tf = max(v.np_time_stamps[-1] for v in full_train.univariates)
-            train, valid = full_train.bisect(t0 + (tf - t0) * (1.0 - train_config.valid_frac))
+            t0 = min(v.np_time_stamps[0] for v in train_data.univariates)
+            tf = max(v.np_time_stamps[-1] for v in train_data.univariates)
+            train, valid = train_data.bisect(t0 + (tf - t0) * (1.0 - train_config.valid_frac))
         else:
-            valid = full_train
+            valid = train_data
 
         # store transform mean and std as torch tensors for future use
         self.mn = torch.tensor(np.array(self.transform.transforms[-1].bias)).type(torch.FloatTensor)

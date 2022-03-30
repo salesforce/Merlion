@@ -1,14 +1,14 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """Ensembles of forecasters."""
-import copy
 import logging
 from typing import List, Optional, Tuple, Union
 
+import pandas as pd
 from scipy.stats import norm
 from tqdm import tqdm
 
@@ -42,6 +42,10 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
     _default_train_config = EnsembleTrainConfig(valid_frac=0.2)
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
     def __init__(self, config: ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None):
         super().__init__(config=config, models=models)
         for model in self.models:
@@ -50,9 +54,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 f"detectors, but got a {type(model).__name__}."
             )
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         idxs = [model.target_seq_index for model in self.models]
         if any(i is not None for i in idxs):
             self.config.target_seq_index = [i for i in idxs if i is not None][0]
@@ -61,16 +63,12 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 f"to be used in a ForecasterEnsemble, but got the following "
                 f"target_seq_idx values: {idxs}"
             )
-        return super().train_pre_process(
-            train_data=train_data, require_even_sampling=require_even_sampling, require_univariate=require_univariate
-        )
+        return super().train_pre_process(train_data=train_data)
 
-    def train(
-        self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
+    def _train(
+        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+        full_train = TimeSeries.from_pd(train_data)
         train, valid = self.train_valid_split(full_train, train_config)
 
         per_model_train_configs = train_config.per_model_train_configs

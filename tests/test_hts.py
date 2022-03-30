@@ -66,7 +66,7 @@ class TestHTS(unittest.TestCase):
         self.test_data_agg = UnivariateTimeSeries.from_pd(self.test_data_norm.to_pd().sum(axis=1), name="val").to_ts()
 
         self.models = [ModelFactory.create("AutoETS", target_seq_index=i) for i in range(test_data.dim)]
-        self.agg_model = ModelFactory.create("LGBMForecaster", max_forecast_steps=h, maxlags=100)
+        self.agg_model = ModelFactory.create("ExtraTreesForecaster", max_forecast_steps=h, maxlags=100)
 
     def test_minT(self):
         print("=" * 80)

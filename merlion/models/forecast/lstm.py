@@ -27,6 +27,7 @@ import os
 from typing import List, Tuple, Union
 
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
@@ -34,7 +35,7 @@ from merlion.transform.normalize import MeanVarNormalize
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.resample import TemporalResample
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import assert_equal_timedeltas, TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import to_timestamp, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -259,25 +260,24 @@ class LSTM(ForecasterBase):
         self.seq_len = None
         self._forecast = [0.0 for _ in range(self.max_forecast_steps)]
 
-    def train(self, train_data: TimeSeries, train_config: LSTMTrainConfig = None) -> Tuple[TimeSeries, None]:
-        if train_config is None:
-            train_config = deepcopy(self._default_train_config)
+    @property
+    def require_even_sampling(self) -> bool:
+        return True
 
-        orig_train_data = train_data
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-        train_data = train_data.univariates[self.target_name]
-        train_values = train_data.np_values
+    def _train(self, train_data: pd.DataFrame, train_config: LSTMTrainConfig = None):
+        train_data = train_data[self.target_name]
+        train_values = train_data.values
 
         valid_len = int(np.ceil(len(train_data) * train_config.valid_split))
 
         stride = train_config.data_stride
         self.seq_len = train_config.seq_len
 
-        # Check to make sure the training data is well-formed
-        assert_equal_timedeltas(train_data)
+        # Get initial time & update the timedelta based on the stride
         i0 = (len(train_data) - 1) % stride
-        self.last_train_time = train_data[-1][0]
-        self.timedelta = (train_data[1][0] - train_data[0][0]) * stride
+        t0 = to_timestamp(train_data.index[i0])
+        self.last_train_time = train_data.index[-1]
+        self.timedelta = (train_data.index[1] - train_data.index[0]) * stride
 
         #############
         train_scores = train_values[:-valid_len]
@@ -360,21 +360,16 @@ class LSTM(ForecasterBase):
         for f in self.transform.transforms:
             if isinstance(f, TemporalResample):
                 f.granularity = self.timedelta
-                f.origin = train_data.np_time_stamps[i0]
+                f.origin = t0
                 f.trainable_granularity = False
                 done = True
         if not done:
-            self.transform.append(
-                TemporalResample(
-                    granularity=self.timedelta, origin=train_data.np_time_stamps[i0], trainable_granularity=False
-                )
-            )
+            self.transform.append(TemporalResample(granularity=self.timedelta, origin=t0, trainable_granularity=False))
 
-        # FORECASTING: forecast for next n steps using lstm model
-        # since we've updated the transform's granularity, re-apply it on
-        # the original train data before proceeding.
-        ts = self.transform(orig_train_data)
-        ts = ts.univariates[self.target_name]
+        # FORECASTING: forecast for next n steps using lstm model.
+        # Since we've updated the transform's granularity, re-apply it on
+        # the original train data (self.train_data) before proceeding.
+        ts = self.transform(self.train_data).univariates[self.target_name]
         vals = torch.FloatTensor([ts.np_values])
         if torch.cuda.is_available():
             vals = vals.cuda()
@@ -384,7 +379,7 @@ class LSTM(ForecasterBase):
             preds = self.model(vals[:, :-n], future=n).squeeze().tolist()
             self._forecast = self.model(vals, future=n).squeeze().tolist()[-n:]
 
-        return UnivariateTimeSeries(ts.index, preds, self.target_name).to_ts(), None
+        return pd.DataFrame(preds, index=ts.index, columns=[self.target_name]), None
 
     def forecast(
         self,

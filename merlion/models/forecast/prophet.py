@@ -14,11 +14,11 @@ from typing import Iterable, List, Tuple, Union
 try:
     import prophet
 except ImportError as e:
-    err = (
+    err_msg = (
         "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[prophet]` or "
         "`pip install `salesforce-merlion[all]`"
     )
-    raise ImportError(str(e) + ". " + err)
+    raise ImportError(str(e) + ". " + err_msg)
 
 import numpy as np
 import pandas as pd
@@ -139,6 +139,10 @@ class Prophet(SeasonalityModel, ForecasterBase):
         self.last_forecast_time_stamps = None
         self.resid_samples = None
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
     def __getstate__(self):
         stan_backend = self.model.stan_backend
         if hasattr(stan_backend, "logger"):
@@ -186,10 +190,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
                 logger.info(f"Add seasonality {str(p)} ({p * dt})")
                 self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-        series = train_data.univariates[self.target_name]
-        df = pd.DataFrame({"ds": series.index, "y": series.np_values})
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        series = train_data[self.target_name]
+        df = pd.DataFrame({"ds": series.index, "y": series.values})
 
         with _suppress_stdout_stderr():
             self.model.fit(df)
@@ -201,8 +204,8 @@ class Prophet(SeasonalityModel, ForecasterBase):
         samples = self.model.predictive_samples(df)["yhat"]
         samples = samples - np.expand_dims(forecast, -1)
 
-        yhat = UnivariateTimeSeries(df.ds, forecast, self.target_name).to_ts()
-        err = UnivariateTimeSeries(df.ds, np.std(samples, axis=-1), f"{self.target_name}_err").to_ts()
+        yhat = pd.DataFrame(forecast, index=df.ds, columns=[self.target_name])
+        err = pd.DataFrame(np.std(samples, axis=-1), index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
 
     def forecast(

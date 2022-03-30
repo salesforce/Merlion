@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,6 +8,7 @@
 Base class for forecasting models.
 """
 from abc import abstractmethod
+import copy
 import logging
 from typing import List, Optional, Tuple, Union
 
@@ -78,6 +79,13 @@ class ForecasterBase(ModelBase):
         """
         return self.config.target_seq_index
 
+    @property
+    def require_univariate(self) -> bool:
+        """
+        All forecasters can work on multivariate data, since they only forecast a single target univariate.
+        """
+        return False
+
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
             "train() must be called before you can call forecast(). "
@@ -122,10 +130,8 @@ class ForecasterBase(ModelBase):
 
         return to_timestamp(resampled).tolist()
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
-        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+        train_data = super().train_pre_process(train_data)
         if self.dim == 1:
             self.config.target_seq_index = 0
         elif self.target_seq_index is None:
@@ -142,19 +148,24 @@ class ForecasterBase(ModelBase):
 
         return train_data
 
-    @abstractmethod
     def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
+        :param train_config: Additional training configs, if needed. Only required for some models.
 
         :return: the model's prediction on ``train_data``, in the same format as
-            if you called `ForecasterBase.forecast` on the time stamps of
-            ``train_data``
+            if you called `ForecasterBase.forecast` on the time stamps of ``train_data``
         """
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data = self.train_pre_process(train_data).to_pd()
+        train_pred, train_stderr = self._train(train_data=train_data, train_config=train_config)
+        return TimeSeries.from_pd(train_pred), TimeSeries.from_pd(train_stderr)
+
+    @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
     @abstractmethod

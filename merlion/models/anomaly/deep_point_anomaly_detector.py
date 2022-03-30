@@ -11,6 +11,7 @@ import logging
 import math
 
 import numpy as np
+import pandas as pd
 
 try:
     import torch
@@ -26,7 +27,7 @@ except ImportError as e:
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.post_process.threshold import AdaptiveAggregateAlarms
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.utils import UnivariateTimeSeries, TimeSeries
+from merlion.utils import UnivariateTimeSeries, TimeSeries, to_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -169,9 +170,16 @@ class DeepPointAnomalyDetector(DetectorBase):
     config_class = DeepPointAnomalyDetectorConfig
 
     def __init__(self, config: DeepPointAnomalyDetectorConfig):
-
         super().__init__(config)
         self.use_cuda = torch.cuda.is_available()  # config.use_cuda
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
 
     def _preprocess(self, x):
         """
@@ -187,21 +195,13 @@ class DeepPointAnomalyDetector(DetectorBase):
         x = torch.Tensor(x)
         return x
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-
-        times, train_values = zip(*train_data.align())
-        processed_times, train_values = self._preprocess(times), self._preprocess(train_values)
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        times = train_data.index
+        processed_times, train_values = self._preprocess(to_timestamp(times)), self._preprocess(train_data.values)
         # train an MLP on with (processed_times, train_values) as (input, target)
         # and report the loss vector corresponding to these points as anomaly scores
         train_scores = get_dnn_loss_as_anomaly_score(processed_times, train_values, use_cuda=self.use_cuda)
-        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
+        return pd.DataFrame(train_scores, index=times, columns=["anom_score"])
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)

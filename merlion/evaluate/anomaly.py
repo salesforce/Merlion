@@ -395,14 +395,12 @@ class TSADEvaluator(EvaluatorBase):
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
     def default_retrain_kwargs(self) -> dict:
-        from merlion.models.ensemble.anomaly import DetectorEnsemble
+        from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleTrainConfig
 
         no_train = dict(metric=None, unsup_quantile=None, retrain_calibrator=False)
         if isinstance(self.model, DetectorEnsemble):
-            return {
-                "post_rule_train_config": no_train,
-                "per_model_post_rule_train_configs": [no_train] * len(self.model.models),
-            }
+            train_config = DetectorEnsembleTrainConfig(per_model_train_configs=[no_train] * len(self.model.models))
+            return {"post_rule_train_config": no_train, "train_config": train_config}
         return {"post_rule_train_config": no_train}
 
     def get_predict(

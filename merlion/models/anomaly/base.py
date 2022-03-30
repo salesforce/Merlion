@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,11 +8,12 @@
 Base class for anomaly detectors.
 """
 from abc import abstractmethod
-from copy import copy, deepcopy
+import copy
 import inspect
 import logging
 from typing import Any, Dict, List
 
+import pandas as pd
 from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase, MultipleTimeseriesModelMixin
@@ -54,7 +55,7 @@ class DetectorConfig(Config):
         self.enable_calibrator = enable_calibrator
         self.calibrator = AnomScoreCalibrator(max_score=max_score)
         if threshold is None:
-            self.threshold = deepcopy(self._default_threshold)
+            self.threshold = copy.deepcopy(self._default_threshold)
         elif isinstance(threshold, dict):
             self.threshold = PostRuleFactory.create(**threshold)
         else:
@@ -174,7 +175,6 @@ class DetectorBase(ModelBase):
     def post_rule(self):
         return self.config.post_rule
 
-    @abstractmethod
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
@@ -194,13 +194,23 @@ class DetectorBase(ModelBase):
         :return: A `TimeSeries` of the model's anomaly scores on the training
             data.
         """
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data = self.train_pre_process(train_data).to_pd()
+        train_scores = self._train(train_data=train_data, train_config=train_config)
+        train_scores = TimeSeries.from_pd(train_scores)
+        self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
+        return train_scores
+
+    @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         raise NotImplementedError
 
     def train_post_rule(
         self, anomaly_scores: TimeSeries, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ):
         if self.post_rule is not None:
-            kwargs = copy(self._default_post_rule_train_config)
+            kwargs = copy.copy(self._default_post_rule_train_config)
             if post_rule_train_config is not None:
                 kwargs.update(post_rule_train_config)
             params = inspect.signature(self.post_rule.train).parameters
@@ -358,10 +368,14 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
     """
     Abstract mixin for anomaly detectors supporting training on multiple time series.
     """
+
     @abstractmethod
     def train_multiple(
-        self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
-        train_config=None, post_rule_train_config=None
+        self,
+        multiple_train_data: List[TimeSeries],
+        anomaly_labels: List[TimeSeries] = None,
+        train_config=None,
+        post_rule_train_config=None,
     ) -> List[TimeSeries]:
         """
         Trains the anomaly detector (unsupervised) and its post-rule

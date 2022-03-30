@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -183,6 +183,10 @@ class MSES(ForecasterBase):
         )
 
     @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
     def rho(self):
         return self.config.rho
 
@@ -194,15 +198,14 @@ class MSES(ForecasterBase):
     def max_horizon(self):
         return self.max_forecast_steps * self.timedelta
 
-    def train(self, train_data: TimeSeries, train_config: MSESTrainConfig = None) -> Tuple[Optional[TimeSeries], None]:
+    def _train(self, train_data: pd.DataFrame, train_config: MSESTrainConfig = None):
         if train_config is None:
             train_config = deepcopy(self._default_train_config)
             if isinstance(train_config, dict):
                 train_config = MSESTrainConfig(**train_config)
 
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
         name = self.target_name
-        train_data = train_data.univariates[name]
+        train_data = UnivariateTimeSeries.from_pd(train_data[name])
 
         if not train_config.incremental:
             self.delta_estimator.train(train_data)
@@ -217,9 +220,7 @@ class MSES(ForecasterBase):
         # use inital batch as train forecast
         init_train_forecast = init_train_data.to_ts()
         init_train_err = UnivariateTimeSeries(
-            time_stamps=init_train_data.time_stamps,
-            name=f"{init_train_data.name}_err",
-            values=[0] * len(init_train_data),
+            time_stamps=init_train_data.index, name=f"{init_train_data.name}_err", values=[0] * len(init_train_data)
         ).to_ts()
 
         # train incrementally

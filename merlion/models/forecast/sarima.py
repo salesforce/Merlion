@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -13,7 +13,7 @@ import warnings
 from typing import List, Tuple, Union
 
 import numpy as np
-from merlion.utils import autosarima_utils
+import pandas as pd
 from scipy.stats import norm
 from statsmodels.tsa.arima.model import ARIMA as sm_Sarima
 
@@ -61,6 +61,10 @@ class Sarima(ForecasterBase, SeasonalityModel):
         self.last_val = None
 
     @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
     def order(self) -> Tuple[int, int, int]:
         """
         :return: the order (p, d, q) of the model, where p is the AR order,
@@ -86,13 +90,10 @@ class Sarima(ForecasterBase, SeasonalityModel):
             return 0
         return 2 * orders["reduced_ar"] + 1
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        # Train the transform & transform the training data
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-
+    def _train(self, train_data: pd.DataFrame, train_config=None):
         # train model
         name = self.target_name
-        train_data = train_data.univariates[name].to_pd()
+        train_data = train_data[name]
         times = train_data.index
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -105,15 +106,10 @@ class Sarima(ForecasterBase, SeasonalityModel):
             ).fit(method_kwargs={"disp": 0})
 
         # FORECASTING: forecast for next n steps using Sarima model
-        forecast_result = self.model.get_forecast(self.max_forecast_steps)
         self.last_val = train_data[-1]
-
         yhat = (train_data.values - self.model.resid).tolist()
         err = [np.sqrt(self.model.params["sigma2"])] * len(train_data)
-        return (
-            UnivariateTimeSeries(times, yhat, name).to_ts(),
-            UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
-        )
+        return pd.DataFrame(yhat, index=times, columns=[name]), pd.DataFrame(err, index=times, columns=[f"{name}_err"])
 
     def forecast(
         self,

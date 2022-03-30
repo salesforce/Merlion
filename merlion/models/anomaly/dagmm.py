@@ -7,8 +7,9 @@
 """
 Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM)
 """
+import copy
 import random
-from typing import Dict, Any, List
+from typing import List
 
 try:
     import torch
@@ -23,6 +24,7 @@ except ImportError as e:
     raise ImportError(str(e) + ". " + err)
 
 import numpy as np
+import pandas as pd
 
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
@@ -79,6 +81,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     """
 
     config_class = DAGMMConfig
+    _default_train_config = dict()
 
     def __init__(self, config: DAGMMConfig):
         super().__init__(config)
@@ -96,6 +99,14 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         self.data_dim = -1
         self.dagmm, self.optimizer = None, None
         self.train_energy, self._threshold = None, None
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
 
     def _build_model(self, dim):
         hidden_size = self.hidden_size + int(dim / 20)
@@ -124,19 +135,18 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         self.optimizer.step()
         return total_loss, sample_energy, recon_error, cov_diag
 
-    def _train(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
-        dataset = InputData(X, k=self.sequence_length)
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        index = train_data.index
+        train_data = train_data.values
+        dataset = InputData(train_data, k=self.sequence_length)
         data_loader = DataLoader(
             dataset=dataset, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
         )
         if self.dagmm is None and self.optimizer is None:
-            self.dagmm = self._build_model(X.shape[1]).to(self.device)
+            self.dagmm = self._build_model(train_data.shape[1]).to(self.device)
             self.optimizer = torch.optim.Adam(self.dagmm.parameters(), lr=self.lr)
             self.dagmm.train()
-        self.data_dim = X.shape[1]
+        self.data_dim = train_data.shape[1]
         bar = ProgressBar(total=self.num_epochs)
 
         for epoch in range(self.num_epochs):
@@ -154,6 +164,8 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                         total_loss / len(data_loader), recon_error / len(data_loader)
                     ),
                 )
+
+        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
 
     def _detect(self, X):
         """
@@ -177,38 +189,12 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     def _get_sequence_len(self):
         return self.sequence_length
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        """
-        Train a multivariate time series anomaly detector.
-
-        :param train_data: A `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: A `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
-        """
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-
-        train_df = train_data.align().to_pd()
-        self._train(train_df.values)
-        scores = batch_detect(self, train_df.values)
-
-        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
-
     def train_multiple(
-        self, multiple_train_data: List[TimeSeries], anomaly_labels: List[TimeSeries] = None,
-        train_config=None, post_rule_train_config=None
+        self,
+        multiple_train_data: List[TimeSeries],
+        anomaly_labels: List[TimeSeries] = None,
+        train_config=None,
+        post_rule_train_config=None,
     ) -> List[TimeSeries]:
         """
         Trains the anomaly detector (unsupervised) and its post-rule
@@ -231,7 +217,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
             data with each element corresponds to time series from ``multiple_train_data``.
         """
         if train_config is None:
-            train_config = dict()
+            train_config = copy.deepcopy(self._default_train_config)
         n_epochs = train_config.pop("n_epochs", 1)
         shuffle = train_config.pop("shuffle", n_epochs > 1)
 
@@ -246,8 +232,10 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
             for train_data, anomaly_series in zip(multiple_train_data, anomaly_labels):
                 train_scores_list.append(
                     self.train(
-                        train_data=train_data, anomaly_labels=anomaly_series,
-                        train_config=train_config, post_rule_train_config=post_rule_train_config
+                        train_data=train_data,
+                        anomaly_labels=anomaly_series,
+                        train_config=train_config,
+                        post_rule_train_config=post_rule_train_config
                         # FIXME: the post-rule (calibrator and threshold) is trained individually on each time series
                         # but ideally it needs to be re-trained on all of the `train_scores_list`
                     )

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,6 +11,7 @@ import logging
 from typing import List, Optional
 
 import numpy as np
+import pandas as pd
 
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
@@ -72,29 +73,12 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        """
-        Trains the underlying forecaster (unsupervised) on the training data.
-        Converts the  forecast into anomaly scores, and and then trains the
-        post-rule for filtering anomaly scores (supervised, if labels are given)
-        on the input time series.
+        return DetectorBase.train(self, train_data, anomaly_labels, train_config, post_rule_train_config)
 
-        :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
-        """
-        forecast, err = super().train(train_data, train_config)
-        anomaly_scores = self.forecast_to_anom_score(self.transform(train_data), forecast, err)
-
-        self.train_post_rule(
-            anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> TimeSeries:
+        forecast, err = super()._train(train_data, train_config)
+        train_data, forecast, err = [TimeSeries.from_pd(x) for x in [train_data, forecast, err]]
+        anomaly_scores = self.forecast_to_anom_score(train_data, forecast, err)
         return anomaly_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:

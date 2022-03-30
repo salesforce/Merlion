@@ -18,8 +18,11 @@ except ImportError as e:
     )
     raise ImportError(str(e) + ". " + err)
 
-import numpy as np
 from typing import Sequence
+
+import numpy as np
+import pandas as pd
+
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
@@ -67,10 +70,18 @@ class AutoEncoder(DetectorBase):
     for anomaly detection.
 
     - paper: `Pierre Baldi. Autoencoders, Unsupervised Learning, and Deep Architectures. 2012.
-      <http://proceedings.mlr.press/v27/baldi12a.html>`_
+      <https://proceedings.mlr.press/v27/baldi12a.html>`_
     """
 
     config_class = AutoEncoderConfig
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
 
     def __init__(self, config: AutoEncoderConfig):
         super().__init__(config)
@@ -89,22 +100,21 @@ class AutoEncoder(DetectorBase):
         model = AEModule(input_size=dim * self.k, hidden_size=self.hidden_size, layer_sizes=self.layer_sizes)
         return model
 
-    def _train(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
-        self.model = self._build_model(X.shape[1]).to(self.device)
-        self.data_dim = X.shape[1]
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        index = train_data.index
+        train_data = train_data.values
+        self.model = self._build_model(train_data.shape[1]).to(self.device)
+        self.data_dim = train_data.shape[1]
 
-        input_data = InputData(X, self.k)
-        train_data = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
+        input_data = InputData(train_data, self.k)
+        loader = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         bar = ProgressBar(total=self.num_epochs)
 
         self.model.train()
         for epoch in range(self.num_epochs):
             total_loss = 0
-            for i, batch in enumerate(train_data):
+            for i, batch in enumerate(loader):
                 batch = batch.to(self.device)
                 loss = self.model.loss(batch)
                 optimizer.zero_grad()
@@ -113,6 +123,8 @@ class AutoEncoder(DetectorBase):
                 total_loss += loss
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
+
+        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
 
     def _detect(self, X):
         """
@@ -131,36 +143,6 @@ class AutoEncoder(DetectorBase):
 
     def _get_sequence_len(self):
         return self.k
-
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        """
-        Train a multivariate time series anomaly detector.
-
-        :param train_data: A `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: A `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
-
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
-        """
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-
-        train_df = train_data.align().to_pd()
-        self._train(train_df.values)
-        scores = batch_detect(self, train_df.values)
-
-        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """

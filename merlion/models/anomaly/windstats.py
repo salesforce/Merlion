@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -9,7 +9,9 @@ Window Statistics anomaly detection model for data with weekly seasonality.
 """
 import datetime
 import logging
+
 import numpy
+import pandas as pd
 
 from merlion.evaluate.anomaly import TSADMetric
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
@@ -71,6 +73,14 @@ class WindStats(DetectorBase):
         super().__init__(WindStatsConfig() if config is None else config)
         self.table = {}
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return True
+
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
         assert time_series.dim == 1, (
@@ -97,15 +107,12 @@ class WindStats(DetectorBase):
             scores.append(min(score, key=abs))
         return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         # first build a hashtable with (weekday, yearofday, and window id of the day) as key.
         # the value is a list of metrics
         table = {}
-        train_data = self.train_pre_process(train_data, require_univariate=True, require_even_sampling=False)
-        for timestamp, (x,) in train_data:
-            t = datetime.datetime.utcfromtimestamp(timestamp).timetuple()
+        for time, x in zip(train_data.index, train_data.values):
+            t = datetime.datetime.utctimetuple(time)
             code = (t.tm_wday, t.tm_yday, (t.tm_hour * 60 + t.tm_min) // self.config.wind_sz)
             if code in table:
                 table[code].append(x)
@@ -130,8 +137,4 @@ class WindStats(DetectorBase):
             if len(self.table[t]) > self.config.max_day:
                 self.table[t] = self.table[t][-self.config.max_day :]
 
-        train_scores = self.get_anomaly_score(train_data)
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
+        return self.get_anomaly_score(TimeSeries.from_pd(train_data)).to_pd()

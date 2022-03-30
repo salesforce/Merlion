@@ -13,6 +13,7 @@ import logging
 from os.path import abspath, dirname, join, pathsep
 
 import numpy as np
+import pandas as pd
 from py4j.java_gateway import JavaGateway
 
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
@@ -116,6 +117,14 @@ class RandomCutForest(DetectorBase):
         self.forest = None
 
     @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
+
+    @property
     def online_updates(self) -> bool:
         return self.config.online_updates
 
@@ -154,28 +163,19 @@ class RandomCutForest(DetectorBase):
                 self.forest.update(jpoint)
         return np.array(scores)
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-        dim = train_data.dim
-        times, train_values = zip(*train_data.align())
-        train_values = np.asarray(train_values)
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        times, train_values = train_data.index, train_data.values
 
         # Initialize the RRCF, now that we know the dimension of the data
         JRCF = JVMSingleton.gateway().jvm.com.amazon.randomcutforest.RandomCutForest
         forest = JRCF.builder()
-        forest = forest.dimensions(dim)
+        forest = forest.dimensions(train_data.shape[1])
         for k, v in self.config.java_params.items():
             forest = getattr(forest, k)(v)
         self.forest = forest.build()
 
         train_scores = self._forest_predict(train_values, online_updates=True)
-        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(times, train_scores)})
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
+        return pd.DataFrame(train_scores, index=times, columns=["anom_score"])
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         if self.last_train_time is None:

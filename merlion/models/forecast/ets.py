@@ -82,6 +82,10 @@ class ETS(SeasonalityModel, ForecasterBase):
         self._n_train = None
 
     @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
     def error(self):
         return self.config.error
 
@@ -108,13 +112,10 @@ class ETS(SeasonalityModel, ForecasterBase):
             self.config.seasonal = None
             self.config.seasonal_periods = None
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        # Train the transform & transform the training data
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-
+    def _train(self, train_data: pd.DataFrame, train_config=None):
         # train model
         name = self.target_name
-        train_data = train_data.univariates[name].to_pd()
+        train_data = train_data[name]
         times = train_data.index
 
         with warnings.catch_warnings():
@@ -139,12 +140,9 @@ class ETS(SeasonalityModel, ForecasterBase):
         self._n_train = train_data.shape[0]
         self._last_val = train_data[-1]
 
-        yhat = self.model.fittedvalues.values.tolist()
-        err = self.model.standardized_forecasts_error.tolist()
-        return (
-            UnivariateTimeSeries(times, yhat, name).to_ts(),
-            UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
-        )
+        yhat = pd.DataFrame(self.model.fittedvalues.values.tolist(), index=times, columns=[name])
+        err = pd.DataFrame(self.model.standardized_forecasts_error.tolist(), index=times, columns=[f"{name}_err"])
+        return yhat, err
 
     def forecast(
         self,

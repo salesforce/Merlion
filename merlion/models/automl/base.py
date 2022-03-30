@@ -28,9 +28,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     config_class = LayeredModelConfig
 
     def train(self, train_data: TimeSeries, **kwargs):
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
-        )
+        train_data = self.train_pre_process(train_data)
 
         candidate_thetas = self.generate_theta(train_data)
         theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, kwargs)

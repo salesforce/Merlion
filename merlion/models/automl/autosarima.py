@@ -94,8 +94,6 @@ class AutoSarimaConfig(SeasonalityConfig):
 class AutoSarima(SeasonalityLayer):
 
     config_class = AutoSarimaConfig
-    require_even_sampling = True
-    require_univariate = True
 
     def _generate_sarima_parameters(self, train_data: TimeSeries) -> dict:
         y = train_data.univariates[self.target_name].np_values
@@ -365,7 +363,7 @@ class AutoSarima(SeasonalityLayer):
         model.reset()
         self.set_theta(model, best_model_theta, train_data)
 
-        model.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
+        model.train_pre_process(train_data)
         model.model = best_model_fit
         name = model.target_name
         train_data = train_data.univariates[name].to_pd()

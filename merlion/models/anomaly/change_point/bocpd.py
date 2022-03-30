@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -159,6 +159,14 @@ class BOCPD(ForecastingDetectorBase):
         self.pw_model: List[Tuple[pd.Timestamp, ConjPrior]] = []
 
     @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
+
+    @property
     def last_train_time(self):
         return None if len(self.train_timestamps) == 0 else to_pd_datetime(self.train_timestamps[-1])
 
@@ -258,9 +266,7 @@ class BOCPD(ForecastingDetectorBase):
             _, data = train_data.bisect(t0, t_in_left=False)
             self.pw_model.append((t0, self.change_kind.value(data)))
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         # BOCPD doesn't _require_ target_seq_index to be specified, but train_pre_process() does.
         if self.target_seq_index is None and train_data.dim > 1:
             self.config.target_seq_index = 0
@@ -268,7 +274,7 @@ class BOCPD(ForecastingDetectorBase):
                 f"Received a {train_data.dim}-variate time series, but `target_seq_index` was not "
                 f"specified. Setting `target_seq_index = 0` so the `forecast()` method will work."
             )
-        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+        train_data = super().train_pre_process(train_data)
         # We manually update self.train_data in update(), so do nothing here
         self.train_data = None
         return train_data
@@ -451,35 +457,32 @@ class BOCPD(ForecastingDetectorBase):
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
+        # If not automatically detecting the change kind, train as normal
+        if self.change_kind is not ChangeKind.Auto:
+            return super().train(train_data, anomaly_labels, train_config, post_rule_train_config)
 
         # If automatically detecting the change kind, train candidate models with each change kind
         # TODO: abstract this logic into a merlion.models.automl.GridSearch object?
-        if self.change_kind is ChangeKind.Auto:
-            candidates = []
-            for change_kind in ChangeKind:
-                if change_kind is ChangeKind.Auto:
-                    continue
-                candidate = copy.deepcopy(self)
-                candidate.config.change_kind = change_kind
-                train_scores = candidate.train(train_data, anomaly_labels, train_config, post_rule_train_config)
-                log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam])
-                candidates.append((candidate, train_scores, log_likelihood))
-                logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
+        candidates = []
+        for change_kind in ChangeKind:
+            if change_kind is ChangeKind.Auto:
+                continue
+            candidate = copy.deepcopy(self)
+            candidate.config.change_kind = change_kind
+            train_scores = candidate.train(train_data, anomaly_labels, train_config, post_rule_train_config)
+            log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam])
+            candidates.append((candidate, train_scores, log_likelihood))
+            logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
 
-            # Choose the model with the best log likelihood
-            i_best = np.argmax([candidate[2] for candidate in candidates])
-            best, train_scores, _ = candidates[i_best]
-            self.__setstate__(best.__getstate__())
-            logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
-
-        # Otherwise, just train as normal
-        else:
-            self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-            train_scores = self.update(time_series=train_data)
-            self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
-
-        # Return the anomaly scores on the training data
+        # Choose the model with the best log likelihood
+        i_best = np.argmax([candidate[2] for candidate in candidates])
+        best, train_scores, _ = candidates[i_best]
+        self.__setstate__(best.__getstate__())
+        logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
         return train_scores
+
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         if time_series_prev is not None:

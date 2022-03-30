@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -124,6 +124,14 @@ class DynamicBaseline(DetectorBase):
         self._data = UnivariateTimeSeries.empty()
 
     @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return True
+
+    @property
     def train_window(self):
         return pd.to_timedelta(self.config.train_window)
 
@@ -162,26 +170,14 @@ class DynamicBaseline(DetectorBase):
 
         return data.window(t0=t0, tf=tf, include_tf=True)
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        """
-        :param train_data: train_data[t] = (timestamp_t, value_t)
-        :param anomaly_labels: anomaly_labels[i] = (timestamp_i, is_anom(timestamp_i))
-        :param train_config: unused
-        :param post_rule_train_config: config to train the post rule
-
-        :return: anomaly scores of training data
-        """
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=True)
-
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> TimeSeries:
         self.last_train_time = pd.Timestamp.min
-        train_data = train_data.squeeze()
+        train_data = UnivariateTimeSeries.from_pd(train_data.iloc[:, 0])
         rel_train_data = self.get_relevant(train_data)
 
         if rel_train_data.is_empty():
             logger.warning("relevant `train_data` is empty.")
-            return
+            return None
 
         self.last_train_time = rel_train_data.tf
         for t, x in rel_train_data:
@@ -189,8 +185,7 @@ class DynamicBaseline(DetectorBase):
 
         # only keep data for rolling case
         self.data = UnivariateTimeSeries.empty() if self.has_fixed_period else rel_train_data
-        train_scores = self.get_anomaly_score(train_data.to_ts())
-        self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
+        train_scores = self._get_anomaly_score(train_data)
         return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
@@ -199,8 +194,10 @@ class DynamicBaseline(DetectorBase):
         :param time_series_prev: ignored
         """
         time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        self.check_dim(time_series)
+        return self._get_anomaly_score(time_series)
 
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> TimeSeries:
+        time_series = TimeSeries.from_pd(time_series)
         scores = [self.segmenter.score(t, x) for t, (x,) in time_series]
         return UnivariateTimeSeries(time_series.time_stamps, scores, "anom_score").to_ts()
 
@@ -215,17 +212,9 @@ class DynamicBaseline(DetectorBase):
             UnivariateTimeSeries(time_stamps, err.tolist(), "err").to_ts(),
         )
 
-    def check_dim(self, time_series):
-        assert time_series.dim == 1, (
-            f"{type(self).__name__} model only accepts univariate time "
-            f"series, but time series (after transform {self.transform}) "
-            f"has dimension {time_series.dim}"
-        )
-
     def update(self, new_data: TimeSeries):
         assert self.last_train_time is not None, "The model must be initially trained before it can be updated"
 
-        self.check_dim(new_data)
         new_data = self.transform(new_data).squeeze()
         new_data = self.get_relevant(new_data)
 

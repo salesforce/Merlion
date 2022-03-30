@@ -7,6 +7,11 @@
 """
 The LSTM-encoder-decoder-based anomaly detector for multivariate time series
 """
+from typing import Sequence
+
+import numpy as np
+import pandas as pd
+
 try:
     import torch
     import torch.nn as nn
@@ -18,8 +23,6 @@ except ImportError as e:
     )
     raise ImportError(str(e) + ". " + err)
 
-import numpy as np
-from typing import Sequence
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
@@ -91,19 +94,26 @@ class LSTMED(DetectorBase):
         self.lstmed = None
         self.data_dim = None
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
+
     def _build_model(self, dim):
         return LSTMEDModule(dim, self.hidden_size, self.n_layers, self.dropout, self.device)
 
-    def _train(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
-        train_x = InputData(X, k=self.sequence_length)
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        index = train_data.index
+        train_data = train_data.values
+        train_x = InputData(train_data, k=self.sequence_length)
         train_loader = DataLoader(
             dataset=train_x, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
         )
-        self.data_dim = X.shape[1]
-        self.lstmed = self._build_model(X.shape[1]).to(self.device)
+        self.data_dim = train_data.shape[1]
+        self.lstmed = self._build_model(train_data.shape[1]).to(self.device)
         optimizer = torch.optim.Adam(self.lstmed.parameters(), lr=self.lr)
         loss_func = torch.nn.MSELoss(reduction="sum")
         bar = ProgressBar(total=self.num_epochs)
@@ -121,6 +131,8 @@ class LSTMED(DetectorBase):
                 total_loss += loss
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_loader)))
+
+        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
 
     def _detect(self, X):
         """
@@ -147,36 +159,6 @@ class LSTMED(DetectorBase):
 
     def _get_sequence_len(self):
         return self.sequence_length
-
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        """
-        Train a multivariate time series anomaly detector.
-
-        :param train_data: A `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: A `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
-
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
-        """
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-
-        train_df = train_data.align().to_pd()
-        self._train(train_df.values)
-        scores = batch_detect(self, train_df.values)
-
-        train_scores = TimeSeries({"anom_score": UnivariateTimeSeries(train_data.time_stamps, scores)})
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         """

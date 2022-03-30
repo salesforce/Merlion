@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -35,18 +35,9 @@ class MSESDetector(ForecastingDetectorBase, MSES):
     def online_updates(self):
         return self.config.online_updates
 
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        if train_config is None:
-            train_cadence = 1 if self.online_updates else None
-            train_config = MSESTrainConfig(train_cadence=train_cadence)
-        return super().train(
-            train_data=train_data,
-            anomaly_labels=anomaly_labels,
-            train_config=train_config,
-            post_rule_train_config=post_rule_train_config,
-        )
+    @property
+    def _default_train_config(self):
+        return MSESTrainConfig(train_cadence=1 if self.online_updates else None)
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         if self.online_updates:
