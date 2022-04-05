@@ -208,27 +208,21 @@ class Prophet(SeasonalityModel, ForecasterBase):
         err = pd.DataFrame(np.std(samples, axis=-1), index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
 
-    def _forecast(self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False):
-        raise NotImplementedError("Prophet.forecast() has enough custom behavior that we don't implement _forecast()")
-
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr=False,
-        return_prev=False,
-    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         if isinstance(time_stamps, (int, float)):
             times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
-        else:
-            times = to_pd_datetime(time_stamps)
+            time_stamps = to_timestamp(times)
+        return time_stamps
 
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # Construct data frame for prophet
         df = pd.DataFrame()
+        times = to_pd_datetime(time_stamps)
         if time_series_prev is not None:
-            series = self.transform(time_series_prev)
-            series = series.univariates[series.names[self.target_seq_index]]
-            df = pd.DataFrame({"ds": series.index, "y": series.np_values})
+            series = time_series_prev.iloc[:, self.target_seq_index]
+            df = pd.DataFrame({"ds": series.index, "y": series.values})
         df = df.append(pd.DataFrame({"ds": times}))
 
         # Get MAP estimate from prophet
@@ -238,7 +232,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
 
         # Use posterior sampling get the uncertainty for this forecast
         if time_series_prev is not None:
-            time_stamps_full = time_series_prev.time_stamps + time_stamps
+            time_stamps_full = to_timestamp(time_series_prev.index).tolist() + time_stamps
         else:
             time_stamps_full = time_stamps
 
@@ -259,19 +253,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
         else:
             t = time_stamps_full
 
-        t = t[-len(yhat) :]
+        t = to_pd_datetime(t[-len(yhat) :])
         samples = self.resid_samples[-len(yhat) :]
         name = self.target_name
-        if return_iqr:
-            lb = UnivariateTimeSeries(
-                name=f"{name}_lower", time_stamps=t, values=yhat + np.percentile(samples, 25, axis=-1)
-            ).to_ts()
-            ub = UnivariateTimeSeries(
-                name=f"{name}_upper", time_stamps=t, values=yhat + np.percentile(samples, 75, axis=-1)
-            ).to_ts()
-            yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
-            return yhat, ub, lb
-        else:
-            yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
-            err = UnivariateTimeSeries(t, np.std(samples, axis=-1), f"{name}_err").to_ts()
-            return yhat, err
+        yhat = pd.DataFrame(yhat, index=t, columns=[name])
+        err = pd.DataFrame(np.std(samples, axis=-1), index=t, columns=[f"{name}_err"])
+        return yhat, err
