@@ -25,7 +25,7 @@ import pandas as pd
 
 from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
-from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -207,6 +207,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
         yhat = pd.DataFrame(forecast, index=df.ds, columns=[self.target_name])
         err = pd.DataFrame(np.std(samples, axis=-1), index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
+
+    def _forecast(self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False):
+        raise NotImplementedError("Prophet.forecast() has enough custom behavior that we don't implement _forecast()")
 
     def forecast(
         self,

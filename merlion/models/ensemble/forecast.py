@@ -65,6 +65,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             )
         return super().train_pre_process(train_data=train_data)
 
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
+        return time_stamps
+
     def _train(
         self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:
@@ -164,45 +167,19 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             logger.info(f"Models used (of {len(self.models)}): {', '.join(used)}")
         return self.combiner(full_preds, None), err
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr: bool = False,
-        return_prev: bool = False,
-    ) -> Union[Tuple[TimeSeries, Union[TimeSeries, None]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
-        if time_series_prev is not None:
-            time_series_prev = self.transform(time_series_prev)
-
+    def _forecast(
+        self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev: bool = False
+    ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
         preds, errs = [], []
+        time_series_prev = TimeSeries.from_pd(time_series_prev)
         for model, used in zip(self.models, self.models_used):
             if used:
                 pred, err = model.forecast(
-                    time_stamps=time_stamps,
-                    time_series_prev=time_series_prev,
-                    return_iqr=False,
-                    return_prev=return_prev,
+                    time_stamps=time_stamps, time_series_prev=time_series_prev, return_prev=return_prev
                 )
                 preds.append(pred)
                 errs.append(err)
 
         pred = self.combiner(preds, None)
         err = None if any(e is None for e in errs) else self.combiner(errs, None)
-        if return_iqr:
-            if err is None:
-                raise RuntimeError(
-                    f"ForecasterEnsemble of {[type(m).__name__ for m in self.models]}"
-                    f"does not support uncertainty estimates"
-                )
-            name = pred.names[0]
-            yhat = pred.univariates[name].to_pd()
-            err = err.univariates[err.names[0]].to_pd()
-            lb = UnivariateTimeSeries(
-                name=f"{name}_lower", time_stamps=time_stamps, values=yhat + norm.ppf(0.25) * err
-            ).to_ts()
-            ub = UnivariateTimeSeries(
-                name=f"{name}_upper", time_stamps=time_stamps, values=yhat + norm.ppf(0.75) * err
-            ).to_ts()
-            return pred, lb, ub
-
-        return pred, err
+        return pred.to_pd(), err.to_pd()

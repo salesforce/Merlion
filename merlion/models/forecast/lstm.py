@@ -20,7 +20,6 @@ except ImportError as e:
     raise ImportError(str(e) + ". " + err)
 
 import bisect
-from copy import deepcopy
 import datetime
 import logging
 import os
@@ -35,7 +34,7 @@ from merlion.transform.normalize import MeanVarNormalize
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.resample import TemporalResample
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import to_timestamp, TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import to_pd_datetime, to_timestamp, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -258,7 +257,7 @@ class LSTM(ForecasterBase):
             self.model.cuda()
         self.optimizer = None
         self.seq_len = None
-        self._forecast = [0.0 for _ in range(self.max_forecast_steps)]
+        self._forecast_vals = [0.0 for _ in range(self.max_forecast_steps)]
 
     @property
     def require_even_sampling(self) -> bool:
@@ -377,42 +376,25 @@ class LSTM(ForecasterBase):
         with torch.no_grad():
             n = self.max_forecast_steps
             preds = self.model(vals[:, :-n], future=n).squeeze().tolist()
-            self._forecast = self.model(vals, future=n).squeeze().tolist()[-n:]
+            self._forecast_vals = self.model(vals, future=n).squeeze().tolist()[-n:]
 
         return pd.DataFrame(preds, index=ts.index, columns=[self.target_name]), None
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr=False,
-        return_prev=False,
-    ) -> Tuple[TimeSeries, None]:
-        assert not return_iqr, "LSTM does not support uncertainty estimates"
-
-        orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
-        time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, None]:
         n = len(time_stamps)
 
         if time_series_prev is None:
-            yhat = self._forecast[:n]
-            yhat = UnivariateTimeSeries(time_stamps, yhat, self.target_name)
-            return yhat.to_ts().align(reference=orig_t), None
+            yhat = self._forecast_vals[:n]
+            yhat = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
+            return yhat, None
 
         # TODO: should we truncate time_series_prev to just the last
         #      (self.seq_len - self.max_forecast_steps) time steps?
         #      This would better match the training distribution
-        time_series_prev = self.transform(time_series_prev)
-        if time_series_prev.dim != 1:
-            raise RuntimeError(
-                f"Transform {self.transform} transforms data into a multi-"
-                f"variate time series, but model {type(self).__name__} can "
-                f"only handle uni-variate time series. Change the transform."
-            )
-
-        k = time_series_prev.names[self.target_seq_index]
-        time_series_prev = time_series_prev.univariates[k]
-        vals = torch.FloatTensor([time_series_prev.np_values])
+        time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
+        vals = torch.FloatTensor([time_series_prev.values])
         if torch.cuda.is_available():
             vals = vals.cuda()
             self.model.cuda()
@@ -420,11 +402,9 @@ class LSTM(ForecasterBase):
             yhat = self.model(vals, future=n).squeeze().tolist()
 
         if return_prev:
-            t_prev = time_series_prev.time_stamps
-            time_stamps = t_prev + time_stamps
-            orig_t = None if orig_t is None else t_prev + orig_t
+            time_stamps = to_timestamp(time_series_prev.index) + time_stamps
         else:
             yhat = yhat[-n:]
 
-        yhat = UnivariateTimeSeries(time_stamps, yhat, self.target_name)
-        return yhat.to_ts().align(reference=orig_t), None
+        yhat = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
+        return yhat, None

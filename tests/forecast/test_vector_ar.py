@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -80,9 +80,9 @@ class TestVectorAR(unittest.TestCase):
         resid = self.model.model.resid
         resid = resid if univariate else resid.iloc[:, self.i]
 
+        forecast = self.model.forecast(self.max_forecast_steps)[0]
         self.assertAlmostEqual(np.max(np.abs((y - yhat) - resid)), 0, places=6)
-        self.assertEqual(len(self.model._forecast), self.max_forecast_steps)
-        self.assertAlmostEqual(self.model._forecast.mean(), 0.5, delta=0.1)
+        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
         testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, err = self.model.forecast(testing_label.time_stamps, testing_instance)

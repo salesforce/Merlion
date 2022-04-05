@@ -11,7 +11,7 @@ functionality. This is the basis for `default models <merlion.models.defaults>`_
 """
 import copy
 import logging
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 import pandas as pd
 
@@ -297,6 +297,9 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError("Layered model _train() should not be called.")
+
+    def _forecast(self, time_stamps: List[int], time_series_prev: TimeSeries = None, return_prev=False):
+        raise NotImplementedError("Layered model _forecast() should not be called.")
 
     def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
         if time_series_prev is not None:

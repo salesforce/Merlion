@@ -13,10 +13,11 @@ import logging
 from typing import List, Optional, Tuple, Union
 
 import pandas as pd
+from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries
+from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +79,10 @@ class ForecasterBase(ModelBase):
             general multivariate time series) whose value we would like to forecast.
         """
         return self.config.target_seq_index
+
+    @property
+    def _online_model(self) -> bool:
+        return False
 
     @property
     def require_univariate(self) -> bool:
@@ -168,7 +173,6 @@ class ForecasterBase(ModelBase):
     def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
-    @abstractmethod
     def forecast(
         self,
         time_stamps: Union[int, List[int]],
@@ -203,6 +207,56 @@ class ForecasterBase(ModelBase):
             - ``forecast_lb``: 25th percentile of forecast values for each timestamp
             - ``forecast_ub``: 75th percentile of forecast values for each timestamp
         """
+        # determine the time stamps to forecast for, and resample them if needed
+        orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
+        time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
+        if return_prev and time_series_prev is not None:
+            if orig_t is None:
+                orig_t = time_series_prev.time_stamps + time_stamps
+            else:
+                orig_t = time_series_prev.time_stamps + orig_t
+
+        # transform time_series_prev if relevant (before making the prediction)
+        if time_series_prev is not None:
+            tf = to_pd_datetime(self.last_train_time + self.timedelta)
+            time_series_prev = self.transform(time_series_prev)
+            assert time_series_prev.dim == self.dim, (
+                f"time_series_prev has dimension of {time_series_prev.dim} that is different from "
+                f"training data dimension of {self.dim} for the model"
+            )
+            if self._online_model and time_series_prev.index[-1] < tf:
+                time_series_prev = None
+            else:
+                time_series_prev = time_series_prev.to_pd()
+
+        # Make the prediction
+        forecast, err = self._forecast(time_stamps=time_stamps, time_series_prev=time_series_prev)
+
+        # Format the return value(s)
+        if return_iqr and err is None:
+            raise RuntimeError("Model does not support uncertainty estimation, but got return_iqr=True")
+        elif return_iqr:
+            if isinstance(err, tuple) and len(err) == 2:
+                d_neg, d_pos = (err[0] * norm.ppf(0.25)).values, (err[1] * norm.ppf(0.75)).values
+            else:
+                d_neg = d_pos = err.values
+            lb = TimeSeries.from_pd((forecast + d_neg).rename(columns=lambda c: f"{c}_lower")).align(reference=orig_t)
+            ub = TimeSeries.from_pd((forecast + d_pos).rename(columns=lambda c: f"{c}_upper")).align(reference=orig_t)
+            forecast = TimeSeries.from_pd(forecast).align(reference=orig_t)
+            return forecast, lb, ub
+        else:
+            if isinstance(err, tuple) and len(err) == 2:
+                index = err[0].index
+                err = (err[0].abs().values + err[1].abs().values) / 2
+                err = pd.DataFrame(err, index=index, columns=[f"{c}_err" for c in forecast.columns])
+            forecast = TimeSeries.from_pd(forecast).align(reference=orig_t)
+            err = None if err is None else TimeSeries.from_pd(err).align(reference=orig_t)
+            return forecast, err
+
+    @abstractmethod
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
         raise NotImplementedError
 
     def batch_forecast(

@@ -272,11 +272,10 @@ class MSES(ForecasterBase):
         return train_forecast, train_err
 
     def update(
-        self, new_data: TimeSeries, tune_recency_weights: bool = True, train_cadence=None
+        self, new_data: pd.DataFrame, tune_recency_weights: bool = True, train_cadence=None
     ) -> Tuple[TimeSeries, TimeSeries]:
         """
-        Updates the MSES model with new data that has been acquired since the model's
-        initial training.
+        Updates the MSES model with new data that has been acquired since the model's initial training.
 
         :param new_data: New data that has occured since the last training time.
         :param tune_recency_weights: If True, the model will first forecast the values at the
@@ -286,13 +285,13 @@ class MSES(ForecasterBase):
             during incremental training.
         """
         name = self.target_name
-        if new_data.is_empty():
+        if len(new_data) == 0:
             return (
                 UnivariateTimeSeries.empty(name=name).to_ts(),
                 UnivariateTimeSeries.empty(name=f"{name}_err").to_ts(),
             )
-        new_data = self.transform(new_data).univariates[name]
 
+        new_data = TimeSeries.from_pd(new_data).univariates[name]
         assert_equal_timedeltas(new_data, self.timedelta)
         next_train_time = self.last_train_time + self.timedelta
         if to_pd_datetime(new_data.t0) > next_train_time:
@@ -319,8 +318,8 @@ class MSES(ForecasterBase):
         )
 
     def _compute_losses(
-        self, data: UnivariateTimeSeries, return_forecast: bool = False, return_iqr: bool = False
-    ) -> Union[Dict[int, List[float]], Tuple[Dict[int, List[float]], TimeSeries]]:
+        self, data: UnivariateTimeSeries, return_forecast: bool = False
+    ) -> Union[Dict[int, List[float]], Tuple[Dict[int, List[float]], Tuple[TimeSeries, TimeSeries]]]:
         """
         Computes forecast losses at every point possible in data for every backstep, and
         then associates the losses with the relevant scale.
@@ -352,84 +351,39 @@ class MSES(ForecasterBase):
         forecast = [self.marginalize_xhat_h(i + 1, xhat_h) for i, xhat_h in enumerate(xhat_hb)]
         xhat, neg_err, pos_err = [[f[i] for f in forecast] for i in (0, 1, 2)]
 
-        if not return_iqr:
-            err = UnivariateTimeSeries(
-                time_stamps=forecastable_data.time_stamps,
-                name=f"{name}_err",
-                values=(np.abs(pos_err) + np.abs(neg_err)) / 2,
-            ).to_ts()
-            xhat = UnivariateTimeSeries(time_stamps=forecastable_data.time_stamps, values=xhat, name=name).to_ts()
-            return losses, (xhat, err)
-
-        # return forecast with iqr
-        t = forecastable_data.time_stamps
-        lb = UnivariateTimeSeries(
-            name=f"{name}_lower", time_stamps=t, values=xhat + norm.ppf(0.75) * np.asarray(neg_err)
+        err = UnivariateTimeSeries(
+            time_stamps=forecastable_data.time_stamps,
+            name=f"{name}_err",
+            values=(np.abs(pos_err) + np.abs(neg_err)) / 2,
         ).to_ts()
-        ub = UnivariateTimeSeries(
-            name=f"{name}_upper", time_stamps=t, values=xhat + norm.ppf(0.75) * np.asarray(pos_err)
-        ).to_ts()
-        xhat = UnivariateTimeSeries(t, xhat, name).to_ts()
-        return losses, (xhat, lb, ub)
+        xhat = UnivariateTimeSeries(time_stamps=forecastable_data.time_stamps, values=xhat, name=name).to_ts()
+        return losses, (xhat, err)
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr: bool = False,
-        return_prev: bool = False,
-    ) -> Tuple[TimeSeries, None]:
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, Union[None, Tuple[pd.DataFrame, pd.DataFrame]]]:
 
-        orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
-        time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
-
-        if time_series_prev is not None and not time_series_prev.is_empty():
+        if time_series_prev is not None and len(time_series_prev) > 0:
             self.update(time_series_prev)
-            prev = self.transform(time_series_prev)
-            prev = time_series_prev.univariates[prev.names[self.target_seq_index]]
-            prev_t = prev.time_stamps
-            prev_x = prev.values
 
         # forecast
         forecast = [self.marginalize_xhat_h(h, self.xhat_h(h)) for h in range(1, len(time_stamps) + 1)]
         xhat, neg_err, pos_err = [[f[i] for f in forecast] for i in (0, 1, 2)]
 
         if return_prev and time_series_prev is not None:
-            assert not return_iqr, "MSES does not yet support uncertainty for previous time series"
-            xhat = prev_x + xhat
-            time_stamps = prev_t + time_stamps
-            orig_t = None if orig_t is None else prev_t + orig_t
+            prev = time_series_prev.iloc[:, self.target_seq_index]
+            xhat = prev.values.tolist() + xhat
+            time_stamps = to_timestamp(prev.index) + time_stamps
 
+        # convert to dataframes
         name = self.target_name
-        if return_iqr:
-            lb = (
-                UnivariateTimeSeries(
-                    name=f"{name}_lower", time_stamps=time_stamps, values=xhat + norm.ppf(0.75) * np.asarray(neg_err)
-                )
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            ub = (
-                UnivariateTimeSeries(
-                    name=f"{name}_upper", time_stamps=time_stamps, values=xhat + norm.ppf(0.75) * np.asarray(pos_err)
-                )
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            xhat = UnivariateTimeSeries(time_stamps, xhat, name).to_ts().align(reference=orig_t)
-            return xhat, lb, ub
+        index = to_pd_datetime(time_stamps)
+        xhat = pd.DataFrame(xhat, index=index, columns=[name])
+        neg_err = pd.DataFrame(np.abs(neg_err), index=index, columns=[f"{name}_neg_err"])
+        pos_err = pd.DataFrame(np.abs(pos_err), index=index, columns=[f"{name}_pos_err"])
+        return xhat, (neg_err, pos_err)
 
-        xhat = UnivariateTimeSeries(time_stamps, xhat, name).to_ts().align(reference=orig_t)
-        err = (
-            UnivariateTimeSeries(
-                time_stamps=time_stamps, name=f"{name}_err", values=(np.abs(pos_err) + np.abs(neg_err)) / 2
-            )
-            .to_ts()
-            .align(reference=orig_t)
-        )
-        return xhat, err
-
-    def _forecast(self, horizon: int, backstep: int) -> Optional[float]:
+    def _forecast_hb(self, horizon: int, backstep: int) -> Optional[float]:
         """
         Returns the forecast at input horizon using input backstep.
         """
@@ -444,7 +398,7 @@ class MSES(ForecasterBase):
         """
         Returns the forecasts for the input horizon at every backstep.
         """
-        return [self._forecast(horizon, backstep) for backstep in self.backsteps]
+        return [self._forecast_hb(horizon, backstep) for backstep in self.backsteps]
 
     def marginalize_xhat_h(self, horizon: int, xhat_h: List[Optional[float]]):
         """

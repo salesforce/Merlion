@@ -298,10 +298,11 @@ class UnivariateTimeSeries(pd.Series):
         """
         if series is None:
             return None
-        elif isinstance(series, UnivariateTimeSeries):
+        if isinstance(series, UnivariateTimeSeries):
             return series
-        else:
-            return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
+        if isinstance(series, pd.DataFrame) and series.shape[1] == 1:
+            series = series.iloc[:, 0]
+        return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
 
     def to_ts(self, name=None):
         """
@@ -439,8 +440,7 @@ class TimeSeries:
                 univariates = ValIterOrderedDict(enumerate(univariates))
         else:
             raise TypeError(
-                "Expected univariates to be either a "
-                "`Sequence[UnivariateTimeSeries]` or a "
+                "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
                 "`Mapping[Hashable, UnivariateTimeSeries]`."
             )
         assert len(univariates) > 0
@@ -752,9 +752,9 @@ class TimeSeries:
         elif isinstance(df, TimeSeries):
             return df
         elif isinstance(df, UnivariateTimeSeries):
-            return cls({df.name: df})
+            return cls([df])
         elif isinstance(df, pd.Series):
-            return cls({df.name: UnivariateTimeSeries.from_pd(df[~df.isna()])})
+            return cls([UnivariateTimeSeries.from_pd(df[~df.isna()])])
         elif isinstance(df, np.ndarray):
             arr = df.reshape(len(df), -1).T
             ret = cls([UnivariateTimeSeries(time_stamps=None, values=v, freq=freq) for v in arr], check_aligned=False)
