@@ -219,43 +219,28 @@ class Prophet(SeasonalityModel, ForecasterBase):
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # Construct data frame for prophet
         df = pd.DataFrame()
-        times = to_pd_datetime(time_stamps)
+        time_stamps = to_pd_datetime(time_stamps)
         if time_series_prev is not None:
             series = time_series_prev.iloc[:, self.target_seq_index]
             df = pd.DataFrame({"ds": series.index, "y": series.values})
-        df = df.append(pd.DataFrame({"ds": times}))
+        df = df.append(pd.DataFrame({"ds": time_stamps}))
+
+        # Determine the right set of timestamps to use
+        if return_prev and time_series_prev is not None:
+            time_stamps = df["ds"]
 
         # Get MAP estimate from prophet
         self.model.uncertainty_samples = 0
         yhat = self.model.predict(df)["yhat"].values
         self.model.uncertainty_samples = self.uncertainty_samples
 
-        # Use posterior sampling get the uncertainty for this forecast
-        if time_series_prev is not None:
-            time_stamps_full = to_timestamp(time_series_prev.index).tolist() + time_stamps
-        else:
-            time_stamps_full = time_stamps
+        # Get posterior samples for uncertainty estimation
+        resid_samples = self.model.predictive_samples(df)["yhat"] - np.expand_dims(yhat, -1)
 
-        if self.last_forecast_time_stamps_full != time_stamps_full:
-            samples = self.model.predictive_samples(df)["yhat"]
-            self.last_forecast_time_stamps_full = time_stamps_full
-            if self.last_forecast_time_stamps != time_stamps:
-                self.resid_samples = samples - np.expand_dims(yhat, -1)
-                self.last_forecast_time_stamps = time_stamps
-            else:
-                n = len(time_stamps)
-                prev = samples[:-n] - np.expand_dims(yhat[:-n], -1)
-                self.resid_samples = np.concatenate((prev, self.resid_samples))
-
-        if not return_prev:
-            yhat = yhat[-len(time_stamps) :]
-            t = time_stamps
-        else:
-            t = time_stamps_full
-
-        t = to_pd_datetime(t[-len(yhat) :])
-        samples = self.resid_samples[-len(yhat) :]
+        # Return the MAP estimate & stderr
+        yhat = yhat[-len(time_stamps) :]
+        resid_samples = resid_samples[-len(time_stamps) :]
         name = self.target_name
-        yhat = pd.DataFrame(yhat, index=t, columns=[name])
-        err = pd.DataFrame(np.std(samples, axis=-1), index=t, columns=[f"{name}_err"])
+        yhat = pd.DataFrame(yhat, index=time_stamps, columns=[name])
+        err = pd.DataFrame(np.std(resid_samples, axis=-1), index=time_stamps, columns=[f"{name}_err"])
         return yhat, err

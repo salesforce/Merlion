@@ -78,10 +78,17 @@ class TestProphet(unittest.TestCase):
         logger.info("max score = " + str(max(scores)))
         logger.info("min score = " + str(min(scores)) + "\n")
 
+        # alarm function returns the post-rule processed anomaly scores
+        alarms = self.model.get_anomaly_label(self.vals_test)
+        n_alarms = np.sum(alarms.to_pd().values != 0)
+        logger.info(f"Alarms look like:\n{alarms[:5]}")
+        logger.info(f"Number of alarms: {n_alarms}\n")
+        self.assertLessEqual(n_alarms, 15)
+
         logger.info("Verifying that scores don't change much on re-evaluation...\n")
         scoresv2 = self.model.get_anomaly_score(self.vals_test, self.vals_train)
         scoresv2 = scoresv2.to_pd().values.flatten()
-        self.assertAlmostEqual(np.max(np.abs(scores - scoresv2)), 0, delta=1e-4)
+        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv2)), 0, delta=0.05)
 
         # We test save/load AFTER our first prediction because we need the old
         # posterior samples for reproducibility
@@ -90,14 +97,7 @@ class TestProphet(unittest.TestCase):
         loaded_model = AutoProphet.load(dirname=join(rootdir, "tmp", "prophet"))
         scoresv3 = loaded_model.get_anomaly_score(self.vals_test)
         scoresv3 = scoresv3.to_pd().values.flatten()
-        self.assertAlmostEqual(np.max(np.abs(scores - scoresv3)), 0, delta=1e-4)
-
-        # alarm function returns the post-rule processed anomaly scores
-        alarms = self.model.get_anomaly_label(self.vals_test)
-        n_alarms = np.sum(alarms.to_pd().values != 0)
-        logger.info(f"Alarms look like:\n{alarms[:5]}")
-        logger.info(f"Number of alarms: {n_alarms}\n")
-        self.assertLessEqual(n_alarms, 15)
+        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv3)), 0, delta=0.05)
 
 
 if __name__ == "__main__":
