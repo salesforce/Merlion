@@ -12,6 +12,8 @@ import sys
 import unittest
 
 from merlion.transform.base import Identity
+from merlion.transform.moving_average import DifferenceTransform
+from merlion.transform.normalize import PowerTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.plot import plot_anoms, plot_anoms_plotly
@@ -35,15 +37,30 @@ class TestPlot(unittest.TestCase):
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
-        self.model = ProphetDetector(ProphetDetectorConfig(transform=Identity(), uncertainty_samples=1000))
 
     def test_plot(self):
         print("-" * 80)
         logger.info("test_plot\n" + "-" * 80 + "\n")
+        self._test_plot(transform=Identity(), invert_transform=False, subdir="basic")
+
+    def test_plot_transform_inv(self):
+        print("-" * 80)
+        logger.info("test_plot_transform_inv\n" + "-" * 80 + "\n")
+        self._test_plot(transform=PowerTransform(), invert_transform=True, subdir="transform_inv")
+
+    def test_plot_transform_no_inv(self):
+        print("-" * 80)
+        logger.info("test_plot_transform_no_inv\n" + "-" * 80 + "\n")
+        self._test_plot(transform=DifferenceTransform(), invert_transform=False, subdir="transform_no_inv")
+
+    def _test_plot(self, transform, invert_transform, subdir):
         logger.info("Training model...\n")
+        self.model = ProphetDetector(
+            ProphetDetectorConfig(transform=transform, invert_transform=invert_transform, uncertainty_samples=1000)
+        )
         self.model.train(self.vals_train)
 
-        figdir = join(rootdir, "tmp", "plot")
+        figdir = join(rootdir, "tmp", "plot", subdir)
         os.makedirs(figdir, exist_ok=True)
 
         # Test various plots with matplotlib

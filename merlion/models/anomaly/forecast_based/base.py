@@ -76,17 +76,22 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         return DetectorBase.train(self, train_data, anomaly_labels, train_config, post_rule_train_config)
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> TimeSeries:
+        # Note: the train data is transformed, as are the forecasts. So we compute anomaly scores w/ transformed data.
         forecast, err = super()._train(train_data, train_config)
         train_data, forecast, err = [TimeSeries.from_pd(x) for x in [train_data, forecast, err]]
         anomaly_scores = self.forecast_to_anom_score(train_data, forecast, err)
         return anomaly_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        name = time_series.names[self.target_seq_index]
-        time_stamps = time_series.univariates[name].time_stamps
-        forecast, err = self.forecast(time_stamps, time_series_prev, return_iqr=False, return_prev=False)
+        # Forecast w/o inverting the transform to compute the anomaly score, since this is how we trained.
+        invert_transform = self.config.invert_transform
+        self.config.invert_transform = False
+        if not self.invert_transform:
+            time_series, _ = self.transform_time_series(time_series, time_series_prev)
+        forecast, err = self.forecast(time_series.time_stamps, time_series_prev)
+        self.config.invert_transform = invert_transform
 
+        # Make sure stderr & forecast are of the appropriate lengths
         assert err is None or len(forecast) == len(err), (
             f"Expected forecast & standard error of forecast to have the same "
             f"length, but len(forecast) = {len(forecast)}, len(err) = {len(err)}"
