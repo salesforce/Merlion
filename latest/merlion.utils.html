@@ -125,7 +125,7 @@
 <h1>merlion.utils package<a class="headerlink" href="#merlion-utils-package" title="Permalink to this headline"></a></h1>
 <p>This package contains various utilities, including the <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> class and
 utilities for resampling time series.</p>
-<span class="target" id="module-merlion.utils"></span><table class="longtable docutils align-default">
+<span class="target" id="module-merlion.utils"></span><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -816,20 +816,18 @@ represented with NaN.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.from_pd">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.from_pd" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.from_pd" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A pandas DataFrame with a DatetimeIndex. Each column
-corresponds to a different variable of the time series, and the
-key of column (in sorted order) give the relative order of those
-variables (in the list self.univariates). Missing values should be
-represented with <code class="docutils literal notranslate"><span class="pre">NaN</span></code>. May also be a pandas Series for univariate
-time series.</p></li>
-<li><p><strong>check_times</strong> – whether to check that all times in the index are
-unique (up to the millisecond) and sorted.</p></li>
-<li><p><strong>freq</strong> – if <code class="docutils literal notranslate"><span class="pre">df</span></code> is not indexed by time, this is the frequency
-at which we will assume it is sampled.</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with a <code class="docutils literal notranslate"><span class="pre">DatetimeIndex</span></code>. Each column corresponds to a different variable of
+the time series, and the  key of column (in sorted order) give the relative order of those variables in
+<code class="docutils literal notranslate"><span class="pre">self.univariates</span></code>. Missing values should be represented with <code class="docutils literal notranslate"><span class="pre">NaN</span></code>. May also be a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>
+for single-variable time series.</p></li>
+<li><p><strong>check_times</strong> – whether to check that all times in the index are unique (up to the millisecond) and sorted.</p></li>
+<li><p><strong>drop_nan</strong> – whether to drop all <code class="docutils literal notranslate"><span class="pre">NaN</span></code> entries before creating the time series. Specifying <code class="docutils literal notranslate"><span class="pre">False</span></code> is
+useful if you wish to impute the values on your own.</p></li>
+<li><p><strong>freq</strong> – if <code class="docutils literal notranslate"><span class="pre">df</span></code> is not indexed by time, this is the frequency at which we will assume it is sampled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -1324,7 +1322,7 @@ that f uses to generate its series.</p>
 <section id="module-merlion.utils.conj_priors">
 <span id="merlion-utils-conj-priors-module"></span><h2>merlion.utils.conj_priors module<a class="headerlink" href="#module-merlion.utils.conj_priors" title="Permalink to this headline"></a></h2>
 <p>Implementations of Bayesian conjugate priors &amp; their online update rules.</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
