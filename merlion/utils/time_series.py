@@ -731,18 +731,16 @@ class TimeSeries:
         self.to_pd().to_csv(file_name)
 
     @classmethod
-    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, freq="1h"):
+    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, drop_nan=True, freq="1h"):
         """
-        :param df: A pandas DataFrame with a DatetimeIndex. Each column
-            corresponds to a different variable of the time series, and the
-            key of column (in sorted order) give the relative order of those
-            variables (in the list self.univariates). Missing values should be
-            represented with ``NaN``. May also be a pandas Series for univariate
-            time series.
-        :param check_times: whether to check that all times in the index are
-            unique (up to the millisecond) and sorted.
-        :param freq: if ``df`` is not indexed by time, this is the frequency
-            at which we will assume it is sampled.
+        :param df: A ``pandas.DataFrame`` with a ``DatetimeIndex``. Each column corresponds to a different variable of
+            the time series, and the  key of column (in sorted order) give the relative order of those variables in
+            ``self.univariates``. Missing values should be represented with ``NaN``. May also be a ``pandas.Series``
+            for single-variable time series.
+        :param check_times: whether to check that all times in the index are unique (up to the millisecond) and sorted.
+        :param drop_nan: whether to drop all ``NaN`` entries before creating the time series. Specifying ``False`` is
+            useful if you wish to impute the values on your own.
+        :param freq: if ``df`` is not indexed by time, this is the frequency at which we will assume it is sampled.
 
         :rtype: TimeSeries
         :return: the `TimeSeries` object corresponding to ``df``.
@@ -754,7 +752,9 @@ class TimeSeries:
         elif isinstance(df, UnivariateTimeSeries):
             return cls([df])
         elif isinstance(df, pd.Series):
-            return cls([UnivariateTimeSeries.from_pd(df[~df.isna()])])
+            if drop_nan:
+                df = df[~df.isna()]
+            return cls({df.name: UnivariateTimeSeries.from_pd(df)})
         elif isinstance(df, np.ndarray):
             arr = df.reshape(len(df), -1).T
             ret = cls([UnivariateTimeSeries(time_stamps=None, values=v, freq=freq) for v in arr], check_aligned=False)
@@ -782,12 +782,18 @@ class TimeSeries:
                 f"type {type(df.index).__name__}"
             )
 
-        ret = cls(
-            ValIterOrderedDict(
-                [(k, UnivariateTimeSeries.from_pd(ser[~ser.isna()], freq=freq)) for k, ser in df.items()]
-            ),
-            check_aligned=False,
-        )
+        if drop_nan:
+            ret = cls(
+                ValIterOrderedDict(
+                    [(k, UnivariateTimeSeries.from_pd(ser[~ser.isna()], freq=freq)) for k, ser in df.items()]
+                ),
+                check_aligned=False,
+            )
+        else:
+            ret = cls(
+                ValIterOrderedDict([(k, UnivariateTimeSeries.from_pd(ser, freq=freq)) for k, ser in df.items()]),
+                check_aligned=False,
+            )
         ret._is_aligned = aligned
         return ret
 
@@ -872,7 +878,7 @@ class TimeSeries:
                     "Attempting to align an empty time series to a set of reference time stamps or a "
                     "fixed granularity. Doing nothing."
                 )
-            return self.__class__.from_pd(self.to_pd())
+            return TimeSeries.from_pd(self.to_pd())
 
         if reference is not None or alignment_policy is AlignPolicy.FixedReference:
             if reference is None:
