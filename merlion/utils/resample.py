@@ -79,7 +79,7 @@ def to_timestamp(t):
     Converts a datetime to a Unix timestamp.
     """
     if isinstance(t, (int, float)) or isinstance(t, Iterable) and all(isinstance(ti, (int, float)) for ti in t):
-        return t
+        return np.asarray(t)
     elif isinstance(t, np.ndarray) and t.dtype in [int, np.float32, np.float64]:
         return t
     return np.asarray(t).astype("datetime64[ms]").astype(float) / 1000

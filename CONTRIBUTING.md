@@ -36,12 +36,11 @@ To implement a new anomaly detector, you need to do the following:
 -   Implement an initializer that takes an instance of this config class, i.e. you can instantiate
     `model = ModelClass(config)`. `ModelClass` should inherit from `DetectorBase`.
 -   Set the model class's class variable `config_class` equal to the `ConfigClass` above
--   Implement the abstract `train()` method, and have it return the model's sequence of anomaly scores on the train
-    data. Note that the `train()` method should include
-    -   a call to `self.transform.train()`, to train the model's data pre-processing transform
-    -   a call to `self.train_post_rule()`, to train the model's post-processing rule for anomaly scores
+-   Implement the abstract `_train()` method, and have it return the model's sequence of anomaly scores on the train
+    data.
 -   Implement the abstract `get_anomaly_score()` method, which returns the model's predicted anomaly score on an
-    input time series. Note that you should transform the input time series using `self.transform(train_data)` before
+    input time series. Note that you should transform the input time series using
+    `time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)` before
     proceeding with predicting anomaly scores.
 
 You may optionally override the following class variables of `ConfigClass` or `ModelClass`:
@@ -67,13 +66,10 @@ To implement a new forecaster, you need to do the following:
 -   Implement an initializer that takes an instance of this config class, i.e. you can instantiate
     `model = ModelClass(config)`. `ModelClass` should inherit from `ForecasterBase`.
 -   Set the model class's class variable `config_class` equal to the `ConfigClass` above
--   Implement the abstract `train()` method, and have it return the model's sequence of predictions on the train
-    data. These predictions should have the same format as the output of `model.forecast()` (see below). Note that the
-    `train()` method should include a call to `self.transform.train(train_data)`, to train the
-    model's data pre-processing transform.
--   Implement the abstract `forecast()` method, which returns the model's forecast (and optionally the standard errors
-    of that forecast) on the timestamps of interest. Note that this method should return a forecast of the
-    *transformed* data, i.e. after `self.transform()` has been applied.
+-   Implement the abstract `_train()` method, and have it return the model's sequence of predictions on the train
+    data. These predictions should have the same format as the output of `model._forecast()` (see below).
+-   Implement the abstract `_forecast()` method, which returns the model's forecast (and optionally the standard errors
+    of that forecast, or `None` if the model does not have uncertainty quantification) on the timestamps of interest.
 
 You may optionally override the class variable `ConfigClass._default_transform`. This is the default data pre-processing
 transform used to process the data before giving it to the model, if the `transform` keyword argument is not
@@ -105,10 +101,10 @@ To implement a new data pre-processing transform, begin by reading the
 [API docs](https://opensource.salesforce.com/Merlion/merlion.transform.html) for the base classes
 `merlion.transform.base.TransformBase` and `merlion.transform.base.InvertibleTransformBase`. Inherit from the
 appropriate base class, depending on whether you transform is invertible. However, even non-invertible transforms
-should support pseudo-inversion. For example, when you resample an input time series with
-`merlion.transform.resample.TemporalResample`, it isn't guaranteed that the original time series can be recovered.
-However, we can approximate the desired inversion by keeping track of the original timestamps, and returning
-*interpolated* values of the resampled time series at the original time stamps.
+should support pseudo-inversion. For example, when you take the moving average of an input time series with
+`merlion.transform.moving_average.MovingAverage`, it isn't guaranteed that the original time series can be recovered.
+However, we can approximate the desired inversion by keeping track of the boundary values and performing a
+de-convolution.
 
 To actually implement a transform, override the abstract methods `train()` (this may be a no-op for
 transforms with no data-dependent parameters), `__call__()` (actually applying the transform), and `_invert` (inverting

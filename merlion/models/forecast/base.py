@@ -227,7 +227,7 @@ class ForecasterBase(ModelBase):
             if orig_t is None:
                 orig_t = time_series_prev.time_stamps + time_stamps
             else:
-                orig_t = time_series_prev.time_stamps + orig_t
+                orig_t = time_series_prev.time_stamps + to_timestamp(orig_t).tolist()
 
         # transform time_series_prev if relevant (before making the prediction)
         old_inversion_state = self.transform.inversion_state

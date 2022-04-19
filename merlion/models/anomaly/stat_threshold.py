@@ -39,7 +39,7 @@ class StatThreshold(DetectorBase):
         return True
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        train_anom_scores = pd.DataFrame(train_data.to_numpy(), columns=["anom_score"])
+        train_anom_scores = pd.DataFrame(train_data.to_numpy(), index=train_data.index, columns=["anom_score"])
         return train_anom_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
