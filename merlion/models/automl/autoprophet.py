@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -15,7 +15,7 @@ from merlion.models.forecast.prophet import Prophet
 
 class AutoProphetConfig(SeasonalityConfig):
     """
-    Config class for Prophet with automatic seasonality detection.
+    Config class for `Prophet` with automatic seasonality detection.
     """
 
     def __init__(
@@ -37,7 +37,7 @@ class AutoProphetConfig(SeasonalityConfig):
 
 class AutoProphet(SeasonalityLayer):
     """
-    Prophet with automatic seasonality detection. Automatically detects and adds
+    `Prophet` with automatic seasonality detection. Automatically detects and adds
     additional seasonalities that the existing Prophet may not detect (e.g. hourly).
     """
 

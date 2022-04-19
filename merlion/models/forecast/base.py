@@ -240,7 +240,7 @@ class ForecasterBase(ModelBase):
                 f"time_series_prev has dimension of {time_series_prev.dim} that is different from "
                 f"training data dimension of {self.dim} for the model"
             )
-            if self._online_model and time_series_prev.index[-1] < tf:
+            if self._online_model and to_pd_datetime(time_series_prev.tf) < tf:
                 time_series_prev = None
                 time_series_prev_df = None
             else:

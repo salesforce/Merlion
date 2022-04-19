@@ -10,7 +10,7 @@ Transforms that compute moving averages and k-step differences.
 
 from collections import OrderedDict
 import logging
-from typing import List, Sequence
+from typing import Sequence
 
 import numpy as np
 import scipy.signal

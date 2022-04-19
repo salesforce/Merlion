@@ -136,7 +136,7 @@ class BOCPDConfig(ForecasterConfig, NoCalibrationDetectorConfig):
         self._change_kind = change_kind
 
 
-class BOCPD(ForecastingDetectorBase):
+class BOCPD(AutoMLMixIn, ForecastingDetectorBase):
     """
     Bayesian online change point detection algorithm described by
     `Adams & MacKay (2007) <https://arxiv.org/abs/0710.3742>`__.
@@ -158,6 +158,10 @@ class BOCPD(ForecastingDetectorBase):
         self.train_timestamps: List[float] = []
         self.full_run_length_posterior = scipy.sparse.dok_matrix((0, 0), dtype=float)
         self.pw_model: List[Tuple[pd.Timestamp, ConjPrior]] = []
+
+    @property
+    def _online_model(self) -> bool:
+        return True
 
     @property
     def require_even_sampling(self) -> bool:
@@ -211,6 +215,50 @@ class BOCPD(ForecastingDetectorBase):
             with likelihood lower than this threshold
         """
         return self.config.min_likelihood
+
+    @property
+    def model(self):
+        """
+        :return: The model itself. Implemented to support the ``train()`` method of `AutoMLMixIn`.
+            The setter is equivalent to calling ``self.__setstate__(model.__getstate__())``.
+        """
+        return self
+
+    @model.setter
+    def model(self, model):
+        self.__setstate__(model.__getstate__())
+
+    def generate_theta(self, train_data: TimeSeries) -> Iterator:
+        if self.change_kind is not ChangeKind.Auto:
+            return iter([self.change_kind])
+        else:
+            return iter(ck for ck in ChangeKind if ck is not ChangeKind.Auto)
+
+    def set_theta(self, model, theta, train_data: TimeSeries = None):
+        model.config.change_kind = theta
+
+    def evaluate_theta(
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+    ) -> Tuple[float, ModelBase, TimeSeries]:
+        # If not automatically detecting the change kind, train as normal
+        if self.change_kind is not ChangeKind.Auto:
+            train_scores = ForecastingDetectorBase.train(self, train_data, train_config=train_config, **kwargs)
+            log_likelihood = logsumexp([p.logp for p in self.posterior_beam]).item()
+            return log_likelihood, self, train_scores
+
+        # Otherwise, evaluate all thetas as options
+        candidates = []
+        for change_kind in thetas:
+            candidate = copy.deepcopy(self)
+            candidate.config.change_kind = change_kind
+            train_scores = candidate.train(train_data, train_config=train_config, **kwargs)
+            log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam]).item()
+            candidates.append((log_likelihood, candidate, train_scores))
+            logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
+
+        # Choose the model with the best log likelihood
+        i_best = np.argmax([candidate[0] for candidate in candidates])
+        return candidates[i_best]
 
     def _create_posterior(self, logp: float) -> _PosteriorBeam:
         posterior = self.change_kind.value()
@@ -410,33 +458,6 @@ class BOCPD(ForecastingDetectorBase):
 
         # Return the anomaly scores
         return self._get_anom_scores(time_stamps)
-
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        # If not automatically detecting the change kind, train as normal
-        if self.change_kind is not ChangeKind.Auto:
-            return super().train(train_data, anomaly_labels, train_config, post_rule_train_config)
-
-        # If automatically detecting the change kind, train candidate models with each change kind
-        # TODO: abstract this logic into a merlion.models.automl.GridSearch object?
-        candidates = []
-        for change_kind in ChangeKind:
-            if change_kind is ChangeKind.Auto:
-                continue
-            candidate = copy.deepcopy(self)
-            candidate.config.change_kind = change_kind
-            train_scores = candidate.train(train_data, anomaly_labels, train_config, post_rule_train_config)
-            log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam])
-            candidates.append((candidate, train_scores, log_likelihood))
-            logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
-
-        # Choose the model with the best log likelihood
-        i_best = np.argmax([candidate[2] for candidate in candidates])
-        best, train_scores, _ = candidates[i_best]
-        self.__setstate__(best.__getstate__())
-        logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
-        return train_scores
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
