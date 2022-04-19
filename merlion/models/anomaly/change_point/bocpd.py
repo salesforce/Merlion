@@ -11,7 +11,7 @@ import bisect
 import copy
 from enum import Enum
 import logging
-from typing import List, Tuple, Union
+from typing import Iterator, List, Tuple, Union
 import warnings
 
 import numpy as np
@@ -21,6 +21,7 @@ from scipy.special import logsumexp
 from scipy.stats import norm
 from tqdm import tqdm
 
+from merlion.models.automl.base import AutoMLMixIn, ModelBase
 from merlion.models.anomaly.base import NoCalibrationDetectorConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.models.forecast.base import ForecasterConfig
@@ -279,21 +280,12 @@ class BOCPD(ForecastingDetectorBase):
         self.train_data = None
         return train_data
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr: bool = False,
-        return_prev: bool = False,
-    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
-        if time_series_prev is not None:
-            self.update(time_series_prev)
-        if isinstance(time_stamps, (int, float)):
-            time_stamps = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
-        else:
-            time_stamps = to_pd_datetime(time_stamps)
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        time_stamps = to_pd_datetime(time_stamps)
         if return_prev and time_series_prev is not None:
-            time_stamps = to_pd_datetime(time_series_prev.time_stamps).union(time_stamps)
+            time_stamps = time_series_prev.index.union(time_stamps)
 
         # Initialize output accumulators
         pred_full, err_full = None, None
@@ -326,37 +318,7 @@ class BOCPD(ForecastingDetectorBase):
         pred[pred.isna() | np.isinf(pred)] = 0
         err[err.isna() | np.isinf(err)] = 0
 
-        if return_iqr:
-            name = pred.name
-            lb = UnivariateTimeSeries.from_pd(pred + norm.ppf(0.25) * err, name=f"{name}_lower")
-            ub = UnivariateTimeSeries.from_pd(pred + norm.ppf(0.75) * err, name=f"{name}_upper")
-            return TimeSeries.from_pd(pred), lb.to_ts(), ub.to_ts()
-        return TimeSeries.from_pd(pred), TimeSeries.from_pd(err)
-
-    def get_figure(
-        self,
-        *,
-        time_series: TimeSeries = None,
-        time_stamps: List[int] = None,
-        time_series_prev: TimeSeries = None,
-        plot_anomaly=True,
-        filter_scores=True,
-        plot_forecast=False,
-        plot_forecast_uncertainty=False,
-        plot_time_series_prev=False,
-    ) -> Figure:
-        if time_series is not None:
-            self.update(time_series)
-        return super().get_figure(
-            time_series=time_series,
-            time_stamps=time_stamps,
-            time_series_prev=time_series_prev,
-            plot_anomaly=plot_anomaly,
-            filter_scores=filter_scores,
-            plot_forecast=plot_forecast,
-            plot_forecast_uncertainty=plot_forecast_uncertainty,
-            plot_time_series_prev=plot_time_series_prev,
-        )
+        return pd.DataFrame(pred), pd.DataFrame(err)
 
     def update(self, time_series: TimeSeries):
         """
@@ -368,18 +330,13 @@ class BOCPD(ForecastingDetectorBase):
         # Only update on the portion of the time series after the last training timestamp
         time_stamps = time_series.time_stamps
         if self.last_train_time is not None:
-            time_series_prev, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
-        else:
-            time_series_prev = None
+            _, time_series = time_series.bisect(self.last_train_time, t_in_left=True)
 
         # Update the training data accumulated so far
         if self.train_data is None:
             self.train_data = time_series
         else:
             self.train_data = self.train_data + time_series
-
-        # Apply any pre-processing transforms to the time series
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
 
         # Align the time series & expand the array storing the full posterior distribution of run lengths
         time_series = time_series.align()
@@ -485,6 +442,32 @@ class BOCPD(ForecastingDetectorBase):
         return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         if time_series_prev is not None:
             self.update(time_series_prev)
         return self.update(time_series)
+
+    def get_figure(
+        self,
+        *,
+        time_series: TimeSeries = None,
+        time_stamps: List[int] = None,
+        time_series_prev: TimeSeries = None,
+        plot_anomaly=True,
+        filter_scores=True,
+        plot_forecast=False,
+        plot_forecast_uncertainty=False,
+        plot_time_series_prev=False,
+    ) -> Figure:
+        if time_series is not None:
+            self.update(self.transform(time_series))
+        return super().get_figure(
+            time_series=time_series,
+            time_stamps=time_stamps,
+            time_series_prev=time_series_prev,
+            plot_anomaly=plot_anomaly,
+            filter_scores=filter_scores,
+            plot_forecast=plot_forecast,
+            plot_forecast_uncertainty=plot_forecast_uncertainty,
+            plot_time_series_prev=plot_time_series_prev,
+        )
