@@ -154,10 +154,6 @@ class ZMS(DetectorBase):
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         return self._get_anomaly_score(train_data)
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        return TimeSeries.from_pd(self._get_anomaly_score(time_series.to_pd()))
-
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         z_scores = time_series.values
 

@@ -24,7 +24,7 @@ from merlion.evaluate.anomaly import TSADMetric
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.utils.istat import Mean, Variance
-from merlion.utils.resample import granularity_str_to_seconds, to_pd_datetime
+from merlion.utils.resample import to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -170,10 +170,9 @@ class DynamicBaseline(DetectorBase):
 
         return data.window(t0=t0, tf=tf, include_tf=True)
 
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> TimeSeries:
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         self.last_train_time = pd.Timestamp.min
-        train_data = UnivariateTimeSeries.from_pd(train_data.iloc[:, 0])
-        rel_train_data = self.get_relevant(train_data)
+        rel_train_data = self.get_relevant(UnivariateTimeSeries.from_pd(train_data))
 
         if rel_train_data.is_empty():
             logger.warning("relevant `train_data` is empty.")
@@ -185,21 +184,12 @@ class DynamicBaseline(DetectorBase):
 
         # only keep data for rolling case
         self.data = UnivariateTimeSeries.empty() if self.has_fixed_period else rel_train_data
-        train_scores = self._get_anomaly_score(train_data)
-        return train_scores
+        return self._get_anomaly_score(train_data)
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        """
-        :param time_series: a list of (timestamps, score) pairs
-        :param time_series_prev: ignored
-        """
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        return self._get_anomaly_score(time_series)
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> TimeSeries:
-        time_series = TimeSeries.from_pd(time_series)
-        scores = [self.segmenter.score(t, x) for t, (x,) in time_series]
-        return UnivariateTimeSeries(time_series.time_stamps, scores, "anom_score").to_ts()
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        timestamps = to_timestamp(time_series.index)
+        scores = [self.segmenter.score(t, x) for t, (x,) in zip(timestamps, time_series.values)]
+        return pd.DataFrame(scores, index=time_series.index)
 
     def get_baseline(self, time_stamps: List[float]) -> Tuple[UnivariateTimeSeries, UnivariateTimeSeries]:
         """

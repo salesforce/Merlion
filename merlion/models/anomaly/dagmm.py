@@ -242,17 +242,10 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                 )
         return train_scores_list
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        """
-        :param time_series: The `TimeSeries` we wish to predict anomaly scores for.
-        :param time_series_prev: A `TimeSeries` immediately preceding ``time_series``.
-        :return: A univariate `TimeSeries` of anomaly scores
-        """
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-        ts = time_series_prev + time_series if time_series_prev is not None else time_series
-        scores = batch_detect(self, ts.align().to_pd().values)
-        timestamps = time_series.time_stamps
-        return TimeSeries({"anom_score": UnivariateTimeSeries(timestamps, scores[-len(timestamps) :])})
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
+        scores = batch_detect(self, ts.values)
+        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
 
 
 class AEModule(nn.Module):

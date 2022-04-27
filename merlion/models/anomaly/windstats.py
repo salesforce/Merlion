@@ -81,17 +81,10 @@ class WindStats(DetectorBase):
     def require_univariate(self) -> bool:
         return True
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        assert time_series.dim == 1, (
-            f"{type(self).__name__} model only accepts univariate time "
-            f"series, but time series (after transform {self.transform}) "
-            f"has dimension {time_series.dim}"
-        )
-
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         times, scores = [], []
-        for timestamp, (x,) in time_series:
-            t = datetime.datetime.utcfromtimestamp(timestamp).timetuple()
+        for t, (x,) in zip(time_series.index, time_series.values):
+            t = t.timetuple()
             key = (t.tm_wday, (t.tm_hour * 60 + t.tm_min) // self.config.wind_sz)
             if key in self.table:
                 stats = self.table[key]
@@ -103,16 +96,16 @@ class WindStats(DetectorBase):
                         score.append((x - mu) / sigma)
             else:
                 score = [0]
-            times.append(timestamp)
             scores.append(min(score, key=abs))
-        return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})
+
+        return pd.DataFrame(scores, index=time_series.index)
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         # first build a hashtable with (weekday, yearofday, and window id of the day) as key.
         # the value is a list of metrics
         table = {}
         for time, x in zip(train_data.index, train_data.values):
-            t = datetime.datetime.utctimetuple(time)
+            t = time.timetuple()
             code = (t.tm_wday, t.tm_yday, (t.tm_hour * 60 + t.tm_min) // self.config.wind_sz)
             if code in table:
                 table[code].append(x)
@@ -137,4 +130,4 @@ class WindStats(DetectorBase):
             if len(self.table[t]) > self.config.max_day:
                 self.table[t] = self.table[t][-self.config.max_day :]
 
-        return self.get_anomaly_score(TimeSeries.from_pd(train_data)).to_pd()
+        return self._get_anomaly_score(train_data)

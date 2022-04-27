@@ -284,7 +284,7 @@ class UnivariateTimeSeries(pd.Series):
         return pd.Series(self.np_values, index=self.index, name=self.name)
 
     @classmethod
-    def from_pd(cls, series: pd.Series, name=None, freq="1h"):
+    def from_pd(cls, series: Union[pd.Series, pd.DataFrame], name=None, freq="1h"):
         """
         :param series: a ``pd.Series``. If it has a``pd.DatetimeIndex``, we will
             use that index for the timestamps. Otherwise, we will create one at

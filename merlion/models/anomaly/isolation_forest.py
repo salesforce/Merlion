@@ -13,7 +13,6 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest as skl_IsolationForest
 
-from merlion.evaluate.anomaly import TSADMetric
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.sequence import TransformSequence
@@ -72,12 +71,7 @@ class IsolationForest(DetectorBase):
         train_scores = -self.model.score_samples(train_values)
         return pd.DataFrame(train_scores, index=times, columns=["anom_score"])
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        time_stamps, values = zip(*time_series.align())
-        values = np.asarray(values)
-
-        # Return negative of model's score, since model scores are in (0, -1],
-        # where more negative = more anomalous
-        scores = -self.model.score_samples(np.array(values))
-        return TimeSeries({"anom_score": UnivariateTimeSeries(time_stamps, scores)})
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        # Return the negative of model's score, since model scores are in [-1, 0), where more negative = more anomalous
+        scores = -self.model.score_samples(np.array(time_series.values))
+        return pd.DataFrame(scores, index=time_series.index)

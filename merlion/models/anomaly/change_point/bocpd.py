@@ -22,7 +22,7 @@ from scipy.stats import norm
 from tqdm import tqdm
 
 from merlion.models.automl.base import AutoMLMixIn, ModelBase
-from merlion.models.anomaly.base import NoCalibrationDetectorConfig
+from merlion.models.anomaly.base import NoCalibrationDetectorConfig, DetectorBase
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.models.forecast.base import ForecasterConfig
 from merlion.plot import Figure
@@ -463,10 +463,12 @@ class BOCPD(AutoMLMixIn, ForecastingDetectorBase):
         return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        return DetectorBase.get_anomaly_score(self, time_series, time_series_prev)
+
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         if time_series_prev is not None:
-            self.update(time_series_prev)
-        return self.update(time_series)
+            self.update(TimeSeries.from_pd(time_series_prev))
+        return self.update(TimeSeries.from_pd(time_series)).to_pd()
 
     def get_figure(
         self,

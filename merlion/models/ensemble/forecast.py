@@ -180,6 +180,6 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 preds.append(pred)
                 errs.append(err)
 
-        pred = self.combiner(preds, None)
-        err = None if any(e is None for e in errs) else self.combiner(errs, None)
-        return pred.to_pd(), err.to_pd()
+        pred = self.combiner(preds, None).to_pd()
+        err = None if any(e is None for e in errs) else self.combiner(errs, None).to_pd()
+        return pred, err

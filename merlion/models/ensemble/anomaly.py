@@ -191,12 +191,11 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         self.train_post_rule(combined, anomaly_labels, post_rule_train_config)
         return combined
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        time_series, time_series_prev = TimeSeries.from_pd(time_series), TimeSeries.from_pd(time_series_prev)
         y = [
             model.get_anomaly_label(time_series, time_series_prev)
             for model, used in zip(self.models, self.models_used)
             if used
         ]
-        return self.combiner(y, time_series)
+        return self.combiner(y, time_series).to_pd()

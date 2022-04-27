@@ -38,10 +38,8 @@ To implement a new anomaly detector, you need to do the following:
 -   Set the model class's class variable `config_class` equal to the `ConfigClass` above
 -   Implement the abstract `_train()` method, and have it return the model's sequence of anomaly scores on the train
     data.
--   Implement the abstract `get_anomaly_score()` method, which returns the model's predicted anomaly score on an
-    input time series. Note that you should transform the input time series using
-    `time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)` before
-    proceeding with predicting anomaly scores.
+-   Implement the abstract `_get_anomaly_score()` method, which returns the model's predicted anomaly score on an
+    input time series.
 
 You may optionally override the following class variables of `ConfigClass` or `ModelClass`:
 -   `ConfigClass._default_transform`: if the `transform` keyword argument is not given when initializing the model's

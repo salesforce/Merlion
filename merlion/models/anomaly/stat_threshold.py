@@ -12,7 +12,6 @@ import pandas as pd
 from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.utils import TimeSeries
 
 
 class StatThresholdConfig(DetectorConfig, NormalizingConfig):
@@ -39,17 +38,7 @@ class StatThreshold(DetectorBase):
         return True
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        train_anom_scores = pd.DataFrame(train_data.to_numpy(), index=train_data.index, columns=["anom_score"])
-        return train_anom_scores
+        return train_data
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-
-        assert time_series.dim == 1, (
-            f"{type(self).__name__} model only accepts univariate time "
-            f"series, but time series (after transform {self.transform}) "
-            f"has dimension {time_series.dim}"
-        )
-
-        anom_scores = time_series.univariates[time_series.names[0]]
-        return TimeSeries({"anom_score": anom_scores})
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        return time_series

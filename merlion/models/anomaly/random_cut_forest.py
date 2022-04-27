@@ -177,20 +177,18 @@ class RandomCutForest(DetectorBase):
         train_scores = self._forest_predict(train_values, online_updates=True)
         return pd.DataFrame(train_scores, index=times, columns=["anom_score"])
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         if self.last_train_time is None:
             raise RuntimeError("train() must be called before you can invoke get_anomaly_score()")
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        times, values = zip(*time_series.align())
-        values = np.asarray(values)
 
-        t0 = bisect.bisect_right(times, to_timestamp(self.last_train_time))
-        if 0 < t0 < len(times):
-            old = self._forest_predict(values[:t0], False)
-            new = self._forest_predict(values[t0:], self.online_updates)
+        t0 = bisect.bisect_right(time_series.index, self.last_train_time)
+        if 0 < t0 < len(time_series):
+            old = self._forest_predict(time_series.values[:t0], False)
+            new = self._forest_predict(time_series.values[t0:], self.online_updates)
             scores = np.concatenate((old, new))
         else:
-            scores = self._forest_predict(values, self.online_updates and t0 > 0)
+            scores = self._forest_predict(time_series.values, self.online_updates and t0 > 0)
         if self.online_updates and t0 > 0:
-            self.last_train_time = times[-1]
-        return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})
+            self.last_train_time = time_series.index[-1]
+
+        return pd.DataFrame(scores, index=time_series.index)

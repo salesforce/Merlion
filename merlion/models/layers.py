@@ -285,6 +285,9 @@ class LayeredDetector(LayeredModel, DetectorBase):
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError("Layered model _train() should not be called.")
 
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
+
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_score(time_series, time_series_prev)

@@ -119,20 +119,12 @@ class SpectralResidual(DetectorBase):
         item = values[-m] + grad * m
         return np.pad(values, ((0, self.config.estimated_points),), constant_values=item)
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-
-        univariate_time_series: UnivariateTimeSeries = time_series.univariates[time_series.names[self.target_seq_index]]
-        prev_values: UnivariateTimeSeries = (
-            time_series_prev.univariates[time_series_prev.names[self.target_seq_index]].copy()
-            if time_series_prev
-            else UnivariateTimeSeries.empty()
-        )
-
-        train_prev_len = prev_values.shape[0]
-
-        values = prev_values
-        values = values.concat(univariate_time_series).np_values
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        i = self.target_seq_index
+        if time_series_prev is None:
+            values = time_series.values[:, i]
+        else:
+            values = np.concatenate((time_series_prev.values[:, i], time_series.values[:, i]))
 
         padded_values = self._pad(values) if self.config.estimated_points > 0 else values
         saliency_map = self._get_saliency_map(padded_values)
@@ -145,13 +137,9 @@ class SpectralResidual(DetectorBase):
         average_values = (average_values / a)[:-1]
         output_values = np.append(np.asarray([0.0]), (saliency_map[1:] - average_values) / (average_values + 1e-8))
 
-        result_values = output_values[train_prev_len:]
+        return pd.DataFrame(output_values[-len(time_series) :], index=time_series.index)
 
-        return TimeSeries(
-            {"anom_score": UnivariateTimeSeries(time_stamps=univariate_time_series.time_stamps, values=result_values)}
-        )
-
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> TimeSeries:
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         dim = train_data.shape[1]
         if dim == 1:
             self.config.target_seq_index = 0
@@ -166,4 +154,4 @@ class SpectralResidual(DetectorBase):
             f"(the dimension of the transformed data), but got {self.target_seq_index}"
         )
 
-        return self.get_anomaly_score(TimeSeries.from_pd(train_data))
+        return self._get_anomaly_score(train_data)

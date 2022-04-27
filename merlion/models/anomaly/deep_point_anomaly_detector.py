@@ -203,10 +203,8 @@ class DeepPointAnomalyDetector(DetectorBase):
         train_scores = get_dnn_loss_as_anomaly_score(processed_times, train_values, use_cuda=self.use_cuda)
         return pd.DataFrame(train_scores, index=times, columns=["anom_score"])
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        times, values = zip(*time_series.align())
-        processed_times, values = self._preprocess(times), self._preprocess(values)
-
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
+        processed_times, values = self._preprocess(to_timestamp(ts.index)), self._preprocess(ts.values)
         scores = get_dnn_loss_as_anomaly_score(processed_times, values, use_cuda=self.use_cuda)
-        return TimeSeries({"anom_score": UnivariateTimeSeries(times, scores)})
+        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
