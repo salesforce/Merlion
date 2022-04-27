@@ -49,10 +49,10 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
     def __init__(self, config: ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None):
         super().__init__(config=config, models=models)
         for model in self.models:
-            assert isinstance(model, ForecasterBase), (
-                f"Expected all models in {type(self).__name__} to be anomaly "
-                f"detectors, but got a {type(model).__name__}."
-            )
+            assert isinstance(
+                model, ForecasterBase
+            ), f"Expected all models in {type(self).__name__} to be forecasters, but got a {type(model).__name__}."
+            model.config.invert_transform = True
 
     def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         idxs = [model.target_seq_index for model in self.models]
