@@ -155,7 +155,8 @@ class VAE(DetectorBase):
         :param X: The input time series, a numpy array.
         """
         self.model.eval()
-        y = torch.FloatTensor([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]).to(self.device)
+        y = np.array([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])])
+        y = torch.FloatTensor(y).to(self.device)
         y = torch.flatten(y, start_dim=1)
 
         r = np.zeros(y.shape)

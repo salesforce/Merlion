@@ -223,7 +223,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
         if time_series_prev is not None:
             series = time_series_prev.iloc[:, self.target_seq_index]
             df = pd.DataFrame({"ds": series.index, "y": series.values})
-        df = df.append(pd.DataFrame({"ds": time_stamps}))
+        df = pd.concat((df, pd.DataFrame({"ds": time_stamps})))
 
         # Determine the right set of timestamps to use
         if return_prev and time_series_prev is not None:

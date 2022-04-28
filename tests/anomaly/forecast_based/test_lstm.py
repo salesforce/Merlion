@@ -88,7 +88,7 @@ class TestLSTM(unittest.TestCase):
         # with `ts_test`. This is different from the first time step of
         # `self.model.transform(ts_test)` due to the difference transform.
         scoresv2 = model.get_anomaly_score(ts_test, ts_train)[1:]
-        self.assertSequenceEqual(list(scores), list(scoresv2))
+        self.assertLess(np.max((scores.to_pd() - scoresv2.to_pd()).abs().values), 0.1)
 
         ##############
         model.save(join(rootdir, "tmp", "lstm"))
