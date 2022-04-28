@@ -56,7 +56,6 @@ import_alias = dict(
     # Ensembles
     DetectorEnsemble="merlion.models.ensemble.anomaly:DetectorEnsemble",
     ForecasterEnsemble="merlion.models.ensemble.forecast:ForecasterEnsemble",
-    MoE_ForecasterEnsemble="merlion.models.ensemble.MoE_forecast:MoE_ForecasterEnsemble",
     # Layers
     SeasonalityLayer="merlion.models.automl.seasonality:SeasonalityLayer",
     AutoETS="merlion.models.automl.autoets:AutoETS",
