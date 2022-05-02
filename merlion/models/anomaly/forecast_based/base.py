@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,6 +11,7 @@ import logging
 from typing import List, Optional
 
 import numpy as np
+import pandas as pd
 
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
@@ -34,7 +35,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
 
     def forecast_to_anom_score(
         self, time_series: TimeSeries, forecast: TimeSeries, stderr: Optional[TimeSeries]
-    ) -> TimeSeries:
+    ) -> pd.DataFrame:
         """
         Compare a model's forecast to a ground truth time series, in order to
         compute anomaly scores. By default, we compute a z-score if model
@@ -49,7 +50,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             values of the time series, and the model's forecast.
         """
         if len(forecast) == 0:
-            return UnivariateTimeSeries.empty(name="anom_score").to_ts()
+            return pd.DataFrame(columns=["anom_score"])
         i = self.target_seq_index
         time_series = time_series.univariates[time_series.names[i]]
         if len(time_series) > len(forecast):
@@ -58,51 +59,37 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         y = time_series.np_values
         yhat = forecast.univariates[forecast.names[0]].np_values
         if stderr is None:
-            return UnivariateTimeSeries(time_stamps=times, values=(y - yhat), name="anom_score").to_ts()
+            return pd.DataFrame(y - yhat, index=times, columns=["anom_score"])
         else:
             sigma = stderr.univariates[stderr.names[0]].np_values
             if np.isnan(sigma).all():
                 sigma = 1
             else:
                 sigma[np.isnan(sigma)] = np.mean(sigma)
-            return UnivariateTimeSeries(
-                time_stamps=times, values=(y - yhat) / (sigma + 1e-8), name="anom_score"
-            ).to_ts()
+            return pd.DataFrame((y - yhat) / (sigma + 1e-8), index=times, columns=["anom_score"])
 
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        """
-        Trains the underlying forecaster (unsupervised) on the training data.
-        Converts the  forecast into anomaly scores, and and then trains the
-        post-rule for filtering anomaly scores (supervised, if labels are given)
-        on the input time series.
+        return DetectorBase.train(self, train_data, anomaly_labels, train_config, post_rule_train_config)
 
-        :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
-        """
-        forecast, err = super().train(train_data, train_config)
-        anomaly_scores = self.forecast_to_anom_score(self.transform(train_data), forecast, err)
-
-        self.train_post_rule(
-            anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        # Note: the train data is transformed, as are the forecasts. So we compute anomaly scores w/ transformed data.
+        forecast, err = super()._train(train_data, train_config)
+        train_data, forecast, err = [TimeSeries.from_pd(x) for x in [train_data, forecast, err]]
+        anomaly_scores = self.forecast_to_anom_score(train_data, forecast, err)
         return anomaly_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        name = time_series.names[self.target_seq_index]
-        time_stamps = time_series.univariates[name].time_stamps
-        forecast, err = self.forecast(time_stamps, time_series_prev, return_iqr=False, return_prev=False)
+        # Forecast w/o inverting the transform to compute the anomaly score, since this is how we trained.
+        invert_transform = self.config.invert_transform
+        self.config.invert_transform = False
+        if not self.invert_transform:
+            time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+        forecast, err = self.forecast(time_series.time_stamps, time_series_prev)
+        self.config.invert_transform = invert_transform
 
+        # Make sure stderr & forecast are of the appropriate lengths
         assert err is None or len(forecast) == len(err), (
             f"Expected forecast & standard error of forecast to have the same "
             f"length, but len(forecast) = {len(forecast)}, len(err) = {len(err)}"
@@ -111,7 +98,10 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             time_series
         ), f"forecast() returned a forecast with length {len(forecast)}, but expected length {len(time_series)}"
 
-        return self.forecast_to_anom_score(time_series, forecast, err)
+        return TimeSeries.from_pd(self.forecast_to_anom_score(time_series, forecast, err))
+
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        raise NotImplementedError("_get_anomaly_score() should not be called from a forecast-based anomaly detector.")
 
     def get_figure(
         self,

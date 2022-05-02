@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -87,8 +87,7 @@ class TransformBase(metaclass=AutodocABCMeta):
     @abstractmethod
     def train(self, time_series: TimeSeries):
         """
-        Sets all trainable parameters of the transform (if any), using the input
-        time series as training data.
+        Sets all trainable parameters of the transform (if any), using the input time series as training data.
         """
         raise NotImplementedError
 
@@ -111,9 +110,8 @@ class TransformBase(metaclass=AutodocABCMeta):
         :return: The (inverse) transformed time series.
         """
         if not self.proper_inversion:
-            logger.info(
-                f"Transform {self} is not strictly invertible. "
-                f"Calling invert() is not guaranteed to recover the "
+            logger.warning(
+                f"Transform {self} is not strictly invertible. Calling invert() is not guaranteed to recover the "
                 f"original time series exactly!"
             )
 

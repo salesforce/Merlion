@@ -14,7 +14,7 @@ from typing import Any, Iterator, Optional, Tuple, Union
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
-from merlion.models.layers import LayeredModelConfig
+from merlion.models.layers import LayeredModelConfig, LayeredModel
 from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries, UnivariateTimeSeries, autosarima_utils
 from merlion.utils.misc import AutodocABCMeta
@@ -117,14 +117,17 @@ class SeasonalityConfig(LayeredModelConfig):
         return config_dict
 
 
-class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
+class SeasonalityLayer(AutoMLMixIn, LayeredModel, metaclass=AutodocABCMeta):
     """
     Seasonality Layer that uses AutoSARIMA-like methods to determine seasonality of your data. Can be used directly on
     any model that implements `SeasonalityModel` class.
     """
 
     config_class = SeasonalityConfig
-    require_even_sampling = False
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
 
     @property
     def require_univariate(self):
@@ -155,7 +158,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         model.set_seasonality(theta, train_data.univariates[self.target_name])
 
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         # If multiple seasonalities are supported, return a list of all detected seasonalities
         thetas = list(thetas)

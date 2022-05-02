@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -78,6 +78,7 @@ def process_rolling_train_data(
     :param data: multivariate timeseries data
     :param target_seq_index: the target sequence index in TimeSeries data
     :param maxlags: Max # of lags
+    :param forecast_steps: # of steps to forecast for
     :param sampling_mode: if "normal" then concatenate all sequences over the window;
                           if "stats" then give statistics measures over the window
     :return: inputs, labels, labels_timestamp
@@ -101,7 +102,7 @@ def process_rolling_train_data(
     labels = np.zeros((len(data) - maxlags - forecast_steps + 1, forecast_steps))
     target_name = data.names[target_seq_index]
     target_data = data.univariates[target_name].values
-    target_timestamp = data.univariates[target_name].time_stamps
+    target_timestamp = data.univariates[target_name].index
     for i in range(maxlags, len(data) - forecast_steps + 1):
         labels[i - maxlags] = target_data[i : i + forecast_steps]
 
@@ -147,7 +148,7 @@ def process_regressive_train_data(data: TimeSeries, maxlags: int, sampling_mode=
     else:
         raise Exception("unknown sampling for the tree model ")
 
-    target_timestamp = data.univariates[data.names[0]].time_stamps
+    target_timestamp = data.univariates[data.names[0]].index
     labels_timestamp = target_timestamp[maxlags : len(data)]
 
     return inputs, labels, labels_timestamp, stats

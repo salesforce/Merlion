@@ -11,13 +11,12 @@ from abc import abstractmethod
 from copy import deepcopy
 from typing import Any, Iterator, Optional, Tuple
 
-from merlion.models.layers import LayeredModel, LayeredModelConfig
-from merlion.models.forecast.base import ForecasterBase
+from merlion.models.base import ModelBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 
-class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
+class AutoMLMixIn(ModelBase, metaclass=AutodocABCMeta):
     """
     Base Interface for Implemented AutoML Layers
 
@@ -25,12 +24,8 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     an existing mix-in.
     """
 
-    config_class = LayeredModelConfig
-
     def train(self, train_data: TimeSeries, **kwargs):
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
-        )
+        train_data = self.train_pre_process(train_data)
 
         candidate_thetas = self.generate_theta(train_data)
         theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, kwargs)
@@ -55,8 +50,8 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
 
     @abstractmethod
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None
-    ) -> Tuple[Any, Optional[ForecasterBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+    ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         r"""
         :param thetas: Iterator of the hyperparameter candidates
         :param train_data: Training data

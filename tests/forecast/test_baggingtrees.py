@@ -89,8 +89,8 @@ class TestRandomForestForecaster(unittest.TestCase):
 
         name = self.model.target_name
         self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        self.assertEqual(len(self.model._forecast), self.max_forecast_steps)
-        self.assertAlmostEqual(self.model._forecast.mean(), 0.50, 1)
+        forecast = self.model.forecast(self.max_forecast_steps)[0]
+        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
         testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
@@ -113,8 +113,8 @@ class TestRandomForestForecaster(unittest.TestCase):
         name = self.model.target_name
 
         self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        self.assertEqual(len(self.model._forecast), self.max_forecast_steps)
-        self.assertAlmostEqual(self.model._forecast.mean(), 0.50, 1)
+        forecast = self.model.forecast(self.max_forecast_steps)[0]
+        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
         testing_data_gen = gen_next_seq_label_pairs(
             self.test_data_uni_norm, self.i, self.maxlags, self.max_forecast_steps
         )

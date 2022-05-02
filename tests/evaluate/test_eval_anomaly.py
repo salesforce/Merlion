@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -15,7 +15,7 @@ import pandas as pd
 from merlion.evaluate.anomaly import TSADEvaluator, TSADEvaluatorConfig, TSADMetric
 from merlion.models.anomaly.isolation_forest import IsolationForest, IsolationForestConfig
 from merlion.models.anomaly.windstats import WindStats, WindStatsConfig
-from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleConfig, EnsembleTrainConfig
+from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleConfig, DetectorEnsembleTrainConfig
 from merlion.models.ensemble.combine import ModelSelector, Mean
 from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries
@@ -108,7 +108,7 @@ class TestEvaluateAnomaly(unittest.TestCase):
         model = DetectorEnsemble(
             models=[model0, model1, model2], config=DetectorEnsembleConfig(combiner=ModelSelector(metric=TSADMetric.F1))
         )
-        train_config = EnsembleTrainConfig(valid_frac=valid_frac)
+        train_config = DetectorEnsembleTrainConfig(valid_frac=valid_frac)
         train_kwargs = {"anomaly_labels": self.train_labels, "train_config": train_config}
 
         evaluator = TSADEvaluator(model=model, config=TSADEvaluatorConfig(train_window=None, retrain_freq="7d"))

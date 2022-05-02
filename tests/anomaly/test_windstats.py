@@ -30,8 +30,7 @@ class TestWindStats(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
         self.model = WindStats(
             WindStatsConfig(
-                wind_sz=30,
-                threshold=AggregateAlarms(alm_threshold=3.5, alm_window_minutes=30, alm_suppress_minutes=300),
+                wind_sz=30, threshold=AggregateAlarms(alm_threshold=4, alm_window_minutes=30, alm_suppress_minutes=300)
             )
         )
         print()

@@ -284,7 +284,7 @@ class UnivariateTimeSeries(pd.Series):
         return pd.Series(self.np_values, index=self.index, name=self.name)
 
     @classmethod
-    def from_pd(cls, series: pd.Series, name=None, freq="1h"):
+    def from_pd(cls, series: Union[pd.Series, pd.DataFrame], name=None, freq="1h"):
         """
         :param series: a ``pd.Series``. If it has a``pd.DatetimeIndex``, we will
             use that index for the timestamps. Otherwise, we will create one at
@@ -296,6 +296,12 @@ class UnivariateTimeSeries(pd.Series):
         :rtype: UnivariateTimeSeries
         :return: the `UnivariateTimeSeries` represented by series.
         """
+        if series is None:
+            return None
+        if isinstance(series, UnivariateTimeSeries):
+            return series
+        if isinstance(series, pd.DataFrame) and series.shape[1] == 1:
+            series = series.iloc[:, 0]
         return cls(time_stamps=None, values=series.astype(float), name=name, freq=freq)
 
     def to_ts(self, name=None):
@@ -434,8 +440,7 @@ class TimeSeries:
                 univariates = ValIterOrderedDict(enumerate(univariates))
         else:
             raise TypeError(
-                "Expected univariates to be either a "
-                "`Sequence[UnivariateTimeSeries]` or a "
+                "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
                 "`Mapping[Hashable, UnivariateTimeSeries]`."
             )
         assert len(univariates) > 0
@@ -740,7 +745,13 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: the `TimeSeries` object corresponding to ``df``.
         """
-        if isinstance(df, pd.Series):
+        if df is None:
+            return None
+        elif isinstance(df, TimeSeries):
+            return df
+        elif isinstance(df, UnivariateTimeSeries):
+            return cls([df])
+        elif isinstance(df, pd.Series):
             if drop_nan:
                 df = df[~df.isna()]
             return cls({df.name: UnivariateTimeSeries.from_pd(df)})

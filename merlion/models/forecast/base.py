@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,10 +8,13 @@
 Base class for forecasting models.
 """
 from abc import abstractmethod
+import copy
 import logging
 from typing import List, Optional, Tuple, Union
 
+import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
@@ -28,17 +31,18 @@ class ForecasterConfig(Config):
     max_forecast_steps: Optional[int] = None
     target_seq_index: Optional[int] = None
 
-    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, **kwargs):
+    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, invert_transform=False, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
             Required for some models like `MSES` and `LGBMForecaster`.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
+        :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
+            series) whose value we would like to forecast.
+        :param invert_transform: Whether to automatically invert the ``transform`` before returning a forecast.
         """
         super().__init__(**kwargs)
         self.max_forecast_steps = max_forecast_steps
         self.target_seq_index = target_seq_index
+        self.invert_transform = invert_transform
 
 
 class ForecasterBase(ModelBase):
@@ -77,6 +81,24 @@ class ForecasterBase(ModelBase):
             general multivariate time series) whose value we would like to forecast.
         """
         return self.config.target_seq_index
+
+    @property
+    def invert_transform(self):
+        """
+        :return: Whether to automatically invert the ``transform`` before returning a forecast.
+        """
+        return self.config.invert_transform
+
+    @property
+    def _online_model(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        """
+        All forecasters can work on multivariate data, since they only forecast a single target univariate.
+        """
+        return False
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
@@ -122,10 +144,8 @@ class ForecasterBase(ModelBase):
 
         return to_timestamp(resampled).tolist()
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
-        train_data = super().train_pre_process(train_data, require_even_sampling, require_univariate)
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+        train_data = super().train_pre_process(train_data)
         if self.dim == 1:
             self.config.target_seq_index = 0
         elif self.target_seq_index is None:
@@ -142,22 +162,30 @@ class ForecasterBase(ModelBase):
 
         return train_data
 
-    @abstractmethod
     def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
+        :param train_config: Additional training configs, if needed. Only required for some models.
 
         :return: the model's prediction on ``train_data``, in the same format as
-            if you called `ForecasterBase.forecast` on the time stamps of
-            ``train_data``
+            if you called `ForecasterBase.forecast` on the time stamps of ``train_data``
         """
-        raise NotImplementedError
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data = self.train_pre_process(train_data).to_pd()
+        train_pred, train_stderr = self._train(train_data=train_data, train_config=train_config)
+        train_pred = TimeSeries.from_pd(train_pred)
+        train_stderr = TimeSeries.from_pd(train_stderr)
+        if self.invert_transform:
+            train_pred, train_stderr = self._apply_inverse_transform(train_pred, train_stderr)
+        return train_pred, train_stderr
 
     @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        raise NotImplementedError
+
     def forecast(
         self,
         time_stamps: Union[int, List[int]],
@@ -192,6 +220,110 @@ class ForecasterBase(ModelBase):
             - ``forecast_lb``: 25th percentile of forecast values for each timestamp
             - ``forecast_ub``: 75th percentile of forecast values for each timestamp
         """
+        # determine the time stamps to forecast for, and resample them if needed
+        orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
+        time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
+        if return_prev and time_series_prev is not None:
+            if orig_t is None:
+                orig_t = time_series_prev.time_stamps + time_stamps
+            else:
+                orig_t = time_series_prev.time_stamps + to_timestamp(orig_t).tolist()
+
+        # transform time_series_prev if relevant (before making the prediction)
+        old_inversion_state = self.transform.inversion_state
+        if time_series_prev is None:
+            time_series_prev_df = None
+        else:
+            tf = to_pd_datetime(self.last_train_time + self.timedelta)
+            time_series_prev = self.transform(time_series_prev)
+            assert time_series_prev.dim == self.dim, (
+                f"time_series_prev has dimension of {time_series_prev.dim} that is different from "
+                f"training data dimension of {self.dim} for the model"
+            )
+            if self._online_model and to_pd_datetime(time_series_prev.tf) < tf:
+                time_series_prev = None
+                time_series_prev_df = None
+            else:
+                time_series_prev_df = time_series_prev.to_pd()
+
+        # Make the prediction
+        forecast, err = self._forecast(
+            time_stamps=time_stamps, time_series_prev=time_series_prev_df, return_prev=return_prev
+        )
+
+        # Format the return value(s)
+        if self.invert_transform and time_series_prev is None:
+            time_series_prev = self.transform(self.train_data)
+        if time_series_prev is not None:
+            time_series_prev = time_series_prev.univariates[time_series_prev.names[self.target_seq_index]].to_ts()
+
+        if return_iqr and err is None:
+            raise RuntimeError("Model does not support uncertainty estimation, but got return_iqr=True")
+
+        # Handle the case where we want to return the IQR. If applying the inverse transform, we just apply
+        # the inverse transform directly to the upper/lower bounds.
+        elif return_iqr:
+            # Compute positive & negative deviations
+            if isinstance(err, tuple) and len(err) == 2:
+                d_neg, d_pos = err[0].values * norm.ppf(0.25), err[1].values * norm.ppf(0.75)
+            else:
+                d_neg, d_pos = err.values * norm.ppf(0.25), err.values * norm.ppf(0.75)
+
+            # Concatenate time_series_prev to the forecast & upper/lower bounds if inverting the transform
+            if self.invert_transform:
+                time_series_prev_df = time_series_prev.to_pd()
+                d_neg = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_neg))
+                d_pos = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_pos))
+                forecast = pd.concat((time_series_prev_df, forecast))
+
+            # Convert to time series & invert the transform if desired
+            lb = TimeSeries.from_pd((forecast + d_neg).rename(columns=lambda c: f"{c}_lower"))
+            ub = TimeSeries.from_pd((forecast + d_pos).rename(columns=lambda c: f"{c}_upper"))
+            forecast = TimeSeries.from_pd(forecast)
+            if self.invert_transform:
+                forecast = self.transform.invert(forecast, retain_inversion_state=True)
+                lb = self.transform.invert(lb, retain_inversion_state=True)
+                ub = self.transform.invert(ub, retain_inversion_state=True)
+            ret = forecast, lb, ub
+
+        # Handle the case where we directly return the forecast and its standard error.
+        # If applying the inverse transform, we compute an upper/lower bound, apply the inverse transform to those
+        # bounds, and use the difference of those bounds as the stderr.
+        else:
+            if isinstance(err, tuple) and len(err) == 2:
+                err = (err[0].abs().values + err[1].abs().values) / 2
+                err = pd.DataFrame(err, index=forecast.index, columns=[f"{c}_err" for c in forecast.columns])
+            forecast = TimeSeries.from_pd(forecast)
+            err = None if err is None else TimeSeries.from_pd(err)
+            ret = forecast, err
+            if self.invert_transform:
+                ret = self._apply_inverse_transform(forecast, err, time_series_prev)
+
+        self.transform.inversion_state = old_inversion_state
+        return tuple(None if x is None else x.align(reference=orig_t) for x in ret)
+
+    def _apply_inverse_transform(self, forecast, err, time_series_prev=None):
+        forecast = forecast if time_series_prev is None else time_series_prev + forecast
+
+        if err is not None:
+            forecast_df, err_df = forecast.to_pd(), err.to_pd()
+            n = len(time_series_prev) if time_series_prev is not None else 0
+            if n > 0:
+                zeros = pd.DataFrame(np.zeros((n, err.dim)), index=forecast_df.index[:n], columns=err_df.columns)
+                err_df = pd.concat((zeros, err_df))
+            lb = TimeSeries.from_pd(forecast_df.values - err_df)
+            ub = TimeSeries.from_pd(forecast_df.values + err_df)
+            lb = self.transform.invert(lb, retain_inversion_state=True)
+            ub = self.transform.invert(ub, retain_inversion_state=True)
+            err = TimeSeries.from_pd((ub.to_pd() - lb.to_pd()).abs() / 2)
+
+        forecast = self.transform.invert(forecast, retain_inversion_state=True)
+        return forecast, err
+
+    @abstractmethod
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
         raise NotImplementedError
 
     def batch_forecast(
@@ -237,12 +369,6 @@ class ForecasterBase(ModelBase):
             out_list.append(out)
         return tuple(zip(*out_list))
 
-    def invert_transform(self, forecast: TimeSeries, time_series_prev: TimeSeries = None):
-        if time_series_prev is None:
-            time_series_prev = self.transform(self.train_data)
-        t = forecast.np_time_stamps
-        return self.transform.invert(time_series_prev + forecast).align(reference=t)
-
     def get_figure(
         self,
         *,
@@ -273,9 +399,13 @@ class ForecasterBase(ModelBase):
             time_series is None and time_stamps is None
         ), "Must provide at least one of time_series or time_stamps"
         if time_stamps is None:
-            transformed_ts = self.transform(time_series)
-            time_stamps = [t for t, y in transformed_ts]
-            y = transformed_ts.univariates[transformed_ts.names[self.target_seq_index]]
+            if self.invert_transform:
+                time_stamps = time_series.time_stamps
+                y = time_series.univariates[time_series.names[self.target_seq_index]]
+            else:
+                transformed_ts = self.transform(time_series)
+                time_stamps = transformed_ts.time_stamps
+                y = transformed_ts.univariates[transformed_ts.names[self.target_seq_index]]
         else:
             y = None
 
@@ -296,7 +426,8 @@ class ForecasterBase(ModelBase):
 
         # Set up all the parameters needed to make a figure
         if time_series_prev is not None and plot_time_series_prev:
-            time_series_prev = self.transform(time_series_prev)
+            if not self.invert_transform:
+                time_series_prev = self.transform(time_series_prev)
             assert time_series_prev.dim == 1, (
                 f"Plotting only supported for univariate time series, but got a"
                 f"time series of dimension {time_series_prev.dim}"

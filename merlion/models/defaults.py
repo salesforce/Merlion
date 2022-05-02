@@ -8,6 +8,8 @@
 import logging
 from typing import Optional, Tuple
 
+import pandas as pd
+
 from merlion.models.factory import ModelFactory
 from merlion.models.layers import LayeredDetector, LayeredForecaster, LayeredModelConfig
 from merlion.models.anomaly.base import DetectorBase
@@ -105,6 +107,9 @@ class DefaultDetector(LayeredDetector):
             post_rule_train_config=post_rule_train_config,
         )
 
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError("Default model _train() should not be called")
+
 
 class DefaultForecasterConfig(LayeredModelConfig):
     """
@@ -139,6 +144,9 @@ class DefaultForecaster(LayeredForecaster):
     def granularity(self):
         return self.config.granularity
 
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError("Default model _train() should not be called")
+
     def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
         kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
@@ -159,4 +167,5 @@ class DefaultForecaster(LayeredForecaster):
         # ETS for univariate data
         else:
             self.model = ModelFactory.create("AutoETS", damped_trend=True, **kwargs)
+
         return super().train(train_data=train_data, train_config=train_config)

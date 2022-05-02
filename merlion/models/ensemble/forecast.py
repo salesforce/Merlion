@@ -1,14 +1,14 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """Ensembles of forecasters."""
-import copy
 import logging
 from typing import List, Optional, Tuple, Union
 
+import pandas as pd
 from scipy.stats import norm
 from tqdm import tqdm
 
@@ -42,17 +42,19 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
 
     _default_train_config = EnsembleTrainConfig(valid_frac=0.2)
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
     def __init__(self, config: ForecasterEnsembleConfig = None, models: List[ForecasterBase] = None):
         super().__init__(config=config, models=models)
         for model in self.models:
-            assert isinstance(model, ForecasterBase), (
-                f"Expected all models in {type(self).__name__} to be anomaly "
-                f"detectors, but got a {type(model).__name__}."
-            )
+            assert isinstance(
+                model, ForecasterBase
+            ), f"Expected all models in {type(self).__name__} to be forecasters, but got a {type(model).__name__}."
+            model.config.invert_transform = True
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         idxs = [model.target_seq_index for model in self.models]
         if any(i is not None for i in idxs):
             self.config.target_seq_index = [i for i in idxs if i is not None][0]
@@ -61,16 +63,15 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
                 f"to be used in a ForecasterEnsemble, but got the following "
                 f"target_seq_idx values: {idxs}"
             )
-        return super().train_pre_process(
-            train_data=train_data, require_even_sampling=require_even_sampling, require_univariate=require_univariate
-        )
+        return super().train_pre_process(train_data=train_data)
 
-    def train(
-        self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
+        return time_stamps
+
+    def _train(
+        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+        full_train = TimeSeries.from_pd(train_data)
         train, valid = self.train_valid_split(full_train, train_config)
 
         per_model_train_configs = train_config.per_model_train_configs
@@ -166,45 +167,19 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             logger.info(f"Models used (of {len(self.models)}): {', '.join(used)}")
         return self.combiner(full_preds, None), err
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr: bool = False,
-        return_prev: bool = False,
-    ) -> Union[Tuple[TimeSeries, Union[TimeSeries, None]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
-        if time_series_prev is not None:
-            time_series_prev = self.transform(time_series_prev)
-
+    def _forecast(
+        self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev: bool = False
+    ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
         preds, errs = [], []
+        time_series_prev = TimeSeries.from_pd(time_series_prev)
         for model, used in zip(self.models, self.models_used):
             if used:
                 pred, err = model.forecast(
-                    time_stamps=time_stamps,
-                    time_series_prev=time_series_prev,
-                    return_iqr=False,
-                    return_prev=return_prev,
+                    time_stamps=time_stamps, time_series_prev=time_series_prev, return_prev=return_prev
                 )
                 preds.append(pred)
                 errs.append(err)
 
-        pred = self.combiner(preds, None)
-        err = None if any(e is None for e in errs) else self.combiner(errs, None)
-        if return_iqr:
-            if err is None:
-                raise RuntimeError(
-                    f"ForecasterEnsemble of {[type(m).__name__ for m in self.models]}"
-                    f"does not support uncertainty estimates"
-                )
-            name = pred.names[0]
-            yhat = pred.univariates[name].to_pd()
-            err = err.univariates[err.names[0]].to_pd()
-            lb = UnivariateTimeSeries(
-                name=f"{name}_lower", time_stamps=time_stamps, values=yhat + norm.ppf(0.25) * err
-            ).to_ts()
-            ub = UnivariateTimeSeries(
-                name=f"{name}_upper", time_stamps=time_stamps, values=yhat + norm.ppf(0.75) * err
-            ).to_ts()
-            return pred, lb, ub
-
+        pred = self.combiner(preds, None).to_pd()
+        err = None if any(e is None for e in errs) else self.combiner(errs, None).to_pd()
         return pred, err

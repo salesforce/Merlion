@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -11,10 +11,12 @@ import copy
 import logging
 from typing import List
 
+import pandas as pd
+
 from merlion.evaluate.anomaly import TSADMetric
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
-from merlion.models.ensemble.combine import Mean, Median
+from merlion.models.ensemble.combine import Mean
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils import TimeSeries
 
@@ -54,6 +56,25 @@ class DetectorEnsembleConfig(DetectorConfig, EnsembleConfig):
         super().__init__(enable_calibrator=enable_calibrator, **kwargs)
 
 
+class DetectorEnsembleTrainConfig(EnsembleTrainConfig):
+    """
+    Config object describing how to train an ensemble of anomaly detectors.
+    """
+
+    def __init__(self, valid_frac=0.0, per_model_train_configs=None, per_model_post_rule_train_configs=None):
+        """
+        :param valid_frac: fraction of training data to use for validation.
+        :param per_model_train_configs: list of train configs to use for individual models, one per model.
+            ``None`` means that you use the default for all models. Specifying ``None`` for an individual
+            model means that you use the default for that model.
+        :param per_model_post_rule_train_configs: list of post-rule train configs to use for individual models, one per
+            model. ``None`` means that you use the default for all models. Specifying ``None`` for an individual
+            model means that you use the default for that model.
+        """
+        super().__init__(valid_frac=valid_frac, per_model_train_configs=per_model_train_configs)
+        self.per_model_post_rule_train_configs = per_model_post_rule_train_configs
+
+
 class DetectorEnsemble(EnsembleBase, DetectorBase):
     """
     Class representing an ensemble of multiple anomaly detection models.
@@ -61,7 +82,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
 
     models: List[DetectorBase]
     config_class = DetectorEnsembleConfig
-    _default_train_config = EnsembleTrainConfig(valid_frac=0.0)
+    _default_train_config = DetectorEnsembleTrainConfig()
 
     def __init__(self, config: DetectorEnsembleConfig = None, models: List[DetectorBase] = None):
         super().__init__(config=config, models=models)
@@ -71,6 +92,14 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
                 f"detectors, but got a {type(model).__name__}."
             )
             model.config.enable_threshold = self.per_model_threshold
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
 
     @property
     def _default_post_rule_train_config(self):
@@ -84,34 +113,30 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         """
         return self.config.per_model_threshold
 
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        raise NotImplementedError("_train() is not meant to be called for DetectorEnsemble")
+
     def train(
         self,
         train_data: TimeSeries,
         anomaly_labels: TimeSeries = None,
-        train_config: EnsembleTrainConfig = None,
+        train_config: DetectorEnsembleTrainConfig = None,
         post_rule_train_config=None,
-        per_model_post_rule_train_configs=None,
     ) -> TimeSeries:
         """
         Trains each anomaly detector in the ensemble unsupervised, and each of
         their post-rules supervised (if labels are given).
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: config for ensemble training. Not recommended.
-        :param post_rule_train_config: the post-rule train config to
-            use for the ensemble-level post-rule.
-        :param per_model_post_rule_train_configs: the post-rule train configs to
-            use for each of the individual models. Must be equal in length to
-            the number of models, if given.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
+        :param train_config: `DetectorEnsembleTrainConfig` for ensemble training.
+        :param post_rule_train_config: the post-rule train config to use for the ensemble-level post-rule.
 
-        :return: A `TimeSeries` of the ensemble's anomaly scores on the training
-            data.
+        :return: A `TimeSeries` of the ensemble's anomaly scores on the training data.
         """
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
+        full_train = self.train_pre_process(train_data)
         train, valid = self.train_valid_split(full_train, train_config)
         if train is not valid:
             logger.warning("Using a train/validation split to train a DetectorEnsemble is not recommended!")
@@ -126,6 +151,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         )
 
         # Train each model individually, with its own post-rule train config
+        per_model_post_rule_train_configs = train_config.per_model_post_rule_train_configs
         if per_model_post_rule_train_configs is None:
             per_model_post_rule_train_configs = [None] * len(self.models)
         assert len(per_model_post_rule_train_configs) == len(self.models), (
@@ -165,12 +191,11 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         self.train_post_rule(combined, anomaly_labels, post_rule_train_config)
         return combined
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        time_series, time_series_prev = TimeSeries.from_pd(time_series), TimeSeries.from_pd(time_series_prev)
         y = [
             model.get_anomaly_label(time_series, time_series_prev)
             for model, used in zip(self.models, self.models_used)
             if used
         ]
-        return self.combiner(y, time_series)
+        return self.combiner(y, time_series).to_pd()

@@ -182,6 +182,27 @@ class ModelBase(metaclass=AutodocABCMeta):
         """
         self.__init__(self.config)
 
+    @property
+    @abstractmethod
+    def require_even_sampling(self) -> bool:
+        """
+        Whether the model assumes that training data is sampled at a fixed frequency
+        """
+
+    @property
+    @abstractmethod
+    def require_univariate(self) -> bool:
+        """
+        Whether the model only works with univariate time series.
+        """
+
+    @property
+    def auto_align(self) -> bool:
+        """
+        Whether to ensure that all univariates in the training data are aligned.
+        """
+        return True
+
     def __getstate__(self):
         return {k: copy.deepcopy(v) for k, v in self.__dict__.items()}
 
@@ -241,17 +262,11 @@ class ModelBase(metaclass=AutodocABCMeta):
     def last_train_time(self, last_train_time):
         self._last_train_time = to_pd_datetime(last_train_time)
 
-    def train_pre_process(
-        self, train_data: TimeSeries, require_even_sampling: bool, require_univariate: bool
-    ) -> TimeSeries:
+    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         """
         Applies pre-processing steps common for training most models.
 
         :param train_data: the original time series of training data
-        :param require_even_sampling: whether the model assumes that training
-            data is sampled at a fixed frequency
-        :param require_univariate: whether the model only works with univariate
-            time series
 
         :return: the training data, after any necessary pre-processing has been applied
         """
@@ -262,7 +277,7 @@ class ModelBase(metaclass=AutodocABCMeta):
 
         # Make sure the training data is univariate & all timestamps are equally
         # spaced (this is a key assumption for ARIMA)
-        if require_univariate and train_data.dim != 1:
+        if self.require_univariate and train_data.dim != 1:
             raise RuntimeError(
                 f"Transform {self.transform} transforms data into a {train_data.dim}-"
                 f"variate time series, but model {type(self).__name__} can "
@@ -270,14 +285,14 @@ class ModelBase(metaclass=AutodocABCMeta):
             )
 
         t = train_data.time_stamps
-        if require_even_sampling:
+        if self.require_even_sampling:
             assert_equal_timedeltas(train_data.univariates[train_data.names[0]])
             assert train_data.is_aligned
             self.timedelta = pd.infer_freq(to_pd_datetime(t))
         else:
             self.timedelta = t[1] - t[0]
         self.last_train_time = t[-1]
-        return train_data
+        return train_data.align() if self.auto_align else train_data
 
     def transform_time_series(
         self, time_series: TimeSeries, time_series_prev: TimeSeries = None
@@ -311,6 +326,10 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param train_data: a `TimeSeries` to use as a training set
         :param train_config: additional configurations (if needed)
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
@@ -448,6 +467,7 @@ class MultipleTimeseriesModelMixin(metaclass=AutodocABCMeta):
     """
     Abstract mixin for models supporting training on multiple time series.
     """
+
     @abstractmethod
     def train_multiple(self, multiple_train_data: List[TimeSeries], train_config=None):
         """

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -10,7 +10,7 @@ Transforms that compute moving averages and k-step differences.
 
 from collections import OrderedDict
 import logging
-from typing import List, Sequence
+from typing import Sequence
 
 import numpy as np
 import scipy.signal
@@ -30,7 +30,7 @@ class MovingAverage(TransformBase):
     series to the left before taking the moving average.
     """
 
-    def __init__(self, n_steps: int = None, weights: Sequence[float] = None):
+    def __init__(self, n_steps: int = None, weights: Sequence[float] = None, pad: bool = False):
         super().__init__()
         assert (
             n_steps is not None or weights is not None
@@ -43,6 +43,7 @@ class MovingAverage(TransformBase):
             assert len(weights) == n_steps
         self.n_steps = n_steps
         self.weights = weights
+        self.pad = pad
 
     def train(self, time_series: TimeSeries):
         pass
@@ -53,9 +54,11 @@ class MovingAverage(TransformBase):
         for name, var in time_series.items():
             t, x = var.index, var.np_values
             ma = scipy.signal.correlate(x, self.weights, mode="full")
-            y0, y1 = ma[: len(x)], ma[len(x) :]
-            new_vars[name] = UnivariateTimeSeries(t, y0)
-            conv_remainders.append(y1)
+            y0, y1 = ma[: self.n_steps - 1], ma[self.n_steps - 1 :]
+            conv_remainders.append(y0)
+            if not self.pad:
+                t = t[self.n_steps - 1 :]
+            new_vars[name] = UnivariateTimeSeries(t, y1[: len(t)])
 
         self.inversion_state = conv_remainders
         ret = TimeSeries(new_vars, check_aligned=False)
@@ -64,9 +67,10 @@ class MovingAverage(TransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
-        for (name, var), y1 in zip(time_series.items(), self.inversion_state):
-            t, y0 = var.index, var.np_values
-            x = scipy.signal.deconvolve(np.concatenate((y0, y1)), self.weights[-1::-1])[0]
+        for (name, var), y0 in zip(time_series.items(), self.inversion_state):
+            t, y1 = var.index, var.np_values
+            y = np.concatenate((y0, y1))
+            x = scipy.signal.deconvolve(y, self.weights[-1::-1])[0]
             new_vars[name] = UnivariateTimeSeries(t, x)
 
         ret = TimeSeries(new_vars, check_aligned=False)

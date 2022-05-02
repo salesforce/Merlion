@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,7 +8,9 @@
 Spectral Residual algorithm for anomaly detection
 """
 import logging
+
 import numpy as np
+import pandas as pd
 
 from merlion.models.anomaly.base import DetectorConfig, DetectorBase
 from merlion.transform.resample import TemporalResample
@@ -82,6 +84,14 @@ class SpectralResidual(DetectorBase):
         self.train_data = None
 
     @property
+    def require_even_sampling(self) -> bool:
+        return True
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
+
+    @property
     def target_seq_index(self) -> int:
         return self.config.target_seq_index
 
@@ -109,20 +119,12 @@ class SpectralResidual(DetectorBase):
         item = values[-m] + grad * m
         return np.pad(values, ((0, self.config.estimated_points),), constant_values=item)
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
-
-        univariate_time_series: UnivariateTimeSeries = time_series.univariates[time_series.names[self.target_seq_index]]
-        prev_values: UnivariateTimeSeries = (
-            time_series_prev.univariates[time_series_prev.names[self.target_seq_index]].copy()
-            if time_series_prev
-            else UnivariateTimeSeries.empty()
-        )
-
-        train_prev_len = prev_values.shape[0]
-
-        values = prev_values
-        values = values.concat(univariate_time_series).np_values
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        i = self.target_seq_index
+        if time_series_prev is None:
+            values = time_series.values[:, i]
+        else:
+            values = np.concatenate((time_series_prev.values[:, i], time_series.values[:, i]))
 
         padded_values = self._pad(values) if self.config.estimated_points > 0 else values
         saliency_map = self._get_saliency_map(padded_values)
@@ -135,32 +137,21 @@ class SpectralResidual(DetectorBase):
         average_values = (average_values / a)[:-1]
         output_values = np.append(np.asarray([0.0]), (saliency_map[1:] - average_values) / (average_values + 1e-8))
 
-        result_values = output_values[train_prev_len:]
+        return pd.DataFrame(output_values[-len(time_series) :], index=time_series.index)
 
-        return TimeSeries(
-            {"anom_score": UnivariateTimeSeries(time_stamps=univariate_time_series.time_stamps, values=result_values)}
-        )
-
-    def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
-    ) -> TimeSeries:
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-
-        if train_data.dim == 1:
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        dim = train_data.shape[1]
+        if dim == 1:
             self.config.target_seq_index = 0
         elif self.target_seq_index is None:
             raise RuntimeError(
-                f"Attempting to use the SR algorithm on a {train_data.dim}-variable "
+                f"Attempting to use the SR algorithm on a {dim}-variable "
                 f"time series, but didn't specify a `target_seq_index` "
                 f"indicating which univariate is the target."
             )
-        assert 0 <= self.target_seq_index < train_data.dim, (
-            f"Expected `target_seq_index` to be between 0 and {train_data.dim} "
+        assert 0 <= self.target_seq_index < dim, (
+            f"Expected `target_seq_index` to be between 0 and {dim} "
             f"(the dimension of the transformed data), but got {self.target_seq_index}"
         )
 
-        train_scores = self.get_anomaly_score(train_data)
-        self.train_post_rule(
-            anomaly_scores=train_scores, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
-        return train_scores
+        return self._get_anomaly_score(train_data)

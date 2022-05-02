@@ -14,13 +14,12 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
 from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +45,7 @@ class ETSConfig(ForecasterConfig):
         damped_trend=True,
         seasonal="add",
         seasonal_periods=None,
+        refit=True,
         **kwargs,
     ):
         """
@@ -58,6 +58,8 @@ class ETSConfig(ForecasterConfig):
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
         :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
+        :param refit: if ``True``, refit the full ETS model when ``time_series_prev`` is given to the forecast method
+            (slower). If ``False``, simply perform exponential smoothing (faster).
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.error = error
@@ -65,6 +67,7 @@ class ETSConfig(ForecasterConfig):
         self.damped_trend = damped_trend
         self.seasonal = seasonal
         self.seasonal_periods = seasonal_periods
+        self.refit = refit
 
 
 class ETS(SeasonalityModel, ForecasterBase):
@@ -80,6 +83,10 @@ class ETS(SeasonalityModel, ForecasterBase):
         self.last_train_window = None
         self._last_val = None
         self._n_train = None
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return True
 
     @property
     def error(self):
@@ -101,6 +108,10 @@ class ETS(SeasonalityModel, ForecasterBase):
     def seasonal_periods(self):
         return self.config.seasonal_periods
 
+    @property
+    def _online_model(self) -> bool:
+        return True
+
     def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
         if theta > 1:
             self.config.seasonal_periods = int(theta)
@@ -108,13 +119,10 @@ class ETS(SeasonalityModel, ForecasterBase):
             self.config.seasonal = None
             self.config.seasonal_periods = None
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        # Train the transform & transform the training data
-        train_data = self.train_pre_process(train_data, require_even_sampling=True, require_univariate=False)
-
+    def _train(self, train_data: pd.DataFrame, train_config=None):
         # train model
         name = self.target_name
-        train_data = train_data.univariates[name].to_pd()
+        train_data = train_data[name]
         times = train_data.index
 
         with warnings.catch_warnings():
@@ -139,70 +147,41 @@ class ETS(SeasonalityModel, ForecasterBase):
         self._n_train = train_data.shape[0]
         self._last_val = train_data[-1]
 
-        yhat = self.model.fittedvalues.values.tolist()
-        err = self.model.standardized_forecasts_error.tolist()
-        return (
-            UnivariateTimeSeries(times, yhat, name).to_ts(),
-            UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
-        )
+        yhat = pd.DataFrame(self.model.fittedvalues.values.tolist(), index=times, columns=[name])
+        err = pd.DataFrame(self.model.standardized_forecasts_error.tolist(), index=times, columns=[f"{name}_err"])
+        return yhat, err
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr=False,
-        return_prev=False,
-        refit=True,
-    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
-        # Make sure the timestamps are valid (spaced at the right timedelta)
-        # If time_series_prev is None, i0 is the first index of the pre-computed
-        # forecast, which we'd like to start returning a forecast from
-        orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
-        time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
+    def _forecast(
+        self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
-        # transform time_series_prev if relevant (before making the prediction)
-        if time_series_prev is not None:
-            time_series_prev = self.transform(time_series_prev)
-            _, new_data = time_series_prev.bisect(self.last_train_time + self.timedelta, t_in_left=False)
-            # if time_series_prev does not contain new data w.r.t. train_data, we skip it
-            if new_data.is_empty():
-                time_series_prev = None
-
+        # Basic forecasting without time_series_prev
         if time_series_prev is None:
             forecast_result = self.model.get_prediction(
                 start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="exact"
             )
-            forecast = forecast_result.predicted_mean
-            err = np.sqrt(forecast_result.var_pred_mean)
-            if any(np.isnan(forecast)):
-                logger.warning(
-                    "Trained ETS model is producing NaN forecast. Use the last "
-                    "point in the training data as the prediction."
-                )
-                forecast[np.isnan(forecast)] = self._last_val
-            if any(np.isnan(err)):
-                err[np.isnan(err)] = 0
+            forecast = np.asarray(forecast_result.predicted_mean)
+            err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
 
-        # If there is a time_series_prev, use it to smooth ETS model,
+        # If there is a time_series_prev, use it to smooth/refit ETS model,
         # and then obtain its forecast (and standard error of that forecast)
         else:
-            k = time_series_prev.names[self.target_seq_index]
-            time_series_prev = time_series_prev.univariates[k]
-            last_train_window_size = self.last_train_window.shape[0]
-            time_series_prev_pd = time_series_prev.to_pd()
+            time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
+            last_train_window_size = len(self.last_train_window)
 
             # truncate time series window for smooth or refit
             if len(time_series_prev) >= last_train_window_size:
-                mask = time_series_prev_pd.index > self.last_train_window.index[-1]
+                mask = time_series_prev.index > self.last_train_window.index[-1]
                 if sum(mask) <= last_train_window_size:
-                    val_prev = time_series_prev_pd[-last_train_window_size:]
+                    val_prev = time_series_prev[-last_train_window_size:]
                 else:
-                    val_prev = time_series_prev_pd[-sum(mask) :]
-                self.last_train_window = time_series_prev_pd[-last_train_window_size:]
+                    val_prev = time_series_prev[-sum(mask) :]
+                self.last_train_window = time_series_prev[-last_train_window_size:]
             else:
-                mask = self.last_train_window.index < time_series_prev_pd.index[0]
-                val_prev = pd.concat([self.last_train_window[mask], time_series_prev_pd])[-last_train_window_size:]
+                mask = self.last_train_window.index < time_series_prev.index[0]
+                val_prev = pd.concat([self.last_train_window[mask], time_series_prev])[-last_train_window_size:]
                 self.last_train_window = val_prev
+            self._last_val = val_prev[-1]
             new_model = ETSModel(
                 val_prev,
                 error=self.error,
@@ -215,15 +194,15 @@ class ETS(SeasonalityModel, ForecasterBase):
             # the default setting of refit=False is fast and conduct exponential smoothing with given parameters,
             # while the setting of refit=True is slow and refit the model with a selected training set from
             # time_series_prev and self.last_train_window
-            if refit:
+            if self.config.refit:
                 self.model = new_model.fit(start_params=self.model.params, disp=False)
             else:
                 self.model = new_model.smooth(params=self.model.params)
             forecast_result = self.model.get_prediction(
                 start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1, method="simulated"
             )
-            forecast = forecast_result.predicted_mean
-            err = forecast_result._results.simulation_results.std(axis=1)
+            forecast = np.asarray(forecast_result.predicted_mean)
+            err = np.asarray(forecast_result._results.simulation_results.std(axis=1))
 
             # if return_prev is Ture, it will return the forecast and error of last train window
             # instead of time_series_prev
@@ -234,42 +213,18 @@ class ETS(SeasonalityModel, ForecasterBase):
                 err = np.concatenate((err_prev, err))
                 t_prev = self.last_train_window.index.values.astype("datetime64[s]").astype(np.int64).tolist()
                 time_stamps = t_prev + time_stamps
-                orig_t = None if orig_t is None else t_prev + orig_t
 
-        # Return the IQR (25%ile & 75%ile) along with the forecast if desired
+        # Check for NaN's
+        if any(np.isnan(forecast)):
+            logger.warning(
+                "Trained ETS model is producing NaN forecast. Use the last training point as the prediction."
+            )
+            forecast[np.isnan(forecast)] = self._last_val
+        if any(np.isnan(err)):
+            err[np.isnan(err)] = 0
+
+        # Return the forecast & its standard error
         name = self.target_name
-        if return_iqr:
-            lb = (
-                UnivariateTimeSeries(
-                    name=f"{name}_lower", time_stamps=time_stamps, values=forecast + norm.ppf(0.25) * err
-                )
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            ub = (
-                UnivariateTimeSeries(
-                    name=f"{name}_upper", time_stamps=time_stamps, values=forecast + norm.ppf(0.75) * err
-                )
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            forecast = (
-                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            return forecast, lb, ub
-
-        # Otherwise, just return the forecast & its standard error
-        else:
-            forecast = (
-                UnivariateTimeSeries(name=name, time_stamps=time_stamps, values=forecast)
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            err = (
-                UnivariateTimeSeries(name=f"{name}_err", time_stamps=time_stamps, values=err)
-                .to_ts()
-                .align(reference=orig_t)
-            )
-            return forecast, err
+        forecast = pd.DataFrame(forecast, index=to_pd_datetime(time_stamps), columns=[name])
+        err = pd.DataFrame(err, index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])
+        return forecast, err

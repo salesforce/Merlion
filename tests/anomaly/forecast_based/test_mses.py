@@ -48,8 +48,8 @@ class TestMSES(unittest.TestCase):
         # alarm function returns the post-rule processed anomaly scores
         scores = self.model.get_anomaly_score(self.vals_test, self.vals_train)
         logger.info(f"Scores look like:\n{scores[:5]}")
-        logger.info("max score = " + str(max(scores.to_pd().values)))
-        logger.info("min score = " + str(min(scores.to_pd().values)) + "\n")
+        logger.info("max score = " + str(max(scores.to_pd().values.flatten())))
+        logger.info("min score = " + str(min(scores.to_pd().values.flatten())) + "\n")
         alarms = self.model.post_rule(scores)
         n_alarms = np.sum(alarms.to_pd().values != 0)
         logger.info(f"Number of alarms: {n_alarms}\n")

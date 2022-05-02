@@ -14,18 +14,18 @@ from typing import Iterable, List, Tuple, Union
 try:
     import prophet
 except ImportError as e:
-    err = (
+    err_msg = (
         "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[prophet]` or "
         "`pip install `salesforce-merlion[all]`"
     )
-    raise ImportError(str(e) + ". " + err)
+    raise ImportError(str(e) + ". " + err_msg)
 
 import numpy as np
 import pandas as pd
 
 from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
-from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime
+from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +139,10 @@ class Prophet(SeasonalityModel, ForecasterBase):
         self.last_forecast_time_stamps = None
         self.resid_samples = None
 
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
     def __getstate__(self):
         stan_backend = self.model.stan_backend
         if hasattr(stan_backend, "logger"):
@@ -186,10 +190,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
                 logger.info(f"Add seasonality {str(p)} ({p * dt})")
                 self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
-    def train(self, train_data: TimeSeries, train_config=None):
-        train_data = self.train_pre_process(train_data, require_even_sampling=False, require_univariate=False)
-        series = train_data.univariates[self.target_name]
-        df = pd.DataFrame({"ds": series.index, "y": series.np_values})
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        series = train_data[self.target_name]
+        df = pd.DataFrame({"ds": series.index, "y": series.values})
 
         with _suppress_stdout_stderr():
             self.model.fit(df)
@@ -201,71 +204,43 @@ class Prophet(SeasonalityModel, ForecasterBase):
         samples = self.model.predictive_samples(df)["yhat"]
         samples = samples - np.expand_dims(forecast, -1)
 
-        yhat = UnivariateTimeSeries(df.ds, forecast, self.target_name).to_ts()
-        err = UnivariateTimeSeries(df.ds, np.std(samples, axis=-1), f"{self.target_name}_err").to_ts()
+        yhat = pd.DataFrame(forecast, index=df.ds, columns=[self.target_name])
+        err = pd.DataFrame(np.std(samples, axis=-1), index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
 
-    def forecast(
-        self,
-        time_stamps: Union[int, List[int]],
-        time_series_prev: TimeSeries = None,
-        return_iqr=False,
-        return_prev=False,
-    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         if isinstance(time_stamps, (int, float)):
             times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
-        else:
-            times = to_pd_datetime(time_stamps)
+            time_stamps = to_timestamp(times)
+        return time_stamps
 
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # Construct data frame for prophet
         df = pd.DataFrame()
+        time_stamps = to_pd_datetime(time_stamps)
         if time_series_prev is not None:
-            series = self.transform(time_series_prev)
-            series = series.univariates[series.names[self.target_seq_index]]
-            df = pd.DataFrame({"ds": series.index, "y": series.np_values})
-        df = df.append(pd.DataFrame({"ds": times}))
+            series = time_series_prev.iloc[:, self.target_seq_index]
+            df = pd.DataFrame({"ds": series.index, "y": series.values})
+        df = pd.concat((df, pd.DataFrame({"ds": time_stamps})))
+
+        # Determine the right set of timestamps to use
+        if return_prev and time_series_prev is not None:
+            time_stamps = df["ds"]
 
         # Get MAP estimate from prophet
         self.model.uncertainty_samples = 0
         yhat = self.model.predict(df)["yhat"].values
         self.model.uncertainty_samples = self.uncertainty_samples
 
-        # Use posterior sampling get the uncertainty for this forecast
-        if time_series_prev is not None:
-            time_stamps_full = time_series_prev.time_stamps + time_stamps
-        else:
-            time_stamps_full = time_stamps
+        # Get posterior samples for uncertainty estimation
+        resid_samples = self.model.predictive_samples(df)["yhat"] - np.expand_dims(yhat, -1)
 
-        if self.last_forecast_time_stamps_full != time_stamps_full:
-            samples = self.model.predictive_samples(df)["yhat"]
-            self.last_forecast_time_stamps_full = time_stamps_full
-            if self.last_forecast_time_stamps != time_stamps:
-                self.resid_samples = samples - np.expand_dims(yhat, -1)
-                self.last_forecast_time_stamps = time_stamps
-            else:
-                n = len(time_stamps)
-                prev = samples[:-n] - np.expand_dims(yhat[:-n], -1)
-                self.resid_samples = np.concatenate((prev, self.resid_samples))
-
-        if not return_prev:
-            yhat = yhat[-len(time_stamps) :]
-            t = time_stamps
-        else:
-            t = time_stamps_full
-
-        t = t[-len(yhat) :]
-        samples = self.resid_samples[-len(yhat) :]
+        # Return the MAP estimate & stderr
+        yhat = yhat[-len(time_stamps) :]
+        resid_samples = resid_samples[-len(time_stamps) :]
         name = self.target_name
-        if return_iqr:
-            lb = UnivariateTimeSeries(
-                name=f"{name}_lower", time_stamps=t, values=yhat + np.percentile(samples, 25, axis=-1)
-            ).to_ts()
-            ub = UnivariateTimeSeries(
-                name=f"{name}_upper", time_stamps=t, values=yhat + np.percentile(samples, 75, axis=-1)
-            ).to_ts()
-            yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
-            return yhat, ub, lb
-        else:
-            yhat = UnivariateTimeSeries(t, yhat, name).to_ts()
-            err = UnivariateTimeSeries(t, np.std(samples, axis=-1), f"{name}_err").to_ts()
-            return yhat, err
+        yhat = pd.DataFrame(yhat, index=time_stamps, columns=[name])
+        err = pd.DataFrame(np.std(resid_samples, axis=-1), index=time_stamps, columns=[f"{name}_err"])
+        return yhat, err

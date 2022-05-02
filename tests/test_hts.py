@@ -43,7 +43,6 @@ class TestHTS(unittest.TestCase):
         self.max_forecast_steps = 2
         self.maxlags = 6
         self.i = 0
-        # t = int(datetime(2019, 1, 1, 0, 0, 0).timestamp())
 
         dataset = "seattle_trail"
         d, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", dataset))[0]

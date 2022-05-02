@@ -11,7 +11,6 @@ merlion.models.ensemble package
     combine
     anomaly
     forecast
-    MoE_forecast
 
 Submodules
 ----------
@@ -44,14 +43,6 @@ merlion.models.ensemble.forecast module
 ---------------------------------------
 
 .. automodule:: merlion.models.ensemble.forecast
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   
-merlion.models.ensemble.MoE_forecast module
--------------------------------------------
-
-.. automodule:: merlion.models.ensemble.MoE_forecast
    :members:
    :undoc-members:
    :show-inheritance:

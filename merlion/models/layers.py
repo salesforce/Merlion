@@ -11,7 +11,9 @@ functionality. This is the basis for `default models <merlion.models.defaults>`_
 """
 import copy
 import logging
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
+
+import pandas as pd
 
 from merlion.models.base import Config, ModelBase
 from merlion.models.factory import ModelFactory
@@ -160,8 +162,6 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     """
 
     config_class = LayeredModelConfig
-    require_even_sampling = False
-    require_univariate = False
 
     def __new__(cls, config: LayeredModelConfig = None, model: ModelBase = None, **kwargs):
         # Dynamically inherit from the appropriate kind of base model.
@@ -201,6 +201,14 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         elif config is None:
             config = cls.config_class(model=model, **kwargs)
         return config
+
+    @property
+    def require_even_sampling(self) -> bool:
+        return False
+
+    @property
+    def require_univariate(self) -> bool:
+        return False
 
     @property
     def model(self):
@@ -265,9 +273,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return self.__getattribute__(item)
 
     def train(self, train_data: TimeSeries, *args, **kwargs):
-        train_data = self.train_pre_process(
-            train_data, require_even_sampling=self.require_even_sampling, require_univariate=self.require_univariate
-        )
+        train_data = self.train_pre_process(train_data)
         return self.model.train(train_data, *args, **kwargs)
 
 
@@ -275,6 +281,12 @@ class LayeredDetector(LayeredModel, DetectorBase):
     """
     Base class for a layered anomaly detector. Only to be used as a subclass.
     """
+
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError("Layered model _train() should not be called.")
+
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
@@ -285,6 +297,12 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
     """
     Base class for a layered forecaster. Only to be used as a subclass.
     """
+
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError("Layered model _train() should not be called.")
+
+    def _forecast(self, time_stamps: List[int], time_series_prev: TimeSeries = None, return_prev=False):
+        raise NotImplementedError("Layered model _forecast() should not be called.")
 
     def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
         if time_series_prev is not None:
@@ -297,4 +315,5 @@ class LayeredForecastingDetector(LayeredForecaster, LayeredDetector, Forecasting
     Base class for a layered forecasting detector. Only to be used as a subclass.
     """
 
-    pass
+    def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError("Layered model _train() should not be called.")
