@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.transform package &mdash; Merlion 1.1.3 documentation</title>
+  <title>merlion.transform package &mdash; Merlion 1.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -265,8 +265,7 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.train">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.TransformBase.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -355,8 +354,7 @@ specified. This is to prevent potential user error.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.base.Identity.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.base.Identity.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -379,8 +377,7 @@ time series as training data.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.bound.LowerUpperClip.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.bound.LowerUpperClip.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -421,7 +418,7 @@ time series as training data.</p>
 <p>Transforms that compute moving averages and k-step differences.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.MovingAverage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingAverage" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.moving_average.</span></span><span class="sig-name descname"><span class="pre">MovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingAverage" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.transform.base.TransformBase</span></code></a></p>
 <p>Computes the n_steps-step moving average of the time series, with
 the given relative weights assigned to each time in the moving average
@@ -430,8 +427,7 @@ series to the left before taking the moving average.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.MovingAverage.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingAverage.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -455,8 +451,7 @@ available datapoints.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.MovingPercentile.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.MovingPercentile.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -510,8 +505,7 @@ of the the exponential moving average as well.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.ExponentialMovingAverage.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.ExponentialMovingAverage.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -526,8 +520,7 @@ to be a 2-step moving “average” with weights w = [-1, 1].</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.DifferenceTransform.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.DifferenceTransform.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -544,8 +537,7 @@ first value in the time series.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.moving_average.LagTransform.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.moving_average.LagTransform.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -579,8 +571,7 @@ lose sign information).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.normalize.AbsVal.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.AbsVal.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -599,8 +590,7 @@ time series as training data.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.normalize.Rescale.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.Rescale.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -619,8 +609,7 @@ zero mean and unit variance.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.normalize.MeanVarNormalize.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MeanVarNormalize.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -634,8 +623,7 @@ between zero and one.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.normalize.MinMaxNormalize.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.MinMaxNormalize.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -656,8 +644,7 @@ When lmbda == 0, it is ln(lmbda + offset).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -705,6 +692,12 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.proper_inversion">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.proper_inversion" title="Permalink to this definition"></a></dt>
+<dd><p>We treat resampling as a proper inversion to avoid emitting warnings.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.granularity">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">granularity</span></span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.granularity" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -732,8 +725,7 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.TemporalResample.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -783,8 +775,7 @@ is already multivariate.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.resample.Shingle.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.resample.Shingle.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -829,8 +820,7 @@ comprising it are invertible.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -884,8 +874,7 @@ to.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.train" title="Permalink to this definition"></a></dt>
-<dd><p>Sets all trainable parameters of the transform (if any), using the input
-time series as training data.</p>
+<dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 
 <dl class="py method">

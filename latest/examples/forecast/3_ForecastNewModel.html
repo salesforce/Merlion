@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding a New Forecasting Model &mdash; Merlion 1.1.3 documentation</title>
+  <title>Adding a New Forecasting Model &mdash; Merlion 1.2.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -398,13 +398,24 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterBase</span>
-<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span>
+<span class="kn">from</span> <span class="nn">merlion.utils.time_series</span> <span class="kn">import</span> <span class="n">to_pd_datetime</span>
 
 
 <span class="k">class</span> <span class="nc">RepeatRecent</span><span class="p">(</span><span class="n">ForecasterBase</span><span class="p">):</span>
     <span class="c1"># The config class for RepeatRecent is RepeatRecentConfig, defined above</span>
     <span class="n">config_class</span> <span class="o">=</span> <span class="n">RepeatRecentConfig</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">require_even_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Many forecasters assume the input time series is sampled evenly.</span>
+<span class="sd">        That isn&#39;t a necessary assumption for this model, so override the property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -415,24 +426,13 @@ div.rendered_html tbody tr:hover {
         <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="c1"># Apply training preparation steps. We specify that this model doesn&#39;t</span>
-        <span class="c1"># require evenly sampled time series, and it doesn&#39;t require univariate</span>
-        <span class="c1"># data.</span>
-        <span class="n">train_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_pre_process</span><span class="p">(</span>
-            <span class="n">train_data</span><span class="p">,</span> <span class="n">require_even_sampling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">require_univariate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="c1"># &quot;Train&quot; the model. Here, we just gather the most recent values for each univariate.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 
-        <span class="c1"># &quot;Train&quot; the model. Here, we just gather the most recent values</span>
-        <span class="c1"># for each univariate in the time series.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                                             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-
-        <span class="c1"># The model&#39;s &quot;prediction&quot; for the training data, is just the value</span>
-        <span class="c1"># from one step before.</span>
-        <span class="n">train_forecast</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span><span class="p">(</span><span class="n">univariate</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">,</span>
-                                        <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">univariate</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">univariate</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="c1"># The model&#39;s &quot;prediction&quot; for the training data, is just the value from one step before.</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)),</span> <span class="n">train_data</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">train_forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
         <span class="c1"># This model doesn&#39;t have any notion of error</span>
         <span class="n">train_stderr</span> <span class="o">=</span> <span class="kc">None</span>
@@ -440,35 +440,30 @@ div.rendered_html tbody tr:hover {
         <span class="c1"># Return the train prediction &amp; standard error</span>
         <span class="k">return</span> <span class="n">train_forecast</span><span class="p">,</span> <span class="n">train_stderr</span>
 
-    <span class="k">def</span> <span class="nf">forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_stamps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-                 <span class="n">time_series_prev</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">return_iqr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_prev</span><span class="o">=</span><span class="kc">False</span>
-                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_stamps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                  <span class="n">time_series_prev</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">return_prev</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 
         <span class="c1"># Use time_series_prev&#39;s most recent value if time_series_prev is given.</span>
-        <span class="c1"># Make sure to apply the data pre-processing transform on it first!</span>
-        <span class="k">if</span> <span class="n">time_series_prev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">time_series_prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">time_series_prev</span><span class="p">)</span>
-            <span class="n">most_recent_value</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">time_series_prev</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
         <span class="c1"># Otherwise, use the most recent value stored from the training data</span>
+        <span class="k">if</span> <span class="n">time_series_prev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">most_recent_value</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">time_series_prev</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">most_recent_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span>
 
-        <span class="c1"># The forecast is just the most recent value repeated for every upcoming</span>
-        <span class="c1"># timestamp</span>
-        <span class="n">forecast</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span><span class="p">(</span><span class="n">time_stamps</span><span class="p">,</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_stamps</span><span class="p">)))</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">most_recent_value</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="c1"># The forecast is just the most recent value repeated for every upcoming timestamp.</span>
+        <span class="c1"># Note that we only care about the target_seq_index here.</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_seq_index</span>
+        <span class="n">datetimes</span> <span class="o">=</span> <span class="n">to_pd_datetime</span><span class="p">(</span><span class="n">time_stamps</span><span class="p">)</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">most_recent_value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">val</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetimes</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">datetimes</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
-        <span class="c1"># Pre-pend time_series_prev to the forecast if desired</span>
+        <span class="c1"># If desired, pre-pend &quot;predicted&quot; vals of the target_seq_index of time_series_prev.</span>
         <span class="k">if</span> <span class="n">return_prev</span> <span class="ow">and</span> <span class="n">time_series_prev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">forecast</span> <span class="o">=</span> <span class="n">time_series_prev</span> <span class="o">+</span> <span class="n">forecast</span>
-
-        <span class="c1"># Ensure we&#39;re not trying to return an inter-quartile range</span>
-        <span class="k">if</span> <span class="n">return_iqr</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;RepeatRecent model doesn&#39;t support uncertainty estimation&quot;</span><span class="p">)</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_series_prev</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]))</span>
+            <span class="n">prev_forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">time_series_prev</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">prev_forecast</span><span class="p">,</span> <span class="n">forecast</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">forecast</span><span class="p">,</span> <span class="kc">None</span>
 
@@ -487,6 +482,7 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
 
 <span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;Hourly&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -508,7 +504,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 817.74it/s]
+100%|██████████| 414/414 [00:00&lt;00:00, 849.11it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -549,6 +545,7 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 (                        H1
+ time
  1970-01-01 00:00:00    0.0
  1970-01-01 01:00:00  605.0
  1970-01-01 02:00:00  586.0
@@ -587,6 +584,7 @@ div.rendered_html tbody tr:hover {
 <div class="highlight"><pre>
 Forecast
                         H1
+time
 1970-01-30 04:00:00  684.0
 1970-01-30 05:00:00  684.0
 1970-01-30 06:00:00  684.0
@@ -736,8 +734,7 @@ sMAPE = 20.166
 <span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span>
 
 
-<span class="c1"># Define a config class which inherits from RepeatRecentConfig and DetectorConfig</span>
-<span class="c1"># in that order</span>
+<span class="c1"># Define a config class which inherits from RepeatRecentConfig and DetectorConfig, in that order</span>
 <span class="k">class</span> <span class="nc">RepeatRecentDetectorConfig</span><span class="p">(</span><span class="n">RepeatRecentConfig</span><span class="p">,</span> <span class="n">DetectorConfig</span><span class="p">):</span>
     <span class="c1"># Set a default anomaly score post-processing rule</span>
     <span class="n">_default_post_rule</span> <span class="o">=</span> <span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
@@ -772,6 +769,7 @@ sMAPE = 20.166
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                      anom_score
+time
 1970-01-01 00:00:00   -0.212986
 1970-01-01 01:00:00   -0.120839
 1970-01-01 02:00:00    0.000000
@@ -804,6 +802,7 @@ sMAPE = 20.166
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                      anom_score
+time
 1970-01-30 04:00:00   -0.413397
 1970-01-30 05:00:00   -0.756835
 1970-01-30 06:00:00   -0.966714

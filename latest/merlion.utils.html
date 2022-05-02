@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.utils package &mdash; Merlion 1.1.3 documentation</title>
+  <title>merlion.utils package &mdash; Merlion 1.2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -444,7 +444,7 @@ if <code class="docutils literal notranslate"><span class="pre">include_tf</span
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>series</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>) – a <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>. If it has a``pd.DatetimeIndex``, we will
+<li><p><strong>series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – a <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>. If it has a``pd.DatetimeIndex``, we will
 use that index for the timestamps. Otherwise, we will create one at
 the specified frequency.</p></li>
 <li><p><strong>name</strong> – the name to assign the output</p></li>
