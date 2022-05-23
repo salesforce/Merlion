@@ -99,6 +99,8 @@ class UnivariateTimeSeries(pd.Series):
             name = values.name
         if is_pd and isinstance(values.index, pd.DatetimeIndex):
             super().__init__(values, name=name)
+        elif is_pd and values.index.dtype == "O":
+            super().__init__(values, name=name, index=pd.to_datetime(values.index))
         else:
             if time_stamps is None:
                 if isinstance(freq, (int, float)):
@@ -727,8 +729,8 @@ class TimeSeries:
             df.loc[var.index, name] = var[~var.index.duplicated()]
         return df
 
-    def to_csv(self, file_name):
-        self.to_pd().to_csv(file_name)
+    def to_csv(self, file_name, **kwargs):
+        self.to_pd().to_csv(file_name, **kwargs)
 
     @classmethod
     def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, drop_nan=True, freq="1h"):
@@ -765,6 +767,11 @@ class TimeSeries:
 
         # Time series is not aligned iff there are missing values
         aligned = df.shape[1] == 1 or not df.isna().any().any()
+
+        # Check for a string-type index
+        if df.index.dtype == "O":
+            df = df.copy()
+            df.index = pd.to_datetime(df.index)
 
         # Make sure there are no time duplicates (by milliseconds) if desired
         dt_index = isinstance(df.index, pd.DatetimeIndex)
