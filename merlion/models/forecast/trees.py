@@ -125,7 +125,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
             )
             self.model.fit(inputs_train, labels_train)
             inputs_train = np.atleast_2d(inputs_train)
-            pred = self._hybrid_forecast(inputs_train)
+            pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
             # since the model may predict multiple steps, we concatenate all the first steps together
             pred = pred[:, 0].reshape(-1)
 
@@ -134,7 +134,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
             # sequence mode, set prediction_stride = max_forecast_steps
             if self.prediction_stride > 1:
                 max_forecast_steps = seq_ar_common.max_feasible_forecast_steps(train_data, self.maxlags)
-                if self.max_forecast_steps > max_forecast_steps:
+                if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
                     logger.warning(
                         f"With train data of length {len(train_data)} and "
                         f"maxlags={self.maxlags}, the maximum supported forecast "
@@ -144,7 +144,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                         f"'training_mode = autogression'."
                     )
                     self.config.max_forecast_steps = max_forecast_steps
-                if self.prediction_stride != self.max_forecast_steps:
+                if self.max_forecast_steps is not None and self.prediction_stride != self.max_forecast_steps:
                     logger.warning(
                         f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
                     )
