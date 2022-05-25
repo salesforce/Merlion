@@ -7,6 +7,7 @@
 """
 Contains the `ModelFactory`.
 """
+import copy
 import inspect
 from typing import Dict, Tuple, Type, Union
 
@@ -101,3 +102,15 @@ class ModelFactory:
         name = dill.loads(obj)[0]
         model_class = cls.get_model_class(name)
         return model_class.from_bytes(obj, **kwargs)
+
+
+def instantiate_or_copy_model(model: Union[dict, ModelBase]):
+    if isinstance(model, ModelBase):
+        return copy.deepcopy(model)
+    if isinstance(model, dict):
+        try:
+            return ModelFactory.create(**model)
+        except Exception as e:
+            raise ValueError(f"Invalid `dict` specifying a model config.\n\nGot {model}\n\nException: {e}")
+    else:
+        raise TypeError(f"Expected model to be a `dict` or `ModelBase`. Got {model}.")

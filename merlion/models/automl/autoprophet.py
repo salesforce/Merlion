@@ -21,7 +21,7 @@ class AutoProphetConfig(SeasonalityConfig):
     def __init__(
         self,
         model: Union[Prophet, dict] = None,
-        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.All,
+        periodicity_strategy: Union[PeriodicityStrategy, str] = PeriodicityStrategy.All,
         **kwargs,
     ):
         model = dict(name="Prophet") if model is None else model

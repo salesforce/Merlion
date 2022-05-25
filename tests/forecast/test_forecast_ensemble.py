@@ -34,17 +34,18 @@ class TestForecastEnsemble(unittest.TestCase):
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :].univariates[data.names[0]]
 
+    def test_mean(self):
+        print("-" * 80)
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=50))
         model2 = AutoProphet(
             config=AutoProphetConfig(transform=Identity(), periodicity_strategy=PeriodicityStrategy.Max)
         )
         self.ensemble = ForecasterEnsemble(
-            models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
+            models=[model0, model1, model2],
+            config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False), target_seq_index=0),
         )
 
-    def test_mean(self):
-        print("-" * 80)
         self.expected_smape = 37
         self.ensemble.models[0].config.max_forecast_steps = None
         self.ensemble.models[1].config.max_forecast_steps = None
@@ -53,6 +54,15 @@ class TestForecastEnsemble(unittest.TestCase):
 
     def test_selector(self):
         print("-" * 80)
+        model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
+        model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=50))
+        model2 = AutoProphet(
+            config=AutoProphetConfig(target_seq_index=0, transform=Identity(), periodicity_strategy="Max")
+        )
+        self.ensemble = ForecasterEnsemble(
+            models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
+        )
+
         self.expected_smape = 35
         logger.info("test_selector\n" + "-" * 80 + "\n")
         self.ensemble.config.combiner = ModelSelector(metric=ForecastMetric.sMAPE)
