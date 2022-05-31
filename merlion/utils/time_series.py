@@ -100,7 +100,7 @@ class UnivariateTimeSeries(pd.Series):
         if is_pd and isinstance(values.index, pd.DatetimeIndex):
             super().__init__(values, name=name)
         elif is_pd and values.index.dtype == "O":
-            super().__init__(values, name=name, index=pd.to_datetime(values.index))
+            super().__init__(values.values, name=name, index=pd.to_datetime(values.index))
         else:
             if time_stamps is None:
                 if isinstance(freq, (int, float)):
