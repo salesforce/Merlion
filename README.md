@@ -56,16 +56,16 @@ Merlion's key features are
 The table below provides a visual overview of how Merlion's key features compare to other libraries for time series
 anomaly detection and/or forecasting.
 
-|                     | Merlion | Alibi Detect | Kats | statsmodels | GluonTS | RRCF | STUMPY | Greykite | Prophet | pmdarima 
+|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
 :---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :----: | :---:
-| Univariate Forecasting | ✅      | | ✅    | ✅          | ✅       |      |      |✅        | ✅      | ✅ 
-| Multivariate Forecasting | ✅ | | ✅ | ✅ | ✅ | | | | | | 
-| Univariate Anomaly Detection | ✅ | ✅ | ✅ | | | ✅ | ✅ | ✅ | ✅ | 
-| Multivariate Anomaly Detection | ✅ | ✅ | ✅ | | | ✅ | ✅ | | | |
-| AutoML | ✅ | | ✅ | | | | | ✅ | | ✅ 
-| Ensembles | ✅ | | | | | ✅  | | | | 
-| Benchmarking | ✅ | | | | ✅ | | | | | 
-| Visualization | ✅ | | ✅ | | | | | ✅ | ✅ | | 
+| Univariate Forecasting | ✅      | ✅      | | ✅    | ✅          | ✅       |      |      |✅        | ✅ 
+| Multivariate Forecasting | ✅ | | | ✅ | ✅ | ✅ | | | | |
+| Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | | | ✅ | ✅ | ✅ | ✅ | 
+| Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | | | ✅ | ✅ | | | |
+| AutoML | ✅ | | | ✅ | | | | | ✅ | | ✅ 
+| Ensembles | ✅ | | | | | | ✅  | | | | 
+| Benchmarking | ✅ | | | | | ✅ | | | | | 
+| Visualization | ✅ | ✅ | | ✅ | | | | | ✅ | ✅ | | 
 
 ## Installation
 
@@ -93,7 +93,8 @@ Note the following external dependencies:
 
 2. Some of our anomaly detection models depend on the Java Development Kit (JDK). For Ubuntu, call
    ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install [Homebrew](<https://brew.sh/>) and call
-   ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``.
+   ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``. Also ensure that ``java`` can be found
+   on your ``$PATH``, and that the ``$JAVA_HOME`` environment variable is set.
 
 ## Documentation
 
