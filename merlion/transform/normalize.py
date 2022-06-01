@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -12,7 +12,7 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
-import scipy.stats
+import scipy.special
 from sklearn.preprocessing import StandardScaler
 
 from merlion.transform.base import InvertibleTransformBase, TransformBase
@@ -181,7 +181,7 @@ class PowerTransform(InvertibleTransformBase):
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = []
         for var in time_series.univariates:
-            y = scipy.stats.boxcox(var + self.offset, self.lmbda)
+            y = scipy.special.boxcox(var + self.offset, self.lmbda)
             var = pd.Series(y, index=var.index, name=var.name)
             new_vars.append(UnivariateTimeSeries.from_pd(var))
 

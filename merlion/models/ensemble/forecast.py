@@ -33,7 +33,8 @@ class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
         # Override the target_seq_index of all individual models after everything has been initialized
         # FIXME: doesn't work if models have heterogeneous transforms which change the dim of the input time series
         self.target_seq_index = target_seq_index
-        assert all(model.target_seq_index == self.target_seq_index for model in self.models)
+        if self.models is not None:
+            assert all(model.target_seq_index == self.target_seq_index for model in self.models)
 
     @property
     def target_seq_index(self):
