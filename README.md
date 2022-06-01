@@ -95,7 +95,7 @@ Note the following external dependencies:
 2. Some of our anomaly detection models depend on the Java Development Kit (JDK). For Ubuntu, call
    ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install [Homebrew](<https://brew.sh/>) and call
    ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``. Also ensure that ``java`` can be found
-   on your ``$PATH``, and that the ``$JAVA_HOME`` environment variable is set.
+   on your ``PATH``, and that the ``JAVA_HOME`` environment variable is set.
 
 ## Documentation
 
