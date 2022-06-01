@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ts_datasets.forecast package &mdash; Merlion 1.2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials &amp; Example Code" href="tutorials.html" />
+    <link rel="prev" title="ts_datasets.anomaly package" href="ts_datasets.anomaly.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ts_datasets.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html">ts_datasets.anomaly package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ts_datasets.forecast package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.html#module-ts_datasets.base">datasets.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="ts_datasets.html">ts_datasets: Easy Data Loading</a> &raquo;</li>
+      <li>ts_datasets.forecast package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ts_datasets.forecast.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-ts_datasets.forecast">
+<span id="ts-datasets-forecast-package"></span><h1>ts_datasets.forecast package<a class="headerlink" href="#module-ts_datasets.forecast" title="Permalink to this heading"></a></h1>
+<p>Datasets for time series forecasting. Really, these are just time series with
+no labels of any sort.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ts_datasets.forecast.get_dataset">
+<span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.get_dataset" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of the dataset to load, formatted as
+<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_&lt;subset&gt;</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">EnergyPower</span></code> or <code class="docutils literal notranslate"><span class="pre">M4_Hourly</span></code></p></li>
+<li><p><strong>rootdir</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the directory where the desired dataset is stored. Not
+required if the package <a class="reference internal" href="ts_datasets.html#module-ts_datasets" title="ts_datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ts_datasets</span></code></a> is installed in editable
+mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre">-e</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the data loader for the desired dataset (and subset) desired</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.forecast.M4">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">M4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Hourly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.M4" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>The M4 Competition data is an extended and diverse set of time series to
+identify the most accurate forecasting method(s) for different types
+of domains, including Business, financial and economic forecasting,
+and different type of granularity, including Yearly (23,000 sequences),
+Quarterly (24,000 sequences), Monthly (48,000 sequences),
+Weekly(359 sequences), Daily (4,227 sequences) and Hourly (414 sequences)
+data.</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://github.com/Mcompetitions/M4-methods/tree/master/Dataset">https://github.com/Mcompetitions/M4-methods/tree/master/Dataset</a></p></li>
+<li><p>timeseries sequences: 100,000</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.M4.valid_subsets">
+<span class="sig-name descname"><span class="pre">valid_subsets</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Yearly',</span> <span class="pre">'Quarterly',</span> <span class="pre">'Monthly',</span> <span class="pre">'Weekly',</span> <span class="pre">'Daily',</span> <span class="pre">'Hourly']</span></em><a class="headerlink" href="#ts_datasets.forecast.M4.valid_subsets" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.M4.url">
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://github.com/Mcompetitions/M4-methods/raw/master/Dataset/{}.csv'</span></em><a class="headerlink" href="#ts_datasets.forecast.M4.url" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.M4.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.M4.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.M4.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.M4.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.forecast.EnergyPower">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">EnergyPower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.EnergyPower" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>Wrapper to load the open source energy grid power usage dataset.</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://www.kaggle.com/robikscube/hourly-energy-consumption">https://www.kaggle.com/robikscube/hourly-energy-consumption</a></p></li>
+<li><p>contains one 10-variable time series</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rootdir</strong> – The root directory at which the dataset can be found.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.EnergyPower.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.EnergyPower.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.EnergyPower.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.EnergyPower.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SeattleTrail">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">SeattleTrail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.SeattleTrail" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>Wrapper to load the open source Seattle Trail pedestrian/bike traffic
+dataset.</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://www.kaggle.com/city-of-seattle/seattle-burke-gilman-trail">https://www.kaggle.com/city-of-seattle/seattle-burke-gilman-trail</a></p></li>
+<li><p>contains one 5-variable time series</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rootdir</strong> – The root directory at which the dataset can be found.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SeattleTrail.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.SeattleTrail.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SeattleTrail.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.SeattleTrail.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SolarPlant">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">SolarPlant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.SolarPlant" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>Wrapper to load the open source solar plant power dataset.</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://www.nrel.gov/grid/solar-power-data.html">https://www.nrel.gov/grid/solar-power-data.html</a></p></li>
+<li><p>contains one 405-variable time series</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The loader currently only includes the first 100 (of 405) variables.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rootdir</strong> – The root directory at which the dataset can be found.</p></li>
+<li><p><strong>num_columns</strong> – indicates how many univariate columns should be returned</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SolarPlant.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.SolarPlant.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.SolarPlant.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.SolarPlant.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ts_datasets.anomaly.html" class="btn btn-neutral float-left" title="ts_datasets.anomaly package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials &amp; Example Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.2.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
