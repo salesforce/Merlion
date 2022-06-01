@@ -373,7 +373,9 @@ class MSES(ForecasterBase):
         if return_prev and time_series_prev is not None:
             prev = time_series_prev.iloc[:, self.target_seq_index]
             xhat = prev.values.tolist() + xhat
-            time_stamps = to_timestamp(prev.index) + time_stamps
+            neg_err = np.concatenate((np.zeros(len(time_series_prev)), neg_err))
+            pos_err = np.concatenate((np.zeros(len(time_series_prev)), pos_err))
+            time_stamps = np.concatenate((to_timestamp(prev.index), time_stamps))
 
         # convert to dataframes
         name = self.target_name

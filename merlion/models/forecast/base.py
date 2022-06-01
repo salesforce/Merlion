@@ -297,7 +297,7 @@ class ForecasterBase(ModelBase):
             err = None if err is None else TimeSeries.from_pd(err)
             ret = forecast, err
             if self.invert_transform:
-                ret = self._apply_inverse_transform(forecast, err, time_series_prev)
+                ret = self._apply_inverse_transform(forecast, err, None if return_prev else time_series_prev)
 
         self.transform.inversion_state = old_inversion_state
         return tuple(None if x is None else x.align(reference=orig_t) for x in ret)
