@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -361,7 +362,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Merlion’s-Data-Format">
-<h1>Merlion’s Data Format<a class="headerlink" href="#Merlion’s-Data-Format" title="Permalink to this headline"></a></h1>
+<h1>Merlion’s Data Format<a class="headerlink" href="#Merlion’s-Data-Format" title="Permalink to this heading"></a></h1>
 <p>This notebook will explain how to use Merlion’s <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> classes. These classes are the core data format used throughout the repo. In general, you may think of each <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> as being a collection of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> objects, one for each variable.</p>
 <p>Let’s start by loading some data using <code class="docutils literal notranslate"><span class="pre">pandas</span></code>.</p>
 <div class="nbinput docutils container">
@@ -434,7 +435,7 @@ timestamp_millis
 </pre></div></div>
 </div>
 <section id="UnivariateTimeSeries:-The-Basic-Building-Block">
-<h2>UnivariateTimeSeries: The Basic Building Block<a class="headerlink" href="#UnivariateTimeSeries:-The-Basic-Building-Block" title="Permalink to this headline"></a></h2>
+<h2>UnivariateTimeSeries: The Basic Building Block<a class="headerlink" href="#UnivariateTimeSeries:-The-Basic-Building-Block" title="Permalink to this heading"></a></h2>
 <p>The most transparent way to initialize a <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> is to use its constructor. The constructor takes two arguments: <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>, a list of Unix timestamps (in units of seconds) or datetime objects, and <code class="docutils literal notranslate"><span class="pre">values</span></code>, a list of the actual time series values. You may optionally provide a name as well.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -669,7 +670,7 @@ Name: kpi, dtype: float64
 </div>
 </section>
 <section id="TimeSeries:-Merlion’s-Standard-Data-Class">
-<h2>TimeSeries: Merlion’s Standard Data Class<a class="headerlink" href="#TimeSeries:-Merlion’s-Standard-Data-Class" title="Permalink to this headline"></a></h2>
+<h2>TimeSeries: Merlion’s Standard Data Class<a class="headerlink" href="#TimeSeries:-Merlion’s-Standard-Data-Class" title="Permalink to this heading"></a></h2>
 <p>Because Merlion is a general-purpose library that handles both univariate and multivariate time series, our standard data class is <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>. This class acts as a wrapper around a collection of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code>. We choose this format rather than a vector-based approach because this approach is much more robust to missing values, or different univariates being sampled at different rates.</p>
 <p>The most transparent way to initialize a <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> is with its constructor, which takes a collection (list or (ordered) dictionary) of <code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code> its only argument:</p>
 <div class="nbinput nblast docutils container">
@@ -865,7 +866,7 @@ Name: kpi_label, Length: 86807, dtype: float64
 </div>
 </section>
 <section id="Time-Series-Indexing-&amp;-Alignment">
-<h2>Time Series Indexing &amp; Alignment<a class="headerlink" href="#Time-Series-Indexing-&-Alignment" title="Permalink to this headline"></a></h2>
+<h2>Time Series Indexing &amp; Alignment<a class="headerlink" href="#Time-Series-Indexing-&-Alignment" title="Permalink to this heading"></a></h2>
 <p>An important concept of <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> in Merlion is <em>alignment</em>. We call a time series <em>aligned</em> if all of its univariates are sampled at the same time stamps. We illustrate examples of time series that are and aren’t aligned below:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
@@ -1065,7 +1066,7 @@ Is not_aligned.align() aligned? True
 </div>
 </section>
 <section id="TimeSeries:-A-Few-Useful-Features">
-<h2>TimeSeries: A Few Useful Features<a class="headerlink" href="#TimeSeries:-A-Few-Useful-Features" title="Permalink to this headline"></a></h2>
+<h2>TimeSeries: A Few Useful Features<a class="headerlink" href="#TimeSeries:-A-Few-Useful-Features" title="Permalink to this heading"></a></h2>
 <p>We provide much more information on the <code class="docutils literal notranslate"><span class="pre">merlion.utils.time_series.TimeSeries</span></code> class in the API docs, but we highlight two more useful features here. These work regardless of whether a time series is aligned!</p>
 <p>You may obtain the subset of a time series between times <code class="docutils literal notranslate"><span class="pre">t0</span></code> and <code class="docutils literal notranslate"><span class="pre">tf</span></code> by calling <code class="docutils literal notranslate"><span class="pre">time_series.window(t0,</span> <span class="pre">tf)</span></code>. <code class="docutils literal notranslate"><span class="pre">t0</span></code> and <code class="docutils literal notranslate"><span class="pre">tf</span></code> may be any reasonable format of datetime, or a Unix timestamp.</p>
 <div class="nbinput docutils container">

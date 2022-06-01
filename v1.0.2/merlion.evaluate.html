@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -118,7 +119,7 @@
 }
 </style>
 <section id="merlion-evaluate-package">
-<h1>merlion.evaluate package<a class="headerlink" href="#merlion-evaluate-package" title="Permalink to this headline"></a></h1>
+<h1>merlion.evaluate package<a class="headerlink" href="#merlion-evaluate-package" title="Permalink to this heading"></a></h1>
 <p>This sub-package implements utilities and metrics for evaluating the performance
 of time series models on different tasks.</p>
 <span class="target" id="module-merlion.evaluate"></span><table class="autosummary longtable docutils align-default">
@@ -139,10 +140,10 @@ of time series models on different tasks.</p>
 </tbody>
 </table>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-merlion.evaluate.base">
-<span id="merlion-evaluate-base-module"></span><h2>merlion.evaluate.base module<a class="headerlink" href="#module-merlion.evaluate.base" title="Permalink to this headline"></a></h2>
+<span id="merlion-evaluate-base-module"></span><h2>merlion.evaluate.base module<a class="headerlink" href="#module-merlion.evaluate.base" title="Permalink to this heading"></a></h2>
 <p>Base class for an automated model evaluation framework.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig">
@@ -218,7 +219,7 @@ anomaly detection vs. forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluatorConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -304,12 +305,12 @@ accumulator for the task. Implementation is task-specific.</p>
 
 </section>
 <section id="module-merlion.evaluate.anomaly">
-<span id="merlion-evaluate-anomaly-module"></span><h2>merlion.evaluate.anomaly module<a class="headerlink" href="#module-merlion.evaluate.anomaly" title="Permalink to this headline"></a></h2>
+<span id="merlion-evaluate-anomaly-module"></span><h2>merlion.evaluate.anomaly module<a class="headerlink" href="#module-merlion.evaluate.anomaly" title="Permalink to this heading"></a></h2>
 <p>Metrics and utilities for evaluating time series anomaly detection models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.ScoreType">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">ScoreType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.ScoreType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>The algorithm to use to compute true/false positives/negatives. See the technical report
 for more details on each score type. Merlion’s preferred default is revised point-adjusted.</p>
 <dl class="py attribute">
@@ -443,7 +444,7 @@ returns a <code class="docutils literal notranslate"><span class="pre">float</sp
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADMetric">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADMetric" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Enumeration of evaluation metrics for time series anomaly detection.
 For each value, the name is the metric, and the value is a partial
 function of form <code class="docutils literal notranslate"><span class="pre">f(ground_truth,</span> <span class="pre">predicted,</span> <span class="pre">**kwargs)</span></code></p>
@@ -527,7 +528,7 @@ function of form <code class="docutils literal notranslate"><span class="pre">f(
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluatorConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_early_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_delay_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluatorConfig</span></code></a></p>
 <p>Configuration class for a <a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator" title="merlion.evaluate.anomaly.TSADEvaluator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TSADEvaluator</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -544,7 +545,7 @@ seconds after its start, it is not counted as being detected.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluatorBase</span></code></a></p>
 <p>Simulates the live deployment of an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -557,7 +558,7 @@ seconds after its start, it is not counted as being detected.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig" title="merlion.evaluate.anomaly.TSADEvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.anomaly.TSADEvaluatorConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig" title="merlion.evaluate.anomaly.TSADEvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADEvaluatorConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -640,7 +641,7 @@ of the model’s anomaly scores on <code class="docutils literal notranslate"><s
 
 </section>
 <section id="module-merlion.evaluate.forecast">
-<span id="merlion-evaluate-forecast-module"></span><h2>merlion.evaluate.forecast module<a class="headerlink" href="#module-merlion.evaluate.forecast" title="Permalink to this headline"></a></h2>
+<span id="merlion-evaluate-forecast-module"></span><h2>merlion.evaluate.forecast module<a class="headerlink" href="#module-merlion.evaluate.forecast" title="Permalink to this heading"></a></h2>
 <p>Metrics and utilities for evaluating forecasting models in a continuous sense.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastScoreAccumulator">
@@ -753,7 +754,7 @@ and periodicity <span class="math notranslate nohighlight">\(m\)</span>, it is c
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastMetric">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastMetric" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Enumeration of evaluation metrics for time series forecasting. For each value,
 the name is the metric, and the value is a partial function of form
 <code class="docutils literal notranslate"><span class="pre">f(ground_truth,</span> <span class="pre">predict,</span> <span class="pre">**kwargs)</span></code>. Here, <code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> is the
@@ -816,7 +817,7 @@ original time series, and <code class="docutils literal notranslate"><span class
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluatorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">horizon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig" title="merlion.evaluate.base.EvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluatorConfig</span></code></a></p>
 <p>Configuration class for a <a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator" title="merlion.evaluate.forecast.ForecastEvaluator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -852,7 +853,7 @@ horizon if there is one, and the retraining frequency otherwise.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.evaluate.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecastEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.base.EvaluatorBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase" title="merlion.evaluate.base.EvaluatorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluatorBase</span></code></a></p>
 <p>Simulates the live deployment of an forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -865,7 +866,7 @@ horizon if there is one, and the retraining frequency otherwise.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluator.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluator.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig" title="merlion.evaluate.forecast.ForecastEvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.evaluate.forecast.ForecastEvaluatorConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig" title="merlion.evaluate.forecast.ForecastEvaluatorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastEvaluatorConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">

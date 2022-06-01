@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -124,7 +125,7 @@
 }
 </style>
 <section id="merlion-models-package">
-<h1>merlion.models package<a class="headerlink" href="#merlion-models-package" title="Permalink to this headline"></a></h1>
+<h1>merlion.models package<a class="headerlink" href="#merlion-models-package" title="Permalink to this heading"></a></h1>
 <p>Broadly, Merlion contains two types of models: anomaly detection (<a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>)
 and forecasting (<a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>). Note that there is a distinct subset of anomaly
 detection models that use forecasting models at their core (<a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>).</p>
@@ -212,7 +213,7 @@ keyword arguments, or to load them directly from disk. For example, we may have 
 </tbody>
 </table>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a><ul>
@@ -278,10 +279,10 @@ keyword arguments, or to load them directly from disk. For example, we may have 
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-merlion.models.base">
-<span id="merlion-models-base-module"></span><h2>merlion.models.base module<a class="headerlink" href="#module-merlion.models.base" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-base-module"></span><h2>merlion.models.base module<a class="headerlink" href="#module-merlion.models.base" title="Permalink to this heading"></a></h2>
 <p>Contains the base classes for all models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.base.Config">
@@ -331,7 +332,7 @@ keyword arguments, or to load them directly from disk. For example, we may have 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.base.NormalizingConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">NormalizingConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.NormalizingConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
 <p>Model config where the transform must return normalized values. Applies
 additional normalization after the initial data pre-processing transform.</p>
 <dl class="field-list simple">
@@ -366,7 +367,7 @@ final mean/variance normalization.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.base.ModelBase.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.base.ModelBase.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -505,7 +506,7 @@ additional implementation-specific config options <code class="docutils literal 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.base.ModelWrapper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.base.</span></span><span class="sig-name descname"><span class="pre">ModelWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.base.ModelWrapper" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
 <p>Abstract class implementing a model that wraps around another internal model.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.base.ModelWrapper.filename">
@@ -570,7 +571,7 @@ additional implementation-specific config options <code class="docutils literal 
 
 </section>
 <section id="module-merlion.models.factory">
-<span id="merlion-models-factory-module"></span><h2>merlion.models.factory module<a class="headerlink" href="#module-merlion.models.factory" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-factory-module"></span><h2>merlion.models.factory module<a class="headerlink" href="#module-merlion.models.factory" title="Permalink to this heading"></a></h2>
 <p>Contains the <a class="reference internal" href="#merlion.models.factory.ModelFactory" title="merlion.models.factory.ModelFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelFactory</span></code></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.factory.ModelFactory">
@@ -620,12 +621,12 @@ additional implementation-specific config options <code class="docutils literal 
 
 </section>
 <section id="module-merlion.models.defaults">
-<span id="merlion-models-defaults-module"></span><h2>merlion.models.defaults module<a class="headerlink" href="#module-merlion.models.defaults" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-defaults-module"></span><h2>merlion.models.defaults module<a class="headerlink" href="#module-merlion.models.defaults" title="Permalink to this heading"></a></h2>
 <p>Default models for anomaly detection &amp; forecasting that balance speed and performance.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultModelConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultModelConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultModelConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>transform</strong> – Transformation to pre-process input time series.</p>
@@ -646,7 +647,7 @@ additional implementation-specific config options <code class="docutils literal 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetectorConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetectorConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultModelConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultModelConfig</span></code></a></p>
 <p>Config object for default anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -664,7 +665,7 @@ threshold in units of z-score.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.DetectorBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
 <p>Default anomaly detection model that balances efficiency with performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -674,7 +675,7 @@ threshold in units of z-score.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultDetector.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultDetector.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultDetectorConfig" title="merlion.models.defaults.DefaultDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultDetectorConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultDetectorConfig" title="merlion.models.defaults.DefaultDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultDetectorConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -765,7 +766,7 @@ model’s post-rule</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultModelConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>, <a class="reference internal" href="#merlion.models.defaults.DefaultModelConfig" title="merlion.models.defaults.DefaultModelConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultModelConfig</span></code></a></p>
 <p>Config object for default forecasting model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -783,12 +784,12 @@ univariate whose value you wish to forecast.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.defaults.</span></span><span class="sig-name descname"><span class="pre">DefaultForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.base.ModelWrapper" title="merlion.models.base.ModelWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelWrapper</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
 <p>Default forecasting model that balances efficiency with performance.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.defaults.DefaultForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.defaults.DefaultForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultForecasterConfig" title="merlion.models.defaults.DefaultForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.defaults.DefaultForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.defaults.DefaultForecasterConfig" title="merlion.models.defaults.DefaultForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">

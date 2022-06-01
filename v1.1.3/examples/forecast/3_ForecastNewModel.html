@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -366,11 +367,11 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Adding-a-New-Forecasting-Model">
-<h1>Adding a New Forecasting Model<a class="headerlink" href="#Adding-a-New-Forecasting-Model" title="Permalink to this headline"></a></h1>
+<h1>Adding a New Forecasting Model<a class="headerlink" href="#Adding-a-New-Forecasting-Model" title="Permalink to this heading"></a></h1>
 <p>This notebook provides a minimal example on how to add a new forecasting model to Merlion. We follow the instructions in <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. We suggest you review this <a class="reference internal" href="1_ForecastFeatures.html"><span class="doc">notebook</span></a> explaining how to use a Merlion forecasting model before reading this one.</p>
 <p>More specifically, let’s implement a forecasting model whose forecast is just equal to the most recent observed value of the time series metric. For a more complete example, see our implementation of <code class="docutils literal notranslate"><span class="pre">Sarima</span></code> <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/forecast/sarima.py">here</a>.</p>
 <section id="Model-Config-Class">
-<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this headline"></a></h2>
+<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this heading"></a></h2>
 <p>The first step of creating a new model is defining an appropriate config class, which inherits from <code class="docutils literal notranslate"><span class="pre">ForecasterConfig</span></code>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -388,7 +389,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Model-Class">
-<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this headline"></a></h2>
+<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this heading"></a></h2>
 <p>Next we define the model itself, which must inherit from the <code class="docutils literal notranslate"><span class="pre">ForecasterBase</span></code> base class and define all abstract methods. See the API docs for more details.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -477,7 +478,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Running-the-Model:-A-Simple-Example">
-<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this headline"></a></h2>
+<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this heading"></a></h2>
 <p>Let’s try running this model on some actual data! This next part assumes you’ve installed <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>. We’ll begin by getting a time series from the M4 dataset &amp; visualizing it.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -642,7 +643,7 @@ None
 </div>
 </section>
 <section id="Visualization">
-<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this headline"></a></h2>
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -696,7 +697,7 @@ Forecast without ground truth time series
 </div>
 </section>
 <section id="Quantitative-Evaluation">
-<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
 <p>You may quantitatively evaluate your model as well. Here, we compute the sMAPE (symmetric Mean Average Percent Error) of the model’s forecast vs. the true data. For ground truth <span class="math notranslate nohighlight">\(y \in \mathbb{R}^T\)</span> and prediction <span class="math notranslate nohighlight">\(\hat{y} \in \mathbb{R}^T\)</span>, the sMAPE is computed as</p>
 <div class="math notranslate nohighlight">
 \[\mathrm{sMAPE}(y, \hat{y}) = \frac{200}{T} \sum_{t = 1}^{T} \frac{\lvert \hat{y}_t - y_t \rvert}{\lvert\hat{y}_t\rvert + \lvert y_t \rvert}\]</div>
@@ -721,7 +722,7 @@ sMAPE = 20.166
 </div>
 </section>
 <section id="Defining-a-Forecaster-Based-Anomaly-Detector">
-<h2>Defining a Forecaster-Based Anomaly Detector<a class="headerlink" href="#Defining-a-Forecaster-Based-Anomaly-Detector" title="Permalink to this headline"></a></h2>
+<h2>Defining a Forecaster-Based Anomaly Detector<a class="headerlink" href="#Defining-a-Forecaster-Based-Anomaly-Detector" title="Permalink to this heading"></a></h2>
 <p>It is quite straightforward to adapt a forecasting model into an anomaly detection model. You just need to create a new file in the appropriate <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/forecast_based">directory</a> and define class stubs with some basic headers. Multiple inheritance with <code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code> takes care of most of the heavy lifting.</p>
 <p>The anomaly score returned by any forecasting-based anomaly detector is based on the residual between the predicted and true time series values.</p>
 <div class="nbinput nblast docutils container">

@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -156,7 +157,7 @@
 }
 </style>
 <section id="module-merlion.models.anomaly.change_point">
-<span id="merlion-models-anomaly-change-point-package"></span><h1>merlion.models.anomaly.change_point package<a class="headerlink" href="#module-merlion.models.anomaly.change_point" title="Permalink to this headline"></a></h1>
+<span id="merlion-models-anomaly-change-point-package"></span><h1>merlion.models.anomaly.change_point package<a class="headerlink" href="#module-merlion.models.anomaly.change_point" title="Permalink to this heading"></a></h1>
 <p>Contains all change point detection algorithms. These models implement the anomaly detector interface, but
 they are specialized for detecting change points in time series.</p>
 <table class="autosummary longtable docutils align-default">
@@ -171,15 +172,15 @@ they are specialized for detecting change points in time series.</p>
 </tbody>
 </table>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-merlion.models.anomaly.change_point.bocpd">
-<span id="merlion-models-anomaly-change-point-bocpd-module"></span><h2>merlion.models.anomaly.change_point.bocpd module<a class="headerlink" href="#module-merlion.models.anomaly.change_point.bocpd" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-anomaly-change-point-bocpd-module"></span><h2>merlion.models.anomaly.change_point.bocpd module<a class="headerlink" href="#module-merlion.models.anomaly.change_point.bocpd" title="Permalink to this heading"></a></h2>
 <p>Bayesian online change point detection algorithm.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.ChangeKind">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">ChangeKind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Enum representing the kinds of changes points we would like to detect.
 Enum values correspond to the Bayesian <a class="reference internal" href="merlion.utils.html#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ConjPrior</span></code></a> class used to detect each sort of change point.</p>
 <dl class="py attribute">
@@ -205,7 +206,7 @@ Enum values correspond to the Bayesian <a class="reference internal" href="merli
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPDConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChangeKind.Auto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.base.NoCalibrationDetectorConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD" title="merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BOCPD</span></code></a> (Bayesian Online Change Point Detection).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -232,7 +233,7 @@ lower than this threshold. Lower values improve accuracy at the cost of time and
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">merlion.models.anomaly.change_point.bocpd.ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChangeKind</span></code></a></p>
@@ -245,7 +246,7 @@ lower than this threshold. Lower values improve accuracy at the cost of time and
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a></p>
 <p>Bayesian online change point detection algorithm described by
 <a class="reference external" href="https://arxiv.org/abs/0710.3742">Adams &amp; MacKay (2007)</a>.
 At a high level, this algorithm models the observed data using Bayesian conjugate priors. If an observed value
@@ -262,7 +263,7 @@ piecewise model on the relevant data.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point.bocpd.BOCPDConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -287,7 +288,7 @@ piecewise model on the relevant data.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">merlion.models.anomaly.change_point.bocpd.ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChangeKind</span></code></a></p>

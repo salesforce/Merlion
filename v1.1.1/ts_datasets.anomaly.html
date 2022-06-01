@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -107,7 +108,7 @@
 }
 </style>
 <section id="module-ts_datasets.anomaly">
-<span id="ts-datasets-anomaly-package"></span><h1>ts_datasets.anomaly package<a class="headerlink" href="#module-ts_datasets.anomaly" title="Permalink to this headline"></a></h1>
+<span id="ts-datasets-anomaly-package"></span><h1>ts_datasets.anomaly package<a class="headerlink" href="#module-ts_datasets.anomaly" title="Permalink to this heading"></a></h1>
 <p>Datasets for time series anomaly detection (TSAD). All the time series in these
 datasets have anomaly labels.</p>
 <dl class="py function">
@@ -136,7 +137,7 @@ mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.TSADBaseDataset">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">TSADBaseDataset</span></span><a class="headerlink" href="#ts_datasets.anomaly.TSADBaseDataset" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.base.BaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
 <p>Base dataset class for storing time series intended for anomaly detection.</p>
 <p>Each dataset supports the following features:</p>
 <ol class="arabic simple">
@@ -203,7 +204,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.IOpsCompetition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">IOpsCompetition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.IOpsCompetition" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load the dataset used for the final round of the IOPs competition
 (<a class="reference external" href="http://iops.ai/competition_detail/?competition_id=5">http://iops.ai/competition_detail/?competition_id=5</a>).</p>
 <p>The dataset contains 29 time series of KPIs gathered from large tech
@@ -248,7 +249,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.NAB">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">NAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.NAB" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load datasets found in the Numenta Anomaly Benchmark
 (<a class="reference external" href="https://github.com/numenta/NAB">https://github.com/numenta/NAB</a>).</p>
 <p>The NAB contains a range of datasets and are categorized by their domains.</p>
@@ -302,7 +303,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.Synthetic">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">Synthetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'anomaly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.Synthetic" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Wrapper to load a sythetically generated dataset.
 The dataset was generated using three base time series, each of which
 was separately injected with shocks, spikes, dips and level shifts, making
@@ -346,7 +347,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.UCR">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">UCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.UCR" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Data loader for the Hexagon ML/UC Riverside Time Series Anomaly Archive.</p>
 <p>See <a class="reference external" href="https://compete.hexagon-ml.com/practice/competition/39/">here</a> for details.</p>
 <p>Hoang Anh Dau, Eamonn Keogh, Kaveh Kamgar, Chin-Chia Michael Yeh, Yan Zhu,
@@ -378,7 +379,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMD">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMD" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>The Server Machine Dataset (SMD) is a new 5-week-long dataset from
 a large Internet company collected and made publicly available.
 It contains data from 28 server machines and each machine is monitored by 33 metrics.
@@ -421,7 +422,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.SMAP">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">SMAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.SMAP" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Soil Moisture Active Passive (SMAP) satellite and Mars Science Laboratory (MSL) rover Datasets.
 SMAP and MSL are two realworld public datasets, which are two real-world datasets expert-labeled by NASA.</p>
 <ul class="simple">
@@ -452,7 +453,7 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.anomaly.MSL">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.anomaly.</span></span><span class="sig-name descname"><span class="pre">MSL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.anomaly.MSL" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.base.TSADBaseDataset</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.base.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a></p>
 <p>Soil Moisture Active Passive (SMAP) satellite and Mars Science Laboratory (MSL) rover Datasets.
 SMAP and MSL are two realworld public datasets, which are two real-world datasets expert-labeled by NASA.</p>
 <ul class="simple">

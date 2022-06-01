@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -366,7 +367,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="How-to-Use-Forecasters-in-Merlion">
-<h1>How to Use Forecasters in Merlion<a class="headerlink" href="#How-to-Use-Forecasters-in-Merlion" title="Permalink to this headline"></a></h1>
+<h1>How to Use Forecasters in Merlion<a class="headerlink" href="#How-to-Use-Forecasters-in-Merlion" title="Permalink to this heading"></a></h1>
 <p>This notebook will guide you through using all the key features of forecasters in Merlion. Specifically, we will explain</p>
 <ol class="arabic simple">
 <li><p>Initializing a forecasting model (including ensembles and automatic model selectors)</p></li>
@@ -446,7 +447,7 @@ Has missing data: False
 </pre></div></div>
 </div>
 <section id="Model-Initialization">
-<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this headline"></a></h2>
+<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this heading"></a></h2>
 <p>In this notebook, we will use three different forecasting models: 1. ARIMA (a classic stochastic process model) 2. Prophet (Facebook’s popular time series forecasting model) 3. MSES (the Multi-Scale Exponential Smoothing model, developed in-house)</p>
 <p>Let’s start by initializing each of them.</p>
 <div class="nbinput nblast docutils container">
@@ -532,7 +533,7 @@ Has missing data: False
 </div>
 </section>
 <section id="Model-Training">
-<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this headline"></a></h2>
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this heading"></a></h2>
 <p>All forecasting models (and ensembles) share the same API for training. The <code class="docutils literal notranslate"><span class="pre">train()</span></code> method returns the model’s predictions and standard error of those predictions on the training data. Note that the standard error is just <code class="docutils literal notranslate"><span class="pre">None</span></code> if the model doesn’t support uncertainty estimation (this is the case for MSES and ensembles).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -648,7 +649,7 @@ Done!
 </div>
 </section>
 <section id="Model-Inference">
-<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this headline"></a></h2>
+<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this heading"></a></h2>
 <p>To obtain a forecast from a trained model, we simply call <code class="docutils literal notranslate"><span class="pre">model.forecast()</span></code> with the Unix timestamps at which we the model to generate a forecast. In many cases, you may obtain these directly from a time series as shown below.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -684,7 +685,7 @@ Done!
 </div>
 </section>
 <section id="Model-Visualization-and-Quantitative-Evaluation">
-<h2>Model Visualization and Quantitative Evaluation<a class="headerlink" href="#Model-Visualization-and-Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<h2>Model Visualization and Quantitative Evaluation<a class="headerlink" href="#Model-Visualization-and-Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
 <p>It is fairly transparent to visualize a model’s forecast and also quantitatively evaluate the forecast, using standard metrics like sMAPE. We show examples for all five models below.</p>
 <p>Below, we quantitatively evaluate the models using the sMAPE metric. However, the <code class="docutils literal notranslate"><span class="pre">ForecastMetric</span></code> enum includes a number of other options as well. In general, you may use the syntax</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ForecastMetric.&lt;metric_name&gt;.value(ground_truth=ground_truth, predict=forecast)
@@ -860,7 +861,7 @@ Selector sMAPE is 3.795
 </div>
 </section>
 <section id="Saving-&amp;-Loading-Models">
-<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this headline"></a></h2>
+<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this heading"></a></h2>
 <p>All models have a <code class="docutils literal notranslate"><span class="pre">save()</span></code> method and <code class="docutils literal notranslate"><span class="pre">load()</span></code> class method. Models may also be loaded with the assistance of the <code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code>, which works for arbitrary models. The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method creates a new directory at the specified path, where it saves a <code class="docutils literal notranslate"><span class="pre">json</span></code> file representing the model’s config, as well as a binary file for the model’s state.</p>
 <p>We will demonstrate these behaviors using our <code class="docutils literal notranslate"><span class="pre">Prophet</span></code> model (<code class="docutils literal notranslate"><span class="pre">model2</span></code>) for concreteness.</p>
 <div class="nbinput docutils container">
@@ -999,7 +1000,7 @@ Selector Config
 </div>
 </section>
 <section id="Simulating-Live-Model-Deployment">
-<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this headline"></a></h2>
+<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this heading"></a></h2>
 <p>A typical model deployment scenario is as follows: 1. Train an initial model on some recent historical data 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">cadence</span></code>, obtain the model’s forecast for a certain <code class="docutils literal notranslate"><span class="pre">horizon</span></code> 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">retrain_freq</span></code>, retrain the entire model on the most recent data 1. Optionally, specify a maximum amount of data (<code class="docutils literal notranslate"><span class="pre">train_window</span></code>) that the model should use for training</p>
 <p>We provide a <code class="docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code> object which simulates the above deployment scenario, and also allows a user to evaluate the quality of the forecaster according to an evaluation metric of their choice. We illustrate two examples below, using ARIMA for the first example, and the model selector for the second.</p>
 <div class="nbinput nblast docutils container">

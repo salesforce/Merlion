@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -366,12 +367,12 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Adding-New-Anomaly-Detection-Models">
-<h1>Adding New Anomaly Detection Models<a class="headerlink" href="#Adding-New-Anomaly-Detection-Models" title="Permalink to this headline"></a></h1>
+<h1>Adding New Anomaly Detection Models<a class="headerlink" href="#Adding-New-Anomaly-Detection-Models" title="Permalink to this heading"></a></h1>
 <p>This notebook provides a minimal example on how to add a new anomaly detection model to Merlion. We follow the instructions in <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. We suggest you review this <a class="reference internal" href="1_AnomalyFeatures.html"><span class="doc">notebook</span></a> explaining how to use a Merlion anomaly detection model before reading this notebook.</p>
 <p>More specifically, let’s implement an anomaly detection model whose anomaly score is just equal to the value of the time series metric (after mean and variance normalization). By default, we want the model to fire an alarm when the value of the time series metric is more than 3 standard deviations away from the mean value.</p>
 <p>Note that this is already implemented <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/stat_threshold.py">here</a> as the <code class="docutils literal notranslate"><span class="pre">StatThreshold</span></code> algorithm. For a more complete example, see our implementation of <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/isolation_forest.py">Isolation Forest</a>.</p>
 <section id="Model-Config-Class">
-<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this headline"></a></h2>
+<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this heading"></a></h2>
 <p>The first step of creating a new model is defining an appropriate config class, which inherits from <code class="docutils literal notranslate"><span class="pre">DetectorConfig</span></code>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -410,7 +411,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Model-Class">
-<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this headline"></a></h2>
+<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this heading"></a></h2>
 <p>Next, we define the model itself, which must inherit from the <code class="docutils literal notranslate"><span class="pre">DetectorBase</span></code> base class and define all abstract methods. See the API docs for more details.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -484,7 +485,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Running-the-Model:-A-Simple-Example">
-<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this headline"></a></h2>
+<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this heading"></a></h2>
 <p>Let’s try running this model on some actual data! This next part assumes you’ve installed <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>. We’ll begin by getting a time series from the NAB dataset &amp; visualizing it.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -652,7 +653,7 @@ Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/mac
 </div>
 </section>
 <section id="Visualization">
-<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this headline"></a></h2>
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this heading"></a></h2>
 <p>Qualitatively, we can plot the anomaly score sequences to see the difference.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -710,7 +711,7 @@ with post rule
 </div>
 </section>
 <section id="Customizing-the-Post-Rule">
-<h2>Customizing the Post-Rule<a class="headerlink" href="#Customizing-the-Post-Rule" title="Permalink to this headline"></a></h2>
+<h2>Customizing the Post-Rule<a class="headerlink" href="#Customizing-the-Post-Rule" title="Permalink to this heading"></a></h2>
 <p>The example above uses a simple threshold as the post-processing rule. As a result, the model is continuously firing alerts when the differenced time series value is far from 0. We support an alternative option which combines successive alerts into a single alert. We demonstrate this below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -743,7 +744,7 @@ with post rule
 </div>
 </section>
 <section id="Quantitative-Evaluation">
-<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
 <p>Finally, you may quantitatively evaluate the performance of your model as well. Here, we compute precision, recall, and F1 score for <code class="docutils literal notranslate"><span class="pre">model2</span></code> above.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:

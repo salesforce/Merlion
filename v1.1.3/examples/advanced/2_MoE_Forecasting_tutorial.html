@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -377,7 +378,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Tutorial-for-Mixture-of-Expert-(MoE)-Forecasting-Model">
-<h1>Tutorial for Mixture of Expert (MoE) Forecasting Model<a class="headerlink" href="#Tutorial-for-Mixture-of-Expert-(MoE)-Forecasting-Model" title="Permalink to this headline"></a></h1>
+<h1>Tutorial for Mixture of Expert (MoE) Forecasting Model<a class="headerlink" href="#Tutorial-for-Mixture-of-Expert-(MoE)-Forecasting-Model" title="Permalink to this heading"></a></h1>
 <p>This notebook provides a minimal example on how to use the MoE forecasting model.</p>
 <p>MoE runs in 2 settings: 1. Using external expert models 2. Using free parameters (no external experts)</p>
 <p>Example codes are provided for both cases below.</p>
@@ -403,7 +404,7 @@ ERROR:root:The &#39;log_level&#39; trait of an IPKernelApp instance expected any
 </pre></div></div>
 </div>
 <section id="Load-dataset">
-<h2>Load dataset<a class="headerlink" href="#Load-dataset" title="Permalink to this headline"></a></h2>
+<h2>Load dataset<a class="headerlink" href="#Load-dataset" title="Permalink to this heading"></a></h2>
 <p>Note: change data dir below if inappropriate</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -507,9 +508,9 @@ test timeseries shape:  (48, 1)
 </div>
 </section>
 <section id="Create-MoE-model-composed-of-external-expert-models-and-train">
-<h2>Create MoE model composed of external expert models and train<a class="headerlink" href="#Create-MoE-model-composed-of-external-expert-models-and-train" title="Permalink to this headline"></a></h2>
+<h2>Create MoE model composed of external expert models and train<a class="headerlink" href="#Create-MoE-model-composed-of-external-expert-models-and-train" title="Permalink to this heading"></a></h2>
 <section id="Specify-hyper-parameters">
-<h3>Specify hyper-parameters<a class="headerlink" href="#Specify-hyper-parameters" title="Permalink to this headline"></a></h3>
+<h3>Specify hyper-parameters<a class="headerlink" href="#Specify-hyper-parameters" title="Permalink to this heading"></a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -539,7 +540,7 @@ test timeseries shape:  (48, 1)
 </div>
 </section>
 <section id="Create-expert-models-and-MoE-ensembler-and-train">
-<h3>Create expert models and MoE ensembler and train<a class="headerlink" href="#Create-expert-models-and-MoE-ensembler-and-train" title="Permalink to this headline"></a></h3>
+<h3>Create expert models and MoE ensembler and train<a class="headerlink" href="#Create-expert-models-and-MoE-ensembler-and-train" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -742,7 +743,7 @@ Epoch 100 Loss: 0.912859: 100%|██████████| 6/6 [00:03&lt;00:
 </div>
 </section>
 <section id="Load-the-saved-ensemble-model">
-<h3>Load the saved ensemble model<a class="headerlink" href="#Load-the-saved-ensemble-model" title="Permalink to this headline"></a></h3>
+<h3>Load the saved ensemble model<a class="headerlink" href="#Load-the-saved-ensemble-model" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -762,7 +763,7 @@ WARNING:merlion.models.ensemble.base:When initializing an ensemble, you must eit
 </div>
 </section>
 <section id="Forecast-using-the-loaded-model">
-<h3>Forecast using the loaded model<a class="headerlink" href="#Forecast-using-the-loaded-model" title="Permalink to this headline"></a></h3>
+<h3>Forecast using the loaded model<a class="headerlink" href="#Forecast-using-the-loaded-model" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -845,7 +846,7 @@ Standard Errors
 </div>
 </section>
 <section id="Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model">
-<h3>Retrieve forecasts of individual experts along with their confidence from the loaded model<a class="headerlink" href="#Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model" title="Permalink to this headline"></a></h3>
+<h3>Retrieve forecasts of individual experts along with their confidence from the loaded model<a class="headerlink" href="#Retrieve-forecasts-of-individual-experts-along-with-their-confidence-from-the-loaded-model" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -926,7 +927,7 @@ Standard deviation (shape: (1, 3, 3))
 </div>
 </section>
 <section id="Evaluate-MoE">
-<h3>Evaluate MoE<a class="headerlink" href="#Evaluate-MoE" title="Permalink to this headline"></a></h3>
+<h3>Evaluate MoE<a class="headerlink" href="#Evaluate-MoE" title="Permalink to this heading"></a></h3>
 <p>The code below shows how to evaluate MoE.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -1004,9 +1005,9 @@ sMAPE on all samples: 2.18
 </section>
 </section>
 <section id="Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train">
-<h2>Create MoE model containing free parameters (no external experts) and train<a class="headerlink" href="#Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train" title="Permalink to this headline"></a></h2>
+<h2>Create MoE model containing free parameters (no external experts) and train<a class="headerlink" href="#Create-MoE-model-containing-free-parameters-(no-external-experts)-and-train" title="Permalink to this heading"></a></h2>
 <section id="id1">
-<h3>Specify hyper-parameters<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<h3>Specify hyper-parameters<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -1038,7 +1039,7 @@ sMAPE on all samples: 2.18
 </div>
 </section>
 <section id="Create-MoE-ensembler-and-train">
-<h3>Create MoE ensembler and train<a class="headerlink" href="#Create-MoE-ensembler-and-train" title="Permalink to this headline"></a></h3>
+<h3>Create MoE ensembler and train<a class="headerlink" href="#Create-MoE-ensembler-and-train" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -1383,7 +1384,7 @@ Epoch 300 Loss: 0.570626: 100%|██████████| 11/11 [00:03&lt;0
 </div>
 </section>
 <section id="id2">
-<h3>Evaluate MoE<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<h3>Evaluate MoE<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
 <p>The code below shows how to evaluate MoE.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -1404,7 +1405,7 @@ WARNING:merlion.models.ensemble.base:When initializing an ensemble, you must eit
 </div>
 </section>
 <section id="id3">
-<h3>Load the saved ensemble model<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<h3>Load the saved ensemble model<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>

@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -367,7 +368,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="How-to-Use-Anomaly-Detectors-in-Merlion">
-<h1>How to Use Anomaly Detectors in Merlion<a class="headerlink" href="#How-to-Use-Anomaly-Detectors-in-Merlion" title="Permalink to this headline"></a></h1>
+<h1>How to Use Anomaly Detectors in Merlion<a class="headerlink" href="#How-to-Use-Anomaly-Detectors-in-Merlion" title="Permalink to this heading"></a></h1>
 <p>This notebook will guide you through using all the key features of anomaly detectors in Merlion. Specifically, we will explain</p>
 <ol class="arabic simple">
 <li><p>Initializing an anomaly detection model (including ensembles)</p></li>
@@ -444,7 +445,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 </div>
 </div>
 <section id="Model-Initialization">
-<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this headline"></a></h2>
+<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this heading"></a></h2>
 <p>In this notebook, we will use three different anomaly detection models:</p>
 <ol class="arabic simple">
 <li><p>Isolation Forest (a classic anomaly detection model)</p></li>
@@ -508,7 +509,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 </div>
 </section>
 <section id="Model-Training">
-<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this headline"></a></h2>
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this heading"></a></h2>
 <p>All anomaly detection models (and ensembles) share the same API for training. The <code class="docutils literal notranslate"><span class="pre">train()</span></code> method returns the model’s predicted anomaly scores on the training data. Note that you may optionally specify configs that modify the protocol used to train the model’s post-rule! You may optionally specify ground truth anomaly labels as well (if you have them), but they are not needed. We give examples of all these behaviors below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -613,7 +614,7 @@ Done!
 </div>
 </section>
 <section id="Model-Inference">
-<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this headline"></a></h2>
+<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this heading"></a></h2>
 <p>There are two ways to invoke an anomaly detection model: <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_score()</span></code> returns the model’s raw anomaly scores, while <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code> returns the model’s post-processed anomaly scores. The post-processing calibrates the anomaly scores to be interpretable as z-scores, and it also sparsifies them such that any nonzero values should be treated as an alert that a particular timestamp is anomalous.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -748,7 +749,7 @@ Raw scores are challenging to interpret
 </div>
 </section>
 <section id="Quantitative-Evaluation">
-<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
 <p>It is fairly transparent to visualize a model’s predicted anomaly scores and also quantitatively evaluate its anomaly labels. For evaluation, we use specialized definitions of precision, recall, and F1 as revised point-adjusted metrics (see the technical report for more details). We also consider the mean time to detect anomalies.</p>
 <p>In general, you may use the <code class="docutils literal notranslate"><span class="pre">TSADMetric</span></code> enum to compute evaluation metrics for a time series using the syntax</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>TSADMetric.&lt;metric_name&gt;.value(ground_truth=ground_truth, predict=anomaly_labels)
@@ -810,7 +811,7 @@ MTTD:      1 days 10:25:00
 <p>Since the individual models are trained to optimize F1 directly, they all have low precision, high recall, and a mean time to detect of around 1 day. However, by instead training the individual models to optimize precision, and training a model combination unit to optimize F1, we are able to greatly increase the precision and F1 score, at the cost of a lower recall and higher mean time to detect.</p>
 </section>
 <section id="Model-Visualization">
-<h2>Model Visualization<a class="headerlink" href="#Model-Visualization" title="Permalink to this headline"></a></h2>
+<h2>Model Visualization<a class="headerlink" href="#Model-Visualization" title="Permalink to this heading"></a></h2>
 <p>Let’s now visualize the model predictions that led to these outcomes. The option <code class="docutils literal notranslate"><span class="pre">filter_scores=True</span></code> means that we want to plot the post-processed anomaly scores (i.e. returned by <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code>). You may instead specify <code class="docutils literal notranslate"><span class="pre">filter_scores=False</span></code> to visualize the raw anomaly scores.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -907,7 +908,7 @@ ProphetDetector
 <p>So the ensemble misses one of the three anomalies in the test split, but it also greatly reduces the number of false positives relative to the other models.</p>
 </section>
 <section id="Saving-&amp;-Loading-Models">
-<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this headline"></a></h2>
+<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this heading"></a></h2>
 <p>All models have a <code class="docutils literal notranslate"><span class="pre">save()</span></code> method and <code class="docutils literal notranslate"><span class="pre">load()</span></code> class method. Models may also be loaded with the assistance of the <code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code>, which works for arbitrary models. The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method creates a new directory at the specified path, where it saves a <code class="docutils literal notranslate"><span class="pre">json</span></code> file representing the model’s config, as well as a binary file for the model’s state.</p>
 <p>We will demonstrate these behaviors using our <code class="docutils literal notranslate"><span class="pre">IsolationForest</span></code> model (<code class="docutils literal notranslate"><span class="pre">model1</span></code>) for concreteness. Note that the config explicitly tracks the transform (to pre-process the data), the calibrator (to transform raw anomaly scores into z-scores), the thresholding rule (to sparsify the calibrated anomaly scores).</p>
 <div class="nbinput docutils container">
@@ -1104,7 +1105,7 @@ Ensemble Config
 </div>
 </section>
 <section id="Simulating-Live-Model-Deployment">
-<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this headline"></a></h2>
+<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this heading"></a></h2>
 <p>A typical model deployment scenario is as follows: 1. Train an initial model on some recent historical data, optionally with labels. 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">retrain_freq</span></code> (e.g. once per week), retrain the entire model unsupervised (i.e. with no labels) on the most recent data. 1. Obtain the model’s predicted anomaly scores for the time series values that occur between re-trainings. We perform this operation in batch, but a deployment scenario may do this in streaming. 1. Optionally, specify
 a maximum amount of data (<code class="docutils literal notranslate"><span class="pre">train_window</span></code>) that the model should use for training (e.g. the most recent 2 weeks of data).</p>
 <p>We provide a <code class="docutils literal notranslate"><span class="pre">TSADEvaluator</span></code> object which simulates the above deployment scenario, and also allows a user to evaluate the quality of the forecaster according to an evaluation metric of their choice. We illustrate an example below using the ensemble.</p>

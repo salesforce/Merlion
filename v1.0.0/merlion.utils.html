@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -119,14 +120,14 @@
 }
 </style>
 <section id="merlion-utils-package">
-<h1>merlion.utils package<a class="headerlink" href="#merlion-utils-package" title="Permalink to this headline"></a></h1>
+<h1>merlion.utils package<a class="headerlink" href="#merlion-utils-package" title="Permalink to this heading"></a></h1>
 <p>This package contains various utilities, including the <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> class and
 utilities for resampling time series.</p>
 <span class="target" id="module-merlion.utils"></span><section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-merlion.utils.istat">
-<span id="merlion-utils-istat-module"></span><h2>merlion.utils.istat module<a class="headerlink" href="#module-merlion.utils.istat" title="Permalink to this headline"></a></h2>
+<span id="merlion-utils-istat-module"></span><h2>merlion.utils.istat module<a class="headerlink" href="#module-merlion.utils.istat" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.IStat">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.istat.</span></span><span class="sig-name descname"><span class="pre">IStat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.istat.IStat" title="Permalink to this definition"></a></dt>
@@ -186,7 +187,7 @@ with emphasis on recency-weighted variants.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.Mean">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.istat.</span></span><span class="sig-name descname"><span class="pre">Mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.istat.Mean" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.IStat" title="merlion.utils.istat.IStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.IStat</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.IStat" title="merlion.utils.istat.IStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStat</span></code></a></p>
 <p>Class for incrementally computing the mean of a series of numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -220,7 +221,7 @@ with emphasis on recency-weighted variants.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.Variance">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.istat.</span></span><span class="sig-name descname"><span class="pre">Variance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ex_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ex2_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddof</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.istat.Variance" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.IStat" title="merlion.utils.istat.IStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.IStat</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.IStat" title="merlion.utils.istat.IStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStat</span></code></a></p>
 <p>Class for incrementally computing the variance of a series of numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -238,7 +239,7 @@ the estimate of the variance.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.utils.istat.Variance.mean_class">
 <span class="sig-name descname"><span class="pre">mean_class</span></span><a class="headerlink" href="#merlion.utils.istat.Variance.mean_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.utils.istat.Mean" title="merlion.utils.istat.Mean"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.Mean</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.utils.istat.Mean" title="merlion.utils.istat.Mean"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mean</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -285,7 +286,7 @@ the estimate of the variance.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.ExponentialMovingAverage">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.istat.</span></span><span class="sig-name descname"><span class="pre">ExponentialMovingAverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recency_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.istat.ExponentialMovingAverage" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.Mean" title="merlion.utils.istat.Mean"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.Mean</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.Mean" title="merlion.utils.istat.Mean"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mean</span></code></a></p>
 <p>Class for incrementally computing the exponential moving average of a series of numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -320,7 +321,7 @@ exponential moving average.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.RecencyWeightedVariance">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.istat.</span></span><span class="sig-name descname"><span class="pre">RecencyWeightedVariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recency_weight</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.istat.RecencyWeightedVariance" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.Variance" title="merlion.utils.istat.Variance"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.Variance</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.utils.istat.Variance" title="merlion.utils.istat.Variance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variance</span></code></a></p>
 <p>Class for incrementally computing the recency-weighted variance of a series of numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -334,7 +335,7 @@ recency weighted variance.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.utils.istat.RecencyWeightedVariance.mean_class">
 <span class="sig-name descname"><span class="pre">mean_class</span></span><a class="headerlink" href="#merlion.utils.istat.RecencyWeightedVariance.mean_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage" title="merlion.utils.istat.ExponentialMovingAverage"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.utils.istat.ExponentialMovingAverage</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage" title="merlion.utils.istat.ExponentialMovingAverage"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialMovingAverage</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -352,11 +353,11 @@ recency weighted variance.</p>
 
 </section>
 <section id="module-merlion.utils.misc">
-<span id="merlion-utils-misc-module"></span><h2>merlion.utils.misc module<a class="headerlink" href="#module-merlion.utils.misc" title="Permalink to this headline"></a></h2>
+<span id="merlion-utils-misc-module"></span><h2>merlion.utils.misc module<a class="headerlink" href="#module-merlion.utils.misc" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.misc.AutodocABCMeta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.misc.</span></span><span class="sig-name descname"><span class="pre">AutodocABCMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.misc.AutodocABCMeta" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABCMeta</span></code></p>
 <p>Metaclass used to ensure that inherited members of an abstract base class
 also inherit docstrings for inherited methods.</p>
 </dd></dl>
@@ -364,7 +365,7 @@ also inherit docstrings for inherited methods.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.misc.ValIterOrderedDict">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.misc.</span></span><span class="sig-name descname"><span class="pre">ValIterOrderedDict</span></span><a class="headerlink" href="#merlion.utils.misc.ValIterOrderedDict" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></p>
 <p>OrderedDict whose iterator goes over self.values() instead of self.keys().</p>
 </dd></dl>
 
@@ -427,11 +428,11 @@ Automatically assigns the parameters.</p>
 
 </section>
 <section id="module-merlion.utils.resample">
-<span id="merlion-utils-resample-module"></span><h2>merlion.utils.resample module<a class="headerlink" href="#module-merlion.utils.resample" title="Permalink to this headline"></a></h2>
+<span id="merlion-utils-resample-module"></span><h2>merlion.utils.resample module<a class="headerlink" href="#module-merlion.utils.resample" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.resample.AlignPolicy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">AlignPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.AlignPolicy" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Policies for aligning multiple univariate time series.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.utils.resample.AlignPolicy.OuterJoin">
@@ -458,7 +459,7 @@ Automatically assigns the parameters.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.resample.AggregationPolicy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">AggregationPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.AggregationPolicy" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Aggregation policies. Values are partial functions for
 pandas.core.resample.Resampler methods.</p>
 <dl class="py attribute">
@@ -501,7 +502,7 @@ pandas.core.resample.Resampler methods.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.resample.MissingValuePolicy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">MissingValuePolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.MissingValuePolicy" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Missing value imputation policies. Values are partial functions for
 <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> methods.</p>
 <dl class="py attribute">
@@ -566,11 +567,11 @@ as a reference sequence of timestamps. Imputes missing values with the given
 
 </section>
 <section id="module-merlion.utils.time_series">
-<span id="merlion-utils-time-series-module"></span><h2>merlion.utils.time_series module<a class="headerlink" href="#module-merlion.utils.time_series" title="Permalink to this headline"></a></h2>
+<span id="merlion-utils-time-series-module"></span><h2>merlion.utils.time_series module<a class="headerlink" href="#module-merlion.utils.time_series" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.time_series.UnivariateTimeSeries">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.time_series.</span></span><span class="sig-name descname"><span class="pre">UnivariateTimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.UnivariateTimeSeries" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.core.series.Series</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></p>
 <p>Please read the <a class="reference internal" href="examples/TimeSeries.html"><span class="doc">tutorial</span></a> before reading this API doc.
 This class is a time-indexed <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> which represents a univariate
 time series. For the most part, it supports all the same features as

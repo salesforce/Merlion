@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -362,7 +363,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Multivariate-Time-Series-Forecasting">
-<h1>Multivariate Time Series Forecasting<a class="headerlink" href="#Multivariate-Time-Series-Forecasting" title="Permalink to this headline"></a></h1>
+<h1>Multivariate Time Series Forecasting<a class="headerlink" href="#Multivariate-Time-Series-Forecasting" title="Permalink to this heading"></a></h1>
 <p>Multivariate time series forecasting works similarly to univariate time series forecasting (covered <a class="reference internal" href="0_ForecastIntro.html"><span class="doc">here</span></a> and <a class="reference internal" href="1_ForecastFeatures.html"><span class="doc">here</span></a>). The main difference is that you must specify the index of a target univariate to forecast, e.g. for a 5-variable time series you may want to forecast the value of the 3rd variable (we specify this by indicating <code class="docutils literal notranslate"><span class="pre">target_seq_index</span> <span class="pre">=</span> <span class="pre">2</span></code>). To begin, we will load the multivariate <code class="docutils literal notranslate"><span class="pre">SeattleTrail</span></code> dataset for time series
 forecasting.</p>
 <div class="nbinput docutils container">
@@ -390,7 +391,7 @@ Time series is 5-dimensional
 </pre></div></div>
 </div>
 <section id="Model-Initialization-and-Training">
-<h2>Model Initialization and Training<a class="headerlink" href="#Model-Initialization-and-Training" title="Permalink to this headline"></a></h2>
+<h2>Model Initialization and Training<a class="headerlink" href="#Model-Initialization-and-Training" title="Permalink to this heading"></a></h2>
 <p>For the purposes of this tutorial, we will be using 3 models:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DefaultForeacster</span></code> (which automatically detects whether the input time series is univariate or multivariate);</p></li>
@@ -484,7 +485,7 @@ Inferred granularity 0 days 01:00:00
 </div>
 </section>
 <section id="Model-Inference-and-Quantitative-Evaluation">
-<h2>Model Inference and Quantitative Evaluation<a class="headerlink" href="#Model-Inference-and-Quantitative-Evaluation" title="Permalink to this headline"></a></h2>
+<h2>Model Inference and Quantitative Evaluation<a class="headerlink" href="#Model-Inference-and-Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
 <p>Like univariate models, we may call <code class="docutils literal notranslate"><span class="pre">model.forecast()</span></code> to get a forecast and potentially a standard error for the model. We can use these to evaluate the model’s performance. Note that the model selector successfully picks the better of the two models.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:

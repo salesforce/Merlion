@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -139,7 +140,7 @@
 }
 </style>
 <section id="module-merlion.models.forecast">
-<span id="merlion-models-forecast-package"></span><h1>merlion.models.forecast package<a class="headerlink" href="#module-merlion.models.forecast" title="Permalink to this headline"></a></h1>
+<span id="merlion-models-forecast-package"></span><h1>merlion.models.forecast package<a class="headerlink" href="#module-merlion.models.forecast" title="Permalink to this heading"></a></h1>
 <p>Contains all forecasting models.</p>
 <p>For forecasting, we define an abstract base <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a> class which inherits from <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a> and supports the
 following interface, in addition to <code class="docutils literal notranslate"><span class="pre">model.save()</span></code> and <code class="docutils literal notranslate"><span class="pre">ForecasterClass.load</span></code> defined for <code class="docutils literal notranslate"><span class="pre">ModelBase</span></code>:</p>
@@ -214,15 +215,15 @@ on the time stamps of <code class="docutils literal notranslate"><span class="pr
 </tbody>
 </table>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-merlion.models.forecast.base">
-<span id="merlion-models-forecast-base-module"></span><h2>merlion.models.forecast.base module<a class="headerlink" href="#module-merlion.models.forecast.base" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-base-module"></span><h2>merlion.models.forecast.base module<a class="headerlink" href="#module-merlion.models.forecast.base" title="Permalink to this heading"></a></h2>
 <p>Base class for forecasting models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.base.</span></span><span class="sig-name descname"><span class="pre">ForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.Config</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -259,7 +260,7 @@ would like to forecast.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.base.</span></span><span class="sig-name descname"><span class="pre">ForecasterBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.base.ForecasterBase" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.base.ModelBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
 <p>Base class for a forecaster model.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -276,7 +277,7 @@ with the original time stamps.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterBase.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.base.ForecasterBase.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -557,13 +558,13 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 
 </section>
 <section id="module-merlion.models.forecast.arima">
-<span id="merlion-models-forecast-arima-module"></span><h2>merlion.models.forecast.arima module<a class="headerlink" href="#module-merlion.models.forecast.arima" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-arima-module"></span><h2>merlion.models.forecast.arima module<a class="headerlink" href="#module-merlion.models.forecast.arima" title="Permalink to this heading"></a></h2>
 <p>The classic statistical forecasting model ARIMA (AutoRegressive Integrated
 Moving Average).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.arima.ArimaConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.arima.ArimaConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.sarima.SarimaConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SarimaConfig</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <p>Configuration class for Arima. Just a Sarima model with seasonal order
 (0, 0, 0, 0).</p>
@@ -585,13 +586,13 @@ Moving Average).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.arima.Arima">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.arima.</span></span><span class="sig-name descname"><span class="pre">Arima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.arima.Arima" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.sarima.Sarima</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a></p>
 <p>Implementation of the classic statistical model ARIMA (AutoRegressive
 Integrated Moving Average) for forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.arima.Arima.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.arima.Arima.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.arima.ArimaConfig" title="merlion.models.forecast.arima.ArimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.arima.ArimaConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.arima.ArimaConfig" title="merlion.models.forecast.arima.ArimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArimaConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -613,12 +614,12 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.sarima">
-<span id="merlion-models-forecast-sarima-module"></span><h2>merlion.models.forecast.sarima module<a class="headerlink" href="#module-merlion.models.forecast.sarima" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-sarima-module"></span><h2>merlion.models.forecast.sarima module<a class="headerlink" href="#module-merlion.models.forecast.sarima" title="Permalink to this heading"></a></h2>
 <p>A variant of ARIMA with a user-specified Seasonality.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.SarimaConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sarima.SarimaConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <p>Configuration class for Sarima.</p>
 <dl class="field-list simple">
@@ -643,13 +644,13 @@ for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sarima.</span></span><span class="sig-name descname"><span class="pre">Sarima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a>, <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality_mixin.SeasonalityModel" title="merlion.models.automl.seasonality_mixin.SeasonalityModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.automl.seasonality_mixin.SeasonalityModel</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality_mixin.SeasonalityModel" title="merlion.models.automl.seasonality_mixin.SeasonalityModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityModel</span></code></a></p>
 <p>Implementation of the classic statistical model SARIMA (Seasonal
 AutoRegressive Integrated Moving Average) for forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.sarima.SarimaConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SarimaConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -781,12 +782,12 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.prophet">
-<span id="merlion-models-forecast-prophet-module"></span><h2>merlion.models.forecast.prophet module<a class="headerlink" href="#module-merlion.models.forecast.prophet" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-prophet-module"></span><h2>merlion.models.forecast.prophet module<a class="headerlink" href="#module-merlion.models.forecast.prophet" title="Permalink to this heading"></a></h2>
 <p>Wrapper around Facebook’s popular Prophet model for time series forecasting.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.ProphetConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.prophet.ProphetConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <p>Configuration class for Facebook’s Prophet model, as described in this
 <a class="reference external" href="https://peerj.com/preprints/3190/">paper</a>.</p>
@@ -821,13 +822,13 @@ order to calibrate the anomaly scores.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.prophet.</span></span><span class="sig-name descname"><span class="pre">Prophet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.prophet.Prophet" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
 <p>Facebook’s model for time series forecasting. See docs for <a class="reference internal" href="#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ProphetConfig</span></code></a>
 and the <a class="reference external" href="https://peerj.com/preprints/3190/">paper</a> for more details.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.prophet.Prophet.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.prophet.ProphetConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProphetConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -939,12 +940,12 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.smoother">
-<span id="merlion-models-forecast-smoother-module"></span><h2>merlion.models.forecast.smoother module<a class="headerlink" href="#module-merlion.models.forecast.smoother" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-smoother-module"></span><h2>merlion.models.forecast.smoother module<a class="headerlink" href="#module-merlion.models.forecast.smoother" title="Permalink to this heading"></a></h2>
 <p>Multi-Scale Exponential Smoother for univariate time series forecasting.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.smoother.MSESConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.smoother.</span></span><span class="sig-name descname"><span class="pre">MSESConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recency_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accel_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.smoother.MSESConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Configuration class for an MSES forecasting model.</p>
 <p>Letting <code class="docutils literal notranslate"><span class="pre">w</span></code> be the recency weight, <code class="docutils literal notranslate"><span class="pre">B</span></code> the maximum backstep, <code class="docutils literal notranslate"><span class="pre">x_t</span></code> the last seen data point,
 and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></code> the series of losses for scale <code class="docutils literal notranslate"><span class="pre">s</span></code>.</p>
@@ -1030,7 +1031,7 @@ training.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.smoother.MSES">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.smoother.</span></span><span class="sig-name descname"><span class="pre">MSES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.smoother.MSES" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
 <p>Multi-scale Exponential Smoother (MSES) is a forecasting algorithm modeled heavily 
 after classical mechanical concepts, namely, velocity and acceleration.</p>
 <p>Having seen data points of a time series up to time t, MSES forecasts x(t+h) by
@@ -1062,7 +1063,7 @@ and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></c
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.smoother.MSES.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.smoother.MSES.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.smoother.MSESConfig" title="merlion.models.forecast.smoother.MSESConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.smoother.MSESConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.smoother.MSESConfig" title="merlion.models.forecast.smoother.MSESConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">MSESConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -1410,12 +1411,12 @@ that associated with that scale.</p>
 
 </section>
 <section id="module-merlion.models.forecast.vector_ar">
-<span id="merlion-models-forecast-vector-ar-module"></span><h2>merlion.models.forecast.vector_ar module<a class="headerlink" href="#module-merlion.models.forecast.vector_ar" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-vector-ar-module"></span><h2>merlion.models.forecast.vector_ar module<a class="headerlink" href="#module-merlion.models.forecast.vector_ar" title="Permalink to this heading"></a></h2>
 <p>Vector AutoRegressive model for multivariate time series forecasting.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorARConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.vector_ar.</span></span><span class="sig-name descname"><span class="pre">VectorARConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorARConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1434,12 +1435,12 @@ would like to forecast.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorAR">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.vector_ar.</span></span><span class="sig-name descname"><span class="pre">VectorAR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorAR" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
 <p>Vector AutoRegressive model for multivariate time series forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorAR.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorAR.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.vector_ar.VectorARConfig" title="merlion.models.forecast.vector_ar.VectorARConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.vector_ar.VectorARConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.vector_ar.VectorARConfig" title="merlion.models.forecast.vector_ar.VectorARConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">VectorARConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
@@ -1549,14 +1550,14 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.baggingtrees">
-<span id="merlion-models-forecast-baggingtrees-module"></span><h2>merlion.models.forecast.baggingtrees module<a class="headerlink" href="#module-merlion.models.forecast.baggingtrees" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-baggingtrees-module"></span><h2>merlion.models.forecast.baggingtrees module<a class="headerlink" href="#module-merlion.models.forecast.baggingtrees" title="Permalink to this heading"></a></h2>
 <p>Bagging Tree-based models for multivariate time series forecasting.
 Random Forest
 ExtraTreesRegressor</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">BaggingTreeForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Configuration class for bagging Tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1598,12 +1599,12 @@ done by means of autoregression with the stride unit of prediction_stride</p></l
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.BaggingTreeForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">BaggingTreeForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.autoregression_utils.MultiVariateAutoRegressionMixin</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVariateAutoRegressionMixin</span></code></p>
 <p>Tree model for multivariate time series forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.BaggingTreeForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaggingTreeForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1733,7 +1734,7 @@ timedelta.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.RandomForestForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.RandomForestForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaggingTreeForecasterConfig</span></code></a></p>
 <p>Configuration class for bagging Tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1775,7 +1776,7 @@ done by means of autoregression with the stride unit of prediction_stride</p></l
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.RandomForestForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.RandomForestForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster" title="merlion.models.forecast.baggingtrees.BaggingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.BaggingTreeForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster" title="merlion.models.forecast.baggingtrees.BaggingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaggingTreeForecaster</span></code></a></p>
 <p>Random Forest Regressor for time series forecasting</p>
 <p>Random Forest is a meta estimator that fits a number of classifying decision
 trees on various sub-samples of the dataset, and uses averaging to improve
@@ -1783,7 +1784,7 @@ the predictive accuracy and control over-fitting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.RandomForestForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.RandomForestForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.RandomForestForecasterConfig" title="merlion.models.forecast.baggingtrees.RandomForestForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.RandomForestForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.RandomForestForecasterConfig" title="merlion.models.forecast.baggingtrees.RandomForestForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomForestForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1806,7 +1807,7 @@ timedelta.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig" title="merlion.models.forecast.baggingtrees.BaggingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaggingTreeForecasterConfig</span></code></a></p>
 <p>Configuration class for bagging Tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1848,7 +1849,7 @@ done by means of autoregression with the stride unit of prediction_stride</p></l
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.ExtraTreesForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.baggingtrees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.ExtraTreesForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster" title="merlion.models.forecast.baggingtrees.BaggingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.BaggingTreeForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.baggingtrees.BaggingTreeForecaster" title="merlion.models.forecast.baggingtrees.BaggingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaggingTreeForecaster</span></code></a></p>
 <p>Extra Trees Regressor for time series forecasting</p>
 <p>Extra Trees Regressor implements a meta estimator that fits a number of
 randomized decision trees (a.k.a. extra-trees) on various sub-samples of
@@ -1857,7 +1858,7 @@ control over-fitting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.baggingtrees.ExtraTreesForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.baggingtrees.ExtraTreesForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig" title="merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig" title="merlion.models.forecast.baggingtrees.ExtraTreesForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreesForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1879,13 +1880,13 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.boostingtrees">
-<span id="merlion-models-forecast-bo0stingtrees-module"></span><h2>merlion.models.forecast.bo0stingtrees module<a class="headerlink" href="#module-merlion.models.forecast.boostingtrees" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-bo0stingtrees-module"></span><h2>merlion.models.forecast.bo0stingtrees module<a class="headerlink" href="#module-merlion.models.forecast.boostingtrees" title="Permalink to this heading"></a></h2>
 <p>Boosting Tree-based models for multivariate time series forecasting.
 LightGBM</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.boostingtrees.</span></span><span class="sig-name descname"><span class="pre">BoostingTreeForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Configuration class for boosting Tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1929,12 +1930,12 @@ positive int indicates num of threads</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.BoostingTreeForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.boostingtrees.</span></span><span class="sig-name descname"><span class="pre">BoostingTreeForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.autoregression_utils.MultiVariateAutoRegressionMixin</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVariateAutoRegressionMixin</span></code></p>
 <p>Tree model for multivariate time series forecasting.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.BoostingTreeForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig" title="merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig" title="merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoostingTreeForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2064,7 +2065,7 @@ timedelta.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.LGBMForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.boostingtrees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.LGBMForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig" title="merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig" title="merlion.models.forecast.boostingtrees.BoostingTreeForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoostingTreeForecasterConfig</span></code></a></p>
 <p>Configuration class for boosting Tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2108,14 +2109,14 @@ positive int indicates num of threads</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.LGBMForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.boostingtrees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.LGBMForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecaster" title="merlion.models.forecast.boostingtrees.BoostingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.boostingtrees.BoostingTreeForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.boostingtrees.BoostingTreeForecaster" title="merlion.models.forecast.boostingtrees.BoostingTreeForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoostingTreeForecaster</span></code></a></p>
 <p>Light gradient boosting (LGBM) regressor for time series forecasting</p>
 <p>LightGBM is a light weight and fast gradient boosting framework that uses tree based learning algorithms, for more
 details, please refer to the document <a class="reference external" href="https://lightgbm.readthedocs.io/en/latest/Features.html">https://lightgbm.readthedocs.io/en/latest/Features.html</a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.boostingtrees.LGBMForecaster.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.boostingtrees.LGBMForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.boostingtrees.LGBMForecasterConfig" title="merlion.models.forecast.boostingtrees.LGBMForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.boostingtrees.LGBMForecasterConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.boostingtrees.LGBMForecasterConfig" title="merlion.models.forecast.boostingtrees.LGBMForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">LGBMForecasterConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2137,12 +2138,12 @@ timedelta.</p>
 
 </section>
 <section id="module-merlion.models.forecast.lstm">
-<span id="merlion-models-forecast-lstm-module"></span><h2>merlion.models.forecast.lstm module<a class="headerlink" href="#module-merlion.models.forecast.lstm" title="Permalink to this headline"></a></h2>
+<span id="merlion-models-forecast-lstm-module"></span><h2>merlion.models.forecast.lstm module<a class="headerlink" href="#module-merlion.models.forecast.lstm" title="Permalink to this heading"></a></h2>
 <p>A forecaster based on a LSTM neural net.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.lstm.LSTMConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.lstm.</span></span><span class="sig-name descname"><span class="pre">LSTMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_strides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.lstm.LSTMConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterConfig</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
 <p>Config object used to define a forecaster model.</p>
 <p>Configuration class for <a class="reference internal" href="#merlion.models.forecast.lstm.LSTM" title="merlion.models.forecast.lstm.LSTM"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LSTM</span></code></a>.</p>
 <dl class="field-list simple">
@@ -2170,13 +2171,13 @@ like to subsample the input data before giving it to the model.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.lstm.LSTM">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.lstm.</span></span><span class="sig-name descname"><span class="pre">LSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.lstm.LSTM" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.base.ForecasterBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
 <p>LSTM forecaster: this assume the input time series has equal intervals across all its values
 so that we can use sequence modeling to make forecast.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.lstm.LSTM.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.lstm.LSTM.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.lstm.LSTMConfig" title="merlion.models.forecast.lstm.LSTMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">merlion.models.forecast.lstm.LSTMConfig</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.lstm.LSTMConfig" title="merlion.models.forecast.lstm.LSTMConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">LSTMConfig</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
