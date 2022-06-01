@@ -147,7 +147,7 @@ class Sarima(ForecasterBase, SeasonalityModel):
                 err_prev = np.sqrt(params["sigma2"])
                 forecast = np.concatenate((val_prev - new_state.resid, forecast))
                 err = np.concatenate((err_prev * np.ones(n_prev), err))
-                time_stamps = t_prev + time_stamps
+                time_stamps = np.concatenate((t_prev, time_stamps))
 
         # Check for NaN's
         if any(np.isnan(forecast)):
