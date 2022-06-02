@@ -16,7 +16,11 @@ TSID_COL_NAME = "__ts_id"
 
 
 def read_dataset(
-    spark: pyspark.sql.SparkSession, path: str, data_cols: List[str], time_col: str = None, index_cols: List[str] = None
+    spark: pyspark.sql.SparkSession,
+    path: str,
+    time_col: str = None,
+    index_cols: List[str] = None,
+    data_cols: List[str] = None,
 ) -> pyspark.sql.DataFrame:
     """
 
@@ -33,7 +37,10 @@ def read_dataset(
     # Only keep the index column, data columns, and time column
     index_cols = index_cols or []
     if time_col is None:
-        time_col = [c for c in df.schema.fieldNames() if c not in index_cols + data_cols][0]
+        time_col = [c for c in df.schema.fieldNames() if c not in index_cols + (data_cols or [])][0]
+    # Use all non-index non-time columns as data columns data columns are not given
+    if data_cols is None or len(data_cols) == 0:
+        data_cols = [c for c in df.schema.fieldNames() if c not in index_cols + [time_col]]
     assert all(col in data_cols and col not in index_cols + [time_col] for col in data_cols)
     df = df.select(F.col(time_col).cast(DateType()).alias(time_col), *index_cols, *data_cols)
 
