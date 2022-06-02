@@ -52,7 +52,6 @@ setup(
         "numpy>=1.19; python_version < '3.7'",  # however, numpy 1.20+ requires python 3.7+
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
-        "PyYAML",
         "scikit-learn>=0.22",  # >=0.22 for changes to isolation forest algorithm
         "scipy>=1.6.0; python_version >= '3.7'",  # 1.6.0 adds multivariate_t density to scipy.stats
         "scipy>=1.5.0; python_version < '3.7'",  # however, scipy 1.6.0 requires python 3.7+

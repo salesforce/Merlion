@@ -5,13 +5,13 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import argparse
+import json
 from typing import Callable, List
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
-import yaml
 
 import merlion.plot
 from merlion.utils import UnivariateTimeSeries
@@ -86,7 +86,7 @@ def main():
     parser.add_argument("config")
     args = parser.parse_args()
     with open(args.config) as f:
-        config = yaml.full_load(f)
+        config = json.load(f)
 
     train_data = config["train_data"]
     time_stamps = config["time_stamps"]
