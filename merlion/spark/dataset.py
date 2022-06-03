@@ -56,7 +56,10 @@ def read_dataset(
     for i, col in enumerate(index_cols):
         pred = df[col].eqNullSafe(ts_index[col])
         condition = pred if i == 0 else condition & pred
-    return df.join(ts_index, on=condition, how="inner").drop(*[ts_index[col] for col in index_cols])
+    df = df.join(ts_index, on=condition)
+    for col in index_cols:
+        df = df.drop(ts_index[col])
+    return df
 
 
 def create_hier_dataset(
