@@ -52,7 +52,11 @@ def read_dataset(
     # also add a new time series ID column to the full dataset.
     ts_index = df.groupBy(index_cols).count().drop("count").sort(index_cols).toPandas()
     ts_index[TSID_COL_NAME] = np.arange(len(ts_index))
-    return df.join(spark.createDataFrame(ts_index), on=index_cols)
+    ts_index = spark.createDataFrame(ts_index)
+    for i, col in enumerate(index_cols):
+        pred = df[col].eqNullSafe(ts_index[col])
+        condition = pred if i == 0 else condition & pred
+    return df.join(ts_index, on=condition, how="inner").drop(*[ts_index[col] for col in index_cols])
 
 
 def create_hier_dataset(
