@@ -27,7 +27,7 @@ def main():
     hierarchical = config.get("hierarchical", False) and len(index_cols) > 0
     target_col = config["target_col"]
     data_cols = config.get("data_cols", [target_col])
-    output_path = config.get("output_path", None)
+    output_path = config["output_path"]
 
     # Set up the model with the appropriate target_seq_index
     assert target_col in data_cols
