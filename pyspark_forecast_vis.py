@@ -6,6 +6,7 @@
 #
 import argparse
 import json
+import re
 from typing import Callable, List
 
 import matplotlib.pyplot as plt
@@ -15,7 +16,7 @@ import pandas as pd
 import merlion.plot
 from merlion.utils import UnivariateTimeSeries
 from merlion.spark.dataset import read_dataset, create_hier_dataset
-from merlion.spark.session import create_session
+from merlion.spark.session import create_session, enable_aws_kwargs
 
 
 def plot(
@@ -53,8 +54,7 @@ def plot(
 def hierarchical_plot(pdf: pd.DataFrame, forecast_pdf: pd.DataFrame, index_cols: List[str], target_col: str):
     k = 3
     fig, axs = plt.subplots(nrows=2, ncols=k, figsize=(15, 8))
-    time_col = [c for c in pdf.columns if c not in index_cols][0]
-    kwargs = dict(pdf=pdf, forecast_pdf=forecast_pdf, time_col=time_col, target_col=target_col)
+    kwargs = dict(pdf=pdf, forecast_pdf=forecast_pdf, time_col=pdf.columns[0], target_col=target_col)
 
     # Sort time series by how much they contribute to the total
     sub_df = pdf[~pdf.loc[:, index_cols].isna().any(axis=1)]
@@ -93,7 +93,10 @@ def main():
     target_col = config["target_col"]
     output_path = config.get("output_path", None)
 
-    spark = create_session()
+    session_kwargs = {}
+    if re.match("s3.*://", train_data) or re.match("s3.*://", output_path):
+        session_kwargs.update(enable_aws_kwargs(credentials_provider=config.get("aws_credentials_provider")))
+    spark = create_session(name="merlion-forecast-vis", **session_kwargs)
 
     train_df = read_dataset(spark=spark, path=train_data, time_col=time_col, index_cols=index_cols)
     if hierarchical:

@@ -4,6 +4,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Pyspark pandas UDFs for Merlion functions.
+This module contains pandas UDFs that can be called via ``pyspark.sql.DataFrame.applyInPandas`` to run Merlion
+forecasting, anomaly detection, and time series reconciliation in parallel.
+"""
 from typing import List, Union
 
 import numpy as np
@@ -24,8 +29,22 @@ def forecast(
     time_stamps: Union[List[int], List[str]],
     model: Union[ForecasterBase, dict],
 ) -> pd.DataFrame:
+    """
+    Pyspark pandas UDF for performing forecasting.
+    Should be called on a pyspark dataframe grouped by time series ID, i.e. by ``index_cols``.
+
+    :param pdf: The ``pandas.DataFrame`` containing the training data. Should be a single time series.
+    :param index_cols: The list of column names used to index all the time series in the dataset. Not used for modeling.
+    :param time_col: The name of the column containing the timestamps.
+    :param target_col: The name of the column whose value we wish to forecast.
+    :param time_stamps: The timestamps at which we would like to obtain a forecast.
+    :param model: The model (or model ``dict``) we are using to obtain a forecast.
+
+    :return: A ``pandas.DataFrame`` with the forecast & its standard error (NaN if the model doesn't have error bars).
+        Columns are ``[*index_cols, time_col, target_col, target_col + \"_err\"]``.
+    """
     # Sort the dataframe by time & turn it into a Merlion time series
-    if TSID_COL_NAME not in index_cols:
+    if TSID_COL_NAME not in index_cols and TSID_COL_NAME in pdf.columns:
         index_cols = index_cols + [TSID_COL_NAME]
     pdf = pdf.sort_values(by=time_col)
     ts = TimeSeries.from_pd(pdf.drop(columns=index_cols).set_index(time_col))
@@ -60,8 +79,21 @@ def anomaly(
     train_test_split: Union[int, str],
     model: Union[DetectorBase, dict],
 ) -> pd.DataFrame:
+    """
+    Pyspark pandas UDF for performing anomaly detection.
+    Should be called on a pyspark dataframe grouped by time series ID, i.e. by ``index_cols``.
+
+    :param pdf: The ``pandas.DataFrame`` containing the training and testing data. Should be a single time series.
+    :param index_cols: The list of column names used to index all the time series in the dataset. Not used for modeling.
+    :param time_col: The name of the column containing the timestamps.
+    :param train_test_split: The time at which the testing data starts.
+    :param model: The model (or model ``dict``) we are using to predict anomaly scores.
+
+    :return: A ``pandas.DataFrame`` with the anomaly scores on the test data.
+        Columns are ``[*index_cols, time_col, \"anom_score\"]``.
+    """
     # Sort the dataframe by time & turn it into a Merlion time series
-    if TSID_COL_NAME not in index_cols:
+    if TSID_COL_NAME not in index_cols and TSID_COL_NAME in pdf.columns:
         index_cols = index_cols + [TSID_COL_NAME]
     pdf = pdf.sort_values(by=time_col)
     ts = TimeSeries.from_pd(pdf.drop(columns=index_cols).set_index(time_col))
@@ -72,7 +104,7 @@ def anomaly(
         raise TypeError(f"Expected `model` to be an instance of DetectorBase, but got {model}.")
 
     # Train model & run inference
-    train, test = ts.bisect(train_test_split)
+    train, test = ts.bisect(train_test_split, t_in_left=False)
     model.train(train)
     pred_pdf = model.get_anomaly_label(test).to_pd()
 
@@ -84,15 +116,35 @@ def anomaly(
 
 
 def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
+    """
+    Pyspark pandas UDF for computing the minimum-trace hierarchical time series reconciliation, as described by
+    `Wickramasuriya et al. 2018 <https://robjhyndman.com/papers/mint.pdf>`__.
+    Should be called on a pyspark dataframe grouped by timestamp. Pyspark implementation of
+    `merlion.utils.hts.minT_reconciliation`.
+
+    :param pdf: A ``pandas.DataFrame`` containing forecasted values & standard errors from ``m`` time series at a single
+        timestamp. Each time series should be indexed by `TSID_COL_NAME`.
+        The first ``n`` time series (in order of ID) orrespond to leaves of the hierarchy, while the remaining ``m - n``
+        are weighted sums of the first ``n``.
+        This dataframe can be produced by calling `forecast` on the dataframe produced by
+        `merlion.spark.dataset.create_hier_dataset`.
+    :param hier_matrix: A ``m``-by-``n`` matrix describing how the hierarchy is aggregated. The value of the ``k``-th
+        time series is ``np.dot(hier_matrix[k], pdf[:n])``. This matrix can be produced by
+        `merlion.spark.dataset.create_hier_dataset`.
+    :param target_col: The name of the column whose value we wish to forecast.
+
+    :return: A ``pandas.DataFrame`` which replaces the original forecasts & errors with reconciled forecasts & errors.
+    """
     # Get shape params & sort the data (for this timestamp) by time series ID
     m, n = hier_matrix.shape
-    assert len(pdf) == m
+    assert len(pdf) == m >= n
+    assert (hier_matrix[:n] == np.eye(n)).all()
     pdf = pdf.sort_values(by=TSID_COL_NAME)
 
     # Compute the error weight matrix W (m by m)
     errname = f"{target_col}_err"
     coefs = hier_matrix.sum(axis=1)
-    errs = pdf[errname].values
+    errs = pdf[errname].values if errname in pdf.columns else np.full(m, np.nan)
     nan_errs = np.isnan(errs)
     if nan_errs.all():
         W = np.diag(coefs)
@@ -111,7 +163,7 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     # Compute reconciled forecasts & errors
     rec = hier_matrix @ (P @ pdf[target_col].values)
     if nan_errs.all():
-        rec_errs = np.full(m, np.nan)
+        rec_errs = errs
     else:
         # P * W.diagonal() is a faster way to compute P @ W, since W is diagonal
         rec_errs = hier_matrix @ (P * W.diagonal())  # m by m

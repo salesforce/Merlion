@@ -6,11 +6,12 @@
 #
 import argparse
 import json
+import re
 
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
-from merlion.spark.dataset import create_hier_dataset, read_dataset, write_result, TSID_COL_NAME
+from merlion.spark.dataset import create_hier_dataset, read_dataset, write_dataset, TSID_COL_NAME
 from merlion.spark.pandas_udf import forecast, reconciliation
-from merlion.spark.session import create_session
+from merlion.spark.session import create_session, enable_aws_kwargs
 
 
 def main():
@@ -37,9 +38,12 @@ def main():
 
     # Read the dataset as a Spark DataFrame, and process it.
     # This will add a TSID_COL_NAME column to identify each time series with a single integer.
-    spark = create_session()
+    session_kwargs = {}
+    if re.match("s3.*://", train_data) or re.match("s3.*://", output_path):
+        session_kwargs.update(enable_aws_kwargs(credentials_provider=config.get("aws_credentials_provider")))
+    spark = create_session(name="merlion-forecast", **session_kwargs)
     df = read_dataset(spark=spark, path=train_data, time_col=time_col, index_cols=index_cols, data_cols=data_cols)
-    time_col = [c for c in df.schema.fieldNames() if c not in index_cols + [TSID_COL_NAME]][0]
+    time_col = df.schema.fieldNames()[0]
 
     # Convert to a hierarchical dataset if desired
     if hierarchical:
@@ -63,7 +67,7 @@ def main():
             lambda pdf: reconciliation(pdf, hier_matrix, target_col), schema=output_schema
         )
 
-    write_result(df=forecast_df, time_col=time_col, path=output_path)
+    write_dataset(df=forecast_df, time_col=time_col, path=output_path)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Merlion from source
+# FIXME: install from pip once it's vetted
 WORKDIR /workspace
 COPY *.md .
 COPY setup.py .

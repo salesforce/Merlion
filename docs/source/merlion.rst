@@ -6,6 +6,8 @@ each associated with its own sub-package:
 -   :py:mod:`merlion.models`: A library of models unified under a single shared interface, with specializations
     for anomaly detection and forecasting. More specifically, we have
 
+    -   :py:mod:`merlion.models.defaults`: Default models for anomaly detection and forecasting. These are good models
+        for getting started.
     -   :py:mod:`merlion.models.anomaly`: Anomaly detection models
     -   :py:mod:`merlion.models.anomaly.change_point`: Change point detection models
     -   :py:mod:`merlion.models.forecast`: Forecasting models
@@ -15,6 +17,8 @@ each associated with its own sub-package:
         detection and forecasting.
     -   :py:mod:`merlion.models.automl`: AutoML layers for various models
 
+-   :py:mod:`merlion.spark`: APIs to integrate Merlion with PySpark for using distributed computing to run training
+    and inference on multiple time series in parallel.
 -   :py:mod:`merlion.transform`: Data pre-processing layer which implements many standard data transformations used in
     time series analysis. Transforms are callable objects, and each model has its own configurable ``model.transform``
     which it uses to pre-process all input time series for both training and inference.
@@ -51,6 +55,7 @@ Subpackages
    :maxdepth: 4
 
    merlion.models
+   merlion.spark
    merlion.transform
    merlion.post_process
    merlion.evaluate
