@@ -291,6 +291,8 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     def train_model(self, train_data, *args, **kwargs):
         """
         Trains the underlying model. May be overridden, e.g. for AutoML.
+
+        :param train_data: the data to train on, after any pre-processing transforms have been applied.
         """
         return self.model.train(train_data, *args, **kwargs)
 

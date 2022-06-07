@@ -21,9 +21,12 @@ class AutoMLMixIn(ModelBase, metaclass=AutodocABCMeta):
     Mix-in class for converting `LayeredModel`s into AutoML models.
     """
 
-    def train_model(self, train_data: TimeSeries, process_train_data=False, **kwargs):
-        if process_train_data:
-            train_data = self.train_pre_process(train_data)
+    def train_model(self, train_data: TimeSeries, **kwargs):
+        """
+        Generates a set of candidate models and picks the best one.
+
+        :param train_data: the data to train on, after any pre-processing transforms have been applied.
+        """
         candidate_thetas = self.generate_theta(train_data)
         theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, kwargs)
         if model is not None:
