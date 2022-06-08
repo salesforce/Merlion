@@ -14,7 +14,7 @@ from typing import Any, Iterator, Optional, Tuple, Union
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
-from merlion.models.layers import LayeredModelConfig, LayeredModel
+from merlion.models.layers import LayeredModelConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils import TimeSeries, UnivariateTimeSeries, autosarima_utils
 from merlion.utils.misc import AutodocABCMeta
@@ -117,7 +117,7 @@ class SeasonalityConfig(LayeredModelConfig):
         return config_dict
 
 
-class SeasonalityLayer(AutoMLMixIn, LayeredModel, metaclass=AutodocABCMeta):
+class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     """
     Seasonality Layer that uses AutoSARIMA-like methods to determine seasonality of your data. Can be used directly on
     any model that implements `SeasonalityModel` class.

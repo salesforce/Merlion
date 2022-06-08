@@ -11,14 +11,14 @@ from abc import abstractmethod
 from copy import deepcopy
 from typing import Any, Iterator, Optional, Tuple
 
-from merlion.models.base import ModelBase
+from merlion.models.layers import ModelBase, LayeredModel
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 
-class AutoMLMixIn(ModelBase, metaclass=AutodocABCMeta):
+class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     """
-    Mix-in class for converting `LayeredModel`s into AutoML models.
+    Abstract base class which converts `LayeredModel` into an AutoML models.
     """
 
     def train_model(self, train_data: TimeSeries, **kwargs):
