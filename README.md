@@ -62,6 +62,7 @@ anomaly detection and/or forecasting.
 | Multivariate Forecasting | ✅ | | | ✅ | ✅ | ✅ | | | | |
 | Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | | | ✅ | ✅ | ✅ | ✅ | 
 | Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | | | ✅ | ✅ | | | |
+| Change Point Detection | ✅ | ✅ | ✅ | ✅ | | | | | ✅ | |
 | AutoML | ✅ | | | ✅ | | | | | ✅ | | ✅ 
 | Ensembles | ✅ | | | | | | ✅  | | | | 
 | Benchmarking | ✅ | | | | | ✅ | | | | | 
