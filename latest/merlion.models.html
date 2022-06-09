@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models package &mdash; Merlion 1.2.0 documentation</title>
+  <title>merlion.models package &mdash; Merlion 1.2.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -757,7 +757,9 @@ As a result, you will only need to specify this parameter once. The same holds t
 (e.g. <code class="docutils literal notranslate"><span class="pre">threshold</span></code> or <code class="docutils literal notranslate"><span class="pre">calibrator</span></code>) when the base model is an anomaly detector.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For the time being, every layer of the model is allowed to have its own <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p>
+<p>For the time being, every layer of the model is allowed to have its own <code class="docutils literal notranslate"><span class="pre">transform</span></code>. However, after the
+model is trained, the entire transform will be composed as a single <a class="reference internal" href="merlion.transform.html#merlion.transform.sequence.TransformSequence" title="merlion.transform.sequence.TransformSequence"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformSequence</span></code></a> and will be owned by
+the base model.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.layers.LayeredModel.config_class">
@@ -806,6 +808,17 @@ As a result, you will only need to specify this parameter once. The same holds t
 <dt class="sig sig-object py" id="merlion.models.layers.LayeredModel.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.layers.LayeredModel.reset" title="Permalink to this definition"></a></dt>
 <dd><p>Resets the model’s internal state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.layers.LayeredModel.train_model">
+<span class="sig-name descname"><span class="pre">train_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.layers.LayeredModel.train_model" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the underlying model. May be overridden, e.g. for AutoML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>train_data</strong> – the data to train on, after any pre-processing transforms have been applied.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
