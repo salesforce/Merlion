@@ -108,10 +108,6 @@ class ETS(SeasonalityModel, ForecasterBase):
     def seasonal_periods(self):
         return self.config.seasonal_periods
 
-    @property
-    def _online_model(self) -> bool:
-        return True
-
     def set_seasonality(self, theta, train_data: UnivariateTimeSeries):
         if theta > 1:
             self.config.seasonal_periods = int(theta)
@@ -154,6 +150,9 @@ class ETS(SeasonalityModel, ForecasterBase):
     def _forecast(
         self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        # Ignore time_series_prev if it comes after the training data
+        if time_series_prev is not None and time_series_prev.index[-1] < self.last_train_time + self.timedelta:
+            time_series_prev = None
 
         # Basic forecasting without time_series_prev
         if time_series_prev is None:

@@ -30,6 +30,7 @@ class ForecasterConfig(Config):
 
     max_forecast_steps: Optional[int] = None
     target_seq_index: Optional[int] = None
+    invert_transform: bool = False
 
     def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, invert_transform=False, **kwargs):
         """
@@ -88,10 +89,6 @@ class ForecasterBase(ModelBase):
         :return: Whether to automatically invert the ``transform`` before returning a forecast.
         """
         return self.config.invert_transform
-
-    @property
-    def _online_model(self) -> bool:
-        return False
 
     @property
     def require_univariate(self) -> bool:
@@ -234,17 +231,12 @@ class ForecasterBase(ModelBase):
         if time_series_prev is None:
             time_series_prev_df = None
         else:
-            tf = to_pd_datetime(self.last_train_time + self.timedelta)
             time_series_prev = self.transform(time_series_prev)
             assert time_series_prev.dim == self.dim, (
                 f"time_series_prev has dimension of {time_series_prev.dim} that is different from "
                 f"training data dimension of {self.dim} for the model"
             )
-            if self._online_model and to_pd_datetime(time_series_prev.tf) < tf:
-                time_series_prev = None
-                time_series_prev_df = None
-            else:
-                time_series_prev_df = time_series_prev.to_pd()
+            time_series_prev_df = time_series_prev.to_pd()
 
         # Make the prediction
         forecast, err = self._forecast(

@@ -10,6 +10,7 @@ functionality. This is the basis for `default models <merlion.models.defaults>`_
 `AutoML models <merlion.models.automl>`_.
 """
 import copy
+import inspect
 import logging
 from typing import Any, Dict, List, Union
 
@@ -20,10 +21,15 @@ from merlion.models.factory import ModelFactory
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
+from merlion.transform.base import Identity
+from merlion.transform.sequence import TransformSequence
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
+
+_DETECTOR_MEMBERS = dict(inspect.getmembers(DetectorConfig)).keys()
+_FORECASTER_MEMBERS = dict(inspect.getmembers(ForecasterConfig)).keys()
 
 
 class LayeredModelConfig(Config):
@@ -43,7 +49,13 @@ class LayeredModelConfig(Config):
         # Model-specific kwargs override kwargs when creating the model.
         model_kwargs = {} if model_kwargs is None else model_kwargs
         if isinstance(model, dict):
-            model.update({k: v for k, v in kwargs.items() if k not in model and k not in model_kwargs})
+            model.update(
+                {
+                    k: v
+                    for k, v in kwargs.items()
+                    if k not in model and k not in model_kwargs and k not in _LAYERED_MEMBERS
+                }
+            )
             model, extra_kwargs = ModelFactory.create(**{**model, **model_kwargs, "return_unused_kwargs": True})
             kwargs.update(extra_kwargs)
         self.model = model
@@ -82,7 +94,7 @@ class LayeredModelConfig(Config):
     def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, dim=None, **kwargs):
         config, kwargs = super().from_dict(config_dict=config_dict, return_unused_kwargs=True, dim=dim, **kwargs)
         if config.model is None:
-            used = {k: v for k, v in kwargs.items() if hasattr(DetectorConfig, k) or hasattr(ForecasterConfig, k)}
+            used = {k: v for k, v in kwargs.items() if k in _DETECTOR_MEMBERS or k in _FORECASTER_MEMBERS}
             config.model_kwargs.update(used)
             kwargs = {k: v for k, v in kwargs.items() if k not in used}
 
@@ -106,8 +118,8 @@ class LayeredModelConfig(Config):
         if item in ["model", "_model", "base_model"]:
             return super().__getattribute__(item)
         base_model = self.base_model
-        is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorConfig, item)
-        is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, item)
+        is_detector_attr = isinstance(base_model, DetectorBase) and item in _DETECTOR_MEMBERS
+        is_forecaster_attr = isinstance(base_model, ForecasterBase) and item in _FORECASTER_MEMBERS
         if is_detector_attr or is_forecaster_attr:
             return getattr(base_model.config, item)
         elif base_model is None and item in self.model_kwargs:
@@ -117,10 +129,9 @@ class LayeredModelConfig(Config):
     def __setattr__(self, key, value):
         if hasattr(self, "_model"):
             base_model = self.base_model
-            is_detector_attr = isinstance(base_model, DetectorBase) and hasattr(DetectorConfig, key)
-            is_forecaster_attr = isinstance(base_model, ForecasterBase) and hasattr(ForecasterConfig, key)
-            is_layered_attr = hasattr(LayeredModelConfig, key)
-            if not is_layered_attr and (is_detector_attr or is_forecaster_attr):
+            is_detector_attr = isinstance(base_model, DetectorBase) and key in _DETECTOR_MEMBERS
+            is_forecaster_attr = isinstance(base_model, ForecasterBase) and key in _FORECASTER_MEMBERS
+            if key not in _LAYERED_MEMBERS and (is_detector_attr or is_forecaster_attr):
                 return setattr(self.model.config, key, value)
         return super().__setattr__(key, value)
 
@@ -131,6 +142,9 @@ class LayeredModelConfig(Config):
             config = config.model.config
             valid_keys = valid_keys.union(config.to_dict(_skipped_keys={"model"}).keys())
         return {k: v for k, v in kwargs.items() if k not in valid_keys}
+
+
+_LAYERED_MEMBERS = dict(inspect.getmembers(LayeredModelConfig)).keys()
 
 
 class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
@@ -158,7 +172,9 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
     .. note::
 
-        For the time being, every layer of the model is allowed to have its own ``transform``.
+        For the time being, every layer of the model is allowed to have its own ``transform``. However, after the
+        model is trained, the entire transform will be composed as a single `TransformSequence` and will be owned by
+        the base model.
     """
 
     config_class = LayeredModelConfig
@@ -272,9 +288,21 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             return attr
         return self.__getattribute__(item)
 
+    def train_model(self, train_data, *args, **kwargs):
+        """
+        Trains the underlying model. May be overridden, e.g. for AutoML.
+
+        :param train_data: the data to train on, after any pre-processing transforms have been applied.
+        """
+        return self.model.train(train_data, *args, **kwargs)
+
     def train(self, train_data: TimeSeries, *args, **kwargs):
         train_data = self.train_pre_process(train_data)
-        return self.model.train(train_data, *args, **kwargs)
+        ret = self.train_model(train_data, *args, **kwargs)
+        # Push the layered model transform to the owned model
+        self.model.transform = TransformSequence([self.transform, self.model.transform])
+        self.transform = Identity()
+        return ret
 
 
 class LayeredDetector(LayeredModel, DetectorBase):
@@ -289,7 +317,6 @@ class LayeredDetector(LayeredModel, DetectorBase):
         raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
         return self.model.get_anomaly_score(time_series, time_series_prev)
 
 
@@ -305,8 +332,6 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
         raise NotImplementedError("Layered model _forecast() should not be called.")
 
     def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
-        if time_series_prev is not None:
-            time_series_prev = self.transform(time_series_prev)
         return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)
 
 
