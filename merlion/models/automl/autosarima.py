@@ -357,7 +357,7 @@ class AutoSarima(SeasonalityLayer):
             )
 
         else:
-            return theta_value, None, None
+            return theta_value["theta"], None, None
 
         model = deepcopy(self.model)
         model.reset()
