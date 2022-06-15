@@ -15,7 +15,7 @@ import pandas as pd
 try:
     import pyspark.sql
     import pyspark.sql.functions as F
-    from pyspark.sql.types import DateType
+    from pyspark.sql.types import DateType, StructType
 except ImportError as e:
     err = (
         "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[spark]` or "
@@ -132,9 +132,10 @@ def create_hier_dataset(
         # concatenate the aggregated time series to the full dataframe, and compute the hierarchy vector.
 
         # For the top level of the hierarchy, this is easy as we just sum everything
+        dummy_schema = StructType([full_df.schema[c] for c in extended_index_cols])
         if len(agg_cols) == 0:
             dummy = pd.DataFrame([[pd.NA] * len(index_cols) + [n + len(hier_vecs)]], columns=extended_index_cols)
-            full_df = full_df.unionByName(agg.join(spark.createDataFrame(dummy)))
+            full_df = full_df.unionByName(agg.join(spark.createDataFrame(dummy, schema=dummy_schema)))
             hier_vecs.append(np.ones(n))
             continue
 
@@ -148,7 +149,7 @@ def create_hier_dataset(
             x = np.zeros(n)
             x[locs] = 1
             hier_vecs.append(x)
-        dummy = spark.createDataFrame(pd.DataFrame(dummy, columns=extended_index_cols))
+        dummy = spark.createDataFrame(pd.DataFrame(dummy, columns=extended_index_cols), schema=dummy_schema)
         full_df = full_df.unionByName(agg.join(dummy, on=agg_cols))
 
     # Create the full hierarchy matrix, and return it along with the updated dataframe
