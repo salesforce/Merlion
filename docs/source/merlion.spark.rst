@@ -9,20 +9,11 @@ use distributed computing to train and run inference on multiple time series in 
    :show-inheritance:
 
 .. autosummary::
-    session
     dataset
     pandas_udf
 
 Submodules
 ----------
-
-merlion.spark.session module
-----------------------------
-
-.. automodule:: merlion.spark.session
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 merlion.spark.dataset module
 ----------------------------

@@ -6,12 +6,11 @@
 #
 import argparse
 import json
-import re
 
+from pyspark.sql import SparkSession
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
 from merlion.spark.dataset import create_hier_dataset, read_dataset, write_dataset, TSID_COL_NAME
 from merlion.spark.pandas_udf import forecast, reconciliation
-from merlion.spark.session import create_session, enable_aws_kwargs
 
 
 def main():
@@ -38,10 +37,7 @@ def main():
 
     # Read the dataset as a Spark DataFrame, and process it.
     # This will add a TSID_COL_NAME column to identify each time series with a single integer.
-    session_kwargs = {}
-    if re.match("s3.*://", train_data) or re.match("s3.*://", output_path):
-        session_kwargs.update(enable_aws_kwargs(credentials_provider=config.get("aws_credentials_provider")))
-    spark = create_session(name="merlion-forecast", **session_kwargs)
+    spark = SparkSession.builder.appName("forecast").getOrCreate()
     df = read_dataset(spark=spark, path=train_data, time_col=time_col, index_cols=index_cols, data_cols=data_cols)
     time_col = df.schema.fieldNames()[0]
 
