@@ -1,9 +1,9 @@
-ARG SPARK_VERSION=3.2.1
-FROM apache/spark-py:v${SPARK_VERSION}
 ARG spark_uid=185
 ARG PYTHON_VERSION=3.8
-ENV PYTHON_VERSION=${PYTHON_VERSION}
+ARG SPARK_VERSION=3.2.1
+FROM apache/spark-py:v${SPARK_VERSION}
 
+# Change to root user for installation steps
 USER 0
 
 # Uninstall existing python and replace it with miniconda.
@@ -33,5 +33,4 @@ RUN pip install "./[spark,prophet]"
 
 # Copy Merlion pyspark apps
 COPY spark /opt/spark/apps
-
 USER ${spark_uid}
