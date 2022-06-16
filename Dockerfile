@@ -1,13 +1,12 @@
 ARG spark_uid=185
-ARG PYTHON_VERSION=3.8
-ARG SPARK_VERSION=3.2.1
-FROM apache/spark-py:v${SPARK_VERSION}
+FROM apache/spark-py:v3.2.1
 
 # Change to root user for installation steps
 USER 0
 
 # Uninstall existing python and replace it with miniconda.
 # This is to get the right version of Python in Debian, since Prophet doesn't play nice with Python 3.9+.
+# FIXME: maybe optimize the size? this image is currently 3.2GB.
 RUN apt-get update && \
     apt-get remove -y python3 python3-pip && \
     apt-get install -y --no-install-recommends curl && \
@@ -19,17 +18,16 @@ RUN curl -fsSL -v -o ~/miniconda.sh -O https://repo.anaconda.com/miniconda/Minic
     ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh && \
     # Install prophet while we're at it, since this is easier to conda install than pip install
-    /opt/conda/bin/conda install -y python=${PYTHON_VERSION} conda-build prophet && \
+    /opt/conda/bin/conda install -y prophet && \
     /opt/conda/bin/conda clean -ya
 ENV PATH="/opt/conda/bin:${SPARK_HOME}/bin:${PATH}"
 
-# Install appropriate version of pyspark & then install Merlion from source
-# We get spark version programmatically because the ARG/ENV gets overwritten for SPARK_VERSION
-RUN pip install pyspark[sql]==$(spark-submit --version 2>&1 | grep -Eo 'version ([0-9]{1,}\.)+[0-9]{1,}' -m 1 | sed -e 's/version //')
+# Install (for spark-sql) and Merlion; get pyspark & py4j from the PYTHONPATH
+ENV PYTHONPATH="${SPARK_HOME}/python/lib/pyspark.zip:${SPARK_HOME}/python/lib/py4j-0.10.9.3-src.zip:${PYTHONPATH}"
 COPY *.md ./
 COPY setup.py ./
 COPY merlion merlion
-RUN pip install "./[spark,prophet]"
+RUN pip install pyarrow "./[prophet]" && pip uninstall -y py4j
 
 # Copy Merlion pyspark apps
 COPY spark /opt/spark/apps
