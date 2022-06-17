@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion.spark package &mdash; Merlion 1.2.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.transform package" href="merlion.transform.html" />
+    <link rel="prev" title="merlion.models.automl package" href="merlion.models.automl.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.spark package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.dataset">merlion.spark.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
+      <li>merlion.spark package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.spark.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="merlion-spark-package">
+<h1>merlion.spark package<a class="headerlink" href="#merlion-spark-package" title="Permalink to this heading"></a></h1>
+<p>This module implements APIs to integrate Merlion with PySpark. The expected use case is to
+use distributed computing to train and run inference on multiple time series in parallel.</p>
+<span class="target" id="module-merlion.spark"></span><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.spark.dataset" title="merlion.spark.dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset</span></code></a></p></td>
+<td><p>Utils for reading &amp; writing pyspark datasets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.spark.pandas_udf" title="merlion.spark.pandas_udf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas_udf</span></code></a></p></td>
+<td><p>Pyspark pandas UDFs for Merlion functions.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-merlion.spark.dataset">
+<span id="merlion-spark-dataset-module"></span><h2>merlion.spark.dataset module<a class="headerlink" href="#module-merlion.spark.dataset" title="Permalink to this heading"></a></h2>
+<p>Utils for reading &amp; writing pyspark datasets.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="merlion.spark.dataset.TSID_COL_NAME">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">TSID_COL_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__ts_id'</span></em><a class="headerlink" href="#merlion.spark.dataset.TSID_COL_NAME" title="Permalink to this definition"></a></dt>
+<dd><p>Many functions in this module rely on having a column named <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a> being in the dataset.
+This column can be added manually using <a class="reference internal" href="#merlion.spark.dataset.add_tsid_column" title="merlion.spark.dataset.add_tsid_column"><code class="xref any py py-func docutils literal notranslate"><span class="pre">add_tsid_column</span></code></a>, and its addition is handled automatically by <a class="reference internal" href="#merlion.spark.dataset.read_dataset" title="merlion.spark.dataset.read_dataset"><code class="xref any py py-func docutils literal notranslate"><span class="pre">read_dataset</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.dataset.read_dataset">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">read_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.read_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>Reads a time series dataset as a pyspark Dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spark</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparkSession</span></code>) – The current SparkSession.</p></li>
+<li><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path at which the dataset is stored.</p></li>
+<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The file format the dataset is stored in.</p></li>
+<li><p><strong>time_col</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The name of the column which specifies timestamp. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, it is assumed to be the
+first column which is not an index column or pre-specified data column.</p></li>
+<li><p><strong>index_cols</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The columns used to index the various time series in the dataset. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, we
+assume the entire dataset is just a single time series.</p></li>
+<li><p><strong>data_cols</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The columns we will use for downstream time series tasks. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, we use all
+columns that are not a time or index column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A pyspark dataframe with columns <code class="docutils literal notranslate"><span class="pre">[time_col,</span> <span class="pre">*index_cols,</span> <span class="pre">*data_cols,</span> <span class="pre">TSID_COL_NAME]</span></code> (in that order).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.dataset.write_dataset">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">write_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.write_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>Writes the dataset at the specified path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – The dataframe to save. The dataframe must have a column <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a>
+indexing the time series in the dataset (this column is automatically added by <a class="reference internal" href="#merlion.spark.dataset.read_dataset" title="merlion.spark.dataset.read_dataset"><code class="xref any py py-func docutils literal notranslate"><span class="pre">read_dataset</span></code></a>).</p></li>
+<li><p><strong>time_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column which specifies timestamp.</p></li>
+<li><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The path to save the dataset at.</p></li>
+<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The file format in which to save the dataset.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.dataset.create_hier_dataset">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">create_hier_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.create_hier_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregates the time series in the dataset &amp; appends them to the original dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spark</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparkSession</span></code>) – The current SparkSession.</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A pyspark dataframe containing all the data. The dataframe must have a column <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a>
+indexing the time series in the dataset (this column is automatically added by <a class="reference internal" href="#merlion.spark.dataset.read_dataset" title="merlion.spark.dataset.read_dataset"><code class="xref any py py-func docutils literal notranslate"><span class="pre">read_dataset</span></code></a>).</p></li>
+<li><p><strong>time_col</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The name of the column which specifies timestamp. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, it is assumed to be the
+first column which is not an index column or pre-specified data column.</p></li>
+<li><p><strong>index_cols</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The columns used to index the various time series in the dataset. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is provided, we
+assume the entire dataset is just a single time series. These columns define the levels of the hierarchy.
+For example, if each time series represents sales and we have <code class="docutils literal notranslate"><span class="pre">index_cols</span> <span class="pre">=</span> <span class="pre">[&quot;store&quot;,</span> <span class="pre">&quot;item&quot;]</span></code>, we will
+first aggregate sales for all items sold at a particular store; then we will aggregate sales for all items at
+all stores.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The dataset with additional time series corresponding to each level of the hierarchy, as well as a
+matrix specifying how the hierarchy is constructed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.dataset.add_tsid_column">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">add_tsid_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.add_tsid_column" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the column <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a> to the dataframe, which assigns an integer ID to each time series in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spark</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparkSession</span></code>) – The current SparkSession.</p></li>
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A pyspark dataframe containing all the data.</p></li>
+<li><p><strong>index_cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The columns used to index the various time series in the dataset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The pyspark dataframe with an additional column <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a> added as the last column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-merlion.spark.pandas_udf">
+<span id="merlion-spark-pandas-udf-module"></span><h2>merlion.spark.pandas_udf module<a class="headerlink" href="#module-merlion.spark.pandas_udf" title="Permalink to this heading"></a></h2>
+<p>Pyspark pandas UDFs for Merlion functions.
+This module contains pandas UDFs that can be called via <code class="docutils literal notranslate"><span class="pre">pyspark.sql.DataFrame.applyInPandas</span></code> to run Merlion
+forecasting, anomaly detection, and time series reconciliation in parallel.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.pandas_udf.forecast">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.forecast" title="Permalink to this definition"></a></dt>
+<dd><p>Pyspark pandas UDF for performing forecasting.
+Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code class="docutils literal notranslate"><span class="pre">index_cols</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – The <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> containing the training data. Should be a single time series.</p></li>
+<li><p><strong>index_cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The list of column names used to index all the time series in the dataset. Not used for modeling.</p></li>
+<li><p><strong>time_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column containing the timestamps.</p></li>
+<li><p><strong>target_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column whose value we wish to forecast.</p></li>
+<li><p><strong>time_stamps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The timestamps at which we would like to obtain a forecast.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – The model (or model <code class="docutils literal notranslate"><span class="pre">dict</span></code>) we are using to obtain a forecast.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with the forecast &amp; its standard error (NaN if the model doesn’t have error bars).
+Columns are <code class="docutils literal notranslate"><span class="pre">[*index_cols,</span> <span class="pre">time_col,</span> <span class="pre">target_col,</span> <span class="pre">target_col</span> <span class="pre">+</span> <span class="pre">&quot;_err&quot;]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.pandas_udf.anomaly">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_test_split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.anomaly" title="Permalink to this definition"></a></dt>
+<dd><p>Pyspark pandas UDF for performing anomaly detection.
+Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code class="docutils literal notranslate"><span class="pre">index_cols</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – The <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> containing the training and testing data. Should be a single time series.</p></li>
+<li><p><strong>index_cols</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The list of column names used to index all the time series in the dataset. Not used for modeling.</p></li>
+<li><p><strong>time_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column containing the timestamps.</p></li>
+<li><p><strong>train_test_split</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The time at which the testing data starts.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – The model (or model <code class="docutils literal notranslate"><span class="pre">dict</span></code>) we are using to predict anomaly scores.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with the anomaly scores on the test data.
+Columns are <code class="docutils literal notranslate"><span class="pre">[*index_cols,</span> <span class="pre">time_col,</span> <span class="pre">&quot;anom_score&quot;]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.spark.pandas_udf.reconciliation">
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">reconciliation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hier_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.reconciliation" title="Permalink to this definition"></a></dt>
+<dd><p>Pyspark pandas UDF for computing the minimum-trace hierarchical time series reconciliation, as described by
+<a class="reference external" href="https://robjhyndman.com/papers/mint.pdf">Wickramasuriya et al. 2018</a>.
+Should be called on a pyspark dataframe grouped by timestamp. Pyspark implementation of
+<a class="reference internal" href="merlion.utils.html#merlion.utils.hts.minT_reconciliation" title="merlion.utils.hts.minT_reconciliation"><code class="xref any py py-func docutils literal notranslate"><span class="pre">merlion.utils.hts.minT_reconciliation</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdf</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> containing forecasted values &amp; standard errors from <code class="docutils literal notranslate"><span class="pre">m</span></code> time series at a single
+timestamp. Each time series should be indexed by <a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME" title="merlion.spark.dataset.TSID_COL_NAME"><code class="xref any py py-data docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a>.
+The first <code class="docutils literal notranslate"><span class="pre">n</span></code> time series (in order of ID) orrespond to leaves of the hierarchy, while the remaining <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">-</span> <span class="pre">n</span></code>
+are weighted sums of the first <code class="docutils literal notranslate"><span class="pre">n</span></code>.
+This dataframe can be produced by calling <a class="reference internal" href="#merlion.spark.pandas_udf.forecast" title="merlion.spark.pandas_udf.forecast"><code class="xref any py py-func docutils literal notranslate"><span class="pre">forecast</span></code></a> on the dataframe produced by
+<a class="reference internal" href="#merlion.spark.dataset.create_hier_dataset" title="merlion.spark.dataset.create_hier_dataset"><code class="xref any py py-func docutils literal notranslate"><span class="pre">merlion.spark.dataset.create_hier_dataset</span></code></a>.</p></li>
+<li><p><strong>hier_matrix</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A <code class="docutils literal notranslate"><span class="pre">m</span></code>-by-<code class="docutils literal notranslate"><span class="pre">n</span></code> matrix describing how the hierarchy is aggregated. The value of the <code class="docutils literal notranslate"><span class="pre">k</span></code>-th
+time series is <code class="docutils literal notranslate"><span class="pre">np.dot(hier_matrix[k],</span> <span class="pre">pdf[:n])</span></code>. This matrix can be produced by
+<a class="reference internal" href="#merlion.spark.dataset.create_hier_dataset" title="merlion.spark.dataset.create_hier_dataset"><code class="xref any py py-func docutils literal notranslate"><span class="pre">merlion.spark.dataset.create_hier_dataset</span></code></a>.</p></li>
+<li><p><strong>target_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column whose value we wish to forecast.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> which replaces the original forecasts &amp; errors with reconciled forecasts &amp; errors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.models.automl.html" class="btn btn-neutral float-left" title="merlion.models.automl package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.transform.html" class="btn btn-neutral float-right" title="merlion.transform package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+           <strong> 
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

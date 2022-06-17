@@ -165,6 +165,8 @@
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet.add_seasonality">add_seasonality (merlion.models.forecast.prophet.Prophet property)</a>
 </li>
+      <li><a href="merlion.spark.html#merlion.spark.dataset.add_tsid_column">add_tsid_column() (in module merlion.spark.dataset)</a>
+</li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.zms.ZMS.adjust_z_scores">adjust_z_scores (merlion.models.anomaly.zms.ZMS property)</a>
 </li>
       <li><a href="merlion.post_process.html#merlion.post_process.threshold.AggregateAlarms">AggregateAlarms (class in merlion.post_process.threshold)</a>
@@ -188,6 +190,8 @@
       <li><a href="merlion.transform.html#merlion.transform.anomalize.Shock.anom_width_range">anom_width_range (merlion.transform.anomalize.Shock property)</a>
 </li>
       <li><a href="merlion.transform.html#merlion.transform.anomalize.Anomalize">Anomalize (class in merlion.transform.anomalize)</a>
+</li>
+      <li><a href="merlion.spark.html#merlion.spark.pandas_udf.anomaly">anomaly() (in module merlion.spark.pandas_udf)</a>
 </li>
       <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.Synthetic.anomaly_subsets">anomaly_subsets (ts_datasets.anomaly.Synthetic attribute)</a>
 </li>
@@ -423,6 +427,8 @@
         <li><a href="merlion.transform.html#merlion.transform.factory.TransformFactory.create">(merlion.transform.factory.TransformFactory class method)</a>
 </li>
       </ul></li>
+      <li><a href="merlion.spark.html#merlion.spark.dataset.create_hier_dataset">create_hier_dataset() (in module merlion.spark.dataset)</a>
+</li>
       <li><a href="merlion.utils.html#merlion.utils.data_io.csv_to_time_series">csv_to_time_series() (in module merlion.utils.data_io)</a>
 </li>
   </ul></td>
@@ -661,9 +667,11 @@
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.AlignPolicy.FixedReference">FixedReference (merlion.utils.resample.AlignPolicy attribute)</a>
 </li>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.forecast">forecast() (merlion.models.forecast.base.ForecasterBase method)</a>
+      <li><a href="merlion.spark.html#merlion.spark.pandas_udf.forecast">forecast() (in module merlion.spark.pandas_udf)</a>
 
       <ul>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.forecast">(merlion.models.forecast.base.ForecasterBase method)</a>
+</li>
         <li><a href="merlion.models.html#merlion.models.layers.LayeredForecaster.forecast">(merlion.models.layers.LayeredForecaster method)</a>
 </li>
         <li><a href="merlion.utils.html#merlion.utils.conj_priors.BayesianLinReg.forecast">(merlion.utils.conj_priors.BayesianLinReg method)</a>
@@ -904,6 +912,8 @@
       <li><a href="merlion.utils.html#merlion.utils.resample.infer_granularity">infer_granularity() (in module merlion.utils.resample)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.AlignPolicy.InnerJoin">InnerJoin (merlion.utils.resample.AlignPolicy attribute)</a>
+</li>
+      <li><a href="merlion.models.html#merlion.models.factory.instantiate_or_copy_model">instantiate_or_copy_model() (in module merlion.models.factory)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy.Interpolate">Interpolate (merlion.utils.resample.MissingValuePolicy attribute)</a>
 </li>
@@ -1560,6 +1570,27 @@
 </li>
       </ul></li>
       <li>
+    merlion.spark
+
+      <ul>
+        <li><a href="merlion.spark.html#module-merlion.spark">module</a>
+</li>
+      </ul></li>
+      <li>
+    merlion.spark.dataset
+
+      <ul>
+        <li><a href="merlion.spark.html#module-merlion.spark.dataset">module</a>
+</li>
+      </ul></li>
+      <li>
+    merlion.spark.pandas_udf
+
+      <ul>
+        <li><a href="merlion.spark.html#module-merlion.spark.pandas_udf">module</a>
+</li>
+      </ul></li>
+      <li>
     merlion.transform
 
       <ul>
@@ -1573,6 +1604,8 @@
         <li><a href="merlion.transform.html#module-merlion.transform.anomalize">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.transform.base
 
@@ -1580,8 +1613,6 @@
         <li><a href="merlion.transform.html#module-merlion.transform.base">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.transform.bound
 
@@ -1879,6 +1910,12 @@
         <li><a href="merlion.post_process.html#module-merlion.post_process.sequence">merlion.post_process.sequence</a>
 </li>
         <li><a href="merlion.post_process.html#module-merlion.post_process.threshold">merlion.post_process.threshold</a>
+</li>
+        <li><a href="merlion.spark.html#module-merlion.spark">merlion.spark</a>
+</li>
+        <li><a href="merlion.spark.html#module-merlion.spark.dataset">merlion.spark.dataset</a>
+</li>
+        <li><a href="merlion.spark.html#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf</a>
 </li>
         <li><a href="merlion.transform.html#module-merlion.transform">merlion.transform</a>
 </li>
@@ -2257,6 +2294,8 @@
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.RandomForestForecasterConfig">RandomForestForecasterConfig (class in merlion.models.forecast.trees)</a>
 </li>
+      <li><a href="merlion.spark.html#merlion.spark.dataset.read_dataset">read_dataset() (in module merlion.spark.dataset)</a>
+</li>
       <li><a href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric.Recall">Recall (merlion.evaluate.anomaly.TSADMetric attribute)</a>
 
       <ul>
@@ -2272,6 +2311,8 @@
 </li>
       </ul></li>
       <li><a href="merlion.utils.html#merlion.utils.istat.RecencyWeightedVariance">RecencyWeightedVariance (class in merlion.utils.istat)</a>
+</li>
+      <li><a href="merlion.spark.html#merlion.spark.pandas_udf.reconciliation">reconciliation() (in module merlion.spark.pandas_udf)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.reindex_df">reindex_df() (in module merlion.utils.resample)</a>
 </li>
@@ -2584,6 +2625,8 @@
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.spectral_residual.SpectralResidual.target_seq_index">target_seq_index (merlion.models.anomaly.spectral_residual.SpectralResidual property)</a>
 
       <ul>
+        <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.forecast.ForecasterEnsembleConfig.target_seq_index">(merlion.models.ensemble.forecast.ForecasterEnsembleConfig property)</a>
+</li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.target_seq_index">(merlion.models.forecast.base.ForecasterBase property)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig.target_seq_index">(merlion.models.forecast.base.ForecasterConfig attribute)</a>
@@ -2923,6 +2966,8 @@
 </li>
       <li><a href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADScoreAccumulator">TSADScoreAccumulator (class in merlion.evaluate.anomaly)</a>
 </li>
+      <li><a href="merlion.spark.html#merlion.spark.dataset.TSID_COL_NAME">TSID_COL_NAME (in module merlion.spark.dataset)</a>
+</li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.DeltaStats.tune">tune() (merlion.models.forecast.smoother.DeltaStats method)</a>
 </li>
   </ul></td>
@@ -3054,6 +3099,8 @@
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.windstats.WindStats">WindStats (class in merlion.models.anomaly.windstats)</a>
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.windstats.WindStatsConfig">WindStatsConfig (class in merlion.models.anomaly.windstats)</a>
+</li>
+      <li><a href="merlion.spark.html#merlion.spark.dataset.write_dataset">write_dataset() (in module merlion.spark.dataset)</a>
 </li>
   </ul></td>
 </tr></table>

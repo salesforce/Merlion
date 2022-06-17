@@ -47,6 +47,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">merlion: Time Series Intelligence</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
@@ -117,6 +118,8 @@ each associated with its own sub-package:</p>
 <li><p><a class="reference internal" href="merlion.models.html#module-merlion.models" title="merlion.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models</span></code></a>: A library of models unified under a single shared interface, with specializations
 for anomaly detection and forecasting. More specifically, we have</p>
 <ul>
+<li><p><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults" title="merlion.models.defaults"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.defaults</span></code></a>: Default models for anomaly detection and forecasting. These are good models
+for getting started.</p></li>
 <li><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>: Anomaly detection models</p></li>
 <li><p><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point</span></code></a>: Change point detection models</p></li>
 <li><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>: Forecasting models</p></li>
@@ -127,6 +130,8 @@ detection and forecasting.</p></li>
 <li><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.automl</span></code></a>: AutoML layers for various models</p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="merlion.spark.html#module-merlion.spark" title="merlion.spark"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.spark</span></code></a>: APIs to integrate Merlion with PySpark for using distributed computing to run training
+and inference on multiple time series in parallel.</p></li>
 <li><p><a class="reference internal" href="merlion.transform.html#module-merlion.transform" title="merlion.transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.transform</span></code></a>: Data pre-processing layer which implements many standard data transformations used in
 time series analysis. Transforms are callable objects, and each model has its own configurable <code class="docutils literal notranslate"><span class="pre">model.transform</span></code>
 which it uses to pre-process all input time series for both training and inference.</p></li>
@@ -223,10 +228,16 @@ for some examples on how to use these classes, or the API docs linked above for 
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.dataset">merlion.spark.dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a><ul>
