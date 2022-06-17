@@ -17,6 +17,7 @@ extra_require = {
     "plot": ["plotly>=4.13"],
     "prophet": ["prophet", "pystan<3.0"],  # pystan >= 3.0 doesn't work with prophet
     "deep-learning": ["torch>=1.1.0"],
+    "spark": ["pyspark[sql]>=3"],
 }
 extra_require["all"] = sum(extra_require.values(), [])
 
@@ -45,7 +46,7 @@ setup(
         "cython",
         "dill",
         "GitPython",
-        "py4j>=0.10.9.2",  # same minimum supported version as pyspark
+        "py4j",
         "matplotlib",
         "numpy>=1.21; python_version >= '3.7'",  # 1.21 remediates a security risk
         "numpy>=1.19; python_version < '3.7'",  # however, numpy 1.20+ requires python 3.7+
@@ -57,8 +58,6 @@ setup(
         "statsmodels>=0.12.2",
         "lightgbm",  # if running at MacOS, need OpenMP: "brew install libomp"
         "tqdm",
-        "wheel",
-        "pytest",
     ],
     extras_require=extra_require,
     python_requires=">=3.6.0",

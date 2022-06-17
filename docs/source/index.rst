@@ -52,7 +52,8 @@ Note the following external dependencies:
 
 2. Some of our anomaly detection models depend on having the Java Development Kit (JDK) installed. For Ubuntu, call
    ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install `Homebrew <https://brew.sh/>`_ and call
-   ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``.
+   ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``. Also ensure that ``java`` can be found
+   on your ``PATH``, and that the ``JAVA_HOME`` environment variable is set.
    This is relevant for the :py:class:`RandomCutForest <merlion.models.anomaly.random_cut_forest.RandomCutForest>`
    which is also used as a part of the :py:class:`DefaultDetector <merlion.models.defaults.DefaultDetector>`.
 

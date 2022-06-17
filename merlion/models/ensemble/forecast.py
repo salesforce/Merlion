@@ -27,9 +27,37 @@ class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
 
     _default_combiner = Mean(abs_score=False)
 
-    def __init__(self, max_forecast_steps=None, verbose=False, **kwargs):
+    def __init__(self, max_forecast_steps=None, target_seq_index=None, verbose=False, **kwargs):
         self.verbose = verbose
-        super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
+        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=None, **kwargs)
+        # Override the target_seq_index of all individual models after everything has been initialized
+        # FIXME: doesn't work if models have heterogeneous transforms which change the dim of the input time series
+        self.target_seq_index = target_seq_index
+        if self.models is not None:
+            assert all(model.target_seq_index == self.target_seq_index for model in self.models)
+
+    @property
+    def target_seq_index(self):
+        return self._target_seq_index
+
+    @target_seq_index.setter
+    def target_seq_index(self, target_seq_index):
+        if self.models is not None:
+            # Get the target_seq_index from the models if None is given
+            if target_seq_index is None:
+                non_none_idxs = [m.target_seq_index for m in self.models if m.target_seq_index is not None]
+                if len(non_none_idxs) > 0:
+                    target_seq_index = non_none_idxs[0]
+                assert all(m.target_seq_index in [None, target_seq_index] for m in self.models), (
+                    f"Attempted to infer target_seq_index from the individual models in the ensemble, but "
+                    f"not all models have the same target_seq_index. Got {[m.target_seq_index for m in self.models]}"
+                )
+            # Only override the target_seq_index from the models if there is one
+            if target_seq_index is not None:
+                for model in self.models:
+                    model.config.target_seq_index = target_seq_index
+        # Save the ensemble-level target_seq_index as a private variable
+        self._target_seq_index = target_seq_index
 
 
 class ForecasterEnsemble(EnsembleBase, ForecasterBase):
