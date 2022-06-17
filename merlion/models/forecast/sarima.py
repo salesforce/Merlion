@@ -142,11 +142,11 @@ class Sarima(ForecasterBase, SeasonalityModel):
                 err = np.zeros(len(time_stamps))
 
             if return_prev:
-                n_prev = len(time_series_prev)
+                m = len(time_series_prev) - len(val_prev)
                 params = dict(zip(new_state.param_names, new_state.params))
-                err_prev = np.sqrt(params["sigma2"])
-                forecast = np.concatenate((val_prev - new_state.resid, forecast))
-                err = np.concatenate((err_prev * np.ones(n_prev), err))
+                err_prev = np.concatenate((np.zeros(m), np.full(len(val_prev), np.sqrt(params["sigma2"]))))
+                forecast = np.concatenate((time_series_prev.values[:m], val_prev - new_state.resid, forecast))
+                err = np.concatenate((err_prev, err))
                 time_stamps = np.concatenate((t_prev, time_stamps))
 
         # Check for NaN's
