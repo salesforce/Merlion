@@ -35,12 +35,17 @@ jobs:
     - name: Test with pytest
       id: test
       run: |
+        # Get a comma-separated list of the directories of all python source files
+        source_files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
+        script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
+        source_modules=$(python -c "$script")
+
         # A BLAS bug causes high-dim multivar Bayesian LR test to segfault in 3.6. Run the test first to avoid.
         if [[ $PYTHON_VERSION == 3.6 ]]; then
           python -m pytest -v tests/change_point/test_conj_prior.py
-          coverage run --source=merlion/ -L -m pytest -v --ignore tests/change_point/test_conj_prior.py
+          coverage run --source=${source_modules} -L -m pytest -v --ignore tests/change_point/test_conj_prior.py
         else
-          coverage run --source=merlion/ -L -m pytest -v
+          coverage run --source=${source_modules} -L -m pytest -v
         fi
 
         # Obtain code coverage from coverage report
