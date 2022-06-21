@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion: Time Series Intelligence &mdash; Merlion 1.2.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.models package" href="merlion.models.html" />
+    <link rel="prev" title="Welcome to Merlion’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.2.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">merlion: Time Series Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>merlion: Time Series Intelligence</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="merlion-time-series-intelligence">
+<h1>merlion: Time Series Intelligence<a class="headerlink" href="#merlion-time-series-intelligence" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="#module-merlion" title="merlion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion</span></code></a> is a Python library for time series intelligence. We support the following key features,
+each associated with its own sub-package:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="merlion.models.html#module-merlion.models" title="merlion.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models</span></code></a>: A library of models unified under a single shared interface, with specializations
+for anomaly detection and forecasting. More specifically, we have</p>
+<ul>
+<li><p><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults" title="merlion.models.defaults"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.defaults</span></code></a>: Default models for anomaly detection and forecasting. These are good models
+for getting started.</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>: Anomaly detection models</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point</span></code></a>: Change point detection models</p></li>
+<li><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>: Forecasting models</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>: Forecasting models adapted for anomaly detection. Anomaly
+scores are based on the residual between the predicted and true value at each timestamp.</p></li>
+<li><p><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.ensemble</span></code></a>: Ensembles &amp; automated model selection of models for both anomaly
+detection and forecasting.</p></li>
+<li><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.automl</span></code></a>: AutoML layers for various models</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="merlion.spark.html#module-merlion.spark" title="merlion.spark"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.spark</span></code></a>: APIs to integrate Merlion with PySpark for using distributed computing to run training
+and inference on multiple time series in parallel.</p></li>
+<li><p><a class="reference internal" href="merlion.transform.html#module-merlion.transform" title="merlion.transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.transform</span></code></a>: Data pre-processing layer which implements many standard data transformations used in
+time series analysis. Transforms are callable objects, and each model has its own configurable <code class="docutils literal notranslate"><span class="pre">model.transform</span></code>
+which it uses to pre-process all input time series for both training and inference.</p></li>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process" title="merlion.post_process"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process</span></code></a>: Post-processing rules to apply on the output of a model. Currently, these are
+specific to anomaly detection, and include</p>
+<ul>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.calibrate" title="merlion.post_process.calibrate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.calibrate</span></code></a>: Rules to calibrate the anomaly scores returned by a model, to
+be interpretable as z-scores, i.e. as standard deviations of a standard normal random variable. Each
+anomaly detection model has a <code class="docutils literal notranslate"><span class="pre">model.calibrator</span></code> from this module, which can optionally be applied to ensure
+that the model’s anomaly scores are calibrated.</p></li>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.threshold" title="merlion.post_process.threshold"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.threshold</span></code></a>: Rules to reduce the noisiness of an anomaly detection model’s outputs.
+Each anomaly detection model has a <code class="docutils literal notranslate"><span class="pre">model.threshold</span></code> from this module, which can optionally be applied to
+filter the model’s predicted sequence of anomaly scores.</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate" title="merlion.evaluate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.evaluate</span></code></a>: Evaluation metrics &amp; pipelines to simulate the live deployment of a time series model
+for any task.</p></li>
+<li><p><a class="reference internal" href="#module-merlion.plot" title="merlion.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.plot</span></code></a>: Automated visualization of model outputs for univariate time series</p></li>
+<li><p><a class="reference internal" href="merlion.utils.html#module-merlion.utils" title="merlion.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.utils</span></code></a>: Various utilities, including the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> class, resampling functions,
+Bayesian conjugate priors, reconciliation for hierarchical time series, and more.</p></li>
+</ul>
+<p>The key classes for input and output are <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">merlion.utils.time_series.TimeSeries</span></code></a> and
+<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">merlion.utils.time_series.UnivariateTimeSeries</span></code></a>. Notably, these classes have transparent inter-operability
+with <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> and <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>, respectively. Check this <a class="reference internal" href="examples/TimeSeries.html"><span class="doc">tutorial</span></a>
+for some examples on how to use these classes, or the API docs linked above for a full list of features.</p>
+<span class="target" id="module-merlion"></span><section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.base">merlion.models.forecast.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.arima">merlion.models.forecast.arima module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.sarima">merlion.models.forecast.sarima module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.ets">merlion.models.forecast.ets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.prophet">merlion.models.forecast.prophet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.smoother">merlion.models.forecast.smoother module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.vector_ar">merlion.models.forecast.vector_ar module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.trees">merlion.models.forecast.trees module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.lstm">merlion.models.forecast.lstm module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.base">merlion.models.ensemble.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.combine">merlion.models.ensemble.combine module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.anomaly">merlion.models.ensemble.anomaly module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.forecast">merlion.models.ensemble.forecast module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.base">merlion.models.automl.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.autosarima">merlion.models.automl.autosarima module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.seasonality">merlion.models.automl.seasonality module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.dataset">merlion.spark.dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.base">merlion.transform.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.bound">merlion.transform.bound module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.factory">merlion.transform.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.moving_average">merlion.transform.moving_average module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.normalize">merlion.transform.normalize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.resample">merlion.transform.resample module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.sequence">merlion.transform.sequence module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.anomalize">merlion.transform.anomalize module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.base">merlion.post_process.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.factory">merlion.post_process.factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.sequence">merlion.post_process.sequence module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.calibrate">merlion.post_process.calibrate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.threshold">merlion.post_process.threshold module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.base">merlion.evaluate.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.anomaly">merlion.evaluate.anomaly module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.forecast">merlion.evaluate.forecast module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.time_series">merlion.utils.time_series module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.resample">merlion.utils.resample module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.data_io">merlion.utils.data_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.hts">merlion.utils.hts module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.ts_generator">merlion.utils.ts_generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.conj_priors">merlion.utils.conj_priors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.istat">merlion.utils.istat module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-merlion.plot">
+<span id="merlion-plot-module"></span><span id="merlion-plot"></span><h2>merlion.plot module<a class="headerlink" href="#module-merlion.plot" title="Permalink to this heading"></a></h2>
+<p>Module for visualizing model predictions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.plot.plot_anoms">
+<span class="sig-prename descclassname"><span class="pre">merlion.plot.</span></span><span class="sig-name descname"><span class="pre">plot_anoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.plot_anoms" title="Permalink to this definition"></a></dt>
+<dd><p>Plots anomalies as pink windows on the matplotlib <code class="docutils literal notranslate"><span class="pre">Axes</span></code> object <code class="docutils literal notranslate"><span class="pre">ax</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.plot.plot_anoms_plotly">
+<span class="sig-prename descclassname"><span class="pre">merlion.plot.</span></span><span class="sig-name descname"><span class="pre">plot_anoms_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.plot_anoms_plotly" title="Permalink to this definition"></a></dt>
+<dd><p>Plots anomalies as pink windows on the plotly <code class="docutils literal notranslate"><span class="pre">Figure</span></code> object <code class="docutils literal notranslate"><span class="pre">fig</span></code>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.plot.Figure">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.plot.</span></span><span class="sig-name descname"><span class="pre">Figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev_lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev_ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for visualizing predictions of univariate anomaly detection &amp; forecasting models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – the true value of the time series</p></li>
+<li><p><strong>anom</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – anomaly scores returned by a model</p></li>
+<li><p><strong>yhat</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – forecast returned by a model</p></li>
+<li><p><strong>yhat_lb</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – lower bound on <code class="docutils literal notranslate"><span class="pre">yhat</span></code> (if model supports uncertainty estimation)</p></li>
+<li><p><strong>yhat_ub</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – upper bound on <code class="docutils literal notranslate"><span class="pre">yhat</span></code> (if model supports uncertainty estimation)</p></li>
+<li><p><strong>y_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – portion of time series preceding <code class="docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p><strong>yhat_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – model’s forecast of <code class="docutils literal notranslate"><span class="pre">y_prev</span></code></p></li>
+<li><p><strong>yhat_prev_lb</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – lower bound on <code class="docutils literal notranslate"><span class="pre">yhat_prev</span></code> (if model supports uncertainty estimation)</p></li>
+<li><p><strong>yhat_prev_ub</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>]) – upper bound on <code class="docutils literal notranslate"><span class="pre">yhat_prev</span></code> (if model supports uncertainty estimation)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.Figure.t0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t0</span></span><a class="headerlink" href="#merlion.plot.Figure.t0" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>First time being plotted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.Figure.tf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tf</span></span><a class="headerlink" href="#merlion.plot.Figure.tf" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Final time being plotted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.Figure.t_split">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t_split</span></span><a class="headerlink" href="#merlion.plot.Figure.t_split" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Time splitting train from test.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.Figure.get_y">
+<span class="sig-name descname"><span class="pre">get_y</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure.get_y" title="Permalink to this definition"></a></dt>
+<dd><p>Get all y’s (actual values)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.Figure.get_yhat">
+<span class="sig-name descname"><span class="pre">get_yhat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure.get_yhat" title="Permalink to this definition"></a></dt>
+<dd><p>Get all yhat’s (predicted values).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.Figure.get_yhat_iqr">
+<span class="sig-name descname"><span class="pre">get_yhat_iqr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure.get_yhat_iqr" title="Permalink to this definition"></a></dt>
+<dd><p>Get IQR of predicted values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.Figure.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the figure in matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – title of the plot.</p></li>
+<li><p><strong>metric_name</strong> – name of the metric (y axis)</p></li>
+<li><p><strong>figsize</strong> – figure size in pixels</p></li>
+<li><p><strong>ax</strong> – matplotlib axes to add the figure to.</p></li>
+<li><p><strong>label_alias</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – dict which maps entities in the figure,
+specifically <code class="docutils literal notranslate"><span class="pre">y_hat</span></code> and <code class="docutils literal notranslate"><span class="pre">anom</span></code> to their label names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(fig, ax): matplotlib figure &amp; matplotlib axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.Figure.plot_plotly">
+<span class="sig-name descname"><span class="pre">plot_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.Figure.plot_plotly" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the figure in plotly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – title of the plot.</p></li>
+<li><p><strong>metric_name</strong> – name of the metric (y axis)</p></li>
+<li><p><strong>figsize</strong> – figure size in pixels</p></li>
+<li><p><strong>label_alias</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – dict which maps entities in the figure,
+specifically <code class="docutils literal notranslate"><span class="pre">y_hat</span></code> and <code class="docutils literal notranslate"><span class="pre">anom</span></code> to their label names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>plotly figure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.plot.</span></span><span class="sig-name descname"><span class="pre">MTSFigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev_lb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yhat_prev_ub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.MTSFigure" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.t0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t0</span></span><a class="headerlink" href="#merlion.plot.MTSFigure.t0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.tf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tf</span></span><a class="headerlink" href="#merlion.plot.MTSFigure.tf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.t_split">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t_split</span></span><a class="headerlink" href="#merlion.plot.MTSFigure.t_split" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.get_y">
+<span class="sig-name descname"><span class="pre">get_y</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.MTSFigure.get_y" title="Permalink to this definition"></a></dt>
+<dd><p>Get all y’s (actual values)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.get_yhat">
+<span class="sig-name descname"><span class="pre">get_yhat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.MTSFigure.get_yhat" title="Permalink to this definition"></a></dt>
+<dd><p>Get all yhat’s (predicted values).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.get_yhat_iqr">
+<span class="sig-name descname"><span class="pre">get_yhat_iqr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.MTSFigure.get_yhat_iqr" title="Permalink to this definition"></a></dt>
+<dd><p>Get IQR of predicted values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.plot.MTSFigure.plot_plotly">
+<span class="sig-name descname"><span class="pre">plot_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.plot.MTSFigure.plot_plotly" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the figure in plotly.
+:param title: title of the plot.
+:param figsize: figure size in pixels
+:return: plotly figure.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Merlion’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.html" class="btn btn-neutral float-right" title="merlion.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.2.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
