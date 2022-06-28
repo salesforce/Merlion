@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion.models.ensemble package &mdash; Merlion 1.2.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.models.automl package" href="merlion.models.automl.html" />
+    <link rel="prev" title="merlion.models.forecast package" href="merlion.models.forecast.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.2.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.ensemble package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.ensemble.base">merlion.models.ensemble.base module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.ensemble.combine">merlion.models.ensemble.combine module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.ensemble.anomaly">merlion.models.ensemble.anomaly module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.ensemble.forecast">merlion.models.ensemble.forecast module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
+          <li><a href="merlion.models.html">merlion.models package</a> &raquo;</li>
+      <li>merlion.models.ensemble package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.models.ensemble.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-merlion.models.ensemble">
+<span id="merlion-models-ensemble-package"></span><h1>merlion.models.ensemble package<a class="headerlink" href="#module-merlion.models.ensemble" title="Permalink to this heading"></a></h1>
+<p>Ensembles of models and automated model selection.</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.ensemble.base" title="merlion.models.ensemble.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
+<td><p>Base class for ensembles of models.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.ensemble.combine" title="merlion.models.ensemble.combine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine</span></code></a></p></td>
+<td><p>Rules for combining the outputs of multiple time series models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.ensemble.anomaly" title="merlion.models.ensemble.anomaly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly</span></code></a></p></td>
+<td><p>Ensembles of anomaly detectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.ensemble.forecast" title="merlion.models.ensemble.forecast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forecast</span></code></a></p></td>
+<td><p>Ensembles of forecasters.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-merlion.models.ensemble.base">
+<span id="merlion-models-ensemble-base-module"></span><h2>merlion.models.ensemble.base module<a class="headerlink" href="#module-merlion.models.ensemble.base" title="Permalink to this heading"></a></h2>
+<p>Base class for ensembles of models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combiner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
+<p>An ensemble config contains the each individual model in the ensemble, as well as the Combiner object
+to combine those models’ outputs. The rationale behind placing the model objects in the EnsembleConfig
+(rather than in the Ensemble itself) is discussed in more detail in the documentation for <a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModel" title="merlion.models.layers.LayeredModel"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LayeredModel</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]]) – A list of models or dicts representing them.</p></li>
+<li><p><strong>combiner</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a>]) – The <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a> object to combine the outputs of the models in the ensemble.</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>kwargs</strong> – Any additional kwargs for <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleConfig.models">
+<span class="sig-name descname"><span class="pre">models</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleConfig.models" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleConfig.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleConfig.to_dict" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict with keyword arguments used to initialize the config class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleTrainConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleTrainConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_frac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_model_train_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleTrainConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Config object describing how to train an ensemble.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>valid_frac</strong> – fraction of training data to use for validation.</p></li>
+<li><p><strong>per_model_train_configs</strong> – list of train configs to use for
+individual models, one per model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means that you use
+the default for all models. Specifying <code class="docutils literal notranslate"><span class="pre">None</span></code> for an individual
+model means that you use the default for that model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a></p>
+<p>An abstract class representing an ensemble of multiple models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a>]) – The ensemble’s config</p></li>
+<li><p><strong>models</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>]]) – The models in the ensemble. Only provide this argument if you did not specify <code class="docutils literal notranslate"><span class="pre">config.models</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.models">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models</span></span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.models" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.combiner">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combiner</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></em><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.combiner" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the object used to combine model outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Resets the model’s internal state.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.models_used">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.models_used" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.train_valid_split">
+<span class="sig-name descname"><span class="pre">train_valid_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformed_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_valid_split" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.get_max_common_horizon">
+<span class="sig-name descname"><span class="pre">get_max_common_horizon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.get_max_common_horizon" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.truncate_valid_data">
+<span class="sig-name descname"><span class="pre">truncate_valid_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformed_valid_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.truncate_valid_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.train_combiner">
+<span class="sig-name descname"><span class="pre">train_combiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_combiner" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_only_used_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.save" title="Permalink to this definition"></a></dt>
+<dd><p>Saves the ensemble of models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirname</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – directory to save the ensemble to</p></li>
+<li><p><strong>save_only_used_models</strong> – whether to save only the models that are actually used by the ensemble.</p></li>
+<li><p><strong>save_config</strong> – additional save config arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.to_bytes">
+<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_only_used_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.to_bytes" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the entire model state and configuration to a single byte object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_only_used_models</strong> – whether to save only the models that are actually used by the ensemble.</p></li>
+<li><p><strong>save_config</strong> – additional configurations (if needed)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.ensemble.combine">
+<span id="merlion-models-ensemble-combine-module"></span><h2>merlion.models.ensemble.combine module<a class="headerlink" href="#module-merlion.models.ensemble.combine" title="Permalink to this heading"></a></h2>
+<p>Rules for combining the outputs of multiple time series models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">CombinerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract base class for combining the outputs of multiple models. Subclasses
+should implement the abstract method <code class="docutils literal notranslate"><span class="pre">_combine_univariates</span></code>. All combiners
+are callable objects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_check_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Applies the model combination rule to combine multiple model outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_model_outs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of time series, with each time series
+representing the output of a single model.</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a target time series (e.g. labels)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a single time series of combined model outputs on this training data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.requires_training">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_training</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.requires_training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.to_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.models_used">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.models_used" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>which models are actually used to make predictions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the model combination rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_model_outs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of time series, with each time series
+representing the output of a single model.</p></li>
+<li><p><strong>target</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a target time series (e.g. labels)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a single time series of combined model outputs on this training data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.Mean">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Mean" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a></p>
+<p>Combines multiple models by taking their mean prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.Mean.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#merlion.models.ensemble.combine.Mean.weights" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.Median">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Median" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a></p>
+<p>Combines multiple models by taking their median prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.Max">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Max" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a></p>
+<p>Combines multiple models by taking their max prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">ModelSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.combine.Mean" title="merlion.models.ensemble.combine.Mean"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mean</span></code></a></p>
+<p>Takes the mean of the best models, where the models are ranked according to
+the value of an evaluation metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>, <a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.forecast.ForecastMetric" title="merlion.evaluate.forecast.ForecastMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastMetric</span></code></a>]) – the evaluation metric to use</p></li>
+<li><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.invert">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invert</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.invert" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.requires_training">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_training</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.requires_training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.to_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.models_used">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.models_used" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>which models are actually used to make predictions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains the model combination rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_model_outs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of time series, with each time series
+representing the output of a single model.</p></li>
+<li><p><strong>target</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a target time series (e.g. labels)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a single time series of combined model outputs on this training data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">MetricWeightedMean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.combine.ModelSelector" title="merlion.models.ensemble.combine.ModelSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelSelector</span></code></a></p>
+<p>Computes a weighted average of model outputs with weights proportional to
+the metric values (or their inverses).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>, <a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.forecast.ForecastMetric" title="merlion.evaluate.forecast.ForecastMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastMetric</span></code></a>]) – the evaluation metric to use</p></li>
+<li><p><strong>abs_score</strong> – whether to take the absolute value of the model
+outputs. Useful for anomaly detection.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean.models_used">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean.models_used" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>which models are actually used to make predictions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean.weights">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean.weights" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">CombinerFactory</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Factory object for creating combiner objects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerFactory.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerFactory.create" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.ensemble.anomaly">
+<span id="merlion-models-ensemble-anomaly-module"></span><h2>merlion.models.ensemble.anomaly module<a class="headerlink" href="#module-merlion.models.ensemble.anomaly" title="Permalink to this heading"></a></h2>
+<p>Ensembles of anomaly detectors.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsembleConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.normalize.Rescale" title="merlion.transform.normalize.Rescale"><span class="pre">Rescale</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combiner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a>, <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a></p>
+<p>Config class for an ensemble of anomaly detectors.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable_calibrator</strong> – Whether to enable calibration of the ensemble
+anomaly score. <code class="docutils literal notranslate"><span class="pre">False</span></code> by default.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
+<li><p><strong>models</strong> – A list of models or dicts representing them.</p></li>
+<li><p><strong>combiner</strong> – The <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a> object to combine the outputs of the models in the ensemble.</p></li>
+<li><p><strong>kwargs</strong> – Any additional kwargs for <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a> or <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsembleConfig.per_model_threshold">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">per_model_threshold</span></span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig.per_model_threshold" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>whether to apply the thresholding rules of each individual
+model, before combining their outputs. Only done if doing model
+selection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsembleTrainConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_model_train_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_model_post_rule_train_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleTrainConfig" title="merlion.models.ensemble.base.EnsembleTrainConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleTrainConfig</span></code></a></p>
+<p>Config object describing how to train an ensemble of anomaly detectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>valid_frac</strong> – fraction of training data to use for validation.</p></li>
+<li><p><strong>per_model_train_configs</strong> – list of train configs to use for individual models, one per model.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> means that you use the default for all models. Specifying <code class="docutils literal notranslate"><span class="pre">None</span></code> for an individual
+model means that you use the default for that model.</p></li>
+<li><p><strong>per_model_post_rule_train_configs</strong> – list of post-rule train configs to use for individual models, one per
+model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means that you use the default for all models. Specifying <code class="docutils literal notranslate"><span class="pre">None</span></code> for an individual
+model means that you use the default for that model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleBase" title="merlion.models.ensemble.base.EnsembleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleBase</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
+<p>Class representing an ensemble of multiple anomaly detection models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleConfig</span></code></a>]) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model only works with univariate time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.per_model_threshold">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">per_model_threshold</span></span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.per_model_threshold" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>whether to apply the threshold rule of each individual model
+before aggregating their anomaly scores.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.train" title="Permalink to this definition"></a></dt>
+<dd><p>Trains each anomaly detector in the ensemble unsupervised, and each of
+their post-rules supervised (if labels are given).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
+<li><p><strong>train_config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleTrainConfig</span></code></a>]) – <a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleTrainConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleTrainConfig</span></code></a> for ensemble training.</p></li>
+<li><p><strong>post_rule_train_config</strong> – the post-rule train config to use for the ensemble-level post-rule.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the ensemble’s anomaly scores on the training data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.ensemble.forecast">
+<span id="merlion-models-ensemble-forecast-module"></span><h2>merlion.models.ensemble.forecast module<a class="headerlink" href="#module-merlion.models.ensemble.forecast" title="Permalink to this heading"></a></h2>
+<p>Ensembles of forecasters.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsembleConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecasterEnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combiner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsembleConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>, <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a></p>
+<p>Config class for an ensemble of forecasters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.
+Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a> and <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
+series) whose value we would like to forecast.</p></li>
+<li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>models</strong> – A list of models or dicts representing them.</p></li>
+<li><p><strong>combiner</strong> – The <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a> object to combine the outputs of the models in the ensemble.</p></li>
+<li><p><strong>kwargs</strong> – Any additional kwargs for <a class="reference internal" href="merlion.models.html#merlion.models.base.Config" title="merlion.models.base.Config"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsembleConfig.target_seq_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_seq_index</span></span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsembleConfig.target_seq_index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecasterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleBase" title="merlion.models.ensemble.base.EnsembleBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
+<p>Class representing an ensemble of multiple forecasting models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.ensemble.forecast.ForecasterEnsembleConfig" title="merlion.models.ensemble.forecast.ForecasterEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterEnsembleConfig</span></code></a>]) – The ensemble’s config</p></li>
+<li><p><strong>models</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>]]) – The models in the ensemble. Only provide this argument if you did not specify <code class="docutils literal notranslate"><span class="pre">config.models</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.forecast.ForecasterEnsembleConfig" title="merlion.models.ensemble.forecast.ForecasterEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterEnsembleConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.train_pre_process">
+<span class="sig-name descname"><span class="pre">train_pre_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.train_pre_process" title="Permalink to this definition"></a></dt>
+<dd><p>Applies pre-processing steps common for training most models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the original time series of training data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the training data, after any necessary pre-processing has been applied</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.resample_time_stamps">
+<span class="sig-name descname"><span class="pre">resample_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.resample_time_stamps" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.models.forecast.html" class="btn btn-neutral float-left" title="merlion.models.forecast package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.automl.html" class="btn btn-neutral float-right" title="merlion.models.automl package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.2.3
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
