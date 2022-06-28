@@ -119,6 +119,10 @@ class ForecasterBase(ModelBase):
             tf = resampled[-1]
             time_stamps = to_timestamp(resampled)
 
+        elif not self.require_even_sampling:
+            resampled = to_pd_datetime(time_stamps)
+            tf = resampled[-1]
+
         # Handle the cases where we don't have a max_forecast_steps
         elif self.max_forecast_steps is None:
             tf = to_pd_datetime(time_stamps[-1])
