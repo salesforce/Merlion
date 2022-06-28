@@ -7,21 +7,15 @@
 """
 Wrapper around Facebook's popular Prophet model for time series forecasting.
 """
+import copy
 import logging
 import os
 from typing import Iterable, List, Tuple, Union
 
-try:
-    import prophet
-except ImportError as e:
-    err_msg = (
-        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[prophet]` or "
-        "`pip install `salesforce-merlion[all]`"
-    )
-    raise ImportError(str(e) + ". " + err_msg)
-
 import numpy as np
 import pandas as pd
+import prophet
+import prophet.serialize
 
 from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
@@ -144,14 +138,19 @@ class Prophet(SeasonalityModel, ForecasterBase):
         return False
 
     def __getstate__(self):
-        stan_backend = self.model.stan_backend
-        if hasattr(stan_backend, "logger"):
-            model_logger = self.model.stan_backend.logger
-            self.model.stan_backend.logger = None
-        state_dict = super().__getstate__()
-        if hasattr(stan_backend, "logger"):
-            self.model.stan_backend.logger = model_logger
-        return state_dict
+        try:
+            model = prophet.serialize.model_to_json(self.model)
+        except ValueError:  # prophet.serialize only works for fitted models, so deepcopy as a backup
+            model = copy.deepcopy(self.model)
+        return {k: model if k == "model" else copy.deepcopy(v) for k, v in self.__dict__.items()}
+
+    def __setstate__(self, state):
+        if "model" in state:
+            model = state["model"]
+            if isinstance(model, str):
+                state = copy.copy(state)
+                state["model"] = prophet.serialize.model_from_json(model)
+        super().__setstate__(state)
 
     @property
     def yearly_seasonality(self):
