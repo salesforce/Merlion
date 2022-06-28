@@ -7,10 +7,9 @@
 """
 Automatic hyperparameter selection for SARIMA.
 """
-from collections import Iterator
 from copy import copy, deepcopy
 import logging
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Iterator, Optional, Tuple, Union
 
 import numpy as np
 
