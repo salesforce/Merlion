@@ -139,7 +139,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
 
     def __getstate__(self):
         try:
-            model = prophet.serialize.model_to_dict(self.model)
+            model = prophet.serialize.model_to_json(self.model)
         except ValueError:  # prophet.serialize only works for fitted models, so deepcopy as a backup
             model = copy.deepcopy(self.model)
         return {k: model if k == "model" else copy.deepcopy(v) for k, v in self.__dict__.items()}
@@ -147,9 +147,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
     def __setstate__(self, state):
         if "model" in state:
             model = state["model"]
-            if isinstance(model, dict):
+            if isinstance(model, str):
                 state = copy.copy(state)
-                state["model"] = prophet.serialize.model_from_dict(model)
+                state["model"] = prophet.serialize.model_from_json(model)
         super().__setstate__(state)
 
     @property
