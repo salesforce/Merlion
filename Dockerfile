@@ -12,5 +12,6 @@ COPY merlion merlion
 RUN pip install pyarrow "./"
 
 # Copy Merlion pyspark apps
-COPY spark /opt/spark/apps
+COPY apps /opt/spark/apps
+RUN chmod g+w /opt/spark/apps
 USER ${spark_uid}
