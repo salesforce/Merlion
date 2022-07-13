@@ -24,6 +24,9 @@ def parse_args():
         help='JSON list of times we want to forecast, e.g. \'["2022-01-01 00:00:00", "2020-01-01 00:01:00"]\'.',
     )
     parser.add_argument("--target_col", required=True, help="Name of the column whose value we want to forecast.")
+    parser.add_argument(
+        "--predict_on_train", action="store_true", help="Whether to return the model's prediction on the training data."
+    )
     parser.add_argument("--file_format", default="csv", help="File format of train data & output file.")
     parser.add_argument(
         "--model",
@@ -155,6 +158,7 @@ def main():
             target_col=args.target_col,
             time_stamps=args.time_stamps,
             model=args.model,
+            predict_on_train=args.predict_on_train,
         ),
         schema=output_schema,
     )

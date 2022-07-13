@@ -28,6 +28,7 @@ def forecast(
     target_col: str,
     time_stamps: Union[List[int], List[str]],
     model: Union[ForecasterBase, dict],
+    predict_on_train: bool = False,
 ) -> pd.DataFrame:
     """
     Pyspark pandas UDF for performing forecasting.
@@ -39,6 +40,7 @@ def forecast(
     :param target_col: The name of the column whose value we wish to forecast.
     :param time_stamps: The timestamps at which we would like to obtain a forecast.
     :param model: The model (or model ``dict``) we are using to obtain a forecast.
+    :param predict_on_train: Whether to return the model's prediction on the training data.
 
     :return: A ``pandas.DataFrame`` with the forecast & its standard error (NaN if the model doesn't have error bars).
         Columns are ``[*index_cols, time_col, target_col, target_col + \"_err\"]``.
@@ -46,6 +48,7 @@ def forecast(
     # Sort the dataframe by time & turn it into a Merlion time series
     if TSID_COL_NAME not in index_cols and TSID_COL_NAME in pdf.columns:
         index_cols = index_cols + [TSID_COL_NAME]
+    # TODO: if any of the index_cols are NA (hierarchical), drop exogenous columns & skip using exogenous regressors.
     pdf = pdf.sort_values(by=time_col)
     ts = TimeSeries.from_pd(pdf.drop(columns=index_cols).set_index(time_col))
 
@@ -58,7 +61,10 @@ def forecast(
     model.train(ts)
 
     # Run inference and combine prediction & stderr as a single dataframe.
-    pred, err = model.forecast(time_stamps=time_stamps)
+    if predict_on_train:
+        pred, err = model.forecast(time_stamps=time_stamps, time_series_prev=ts, return_prev=predict_on_train)
+    else:
+        pred, err = model.forecast(time_stamps=time_stamps)
     pred = pred.to_pd()
     err = pd.DataFrame(np.full(len(pred), np.nan), index=pred.index) if err is None else err.to_pd()
     pred = pd.DataFrame(pred.iloc[:, 0].rename(target_col))
@@ -120,7 +126,8 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     Pyspark pandas UDF for computing the minimum-trace hierarchical time series reconciliation, as described by
     `Wickramasuriya et al. 2018 <https://robjhyndman.com/papers/mint.pdf>`__.
     Should be called on a pyspark dataframe grouped by timestamp. Pyspark implementation of
-    `merlion.utils.hts.minT_reconciliation`.
+    `merlion.utils.hts.minT_reconciliation`. Note that time series reconciliation is skipped if the given timestamp
+    has missing values for any of the time series (this can happen for forecasts returned on training data values).
 
     :param pdf: A ``pandas.DataFrame`` containing forecasted values & standard errors from ``m`` time series at a single
         timestamp. Each time series should be indexed by `TSID_COL_NAME`.
@@ -135,9 +142,11 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
 
     :return: A ``pandas.DataFrame`` which replaces the original forecasts & errors with reconciled forecasts & errors.
     """
-    # Get shape params & sort the data (for this timestamp) by time series ID
+    # Get shape params & sort the data (for this timestamp) by time series ID.
     m, n = hier_matrix.shape
-    assert len(pdf) == m >= n
+    assert len(pdf) <= m >= n
+    if len(pdf) < m:
+        return pdf
     assert (hier_matrix[:n] == np.eye(n)).all()
     pdf = pdf.sort_values(by=TSID_COL_NAME)
 
