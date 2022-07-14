@@ -48,13 +48,12 @@ def forecast(
     :return: A ``pandas.DataFrame`` with the forecast & its standard error (NaN if the model doesn't have error bars).
         Columns are ``[*index_cols, time_col, target_col, target_col + \"_err\"]``.
     """
-    # If any of the index_cols are NA, the time series has been aggregated.
-    # This means that we should drop non-target data columns which are not explicitly specified in agg_dict.
+    # If the time series has been aggregated, drop non-target columns which are not explicitly specified in agg_dict.
     if TSID_COL_NAME not in index_cols and TSID_COL_NAME in pdf.columns:
         index_cols = index_cols + [TSID_COL_NAME]
-    if pdf.loc[:, index_cols].isna().any().any():
+    if (pdf.loc[:, index_cols] == "__aggregated__").any().any():
         data_cols = [c for c in pdf.columns if c not in index_cols + [time_col]]
-        pdf = pdf.drop(columns=[c for c in data_cols if c == target_col or c in agg_dict])
+        pdf = pdf.drop(columns=[c for c in data_cols if c != target_col and c not in agg_dict])
 
     # Sort the dataframe by time & turn it into a Merlion time series
     pdf = pdf.sort_values(by=time_col)

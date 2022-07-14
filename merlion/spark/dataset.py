@@ -7,7 +7,6 @@
 """
 Utils for reading & writing pyspark datasets.
 """
-from collections import OrderedDict
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -16,7 +15,7 @@ import pandas as pd
 try:
     import pyspark.sql
     import pyspark.sql.functions as F
-    from pyspark.sql.types import DateType, StructType
+    from pyspark.sql.types import DateType, StringType, StructType
 except ImportError as e:
     err = (
         "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[spark]` or "
@@ -66,8 +65,15 @@ def read_dataset(
         data_cols = [c for c in df.schema.fieldNames() if c not in index_cols + [time_col]]
     assert all(col in data_cols and col not in index_cols + [time_col] for col in data_cols)
 
-    # Get the columns in the right order & add TSID_COL_NAME to the end
-    df = df.select(F.col(time_col).cast(DateType()).alias(time_col), *index_cols, *data_cols)
+    # Get the columns in the right order, convert index columns to string, and get data columns in the right order.
+    # Index cols are string because we indicate aggregation with a reserved "__aggregated__" string
+    df = df.select(
+        F.col(time_col).cast(DateType()).alias(time_col),
+        *[F.col(c).cast(StringType()).alias(c) for c in index_cols],
+        *data_cols,
+    )
+
+    # add TSID_COL_NAME to the end before returning
     return add_tsid_column(spark=spark, df=df, index_cols=index_cols)
 
 
@@ -124,6 +130,7 @@ def create_hier_dataset(
     # Create a pandas index for all the time series
     ts_index = df.groupBy(extended_index_cols).count().drop("count").toPandas()
     ts_index = ts_index.set_index(index_cols).sort_index()
+    index_schema = StructType([df.schema[c] for c in extended_index_cols])
     n = len(ts_index)
 
     # Add all higher levels of the hierarchy
@@ -145,10 +152,9 @@ def create_hier_dataset(
         # concatenate the aggregated time series to the full dataframe, and compute the hierarchy vector.
 
         # For the top level of the hierarchy, this is easy as we just sum everything
-        dummy_schema = StructType([full_df.schema[c] for c in extended_index_cols])
         if len(gb_cols) == 0:
-            dummy = pd.DataFrame([[pd.NA] * len(index_cols) + [n + len(hier_vecs)]], columns=extended_index_cols)
-            full_df = full_df.unionByName(agg.join(spark.createDataFrame(dummy, schema=dummy_schema)))
+            dummy = [["__aggregated__"] * len(index_cols) + [n + len(hier_vecs)]]
+            full_df = full_df.unionByName(agg.join(spark.createDataFrame(dummy, schema=index_schema)))
             hier_vecs.append(np.ones(n))
             continue
 
@@ -158,11 +164,11 @@ def create_hier_dataset(
         for i, (group, group_idxs) in enumerate(ts_index.groupby(gb_cols).groups.items()):
             group = [group] if len(gb_cols) == 1 else list(group)
             locs = [ts_index.index.get_loc(j) for j in group_idxs]
-            dummy.append(group + [pd.NA] * (k + 1) + [n + len(hier_vecs)])
+            dummy.append(group + ["__aggregated__"] * (k + 1) + [n + len(hier_vecs)])
             x = np.zeros(n)
             x[locs] = 1
             hier_vecs.append(x)
-        dummy = spark.createDataFrame(pd.DataFrame(dummy, columns=extended_index_cols), schema=dummy_schema)
+        dummy = spark.createDataFrame(dummy, schema=index_schema)
         full_df = full_df.unionByName(agg.join(dummy, on=gb_cols))
 
     # Create the full hierarchy matrix, and return it along with the updated dataframe
