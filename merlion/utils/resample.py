@@ -45,8 +45,7 @@ class AggregationPolicy(Enum):
 
 class MissingValuePolicy(Enum):
     """
-    Missing value imputation policies. Values are partial functions for
-    ``pd.Series`` methods.
+    Missing value imputation policies. Values are partial functions for ``pd.Series`` methods.
     """
 
     FFill = partial(lambda df, *args, **kwargs: getattr(df, "ffill")(*args, **kwargs))
@@ -57,6 +56,8 @@ class MissingValuePolicy(Enum):
     """Replace missing value with the value closest to it."""
     Interpolate = partial(lambda df, *args, **kwargs: getattr(df, "interpolate")(*args, **kwargs), method="time")
     """Fill in missing values by linear interpolation."""
+    ZFill = partial(lambda df, *args, **kwargs: getattr(df, "replace")(*args, **kwargs), to_replace=np.nan, value=0)
+    """Replace missing values with zeros."""
 
 
 def to_pd_datetime(timestamp):
