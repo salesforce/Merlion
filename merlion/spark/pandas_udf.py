@@ -170,7 +170,8 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     if nan_errs.all():
         W = np.diag(coefs)
     else:
-        errs = np.nanmean(errs / coefs) * coefs[nan_errs] if nan_errs.any() else errs
+        if nan_errs.any():
+            errs[nan_errs] = np.nanmean(errs / coefs) * coefs[nan_errs]
         W = np.diag(errs)
 
     # Create other supplementary matrices
