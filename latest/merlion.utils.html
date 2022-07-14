@@ -1004,8 +1004,7 @@ pandas.core.resample.Resampler methods.</p>
 <dt class="sig sig-object py" id="merlion.utils.resample.MissingValuePolicy">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">MissingValuePolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.MissingValuePolicy" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Missing value imputation policies. Values are partial functions for
-<code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> methods.</p>
+<p>Missing value imputation policies. Values are partial functions for <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code> methods.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.utils.resample.MissingValuePolicy.FFill">
 <span class="sig-name descname"><span class="pre">FFill</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">MissingValuePolicy.&lt;lambda&gt;&gt;)</span></em><a class="headerlink" href="#merlion.utils.resample.MissingValuePolicy.FFill" title="Permalink to this definition"></a></dt>
@@ -1028,6 +1027,12 @@ pandas.core.resample.Resampler methods.</p>
 <dt class="sig sig-object py" id="merlion.utils.resample.MissingValuePolicy.Interpolate">
 <span class="sig-name descname"><span class="pre">Interpolate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">MissingValuePolicy.&lt;lambda&gt;&gt;,</span> <span class="pre">method='time')</span></em><a class="headerlink" href="#merlion.utils.resample.MissingValuePolicy.Interpolate" title="Permalink to this definition"></a></dt>
 <dd><p>Fill in missing values by linear interpolation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.utils.resample.MissingValuePolicy.ZFill">
+<span class="sig-name descname"><span class="pre">ZFill</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">functools.partial(&lt;function</span> <span class="pre">MissingValuePolicy.&lt;lambda&gt;&gt;,</span> <span class="pre">to_replace=nan,</span> <span class="pre">value=0)</span></em><a class="headerlink" href="#merlion.utils.resample.MissingValuePolicy.ZFill" title="Permalink to this definition"></a></dt>
+<dd><p>Replace missing values with zeros.</p>
 </dd></dl>
 
 </dd></dl>
