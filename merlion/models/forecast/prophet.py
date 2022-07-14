@@ -209,7 +209,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         if isinstance(time_stamps, (int, float)):
-            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps))[1:]
+            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps + 1))[1:]
             time_stamps = to_timestamp(times)
         return time_stamps
 
