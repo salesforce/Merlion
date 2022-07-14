@@ -73,7 +73,8 @@ def forecast(
     else:
         pred, err = model.forecast(time_stamps=time_stamps)
     pred = pred.to_pd()
-    err = pd.DataFrame(np.full(len(pred), np.nan), index=pred.index) if err is None else err.to_pd()
+    dtype = pred.dtypes[0]
+    err = pd.DataFrame(np.full(len(pred), np.nan), index=pred.index, dtype=dtype) if err is None else err.to_pd()
     pred = pd.DataFrame(pred.iloc[:, 0].rename(target_col))
     err = pd.DataFrame(err.iloc[:, 0].rename(f"{target_col}_err"))
     pred_pdf = pd.concat([pred, err], axis=1)
