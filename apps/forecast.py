@@ -7,6 +7,7 @@
 import argparse
 import json
 import re
+from warnings import warn
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
@@ -50,6 +51,14 @@ def parse_args():
         "sales of all stores and all items.",
     )
     parser.add_argument(
+        "--agg_dict",
+        default="{}",
+        help="JSON dict indicating how different data columns should be aggregated if working with hierarchical time "
+        "series. Keys are column names, values are names of standard aggregations (e.g. sum, mean, max, etc.). "
+        "If a column is not specified, it is not aggregated. Note that we always sum the target column, regardless of "
+        "whether it is specified. This ensures that hierarchical time series reconciliation works correctly.",
+    )
+    parser.add_argument(
         "--time_col",
         default=None,
         help="Name of the column containing timestamps. We use the first non-index column if one is not given.",
@@ -65,24 +74,41 @@ def parse_args():
     # Parse time_stamps JSON string
     try:
         time_stamps = json.loads(re.sub("'", '"', args.time_stamps))
-        assert isinstance(time_stamps, list)
+        assert isinstance(time_stamps, list) and len(time_stamps) > 0
     except (json.decoder.JSONDecodeError, AssertionError) as e:
         parser.error(
-            f"Expected --time_stamps to be a JSON list. Got {args.time_stamps}.\n" f"Caught {type(e).__name__}({e})"
+            f"Expected --time_stamps to be a non-empty JSON list. Got {args.time_stamps}.\n Caught {type(e).__name__}({e})"
         )
     else:
         args.time_stamps = time_stamps
 
     # Parse index_cols JSON string
     try:
-        index_cols = json.loads(re.sub("'", '"', args.index_cols))
+        index_cols = json.loads(re.sub("'", '"', args.index_cols)) or []
         assert isinstance(index_cols, list)
     except (json.decoder.JSONDecodeError, AssertionError) as e:
         parser.error(
-            f"Expected --index_cols to be a JSON list. Got {args.index_cols}.\n" f"Caught {type(e).__name__}({e})"
+            f"Expected --index_cols to be a JSON list. Got {args.index_cols}.\n Caught {type(e).__name__}({e})"
         )
     else:
         args.index_cols = index_cols
+
+    # Parse agg_dict JSON string
+    try:
+        agg_dict = json.loads(re.sub("'", '"', args.agg_dict)) or {}
+        assert isinstance(agg_dict, dict)
+    except (json.decoder.JSONDecodeError, AssertionError) as e:
+        parser.error(f"Expected --agg_dict to be a JSON dict. Got {args.agg_dict}.\n Caught {type(e).__name__}({e})")
+    else:
+        if args.target_col not in agg_dict:
+            agg_dict[args.target_col] = "sum"
+        elif agg_dict[args.target_col] != "sum":
+            warn(
+                f'Expected the agg_dict to specify "sum" for target_col {args.target_col}, '
+                f'but got {agg_dict[args.target_col]}. Manually changing to "sum".'
+            )
+            agg_dict[args.target_col] = "sum"
+        args.agg_dict = agg_dict
 
     # Set default data_cols if needed & make sure target_col is in data_cols
     if args.data_cols is None:
@@ -140,7 +166,9 @@ def main():
 
     # Convert to a hierarchical dataset if desired
     if args.hierarchical:
-        df, hier_matrix = create_hier_dataset(spark=spark, df=df, time_col=args.time_col, index_cols=args.index_cols)
+        df, hier_matrix = create_hier_dataset(
+            spark=spark, df=df, time_col=args.time_col, index_cols=args.index_cols, agg_dict=args.agg_dict
+        )
 
     # Use spark to generate forecasts for each time series in parallel
     index_fields = [df.schema[c] for c in args.index_cols + [TSID_COL_NAME]]
@@ -159,6 +187,7 @@ def main():
             time_stamps=args.time_stamps,
             model=args.model,
             predict_on_train=args.predict_on_train,
+            agg_dict=args.agg_dict,
         ),
         schema=output_schema,
     )

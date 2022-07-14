@@ -29,6 +29,7 @@ def forecast(
     time_stamps: Union[List[int], List[str]],
     model: Union[ForecasterBase, dict],
     predict_on_train: bool = False,
+    agg_dict: dict = None,
 ) -> pd.DataFrame:
     """
     Pyspark pandas UDF for performing forecasting.
@@ -41,14 +42,21 @@ def forecast(
     :param time_stamps: The timestamps at which we would like to obtain a forecast.
     :param model: The model (or model ``dict``) we are using to obtain a forecast.
     :param predict_on_train: Whether to return the model's prediction on the training data.
+    :param agg_dict: A dictionary used to specify how different data columns should be aggregated. If a non-target
+        data column is not in agg_dict, we do not model it for aggregated time series.
 
     :return: A ``pandas.DataFrame`` with the forecast & its standard error (NaN if the model doesn't have error bars).
         Columns are ``[*index_cols, time_col, target_col, target_col + \"_err\"]``.
     """
-    # Sort the dataframe by time & turn it into a Merlion time series
+    # If any of the index_cols are NA, the time series has been aggregated.
+    # This means that we should drop non-target data columns which are not explicitly specified in agg_dict.
     if TSID_COL_NAME not in index_cols and TSID_COL_NAME in pdf.columns:
         index_cols = index_cols + [TSID_COL_NAME]
-    # TODO: if any of the index_cols are NA (hierarchical), drop exogenous columns & skip using exogenous regressors.
+    if pdf.loc[:, index_cols].isna().any().any():
+        data_cols = [c for c in pdf.columns if c not in index_cols + [time_col]]
+        pdf = pdf.drop(columns=[c for c in data_cols if c == target_col or c in agg_dict])
+
+    # Sort the dataframe by time & turn it into a Merlion time series
     pdf = pdf.sort_values(by=time_col)
     ts = TimeSeries.from_pd(pdf.drop(columns=index_cols).set_index(time_col))
 
@@ -126,8 +134,7 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     Pyspark pandas UDF for computing the minimum-trace hierarchical time series reconciliation, as described by
     `Wickramasuriya et al. 2018 <https://robjhyndman.com/papers/mint.pdf>`__.
     Should be called on a pyspark dataframe grouped by timestamp. Pyspark implementation of
-    `merlion.utils.hts.minT_reconciliation`. Note that time series reconciliation is skipped if the given timestamp
-    has missing values for any of the time series (this can happen for forecasts returned on training data values).
+    `merlion.utils.hts.minT_reconciliation`.
 
     :param pdf: A ``pandas.DataFrame`` containing forecasted values & standard errors from ``m`` time series at a single
         timestamp. Each time series should be indexed by `TSID_COL_NAME`.
@@ -141,6 +148,11 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     :param target_col: The name of the column whose value we wish to forecast.
 
     :return: A ``pandas.DataFrame`` which replaces the original forecasts & errors with reconciled forecasts & errors.
+
+    .. note::
+        Time series series reconciliation is skipped if the given timestamp has missing values for any of the
+        time series. This can happen for training timestamps if the training time series has missing data and
+        `forecast` is called with ``predict_on_train=true``.
     """
     # Get shape params & sort the data (for this timestamp) by time series ID.
     m, n = hier_matrix.shape

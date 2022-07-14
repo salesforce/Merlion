@@ -7,7 +7,8 @@
 """
 Utils for reading & writing pyspark datasets.
 """
-from typing import List, Tuple
+from collections import OrderedDict
+from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -85,7 +86,11 @@ def write_dataset(df: pyspark.sql.DataFrame, time_col: str, path: str, file_form
 
 
 def create_hier_dataset(
-    spark: pyspark.sql.SparkSession, df: pyspark.sql.DataFrame, time_col: str = None, index_cols: List[str] = None
+    spark: pyspark.sql.SparkSession,
+    df: pyspark.sql.DataFrame,
+    time_col: str = None,
+    index_cols: List[str] = None,
+    agg_dict: Dict = None,
 ) -> Tuple[pyspark.sql.DataFrame, np.ndarray]:
     """
     Aggregates the time series in the dataset & appends them to the original dataset.
@@ -100,11 +105,13 @@ def create_hier_dataset(
         For example, if each time series represents sales and we have ``index_cols = ["store", "item"]``, we will
         first aggregate sales for all items sold at a particular store; then we will aggregate sales for all items at
         all stores.
+    :param agg_dict: A dictionary used to specify how different data columns should be aggregated. If a data column
+        is not in the dict, we aggregate using sum by default.
 
     :return: The dataset with additional time series corresponding to each level of the hierarchy, as well as a
         matrix specifying how the hierarchy is constructed.
     """
-    # Determine which columns are which
+    # Determine which columns are index vs. data columns
     index_cols = [] if index_cols is None else index_cols
     extended_index_cols = index_cols + [TSID_COL_NAME]
     if time_col is None:
@@ -122,18 +129,24 @@ def create_hier_dataset(
     # Add all higher levels of the hierarchy
     full_df = df
     hier_vecs = []
+
+    # Compose the aggregation portions of the SQL select statements below
+    df.createOrReplaceTempView("df")
+    agg_dict = {} if agg_dict is None else agg_dict
+    data_col_sql = [f"{agg_dict.get(c, 'sum').upper()}(`{c}`) AS `{c}`" for c in data_cols]
+
     for k in range(len(index_cols)):
         # Aggregate values of data columns over the last k+1 index column values.
-        # TODO: maybe allow aggregations besides sum?
-        agg_cols = index_cols if k < 0 else index_cols[: -(k + 1)]
-        agg = df.groupBy([time_col] + agg_cols).agg(*[F.sum(c).alias(c) for c in data_cols])
+        gb_cols = index_cols[: -(k + 1)]
+        gb_col_sql = [f"`{c}`" for c in [time_col] + gb_cols]
+        agg = spark.sql(f"SELECT {','.join(gb_col_sql + data_col_sql)} FROM df GROUP BY {','.join(gb_col_sql)};")
 
         # Add back dummy NA values for the index columns we aggregated over, add a time series ID column,
         # concatenate the aggregated time series to the full dataframe, and compute the hierarchy vector.
 
         # For the top level of the hierarchy, this is easy as we just sum everything
         dummy_schema = StructType([full_df.schema[c] for c in extended_index_cols])
-        if len(agg_cols) == 0:
+        if len(gb_cols) == 0:
             dummy = pd.DataFrame([[pd.NA] * len(index_cols) + [n + len(hier_vecs)]], columns=extended_index_cols)
             full_df = full_df.unionByName(agg.join(spark.createDataFrame(dummy, schema=dummy_schema)))
             hier_vecs.append(np.ones(n))
@@ -142,15 +155,15 @@ def create_hier_dataset(
         # For lower levels of the hierarchy, we determine the membership of each grouping to create
         # the appropriate dummy entries and hierarchy vectors.
         dummy = []
-        for i, (group, group_idxs) in enumerate(ts_index.groupby(agg_cols).groups.items()):
-            group = [group] if len(agg_cols) == 1 else list(group)
+        for i, (group, group_idxs) in enumerate(ts_index.groupby(gb_cols).groups.items()):
+            group = [group] if len(gb_cols) == 1 else list(group)
             locs = [ts_index.index.get_loc(j) for j in group_idxs]
             dummy.append(group + [pd.NA] * (k + 1) + [n + len(hier_vecs)])
             x = np.zeros(n)
             x[locs] = 1
             hier_vecs.append(x)
         dummy = spark.createDataFrame(pd.DataFrame(dummy, columns=extended_index_cols), schema=dummy_schema)
-        full_df = full_df.unionByName(agg.join(dummy, on=agg_cols))
+        full_df = full_df.unionByName(agg.join(dummy, on=gb_cols))
 
     # Create the full hierarchy matrix, and return it along with the updated dataframe
     hier_matrix = np.concatenate([np.eye(n), np.stack(hier_vecs)])
