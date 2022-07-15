@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding a New Forecasting Model &mdash; Merlion 1.2.5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tutorial for AutoSARIMA Forecasting Model" href="../advanced/1_AutoSARIMA_forecasting_tutorial.html" />
+    <link rel="prev" title="Multivariate Time Series Forecasting" href="2_ForecastMultivariate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.2.5
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../tutorials.html#forecasting">Forecasting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="0_ForecastIntro.html">A Gentle Introduction to Forecasting in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_ForecastFeatures.html">How to Use Forecasters in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_ForecastMultivariate.html">Multivariate Time Series Forecasting</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Adding a New Forecasting Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Config-Class">Model Config Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Class">Model Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Running-the-Model:-A-Simple-Example">Running the Model: A Simple Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Visualization">Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Defining-a-Forecaster-Based-Anomaly-Detector">Defining a Forecaster-Based Anomaly Detector</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>Adding a New Forecasting Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/forecast/3_ForecastNewModel.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Adding-a-New-Forecasting-Model">
+<h1>Adding a New Forecasting Model<a class="headerlink" href="#Adding-a-New-Forecasting-Model" title="Permalink to this heading"></a></h1>
+<p>This notebook provides a minimal example on how to add a new forecasting model to Merlion. We follow the instructions in <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. We suggest you review this <a class="reference internal" href="1_ForecastFeatures.html"><span class="doc">notebook</span></a> explaining how to use a Merlion forecasting model before reading this one.</p>
+<p>More specifically, let’s implement a forecasting model whose forecast is just equal to the most recent observed value of the time series metric. For a more complete example, see our implementation of <code class="docutils literal notranslate"><span class="pre">Sarima</span></code> <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/forecast/sarima.py">here</a>.</p>
+<section id="Model-Config-Class">
+<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this heading"></a></h2>
+<p>The first step of creating a new model is defining an appropriate config class, which inherits from <code class="docutils literal notranslate"><span class="pre">ForecasterConfig</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterConfig</span>
+
+<span class="k">class</span> <span class="nc">RepeatRecentConfig</span><span class="p">(</span><span class="n">ForecasterConfig</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_forecast_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_forecast_steps</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Model-Class">
+<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this heading"></a></h2>
+<p>Next we define the model itself, which must inherit from the <code class="docutils literal notranslate"><span class="pre">ForecasterBase</span></code> base class and define all abstract methods. See the API docs for more details.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterBase</span>
+<span class="kn">from</span> <span class="nn">merlion.utils.time_series</span> <span class="kn">import</span> <span class="n">to_pd_datetime</span>
+
+
+<span class="k">class</span> <span class="nc">RepeatRecent</span><span class="p">(</span><span class="n">ForecasterBase</span><span class="p">):</span>
+    <span class="c1"># The config class for RepeatRecent is RepeatRecentConfig, defined above</span>
+    <span class="n">config_class</span> <span class="o">=</span> <span class="n">RepeatRecentConfig</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">require_even_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Many forecasters assume the input time series is sampled evenly.</span>
+<span class="sd">        That isn&#39;t a necessary assumption for this model, so override the property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the model config and any other local variables. Here, we initialize</span>
+<span class="sd">        the most_recent_value to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+    <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="c1"># &quot;Train&quot; the model. Here, we just gather the most recent values for each univariate.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">train_data</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+
+        <span class="c1"># The model&#39;s &quot;prediction&quot; for the training data, is just the value from one step before.</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)),</span> <span class="n">train_data</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">train_forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># This model doesn&#39;t have any notion of error</span>
+        <span class="n">train_stderr</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Return the train prediction &amp; standard error</span>
+        <span class="k">return</span> <span class="n">train_forecast</span><span class="p">,</span> <span class="n">train_stderr</span>
+
+    <span class="k">def</span> <span class="nf">_forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_stamps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                  <span class="n">time_series_prev</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">return_prev</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+
+        <span class="c1"># Use time_series_prev&#39;s most recent value if time_series_prev is given.</span>
+        <span class="c1"># Otherwise, use the most recent value stored from the training data</span>
+        <span class="k">if</span> <span class="n">time_series_prev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">most_recent_value</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">time_series_prev</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">most_recent_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">most_recent_value</span>
+
+        <span class="c1"># The forecast is just the most recent value repeated for every upcoming timestamp.</span>
+        <span class="c1"># Note that we only care about the target_seq_index here.</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_seq_index</span>
+        <span class="n">datetimes</span> <span class="o">=</span> <span class="n">to_pd_datetime</span><span class="p">(</span><span class="n">time_stamps</span><span class="p">)</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">most_recent_value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">val</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetimes</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">datetimes</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="c1"># If desired, pre-pend &quot;predicted&quot; vals of the target_seq_index of time_series_prev.</span>
+        <span class="k">if</span> <span class="n">return_prev</span> <span class="ow">and</span> <span class="n">time_series_prev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_series_prev</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]))</span>
+            <span class="n">prev_forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">time_series_prev</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">prev_forecast</span><span class="p">,</span> <span class="n">forecast</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">forecast</span><span class="p">,</span> <span class="kc">None</span>
+
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Running-the-Model:-A-Simple-Example">
+<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this heading"></a></h2>
+<p>Let’s try running this model on some actual data! This next part assumes you’ve installed <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>. We’ll begin by getting a time series from the M4 dataset &amp; visualizing it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span>
+<span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
+
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;Hourly&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Visualize the full time series</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+
+<span class="c1"># Label the train/test split with a dashed line</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 414/414 [00:00&lt;00:00, 849.11it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_forecast_3_ForecastNewModel_6_1.png" src="../../_images/examples_forecast_3_ForecastNewModel_6_1.png" />
+</div>
+</div>
+<p>Now, we’ll split the data into train &amp; test splits, and run our forecasting model on it.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+<span class="n">test_data</span>  <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Initialize a model &amp; train it. The dataframe returned &amp; printed</span>
+<span class="c1"># below is the model&#39;s &quot;forecast&quot; on the training data. None is</span>
+<span class="c1"># the uncertainty estimate.</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">RepeatRecent</span><span class="p">(</span><span class="n">RepeatRecentConfig</span><span class="p">())</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(                        H1
+ time
+ 1970-01-01 00:00:00    0.0
+ 1970-01-01 01:00:00  605.0
+ 1970-01-01 02:00:00  586.0
+ 1970-01-01 03:00:00  586.0
+ 1970-01-01 04:00:00  559.0
+ ...                    ...
+ 1970-01-29 23:00:00  820.0
+ 1970-01-30 00:00:00  790.0
+ 1970-01-30 01:00:00  784.0
+ 1970-01-30 02:00:00  752.0
+ 1970-01-30 03:00:00  739.0
+
+ [700 rows x 1 columns],
+ None)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Let&#39;s run our model on the test data now</span>
+<span class="n">forecast</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Forecast
+                        H1
+time
+1970-01-30 04:00:00  684.0
+1970-01-30 05:00:00  684.0
+1970-01-30 06:00:00  684.0
+1970-01-30 07:00:00  684.0
+1970-01-30 08:00:00  684.0
+1970-01-30 09:00:00  684.0
+1970-01-30 10:00:00  684.0
+1970-01-30 11:00:00  684.0
+1970-01-30 12:00:00  684.0
+1970-01-30 13:00:00  684.0
+1970-01-30 14:00:00  684.0
+1970-01-30 15:00:00  684.0
+1970-01-30 16:00:00  684.0
+1970-01-30 17:00:00  684.0
+1970-01-30 18:00:00  684.0
+1970-01-30 19:00:00  684.0
+1970-01-30 20:00:00  684.0
+1970-01-30 21:00:00  684.0
+1970-01-30 22:00:00  684.0
+1970-01-30 23:00:00  684.0
+1970-01-31 00:00:00  684.0
+1970-01-31 01:00:00  684.0
+1970-01-31 02:00:00  684.0
+1970-01-31 03:00:00  684.0
+1970-01-31 04:00:00  684.0
+1970-01-31 05:00:00  684.0
+1970-01-31 06:00:00  684.0
+1970-01-31 07:00:00  684.0
+1970-01-31 08:00:00  684.0
+1970-01-31 09:00:00  684.0
+1970-01-31 10:00:00  684.0
+1970-01-31 11:00:00  684.0
+1970-01-31 12:00:00  684.0
+1970-01-31 13:00:00  684.0
+1970-01-31 14:00:00  684.0
+1970-01-31 15:00:00  684.0
+1970-01-31 16:00:00  684.0
+1970-01-31 17:00:00  684.0
+1970-01-31 18:00:00  684.0
+1970-01-31 19:00:00  684.0
+1970-01-31 20:00:00  684.0
+1970-01-31 21:00:00  684.0
+1970-01-31 22:00:00  684.0
+1970-01-31 23:00:00  684.0
+1970-02-01 00:00:00  684.0
+1970-02-01 01:00:00  684.0
+1970-02-01 02:00:00  684.0
+1970-02-01 03:00:00  684.0
+
+Error
+None
+</pre></div></div>
+</div>
+</section>
+<section id="Visualization">
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Qualitatively, we can see what the forecaster is doing by plotting</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Forecast w/ ground truth time series&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_forecast</span><span class="p">(</span><span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
+                              <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+                              <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Forecast without ground truth time series&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_forecast</span><span class="p">(</span><span class="n">time_stamps</span><span class="o">=</span><span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                              <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+                              <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Forecast w/ ground truth time series
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_forecast_3_ForecastNewModel_12_1.png" src="../../_images/examples_forecast_3_ForecastNewModel_12_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Forecast without ground truth time series
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_forecast_3_ForecastNewModel_12_3.png" src="../../_images/examples_forecast_3_ForecastNewModel_12_3.png" />
+</div>
+</div>
+</section>
+<section id="Quantitative-Evaluation">
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
+<p>You may quantitatively evaluate your model as well. Here, we compute the sMAPE (symmetric Mean Average Percent Error) of the model’s forecast vs. the true data. For ground truth <span class="math notranslate nohighlight">\(y \in \mathbb{R}^T\)</span> and prediction <span class="math notranslate nohighlight">\(\hat{y} \in \mathbb{R}^T\)</span>, the sMAPE is computed as</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{sMAPE}(y, \hat{y}) = \frac{200}{T} \sum_{t = 1}^{T} \frac{\lvert \hat{y}_t - y_t \rvert}{\lvert\hat{y}_t\rvert + \lvert y_t \rvert}\]</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
+<span class="n">smape</span> <span class="o">=</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">forecast</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sMAPE = </span><span class="si">{</span><span class="n">smape</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+sMAPE = 20.166
+</pre></div></div>
+</div>
+</section>
+<section id="Defining-a-Forecaster-Based-Anomaly-Detector">
+<h2>Defining a Forecaster-Based Anomaly Detector<a class="headerlink" href="#Defining-a-Forecaster-Based-Anomaly-Detector" title="Permalink to this heading"></a></h2>
+<p>It is quite straightforward to adapt a forecasting model into an anomaly detection model. You just need to create a new file in the appropriate <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/forecast_based">directory</a> and define class stubs with some basic headers. Multiple inheritance with <code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code> takes care of most of the heavy lifting.</p>
+<p>The anomaly score returned by any forecasting-based anomaly detector is based on the residual between the predicted and true time series values.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.forecast_based.base</span> <span class="kn">import</span> <span class="n">ForecastingDetectorBase</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.base</span> <span class="kn">import</span> <span class="n">DetectorConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.post_process.threshold</span> <span class="kn">import</span> <span class="n">AggregateAlarms</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span>
+
+
+<span class="c1"># Define a config class which inherits from RepeatRecentConfig and DetectorConfig, in that order</span>
+<span class="k">class</span> <span class="nc">RepeatRecentDetectorConfig</span><span class="p">(</span><span class="n">RepeatRecentConfig</span><span class="p">,</span> <span class="n">DetectorConfig</span><span class="p">):</span>
+    <span class="c1"># Set a default anomaly score post-processing rule</span>
+    <span class="n">_default_post_rule</span> <span class="o">=</span> <span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+
+    <span class="c1"># The default data pre-processing transform is mean-variance normalization,</span>
+    <span class="c1"># so that anomaly scores are roughly aligned with z-scores</span>
+    <span class="n">_default_transform</span> <span class="o">=</span> <span class="n">MeanVarNormalize</span><span class="p">()</span>
+
+<span class="c1"># Define a model class which inherits from ForecastingDetectorBase and RepeatRecent</span>
+<span class="c1"># in that order</span>
+<span class="k">class</span> <span class="nc">RepeatRecentDetector</span><span class="p">(</span><span class="n">ForecastingDetectorBase</span><span class="p">,</span> <span class="n">RepeatRecent</span><span class="p">):</span>
+    <span class="c1"># All we need to do is set the config class</span>
+    <span class="n">config_class</span> <span class="o">=</span> <span class="n">RepeatRecentDetectorConfig</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Train the anomaly detection variant</span>
+<span class="n">model2</span> <span class="o">=</span> <span class="n">RepeatRecentDetector</span><span class="p">(</span><span class="n">RepeatRecentDetectorConfig</span><span class="p">())</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                     anom_score
+time
+1970-01-01 00:00:00   -0.212986
+1970-01-01 01:00:00   -0.120839
+1970-01-01 02:00:00    0.000000
+1970-01-01 03:00:00   -0.171719
+1970-01-01 04:00:00   -0.305278
+...                         ...
+1970-01-29 23:00:00   -0.190799
+1970-01-30 00:00:00   -0.038160
+1970-01-30 01:00:00   -0.203519
+1970-01-30 02:00:00   -0.082679
+1970-01-30 03:00:00   -0.349798
+
+[700 rows x 1 columns]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Obtain the anomaly detection variant&#39;s predictions on the test data</span>
+<span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                     anom_score
+time
+1970-01-30 04:00:00   -0.413397
+1970-01-30 05:00:00   -0.756835
+1970-01-30 06:00:00   -0.966714
+1970-01-30 07:00:00   -1.202032
+1970-01-30 08:00:00   -1.291072
+1970-01-30 09:00:00   -1.380111
+1970-01-30 10:00:00   -1.341952
+1970-01-30 11:00:00   -1.246552
+1970-01-30 12:00:00   -1.163873
+1970-01-30 13:00:00   -0.953994
+1970-01-30 14:00:00   -0.686876
+1970-01-30 15:00:00   -0.286198
+1970-01-30 16:00:00    0.178079
+1970-01-30 17:00:00    0.559676
+1970-01-30 18:00:00    0.928554
+1970-01-30 19:00:00    1.246552
+1970-01-30 20:00:00    1.329232
+1970-01-30 21:00:00    1.348311
+1970-01-30 22:00:00    1.316512
+1970-01-30 23:00:00    1.081193
+1970-01-31 00:00:00    0.756835
+1970-01-31 01:00:00    0.540597
+1970-01-31 02:00:00    0.426117
+1970-01-31 03:00:00    0.108119
+1970-01-31 04:00:00   -0.311638
+1970-01-31 05:00:00   -0.712316
+1970-01-31 06:00:00   -0.966714
+1970-01-31 07:00:00   -1.214752
+1970-01-31 08:00:00   -1.316512
+1970-01-31 09:00:00   -1.373751
+1970-01-31 10:00:00   -1.399191
+1970-01-31 11:00:00   -1.316512
+1970-01-31 12:00:00   -1.221112
+1970-01-31 13:00:00   -1.049393
+1970-01-31 14:00:00   -0.737755
+1970-01-31 15:00:00   -0.381598
+1970-01-31 16:00:00    0.076320
+1970-01-31 17:00:00    0.489717
+1970-01-31 18:00:00    0.814075
+1970-01-31 19:00:00    0.966714
+1970-01-31 20:00:00    0.979434
+1970-01-31 21:00:00    0.922194
+1970-01-31 22:00:00    0.782275
+1970-01-31 23:00:00    0.642356
+1970-02-01 00:00:00    0.457917
+1970-02-01 01:00:00    0.222599
+1970-02-01 02:00:00    0.120839
+1970-02-01 03:00:00   -0.158999
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Visualize the anomaly detection variant&#39;s performance, with filtered anomaly scores</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+                              <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">plot_forecast</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_forecast_3_ForecastNewModel_19_0.png" src="../../_images/examples_forecast_3_ForecastNewModel_19_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_ForecastMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Forecasting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../advanced/1_AutoSARIMA_forecasting_tutorial.html" class="btn btn-neutral float-right" title="Tutorial for AutoSARIMA Forecasting Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.2.5
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
