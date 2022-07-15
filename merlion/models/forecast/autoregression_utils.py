@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -40,13 +40,14 @@ class MultiVariateAutoRegressionMixin:
 
     """
 
-    def autoregression_train(self, data: TimeSeries, maxlags: int, sampling_mode: str = "normal"):
+    def autoregression_train(self, data: TimeSeries, maxlags: int, sampling_mode: str = "normal", fit=True):
         """
         :param data: input data
         :param maxlags: Max # of lags for forecasting
         :param sampling_mode: how to process time series data for the tree model
             If "normal" then concatenate all sequences over the window
             If "stats" then give statistics measures over the window (usually only for the tree-ensemble)
+        :param fit: Whether to actually fit the model. Can be false for getting values on ``time_series_prev``.
         :return: serve a typical model.train() return as UnivariateTimeSeries(labels_train_ts, pred, self.target_name).to_ts()
                  prior_forecast: the forecast result from the last training series, and usually it is used to define
                                  self._forecast = prior_forecast
@@ -66,10 +67,12 @@ class MultiVariateAutoRegressionMixin:
             data, maxlags, sampling_mode
         )
         if sampling_mode == "stats":
-            self.model.fit(stats_train, labels_train)
+            if fit:
+                self.model.fit(stats_train, labels_train)
             prior_stats = stats_train[-1]
         else:
-            self.model.fit(inputs_train, labels_train)
+            if fit:
+                self.model.fit(inputs_train, labels_train)
             prior_stats = None
         prior = np.atleast_2d(inputs_train[-1])
         prior_forecast = self._autoregressive_forecast(
@@ -88,7 +91,7 @@ class MultiVariateAutoRegressionMixin:
         self, time_series_prev: TimeSeries, maxlags: int, forecast_steps: int, sampling_mode: str = "normal"
     ):
         """
-        :param data: input data
+        :param time_series_prev: input data (context)
         :param maxlags: Max # of lags for forecasting
         :param forecast_steps:
         :param sampling_mode: how to process time series data for the tree model
@@ -118,7 +121,7 @@ class MultiVariateAutoRegressionMixin:
 
     def _autoregressive_forecast(self, inputs, stats, maxlags: int, steps: [int, None], sampling_mode: str = "normal"):
         """
-         1-step auto-regression method for multivariate data, each regression step updates one data point for each sequence
+        1-step auto-regression method for multivariate data, each regression step updates one data point for each sequence
 
         :param inputs: regression inputs [n_samples, self.dim * maxlags]
         :param stats: regression stats derived from inputs [n_samples, self.dim * 4]
@@ -127,7 +130,7 @@ class MultiVariateAutoRegressionMixin:
         """
 
         if steps is None:
-            steps = self.max_forecast_steps
+            steps = max(self.max_forecast_steps or 0, 1)
 
         inputs = np.atleast_2d(inputs)
         if sampling_mode == "stats":

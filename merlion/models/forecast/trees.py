@@ -108,6 +108,8 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
         train_data = TimeSeries.from_pd(train_data)
+        train_config = {} if train_config is None else train_config
+        fit = train_config.get("fit", True)
 
         # univariate case, hybrid of sequence + autoregression
         if self.dim == 1:
@@ -123,7 +125,8 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
             inputs_train, labels_train, labels_train_ts = seq_ar_common.process_rolling_train_data(
                 train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode
             )
-            self.model.fit(inputs_train, labels_train)
+            if fit:
+                self.model.fit(inputs_train, labels_train)
             inputs_train = np.atleast_2d(inputs_train)
             pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
             # since the model may predict multiple steps, we concatenate all the first steps together
@@ -153,13 +156,14 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                 inputs_train, labels_train, labels_train_ts = seq_ar_common.process_rolling_train_data(
                     train_data, self.target_seq_index, self.maxlags, self.prediction_stride, self.sampling_mode
                 )
-                self.model.fit(inputs_train, labels_train)
+                if fit:
+                    self.model.fit(inputs_train, labels_train)
                 # since the model may predict multiple steps, we concatenate all the first steps together
                 pred = self.model.predict(np.atleast_2d(inputs_train))[:, 0].reshape(-1)
             else:
                 # autoregression mode
                 prior_forecast, labels_train_ts, pred = self.autoregression_train(
-                    data=train_data, maxlags=self.maxlags, sampling_mode=self.sampling_mode
+                    data=train_data, maxlags=self.maxlags, sampling_mode=self.sampling_mode, fit=fit
                 )
 
         return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
@@ -174,11 +178,13 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                 f"{len(time_series_prev)} that is shorter than the maxlags "
                 f"for the model"
             )
-            assert not return_prev, f"{type(self).__name__}.forecast() does not support return_prev=True"
 
         n = len(time_stamps)
+        prev_pred, prev_err = None, None
         if time_series_prev is None:
             time_series_prev = self.transform(self.train_data)
+        elif time_series_prev is not None and return_prev:
+            prev_pred, prev_err = self._train(time_series_prev, train_config=dict(fit=False))
 
         time_series_prev = TimeSeries.from_pd(time_series_prev)
         if self.dim == 1:
@@ -199,6 +205,8 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
                 )
 
         forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
+        if prev_pred is not None:
+            forecast = pd.concat((prev_pred, forecast))
         return forecast, None
 
     def _hybrid_forecast(self, inputs, steps=None):
