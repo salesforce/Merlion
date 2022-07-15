@@ -9,12 +9,14 @@ Contains the `ModelFactory`.
 """
 import copy
 import inspect
+import logging
 from typing import Dict, Tuple, Type, Union
 
 import dill
 from merlion.models.base import ModelBase
 from merlion.utils import dynamic_import
 
+logger = logging.getLogger(__name__)
 
 import_alias = dict(
     # Default models
@@ -107,10 +109,11 @@ class ModelFactory:
 def instantiate_or_copy_model(model: Union[dict, ModelBase]):
     if isinstance(model, ModelBase):
         return copy.deepcopy(model)
-    if isinstance(model, dict):
+    elif isinstance(model, dict):
         try:
             return ModelFactory.create(**model)
         except Exception as e:
-            raise ValueError(f"Invalid `dict` specifying a model config.\n\nGot {model}\n\nException: {e}")
+            logger.error(f"Invalid `dict` specifying a model config.\n\nGot {model}")
+            raise e
     else:
-        raise TypeError(f"Expected model to be a `dict` or `ModelBase`. Got {model}.")
+        raise TypeError(f"Expected model to be a `dict` or `ModelBase`. Got {model}")
