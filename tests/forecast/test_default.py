@@ -183,9 +183,7 @@ class TestMultivariate(unittest.TestCase):
         self.train_data_norm = minmax_transform(train_data)
         self.test_data_norm = minmax_transform(test_data)
 
-        self.model = DefaultForecaster(
-            DefaultForecasterConfig(max_forecast_steps=self.max_forecast_steps, target_seq_index=self.i)
-        )
+        self.model = DefaultForecaster(DefaultForecasterConfig(target_seq_index=self.i))
 
     def test_forecast(self):
         logger.info("Training model...")
@@ -200,8 +198,8 @@ class TestMultivariate(unittest.TestCase):
         logger.info(f"SMAPE = {smape}")
 
         # save and load
-        self.model.save(dirname=join(rootdir, "tmp", "lgbmforecaster"))
-        loaded_model = DefaultForecaster.load(dirname=join(rootdir, "tmp", "lgbmforecaster"))
+        self.model.save(dirname=join(rootdir, "tmp", "default"))
+        loaded_model = DefaultForecaster.load(dirname=join(rootdir, "tmp", "default"))
         new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
         new_smape = ForecastMetric.sMAPE.value(predict=new_pred, ground_truth=testing_label.to_ts())
         self.assertAlmostEqual(smape, new_smape, places=4)

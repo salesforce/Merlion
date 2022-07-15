@@ -101,7 +101,20 @@ class TestETS(unittest.TestCase):
         self.max_forecast_steps = len(self.test_data)
         self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
 
-    def test_forecast(self):
+    def _multi_setup(self):
+        vals = self.data.to_pd().values
+        self.data = TimeSeries.from_pd(pd.DataFrame(np.concatenate((vals, vals * 2), axis=1), columns=["A", "B"]))
+        self.train_data = self.data[: len(self.train_data)]
+        self.model.config.target_seq_index = 0
+
+    def test_univariate(self):
+        self._test_forecast()
+
+    def test_multivariate(self):
+        self._multi_setup()
+        self._test_forecast()
+
+    def _test_forecast(self):
         # batch forecasting RMSE = 6.5612
         _, _ = self.model.train(self.train_data)
         forecast, lb, ub = self.model.forecast(self.max_forecast_steps, return_iqr=True)
@@ -112,8 +125,9 @@ class TestETS(unittest.TestCase):
         logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
         smape = ForecastMetric.sMAPE.value(self.test_data, forecast)
         logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting")
+        insample = self.train_data.univariates[self.train_data.names[0]].to_ts()
         msis = ForecastMetric.MSIS.value(
-            ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
+            ground_truth=self.test_data, predict=forecast, insample=insample, periodicity=4, ub=ub, lb=lb
         )
         logger.info(f"MSIS = {msis:.4f}")
         self.assertLessEqual(np.abs(msis - 101.6), 10)

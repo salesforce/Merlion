@@ -281,7 +281,7 @@ class ModelBase(metaclass=AutodocABCMeta):
             raise RuntimeError(
                 f"Transform {self.transform} transforms data into a {train_data.dim}-"
                 f"variate time series, but model {type(self).__name__} can "
-                f"only handle uni-variate time series. Change the transform."
+                f"only handle uni-variate time series. Change the transform or set target_seq_index."
             )
 
         t = train_data.time_stamps
