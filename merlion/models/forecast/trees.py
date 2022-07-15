@@ -31,8 +31,8 @@ class TreeEnsembleForecasterConfig(ForecasterConfig):
 
     def __init__(
         self,
-        max_forecast_steps: int,
         maxlags: int,
+        max_forecast_steps: int = None,
         target_seq_index: int = None,
         sampling_mode: str = "normal",
         prediction_stride: int = 1,
@@ -42,8 +42,8 @@ class TreeEnsembleForecasterConfig(ForecasterConfig):
         **kwargs,
     ):
         """
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param maxlags: Max # of lags for forecasting
+        :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.
@@ -264,11 +264,11 @@ class ExtraTreesForecasterConfig(TreeEnsembleForecasterConfig):
     Config class for `ExtraTreesForecaster`.
     """
 
-    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+    def __init__(self, maxlags: int, min_samples_split=2, **kwargs):
         """
         :param min_samples_split: min split for tree leaves
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        super().__init__(maxlags=maxlags, **kwargs)
         self.min_samples_split = min_samples_split
 
 
@@ -299,12 +299,12 @@ class LGBMForecasterConfig(TreeEnsembleForecasterConfig):
     Config class for `LGBMForecaster`.
     """
 
-    def __init__(self, max_forecast_steps: int, maxlags: int, learning_rate=0.1, n_jobs=-1, **kwargs):
+    def __init__(self, maxlags: int, learning_rate=0.1, n_jobs=-1, **kwargs):
         """
         :param learning_rate: learning rate for boosting
         :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        super().__init__(maxlags=maxlags, **kwargs)
         self.learning_rate = learning_rate
         self.n_jobs = n_jobs
 

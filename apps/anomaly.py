@@ -93,7 +93,7 @@ def main():
     df = read_dataset(
         spark=spark,
         file_format=args.file_format,
-        path=args.train_data,
+        path=args.data,
         time_col=args.time_col,
         index_cols=args.index_cols,
         data_cols=args.data_cols,
