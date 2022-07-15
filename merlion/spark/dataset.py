@@ -119,6 +119,7 @@ def create_hier_dataset(
     """
     # Determine which columns are index vs. data columns
     index_cols = [] if index_cols is None else index_cols
+    index_cols = [c for c in index_cols if c != TSID_COL_NAME]
     extended_index_cols = index_cols + [TSID_COL_NAME]
     if time_col is None:
         non_index_cols = [c for c in df.schema.fieldNames() if c not in extended_index_cols]

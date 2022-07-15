@@ -163,6 +163,7 @@ def main():
     )
     if args.time_col is None:
         args.time_col = df.schema.fieldNames()[0]
+    args.index_cols = args.index_cols + [TSID_COL_NAME]
 
     # Convert to a hierarchical dataset if desired
     if args.hierarchical:
@@ -171,7 +172,7 @@ def main():
         )
 
     # Use spark to generate forecasts for each time series in parallel
-    index_fields = [df.schema[c] for c in args.index_cols + [TSID_COL_NAME]]
+    index_fields = [df.schema[c] for c in args.index_cols]
     pred_fields = [
         StructField(args.time_col, DateType()),
         StructField(args.target_col, FloatType()),
