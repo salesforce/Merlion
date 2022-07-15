@@ -115,7 +115,7 @@ class LayeredModelConfig(Config):
         return self.from_dict(config_dict)
 
     def __getattr__(self, item):
-        if item in ["model", "_model", "base_model"]:
+        if item in ["model", "base_model"]:
             return super().__getattribute__(item)
         base_model = self.base_model
         is_detector_attr = isinstance(base_model, DetectorBase) and item in _DETECTOR_MEMBERS
@@ -127,7 +127,7 @@ class LayeredModelConfig(Config):
         return self.__getattribute__(item)
 
     def __setattr__(self, key, value):
-        if hasattr(self, "_model"):
+        if hasattr(self, "model") and hasattr(self.model, "config"):
             base_model = self.base_model
             is_detector_attr = isinstance(base_model, DetectorBase) and key in _DETECTOR_MEMBERS
             is_forecaster_attr = isinstance(base_model, ForecasterBase) and key in _FORECASTER_MEMBERS
