@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.ensemble package &mdash; Merlion 1.2.4 documentation</title>
+  <title>merlion.models.ensemble package &mdash; Merlion 1.2.5 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -393,7 +393,7 @@ outputs. Useful for anomaly detection.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.train" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.train" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the model combination rule.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -808,6 +808,16 @@ series) whose value we would like to forecast.</p></li>
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.resample_time_stamps">
 <span class="sig-name descname"><span class="pre">resample_time_stamps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.resample_time_stamps" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.train_combiner">
+<span class="sig-name descname"><span class="pre">train_combiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.train_combiner" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
