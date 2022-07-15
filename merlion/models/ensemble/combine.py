@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -92,7 +92,7 @@ class CombinerBase(metaclass=AutodocABCMeta):
         assert self.n_models is not None, "Combiner must be trained to determine which models are used"
         return [True] * self.n_models
 
-    def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None) -> TimeSeries:
+    def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None, **kwargs) -> TimeSeries:
         """
         Trains the model combination rule.
 

@@ -96,6 +96,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         return time_stamps
 
+    def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries, **kwargs) -> TimeSeries:
+        return self.combiner.train(all_model_outs, target, target_seq_index=self.target_seq_index)
+
     def _train(
         self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
     ) -> Tuple[Optional[TimeSeries], None]:

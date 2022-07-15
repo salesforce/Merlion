@@ -102,9 +102,12 @@ class TestETS(unittest.TestCase):
         self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
 
     def _multi_setup(self):
-        vals = self.data.to_pd().values
-        self.data = TimeSeries.from_pd(pd.DataFrame(np.concatenate((vals, vals * 2), axis=1), columns=["A", "B"]))
+        x = self.data.to_pd()
+        self.data = TimeSeries.from_pd(
+            pd.DataFrame(np.concatenate((x.values, x.values * 2), axis=1), columns=["A", "B"], index=x.index)
+        )
         self.train_data = self.data[: len(self.train_data)]
+        self.test_data = self.data[len(self.train_data) :]
         self.model.config.target_seq_index = 0
 
     def test_univariate(self):
@@ -118,16 +121,21 @@ class TestETS(unittest.TestCase):
         # batch forecasting RMSE = 6.5612
         _, _ = self.model.train(self.train_data)
         forecast, lb, ub = self.model.forecast(self.max_forecast_steps, return_iqr=True)
-        rmse = ForecastMetric.RMSE.value(self.test_data, forecast)
+        rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"RMSE = {rmse:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse, 6.5, delta=1)
-        rmspe = ForecastMetric.RMSPE.value(self.test_data, forecast)
+        rmspe = ForecastMetric.RMSPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
-        smape = ForecastMetric.sMAPE.value(self.test_data, forecast)
+        smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting")
-        insample = self.train_data.univariates[self.train_data.names[0]].to_ts()
         msis = ForecastMetric.MSIS.value(
-            ground_truth=self.test_data, predict=forecast, insample=insample, periodicity=4, ub=ub, lb=lb
+            ground_truth=self.test_data,
+            predict=forecast,
+            insample=self.train_data,
+            periodicity=4,
+            ub=ub,
+            lb=lb,
+            target_seq_index=0,
         )
         logger.info(f"MSIS = {msis:.4f}")
         self.assertLessEqual(np.abs(msis - 101.6), 10)
@@ -155,7 +163,7 @@ class TestETS(unittest.TestCase):
                 forecast_results = forecast
             forecast_results += forecast
             t += self.model.timedelta
-        rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results)
+        rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results, target_seq_index=0)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
         self.assertAlmostEqual(rmse_onestep, 2.4, delta=1)
 

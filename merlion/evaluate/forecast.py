@@ -20,7 +20,6 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.utils.resample import granularity_str_to_seconds
 
 
-# TODO: support multivariate time series
 class ForecastScoreAccumulator:
     """
     Accumulator which maintains summary statistics describing a forecasting
@@ -35,6 +34,7 @@ class ForecastScoreAccumulator:
         periodicity: int = 1,
         ub: TimeSeries = None,
         lb: TimeSeries = None,
+        target_seq_index: int = None,
     ):
         """
         :param ground_truth: ground truth time series
@@ -44,18 +44,28 @@ class ForecastScoreAccumulator:
             whereas m>1 indicates seasonal time series. This value is used for computing MSES, MSIS.
         :param ub (optional): upper bound of 95% prediction interval. This value is used for computing MSIS
         :param lb (optional): lower bound of 95% prediction interval. This value is used for computing MSIS
+        :param target_seq_index (optional): the index of the target sequence, for multivariate.
         """
         ground_truth = ground_truth.to_ts() if isinstance(ground_truth, UnivariateTimeSeries) else ground_truth
         predict = predict.to_ts() if isinstance(predict, UnivariateTimeSeries) else predict
         insample = insample.to_ts() if isinstance(insample, UnivariateTimeSeries) else insample
         t0, tf = predict.t0, predict.tf
         ground_truth = ground_truth.window(t0, tf, include_tf=True).align()
+        if target_seq_index is not None:
+            ground_truth = ground_truth.univariates[ground_truth.names[target_seq_index]].to_ts()
+            if insample is not None:
+                insample = insample.univariates[insample.names[target_seq_index]].to_ts()
+        else:
+            assert ground_truth.dim == 1 and (
+                insample is None or insample.dim == 1
+            ), "Expected to receive either univariate ground truth time series or non-None target_seq_index"
         self.ground_truth = ground_truth
         self.predict = predict.align(reference=ground_truth.time_stamps)
         self.insample = insample
         self.periodicity = periodicity
         self.ub = ub
         self.lb = lb
+        self.target_seq_index = target_seq_index
 
     def check_before_eval(self):
         # Make sure time series is univariate
@@ -211,9 +221,16 @@ def accumulate_forecast_score(
     ub: TimeSeries = None,
     lb: TimeSeries = None,
     metric=None,
+    target_seq_index=None,
 ) -> Union[ForecastScoreAccumulator, float]:
     acc = ForecastScoreAccumulator(
-        ground_truth=ground_truth, predict=predict, insample=insample, periodicity=periodicity, ub=ub, lb=lb
+        ground_truth=ground_truth,
+        predict=predict,
+        insample=insample,
+        periodicity=periodicity,
+        ub=ub,
+        lb=lb,
+        target_seq_index=target_seq_index,
     )
     return acc if metric is None else metric(acc)
 
