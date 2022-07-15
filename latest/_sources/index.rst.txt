@@ -30,8 +30,8 @@ You can install ``merlion`` from PyPI by calling ``pip install salesforce-merlio
 cloning the Merlion `repo <https://github.com/salesforce/Merlion>`__ and calling ``pip install Merlion/``, or
 ``pip install -e Merlion/`` to install in editable mode. You may install additional optional dependencies via
 ``pip install salesforce-merlion[all]``,  or by calling ``pip install "Merlion/[all]"`` if installing from source.
-Individually, the optional dependencies include ``plot`` for interactive plots, ``prophet`` for the popular
-`Prophet <https://github.com/facebook/prophet>`__ model, and ``deep-learning`` for all deep learning models.
+Individually, the optional dependencies include ``plot`` for interactive plots
+and ``deep-learning`` for all deep learning models.
 
 To install the data loading package ``ts_datasets``, clone the Merlion
 `repo <https://github.com/salesforce/Merlion>`__ and call ``pip install -e Merlion/ts_datasets/``. This package must be

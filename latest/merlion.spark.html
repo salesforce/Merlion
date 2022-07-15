@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.spark package &mdash; Merlion 1.2.3 documentation</title>
+  <title>merlion.spark package &mdash; Merlion 1.2.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -193,7 +193,7 @@ indexing the time series in the dataset (this column is automatically added by <
 
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.spark.dataset.create_hier_dataset">
-<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">create_hier_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.create_hier_dataset" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.dataset.</span></span><span class="sig-name descname"><span class="pre">create_hier_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.dataset.create_hier_dataset" title="Permalink to this definition"></a></dt>
 <dd><p>Aggregates the time series in the dataset &amp; appends them to the original dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -208,6 +208,8 @@ assume the entire dataset is just a single time series. These columns define the
 For example, if each time series represents sales and we have <code class="docutils literal notranslate"><span class="pre">index_cols</span> <span class="pre">=</span> <span class="pre">[&quot;store&quot;,</span> <span class="pre">&quot;item&quot;]</span></code>, we will
 first aggregate sales for all items sold at a particular store; then we will aggregate sales for all items at
 all stores.</p></li>
+<li><p><strong>agg_dict</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – A dictionary used to specify how different data columns should be aggregated. If a data column
+is not in the dict, we aggregate using sum by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -249,7 +251,7 @@ This module contains pandas UDFs that can be called via <code class="docutils li
 forecasting, anomaly detection, and time series reconciliation in parallel.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.spark.pandas_udf.forecast">
-<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.forecast" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_on_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.forecast" title="Permalink to this definition"></a></dt>
 <dd><p>Pyspark pandas UDF for performing forecasting.
 Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code class="docutils literal notranslate"><span class="pre">index_cols</span></code>.</p>
 <dl class="field-list simple">
@@ -261,6 +263,9 @@ Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code
 <li><p><strong>target_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column whose value we wish to forecast.</p></li>
 <li><p><strong>time_stamps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The timestamps at which we would like to obtain a forecast.</p></li>
 <li><p><strong>model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – The model (or model <code class="docutils literal notranslate"><span class="pre">dict</span></code>) we are using to obtain a forecast.</p></li>
+<li><p><strong>predict_on_train</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to return the model’s prediction on the training data.</p></li>
+<li><p><strong>agg_dict</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – A dictionary used to specify how different data columns should be aggregated. If a non-target
+data column is not in agg_dict, we do not model it for aggregated time series.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -324,6 +329,12 @@ time series is <code class="docutils literal notranslate"><span class="pre">np.d
 <dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> which replaces the original forecasts &amp; errors with reconciled forecasts &amp; errors.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Time series series reconciliation is skipped if the given timestamp has missing values for any of the
+time series. This can happen for training timestamps if the training time series has missing data and
+<a class="reference internal" href="#merlion.spark.pandas_udf.forecast" title="merlion.spark.pandas_udf.forecast"><code class="xref any py py-func docutils literal notranslate"><span class="pre">forecast</span></code></a> is called with <code class="docutils literal notranslate"><span class="pre">predict_on_train=true</span></code>.</p>
+</div>
 </dd></dl>
 
 </section>
