@@ -64,14 +64,18 @@ def forecast(
     if not isinstance(model, ForecasterBase):
         raise TypeError(f"Expected `model` to be an instance of ForecasterBase, but got {model}.")
 
-    # Train model
-    model.train(ts)
+    # Train model & run forecast
+    train_pred, train_err = model.train(ts)
+    pred, err = model.forecast(time_stamps=time_stamps)
 
-    # Run inference and combine prediction & stderr as a single dataframe.
+    # Concatenate train & test results if predict_on_train is True
     if predict_on_train:
-        pred, err = model.forecast(time_stamps=time_stamps, time_series_prev=ts, return_prev=predict_on_train)
-    else:
-        pred, err = model.forecast(time_stamps=time_stamps)
+        if train_pred is not None and pred is not None:
+            pred = train_pred + pred
+        if train_err is not None and err is not None:
+            err = train_err + err
+
+    # Combine forecast & stderr into a single dataframe
     pred = pred.to_pd()
     dtype = pred.dtypes[0]
     err = pd.DataFrame(np.full(len(pred), np.nan), index=pred.index, dtype=dtype) if err is None else err.to_pd()
