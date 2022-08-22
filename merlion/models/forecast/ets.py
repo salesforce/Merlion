@@ -45,6 +45,7 @@ class ETSConfig(ForecasterConfig):
         damped_trend=True,
         seasonal="add",
         seasonal_periods=None,
+        pred_interval_strategy="exact",
         refit=True,
         **kwargs,
     ):
@@ -58,6 +59,7 @@ class ETSConfig(ForecasterConfig):
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
         :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
+        :param pred_interval_strategy: strategy to compucate prediction intervals. "exact" or "simulated"
         :param refit: if ``True``, refit the full ETS model when ``time_series_prev`` is given to the forecast method
             (slower). If ``False``, simply perform exponential smoothing (faster).
         """
@@ -67,6 +69,7 @@ class ETSConfig(ForecasterConfig):
         self.damped_trend = damped_trend
         self.seasonal = seasonal
         self.seasonal_periods = seasonal_periods
+        self.pred_interval_strategy = pred_interval_strategy
         self.refit = refit
 
 
@@ -157,7 +160,7 @@ class ETS(SeasonalityModel, ForecasterBase):
         # Basic forecasting without time_series_prev
         if time_series_prev is None:
             forecast_result = self.model.get_prediction(
-                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="exact"
+                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method=self.config.pred_interval_strategy
             )
             forecast = np.asarray(forecast_result.predicted_mean)
             err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
@@ -198,10 +201,10 @@ class ETS(SeasonalityModel, ForecasterBase):
             else:
                 self.model = new_model.smooth(params=self.model.params)
             forecast_result = self.model.get_prediction(
-                start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1, method="simulated"
+                start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1, method=self.config.pred_interval_strategy
             )
             forecast = np.asarray(forecast_result.predicted_mean)
-            err = np.asarray(forecast_result._results.simulation_results.std(axis=1))
+            err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
 
             # if return_prev is Ture, it will return the forecast and error of last train window
             # instead of time_series_prev
@@ -218,7 +221,7 @@ class ETS(SeasonalityModel, ForecasterBase):
             logger.warning(
                 "Trained ETS model is producing NaN forecast. Use the last training point as the prediction."
             )
-            forecast[np.isnan(forecast)] = self._last_val
+            forecast[np.isnan(forecast)] = self._last_vale
         if any(np.isnan(err)):
             err[np.isnan(err)] = 0
 
