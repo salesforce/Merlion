@@ -183,8 +183,13 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         tf = min(max_model_tfs)
         return transformed_valid_data.bisect(tf, t_in_left=True)[0]
 
-    def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries) -> TimeSeries:
-        return self.combiner.train(all_model_outs, target)
+    def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries, **kwargs) -> TimeSeries:
+        combined = self.combiner.train(all_model_outs, target, **kwargs)
+        if not any(self.models_used):
+            raise RuntimeError("None of the individual models in the ensemble is used! Check logs for errors.")
+        used = [f"#{i+1} ({type(m).__name__})" for i, (m, u) in enumerate(zip(self.models, self.models_used)) if u]
+        logger.info(f"Models used (of {len(self.models)}): {', '.join(used)}")
+        return combined
 
     def __getstate__(self):
         state = super().__getstate__()
