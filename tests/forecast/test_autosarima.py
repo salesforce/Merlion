@@ -797,7 +797,7 @@ class TestAutoSarima(unittest.TestCase):
                 max_forecast_steps=self.max_forecast_steps,
                 maxiter=5,
                 transform=dict(name="Identity") if seasonality_layer else None,
-                model=dict(name="Sarima", enable_threshold=False, transform=dict(name="Identity")),
+                model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
             )
         )
         if seasonality_layer:
