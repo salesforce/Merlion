@@ -58,8 +58,7 @@ class TestETS(unittest.TestCase):
                                                       index=pd.RangeIndex(start=len(self.train_data),
                                                                           stop= len(self.train_data)+test_data.shape[0])))
         self.max_forecast_steps = len(self.test_data)
-        self.autoets_model = AutoETS(AutoETSConfig(pval=0.1, max_lag=55, max_forecast_steps=self.max_forecast_steps,
-                                                   auto_error=True, auto_trend=True, auto_seasonal=True))
+        self.autoets_model = AutoETS(AutoETSConfig(pval=0.1, max_lag=55, max_forecast_steps=self.max_forecast_steps))
         self.ets_model = ETS(ETSConfig(seasonal_periods=4))
 
     def test_forecast(self):

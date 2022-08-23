@@ -31,9 +31,9 @@ class AutoETSConfig(SeasonalityConfig):
     def __init__(
         self, model: Union[ETS, dict] = None,
         auto_seasonality: bool = True,
-        auto_error: bool = False,
-        auto_trend: bool = False,
-        auto_seasonal: bool = False,
+        auto_error: bool = True,
+        auto_trend: bool = True,
+        auto_seasonal: bool = True,
         auto_damped: bool = False,
         seasonal_periods: int = 1,
         pred_interval_strategy: str = "exact",
