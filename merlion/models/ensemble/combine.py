@@ -56,6 +56,10 @@ class CombinerBase(metaclass=AutodocABCMeta):
         self.n_models = None
         self._override_models_used = {}
 
+    def reset(self):
+        self.n_models = None
+        self._override_models_used = {}
+
     @property
     def requires_training(self):
         return False
@@ -248,6 +252,10 @@ class ModelSelector(Mean):
             metric_cls = {c.__name__: c for c in [ForecastMetric, TSADMetric]}[metric_cls]
             metric = metric_cls[name]
         self.metric = metric
+        self.metric_values = None
+
+    def reset(self):
+        super().reset()
         self.metric_values = None
 
     @property

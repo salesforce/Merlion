@@ -134,6 +134,7 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
     def reset(self):
         for model in self.models:
             model.reset()
+        self.combiner.reset()
 
     @property
     def models_used(self):
