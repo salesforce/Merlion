@@ -53,6 +53,7 @@ class AutoSarimaConfig(SeasonalityConfig):
     ):
         """
         :param auto_seasonality: Whether to automatically detect the seasonality.
+        :param periodicity_strategy: Periodicity Detection Strategy.
         :param auto_pqPQ: Whether to automatically choose AR/MA orders ``p, q`` and seasonal AR/MA orders ``P, Q``.
         :param auto_d: Whether to automatically choose the difference order ``d``.
         :param auto_D: Whether to automatically choose the seasonal difference order ``D``.
