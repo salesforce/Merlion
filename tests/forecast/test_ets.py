@@ -99,7 +99,7 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = ETS(ETSConfig(error="add", trend="mul", seasonal="add", damped_trend=True, seasonal_periods=4, pred_interval_strategy="simulated"))
+        self.model = ETS(ETSConfig(error="add", trend="mul", seasonal="mul", damped_trend=True, seasonal_periods=4, pred_interval_strategy="simulated"))
 
     def _multi_setup(self):
         x = self.data.to_pd()
@@ -118,7 +118,6 @@ class TestETS(unittest.TestCase):
         self._test_forecast()
 
     def _test_forecast(self):
-        # batch forecasting RMSE = 6.5612
         _, _ = self.model.train(self.train_data)
         forecast, lb, ub = self.model.forecast(self.max_forecast_steps, return_iqr=True)
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=0)
