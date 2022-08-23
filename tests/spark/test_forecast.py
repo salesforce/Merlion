@@ -7,7 +7,6 @@
 from os.path import abspath, dirname, join
 import logging
 
-from pyspark.sql import SparkSession
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
 from merlion.spark.dataset import create_hier_dataset, read_dataset, write_dataset, TSID_COL_NAME
 from merlion.spark.pandas_udf import forecast, reconciliation
@@ -17,12 +16,13 @@ logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 
 
-def _run_job(name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool, robust: bool):
+def _run_job(
+    spark, name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool, robust: bool
+):
     index_cols = ["Store", "Dept"]
     target_col = "Weekly_Sales"
     time_col = "Date"
     time_stamps = ["2012-11-02", "2012-11-09", "2012-11-16", "2012-11-23", "2012-11-30", "2012-12-07", "2012-12-14"]
-    spark = SparkSession.builder.master("local[*]").appName("unit-tests").getOrCreate()
 
     df = read_dataset(
         spark=spark,
@@ -70,8 +70,9 @@ def _run_job(name: str, data_cols: list, hierarchical: bool, agg_dict: dict, pre
     write_dataset(df=forecast_df, time_col=time_col, path=output_path, file_format="csv")
 
 
-def test_univariate():
+def test_univariate(spark_session):
     _run_job(
+        spark=spark_session,
         name="univariate",
         data_cols=["Weekly_Sales"],
         hierarchical=True,
@@ -81,8 +82,9 @@ def test_univariate():
     )
 
 
-def test_non_hts():
+def test_non_hts(spark_session):
     _run_job(
+        spark=spark_session,
         name="non_hts",
         data_cols=["Weekly_Sales"],
         hierarchical=False,
@@ -92,8 +94,9 @@ def test_non_hts():
     )
 
 
-def test_multivariate():
+def test_multivariate(spark_session):
     _run_job(
+        spark=spark_session,
         name="multivariate",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         hierarchical=True,
@@ -103,8 +106,9 @@ def test_multivariate():
     )
 
 
-def test_mixed():
+def test_mixed(spark_session):
     _run_job(
+        spark=spark_session,
         name="mixed",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         hierarchical=True,
@@ -114,8 +118,9 @@ def test_mixed():
     )
 
 
-def test_robust():
+def test_robust(spark_session):
     _run_job(
+        spark=spark_session,
         name="robust",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         hierarchical=True,
