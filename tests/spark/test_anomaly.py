@@ -17,16 +17,16 @@ logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 
 
-def _run_job(name: str, data_cols: list, model: dict):
+def _run_job(name: str, data_cols: list, model: dict, robust: bool = False):
     index_cols = ["Store", "Dept"]
     time_col = "Date"
-    train_test_split = "2012-06-01"
+    train_test_split = "2012-09-15" if robust else "2012-06-01"
     spark = SparkSession.builder.master("local[*]").appName("unit-tests").getOrCreate()
 
     df = read_dataset(
         spark=spark,
         file_format="csv",
-        path=join(rootdir, "data", "walmart", "walmart_mini.csv"),
+        path=join(rootdir, "data", "walmart", "walmart_mini_error.csv" if robust else "walmart_mini.csv"),
         index_cols=index_cols,
         time_col=time_col,
         data_cols=data_cols,
@@ -53,3 +53,12 @@ def test_univariate():
 
 def test_multivariate():
     _run_job(name="multivariate", data_cols=["Weekly_Sales", "Temperature", "CPI"], model={"name": "IsolationForest"})
+
+
+def test_robust():
+    _run_job(
+        name="multivariate",
+        data_cols=["Weekly_Sales", "Temperature", "CPI"],
+        model={"name": "IsolationForest"},
+        robust=True,
+    )

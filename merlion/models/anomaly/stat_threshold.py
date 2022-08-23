@@ -19,7 +19,13 @@ class StatThresholdConfig(DetectorConfig, NormalizingConfig):
     Config class for `StatThreshold`.
     """
 
-    _default_transform = DifferenceTransform()
+    def __init__(self, target_seq_index: int = None, **kwargs):
+        """
+        :param target_seq_index (optional): The index of the univariate whose value we are considering thresholds of.
+            If not provided, the model only works for univariate data.
+        """
+        super().__init__(**kwargs)
+        self.target_seq_index = target_seq_index
 
 
 class StatThreshold(DetectorBase):
@@ -35,10 +41,10 @@ class StatThreshold(DetectorBase):
 
     @property
     def require_univariate(self) -> bool:
-        return True
+        return self.config.target_seq_index is None
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        return train_data
+        return pd.DataFrame(train_data.iloc[:, self.config.target_seq_index or 0])
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        return time_series
+        return pd.DataFrame(time_series.iloc[:, self.config.target_seq_index or 0])

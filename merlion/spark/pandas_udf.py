@@ -9,16 +9,20 @@ Pyspark pandas UDFs for Merlion functions.
 This module contains pandas UDFs that can be called via ``pyspark.sql.DataFrame.applyInPandas`` to run Merlion
 forecasting, anomaly detection, and time series reconciliation in parallel.
 """
+import logging
+import traceback
 from typing import List, Union
 
 import numpy as np
 import pandas as pd
 
-from merlion.models.factory import instantiate_or_copy_model
+from merlion.models.factory import instantiate_or_copy_model, ModelFactory
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.spark.dataset import TSID_COL_NAME
 from merlion.utils.data_io import TimeSeries
+
+logger = logging.getLogger(__name__)
 
 
 def forecast(
@@ -65,8 +69,20 @@ def forecast(
         raise TypeError(f"Expected `model` to be an instance of ForecasterBase, but got {model}.")
 
     # Train model & run forecast
-    train_pred, train_err = model.train(ts)
-    pred, err = model.forecast(time_stamps=time_stamps)
+    try:
+        train_pred, train_err = model.train(ts)
+        pred, err = model.forecast(time_stamps=time_stamps)
+    except Exception:
+        row0 = pdf.iloc[0]
+        idx = ", ".join(f"{k} = {row0[k]}" for k in index_cols)
+        logger.warning(
+            f"Model {type(model).__name__} threw an exception on ({idx}). Returning the mean training value as a "
+            f"placeholder forecast. {traceback.format_exc()}"
+        )
+        meanval = pdf.loc[:, target_col].mean().item()
+        train_err, err = None, None
+        train_pred = TimeSeries.from_pd(pd.DataFrame(meanval, index=pdf[time_col], columns=[target_col]))
+        pred = TimeSeries.from_pd(pd.DataFrame(meanval, index=pd.to_datetime(time_stamps), columns=[target_col]))
 
     # Concatenate train & test results if predict_on_train is True
     if predict_on_train:
@@ -122,9 +138,30 @@ def anomaly(
         raise TypeError(f"Expected `model` to be an instance of DetectorBase, but got {model}.")
 
     # Train model & run inference
+    exception = False
     train, test = ts.bisect(train_test_split, t_in_left=False)
-    model.train(train)
-    pred_pdf = model.get_anomaly_label(test).to_pd()
+    try:
+        model.train(train)
+        pred_pdf = model.get_anomaly_label(test).to_pd()
+    except Exception:
+        exception = True
+        row0 = pdf.iloc[0]
+        idx = ", ".join(f"{k} = {row0[k]}" for k in index_cols)
+        logger.warning(
+            f"Model {type(model).__name__} threw an exception on ({idx}). {traceback.format_exc()}"
+            f"Trying StatThreshold model instead.\n"
+        )
+    if exception:
+        try:
+            model = ModelFactory.create(name="StatThreshold", target_seq_index=0, threshold=model.threshold)
+            model.train(train)
+            pred_pdf = model.get_anomaly_label(test).to_pd()
+        except Exception:
+            logger.warning(
+                f"Model StatThreshold threw an exception on ({idx}).{traceback.format_exc()}"
+                f"Returning anomaly score = 0 for all test data.\n"
+            )
+            pred_pdf = pd.DataFrame(0, index=pd.to_datetime(test.time_stamps), columns=["anom_score"])
 
     # Turn the time index into a regular column, and add the index columns back to the prediction
     pred_pdf.index.name = time_col
