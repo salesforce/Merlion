@@ -71,14 +71,16 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, **kwargs):
+    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag = None, **kwargs):
         """
         :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
         :param pval: p-value for deciding whether a detected seasonality is statistically significant.
+        :param max_lag: max lag considered for seasonality detection.
         """
         self.periodicity_strategy = periodicity_strategy
         assert 0 < pval < 1
         self.pval = pval
+        self.max_lag = max_lag
         super().__init__(model=model, **kwargs)
 
     @property
@@ -154,6 +156,13 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         """
         return self.config.pval
 
+    @property
+    def max_lag(self):
+        """
+        :return: max_lag for seasonality detection
+        """
+        return self.config.max_lag
+
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         model.set_seasonality(theta, train_data.univariates[self.target_name])
 
@@ -179,7 +188,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         y = train_data.univariates[self.target_name]
-        periods = autosarima_utils.multiperiodicity_detection(y, pval=self.pval)
+        periods = autosarima_utils.multiperiodicity_detection(y, pval=self.pval, max_lag=self.max_lag)
         if len(periods) == 0:
             periods = [1]
         return iter(periods)
