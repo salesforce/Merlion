@@ -7,7 +7,6 @@
 from os.path import abspath, dirname, join
 import logging
 
-from pyspark.sql import SparkSession
 from pyspark.sql.types import DateType, FloatType, StructField, StructType
 from merlion.spark.dataset import create_hier_dataset, read_dataset, write_dataset, TSID_COL_NAME
 from merlion.spark.pandas_udf import forecast, reconciliation
@@ -17,17 +16,18 @@ logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 
 
-def _run_job(name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool):
+def _run_job(
+    spark, name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool, robust: bool
+):
     index_cols = ["Store", "Dept"]
     target_col = "Weekly_Sales"
     time_col = "Date"
     time_stamps = ["2012-11-02", "2012-11-09", "2012-11-16", "2012-11-23", "2012-11-30", "2012-12-07", "2012-12-14"]
-    spark = SparkSession.builder.master("local[*]").appName("unit-tests").getOrCreate()
 
     df = read_dataset(
         spark=spark,
         file_format="csv",
-        path=join(rootdir, "data", "walmart", "walmart_mini.csv"),
+        path=join(rootdir, "data", "walmart", "walmart_mini_error.csv" if robust else "walmart_mini.csv"),
         index_cols=index_cols,
         time_col=time_col,
         data_cols=data_cols,
@@ -70,29 +70,61 @@ def _run_job(name: str, data_cols: list, hierarchical: bool, agg_dict: dict, pre
     write_dataset(df=forecast_df, time_col=time_col, path=output_path, file_format="csv")
 
 
-def test_univariate():
-    _run_job(name="univariate", data_cols=["Weekly_Sales"], hierarchical=True, agg_dict={}, predict_on_train=False)
-
-
-def test_non_hts():
-    _run_job(name="non_hts", data_cols=["Weekly_Sales"], hierarchical=False, agg_dict={}, predict_on_train=False)
-
-
-def test_multivariate():
+def test_univariate(spark_session):
     _run_job(
+        spark=spark_session,
+        name="univariate",
+        data_cols=["Weekly_Sales"],
+        hierarchical=True,
+        agg_dict={},
+        predict_on_train=False,
+        robust=False,
+    )
+
+
+def test_non_hts(spark_session):
+    _run_job(
+        spark=spark_session,
+        name="non_hts",
+        data_cols=["Weekly_Sales"],
+        hierarchical=False,
+        agg_dict={},
+        predict_on_train=False,
+        robust=False,
+    )
+
+
+def test_multivariate(spark_session):
+    _run_job(
+        spark=spark_session,
         name="multivariate",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         hierarchical=True,
         agg_dict={"Weekly_Sales": "sum", "Temperature": "mean", "CPI": "mean"},
         predict_on_train=False,
+        robust=False,
     )
 
 
-def test_mixed():
+def test_mixed(spark_session):
     _run_job(
+        spark=spark_session,
         name="mixed",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         hierarchical=True,
         agg_dict={"Weekly_Sales": "sum"},  # only use Weekly_Sales for the target
         predict_on_train=True,
+        robust=False,
+    )
+
+
+def test_robust(spark_session):
+    _run_job(
+        spark=spark_session,
+        name="robust",
+        data_cols=["Weekly_Sales", "Temperature", "CPI"],
+        hierarchical=True,
+        agg_dict={"Weekly_Sales": "sum"},  # only use Weekly_Sales for the target
+        predict_on_train=True,
+        robust=True,
     )

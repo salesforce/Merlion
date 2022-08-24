@@ -49,6 +49,13 @@ class TestMedianAnomEnsemble(unittest.TestCase):
         config = DetectorEnsembleConfig(combiner=Median(abs_score=True))
         self.ensemble = DetectorEnsemble(models=[model0, model1, model2], config=config)
 
+    def test_small_train(self):
+        print("-" * 80)
+        logger.info("TestMedianAnomEnsemble.test_small_train\n" + "-" * 80 + "\n")
+        self.vals_train = self.vals_train[-10:]
+        self.ensemble.train(self.vals_train)
+        self.assertListEqual(self.ensemble.models_used, [True, False, True])
+
     def test_alarm(self):
         print("-" * 80)
         logger.info("TestMedianAnomEnsemble.test_alarm\n" + "-" * 80 + "\n")
