@@ -265,7 +265,7 @@ anomaly detection vs. forecasting.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.get_predict">
-<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.get_predict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrained</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.get_predict" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize the model by training it on an initial set of train data.
 Get the model’s predictions on the test data, retraining the model as
 appropriate.</p>
@@ -273,22 +273,19 @@ appropriate.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – initial training data</p></li>
-<li><p><strong>test_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – all data where we want to get the model’s predictions
-and compare it to the ground truth</p></li>
-<li><p><strong>train_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for the
-initial training process.</p></li>
-<li><p><strong>retrain_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for all
-subsequent retrainings.</p></li>
+<li><p><strong>test_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – all data where we want to get the model’s predictions and compare it to the ground truth</p></li>
+<li><p><strong>train_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for the initial training process</p></li>
+<li><p><strong>retrain_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for all subsequent retrainings</p></li>
+<li><p><strong>pretrained</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the model has already been trained</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(train_result,</span> <span class="pre">result)</span></code>. <code class="docutils literal notranslate"><span class="pre">train_result</span></code> is the output of
-training the model on <code class="docutils literal notranslate"><span class="pre">train_vals</span></code>. <code class="docutils literal notranslate"><span class="pre">result</span></code> is the model’s
-predictions on <code class="docutils literal notranslate"><span class="pre">test_vals</span></code>, and is specific to each evaluation
-task.</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(train_result,</span> <span class="pre">result)</span></code>. <code class="docutils literal notranslate"><span class="pre">train_result</span></code> is the output of training the model on <code class="docutils literal notranslate"><span class="pre">train_vals</span></code>
+(<code class="docutils literal notranslate"><span class="pre">None</span></code> if <code class="docutils literal notranslate"><span class="pre">pretrained</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>). <code class="docutils literal notranslate"><span class="pre">result</span></code> is the model’s predictions on <code class="docutils literal notranslate"><span class="pre">test_vals</span></code>, and is
+specific to each evaluation task.</p>
 </dd>
 </dl>
 </dd></dl>

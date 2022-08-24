@@ -286,7 +286,7 @@ model means that you use the default for that model.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.train_combiner">
-<span class="sig-name descname"><span class="pre">train_combiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_combiner" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train_combiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_combiner" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
@@ -363,6 +363,11 @@ representing the output of a single model.</p></li>
 outputs. Useful for anomaly detection.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.reset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.requires_training">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_training</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.requires_training" title="Permalink to this definition"></a></dt>
@@ -376,6 +381,16 @@ outputs. Useful for anomaly detection.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.set_model_used">
+<span class="sig-name descname"><span class="pre">set_model_used</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.set_model_used" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.get_model_used">
+<span class="sig-name descname"><span class="pre">get_model_used</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.get_model_used" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -498,19 +513,6 @@ outputs. Useful for anomaly detection.</p></li>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.from_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.models_used">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.models_used" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>which models are actually used to make predictions.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.train" title="Permalink to this definition"></a></dt>
@@ -550,19 +552,6 @@ outputs. Useful for anomaly detection.</p></li>
 </dd>
 </dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean.models_used">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean.models_used" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>which models are actually used to make predictions.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean.weights">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean.weights" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -597,7 +586,7 @@ outputs. Useful for anomaly detection.</p></li>
 <p>Ensembles of anomaly detectors.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsembleConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.normalize.Rescale" title="merlion.transform.normalize.Rescale"><span class="pre">Rescale</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combiner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combiner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a>, <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a></p>
 <p>Config class for an ensemble of anomaly detectors.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
@@ -611,7 +600,6 @@ anomaly score. <code class="docutils literal notranslate"><span class="pre">Fals
 <li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
 when post-processing anomaly scores</p></li>
 <li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
-<li><p><strong>normalize</strong> – Pre-trained normalization transformation (optional).</p></li>
 <li><p><strong>models</strong> – A list of models or dicts representing them.</p></li>
 <li><p><strong>combiner</strong> – The <a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">CombinerBase</span></code></a> object to combine the outputs of the models in the ensemble.</p></li>
 <li><p><strong>kwargs</strong> – Any additional kwargs for <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a> or <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p></li>
