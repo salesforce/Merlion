@@ -35,8 +35,7 @@ class TestForecastEnsemble(unittest.TestCase):
         self.vals_train = data[: -self.test_len]
         self.vals_test = data[-self.test_len :].univariates[data.names[0]]
 
-    def test_mean(self):
-        print("-" * 80)
+    def _test_mean(self, test_name):
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), max_forecast_steps=50, transform=TemporalResample("10min")))
         model2 = AutoProphet(
@@ -46,13 +45,11 @@ class TestForecastEnsemble(unittest.TestCase):
             models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
         )
 
-        self.expected_smape = 37
         self.ensemble.models[0].config.max_forecast_steps = None
         self.ensemble.models[1].config.max_forecast_steps = None
-        logger.info("test_mean\n" + "-" * 80 + "\n")
-        self.run_test()
+        self.run_test(test_name)
 
-    def _test_selector(self):
+    def _test_selector(self, test_name, expected_smapes):
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), transform=TemporalResample("10min"), max_forecast_steps=50))
         model2 = AutoProphet(
@@ -63,27 +60,51 @@ class TestForecastEnsemble(unittest.TestCase):
                 models=[model0, model1, model2], combiner=ModelSelector(metric=ForecastMetric.sMAPE), target_seq_index=0
             )
         )
-        self.expected_smape = 35
-        self.run_test()
+        self.run_test(test_name)
         # We expect the model selector to select Prophet because it gets the lowest validation sMAPE
         valid_smapes = np.asarray(self.ensemble.combiner.metric_values)
-        self.assertAlmostEqual(np.max(np.abs(valid_smapes - [34.32, 40.66, 30.71])), 0, delta=0.5)
+        self.assertAlmostEqual(np.nanmax(np.abs(valid_smapes - expected_smapes)), 0, delta=0.5)
         self.assertSequenceEqual(self.ensemble.models_used, [False, False, True])
+
+    def test_mean(self):
+        print("-" * 80)
+        logger.info("test_mean\n" + "-" * 80 + "\n")
+        self.expected_smape = 37
+        self._test_mean(test_name="test_mean")
+
+    def test_mean_small_train(self):
+        print("-" * 80)
+        logger.info("test_mean_small_train\n" + "-" * 80 + "\n")
+        self.vals_train = self.vals_train[-8:]
+        self.expected_smape = 164
+        self._test_mean(test_name="test_mean_small_train")
 
     def test_univariate_selector(self):
         print("-" * 80)
         logger.info("test_univariate_selector\n" + "-" * 80 + "\n")
-        self._test_selector()
+        self.expected_smape = 35
+        self._test_selector(test_name="test_univariate_selector", expected_smapes=[34.66, 39.81, 30.47])
 
     def test_multivariate_selector(self):
+        print("-" * 80)
+        logger.info("test_multivariate_selector\n" + "-" * 80 + "\n")
         x = self.vals_train.to_pd()
+        self.expected_smape = 35
         self.vals_train = TimeSeries.from_pd(
             pd.DataFrame(np.concatenate((x.values, x.values * 2), axis=1), columns=["A", "B"], index=x.index)
         )
-        self._test_selector()
+        self._test_selector(test_name="test_multivariate_selector", expected_smapes=[34.66, 39.81, 30.47])
 
-    def run_test(self):
+    def test_selector_small_train(self):
+        print("-" * 80)
+        logger.info("test_selector_small_train\n" + "-" * 80 + "\n")
+        self.vals_train = self.vals_train[-8:]
+        self.expected_smape = 177
+        self._test_selector(test_name="test_selector_small_train", expected_smapes=[np.inf, 7.27, 5.71])
+
+    def run_test(self, test_name):
         logger.info("Training model...")
+        path = join(rootdir, "tmp", "forecast_ensemble", test_name)
         self.ensemble.train(self.vals_train)
 
         # generate alarms for the test sequence using the ensemble
@@ -94,8 +115,8 @@ class TestForecastEnsemble(unittest.TestCase):
         self.assertEqual(len(yhat), len(self.vals_test))
 
         logger.info("Testing save/load...")
-        self.ensemble.save(join(rootdir, "tmp", "forecast_ensemble"), save_only_used_models=True)
-        ensemble = ForecasterEnsemble.load(join(rootdir, "tmp", "forecast_ensemble"))
+        self.ensemble.save(path, save_only_used_models=True)
+        ensemble = ForecasterEnsemble.load(path)
         loaded_yhat = ensemble.forecast(self.vals_test.time_stamps)[0]
         loaded_yhat = loaded_yhat.univariates[loaded_yhat.names[0]].np_values
         self.assertSequenceEqual(list(yhat), list(loaded_yhat))

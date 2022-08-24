@@ -54,6 +54,10 @@ class CombinerBase(metaclass=AutodocABCMeta):
         """
         self.abs_score = abs_score
         self.n_models = None
+        self._override_models_used = {}
+
+    def reset(self):
+        self._override_models_used = {}
 
     @property
     def requires_training(self):
@@ -70,8 +74,10 @@ class CombinerBase(metaclass=AutodocABCMeta):
         state = copy.copy(state)
         state.pop("name", None)
         n_models = state.pop("n_models", None)
+        override_models_used = state.pop("_override_models_used", {})
         ret = cls(**state)
         ret.n_models = n_models
+        ret._override_models_used = {int(k): v for k, v in override_models_used.items()}
         return ret
 
     def __copy__(self):
@@ -84,12 +90,22 @@ class CombinerBase(metaclass=AutodocABCMeta):
     def _combine_univariates(self, univariates: List[UnivariateTimeSeries]):
         raise NotImplementedError
 
+    def set_model_used(self, i: int, used: bool):
+        self._override_models_used[i] = used
+
+    def get_model_used(self, i: int):
+        return self.models_used[i] if self.n_models is not None else self._override_models_used.get(i, True)
+
     @property
     def models_used(self) -> List[bool]:
         """
         :return: which models are actually used to make predictions.
         """
         assert self.n_models is not None, "Combiner must be trained to determine which models are used"
+        return [self._override_models_used.get(i, used) for i, used in enumerate(self._models_used)]
+
+    @property
+    def _models_used(self) -> List[bool]:
         return [True] * self.n_models
 
     def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None, **kwargs) -> TimeSeries:
@@ -264,18 +280,19 @@ class ModelSelector(Mean):
         return ret
 
     @property
-    def models_used(self) -> List[bool]:
+    def _models_used(self) -> List[bool]:
         assert self.n_models is not None, "Combiner must be trained to determine which models are used"
-        metric_values = np.asarray(self.metric_values)
-        val = np.min(metric_values) if self.invert else np.max(metric_values)
-        return (metric_values == val).tolist()
+        used_metric_values = [v for i, v in enumerate(self.metric_values) if self._override_models_used.get(i, True)]
+        val = np.min(used_metric_values) if self.invert else np.max(used_metric_values)
+        return (np.asarray(self.metric_values) == val).tolist()
 
     def train(self, all_model_outs: List[TimeSeries], target: TimeSeries = None, **kwargs) -> TimeSeries:
         metric_values = []
-        assert all(x is not None for x in all_model_outs), f"None of `all_model_outs` can be `None`"
         self.n_models = len(all_model_outs)
         for i, model_out in enumerate(all_model_outs):
-            if target is None and self.metric_values is None:
+            if not self._override_models_used.get(i, True):
+                metric_values.append(np.inf if self.invert else -np.inf)  # worst-possible value
+            elif target is None and self.metric_values is None:
                 metric_values.append(1)
             elif target is not None and not isinstance(target, list):
                 metric_values.append(self.metric.value(ground_truth=target, predict=model_out, **kwargs))
@@ -301,8 +318,8 @@ class MetricWeightedMean(ModelSelector):
     """
 
     @property
-    def models_used(self) -> List[bool]:
-        return CombinerBase.models_used.fget(self)
+    def _models_used(self) -> List[bool]:
+        return CombinerBase._models_used.fget(self)
 
     @property
     def weights(self) -> np.ndarray:

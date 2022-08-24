@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -144,7 +144,12 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         return self.cadence == self.horizon
 
     def get_predict(
-        self, train_vals: TimeSeries, test_vals: TimeSeries, train_kwargs: dict = None, retrain_kwargs: dict = None
+        self,
+        train_vals: TimeSeries,
+        test_vals: TimeSeries,
+        train_kwargs: dict = None,
+        retrain_kwargs: dict = None,
+        pretrained: bool = False,
     ) -> Tuple[Any, Union[TimeSeries, List[TimeSeries]]]:
         """
         Initialize the model by training it on an initial set of train data.
@@ -152,25 +157,24 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         appropriate.
 
         :param train_vals: initial training data
-        :param test_vals: all data where we want to get the model's predictions
-            and compare it to the ground truth
-        :param train_kwargs: dict of keyword arguments we want to use for the
-            initial training process.
-        :param retrain_kwargs: dict of keyword arguments we want to use for all
-            subsequent retrainings.
+        :param test_vals: all data where we want to get the model's predictions and compare it to the ground truth
+        :param train_kwargs: dict of keyword arguments we want to use for the initial training process
+        :param retrain_kwargs: dict of keyword arguments we want to use for all subsequent retrainings
+        :param pretrained: whether the model has already been trained
 
-        :return: ``(train_result, result)``. ``train_result`` is the output of
-            training the model on ``train_vals``. ``result`` is the model's
-            predictions on ``test_vals``, and is specific to each evaluation
-            task.
+        :return: ``(train_result, result)``. ``train_result`` is the output of training the model on ``train_vals``
+            (``None`` if ``pretrained`` is ``True``). ``result`` is the model's predictions on ``test_vals``, and is
+            specific to each evaluation task.
         """
-        self.model.reset()
-
         # Initially the model w/ appropriate train kwargs
         train_kwargs = {} if train_kwargs is None else train_kwargs
         full_train_kwargs = self.default_train_kwargs()
         full_train_kwargs.update(train_kwargs)
-        train_result = self._train_model(train_vals, **full_train_kwargs)
+        if not pretrained:
+            self.model.reset()
+            train_result = self._train_model(train_vals, **full_train_kwargs)
+        else:
+            train_result = None
 
         # Determine the appropriate kwargs for re-training
         retrain_kwargs = {} if retrain_kwargs is None else retrain_kwargs
@@ -191,7 +195,7 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
             pbar.update(int(t - t_prev))
             # Get the train & test data for the current window
             cur_train, cur_test = test_vals.bisect(t, t_in_left=False)
-            cur_train = train_vals + cur_train
+            cur_train = cur_train if train_vals is None else train_vals + cur_train
             if self.train_window is not None:
                 cur_train = cur_train.window(t - self.train_window, t)
             if self.horizon is not None:
