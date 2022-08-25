@@ -53,13 +53,6 @@ class Config(object, metaclass=ModelConfigMeta):
             self.transform = transform
         self.dim = None
 
-    @property
-    def base_model(self):
-        """
-        The base model of a base model is itself.
-        """
-        return self
-
     def to_dict(self, _skipped_keys=None):
         """
         :return: dict with keyword arguments used to initialize the config class.
@@ -181,6 +174,13 @@ class ModelBase(metaclass=AutodocABCMeta):
         Resets the model's internal state.
         """
         self.__init__(self.config)
+
+    @property
+    def base_model(self):
+        """
+        The base model of a base model is itself.
+        """
+        return self
 
     @property
     @abstractmethod

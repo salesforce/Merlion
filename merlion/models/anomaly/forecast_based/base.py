@@ -27,6 +27,12 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
     Base class for a forecast-based anomaly detector.
     """
 
+    def __init__(self, config):
+        super().__init__(config)
+        # Useful for layered models
+        self.train_forecast = None
+        self.train_err = None
+
     @property
     def _default_post_rule_train_config(self):
         from merlion.evaluate.anomaly import TSADMetric
@@ -78,6 +84,8 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         forecast, err = super()._train(train_data, train_config)
         train_data, forecast, err = [TimeSeries.from_pd(x) for x in [train_data, forecast, err]]
         anomaly_scores = self.forecast_to_anom_score(train_data, forecast, err)
+        self.train_forecast = forecast
+        self.train_err = err
         return anomaly_scores
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:

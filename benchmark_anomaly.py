@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -269,8 +269,7 @@ def train_model(
     unsupervised=False,
     tune_on_test=False,
 ):
-    """Trains a model on the time series dataset given, and save their predictions
-    to a dataset."""
+    """Trains a model on the time series dataset given, and save their predictions to a dataset."""
     resampler = None
     if isinstance(dataset, IOpsCompetition):
         resampler = TemporalResample("5min")
@@ -341,12 +340,12 @@ def train_model(
                 df.to_csv(csv, index=False)
 
             df = pd.read_csv(csv)
-            ts_df = train_scores.to_pd().append(test_scores.to_pd())
+            ts_df = pd.concat((train_scores.to_pd(), test_scores.to_pd()))
             ts_df.columns = ["y"]
             ts_df.loc[:, "timestamp"] = ts_df.index.view(int) // 1e9
             ts_df.loc[:, "trainval"] = [j < len(train_scores) for j in range(len(ts_df))]
             ts_df.loc[:, "idx"] = i
-            df = df.append(ts_df, ignore_index=True)
+            df = pd.concat((df, ts_df), ignore_index=True)
             df.to_csv(csv, index=False)
 
             # Start from time series i+1 if loading a checkpoint.
