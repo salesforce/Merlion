@@ -284,15 +284,17 @@ class AutoSarima(SeasonalityLayer):
         theta_value = next(thetas)
 
         # preprocess
+        model = deepcopy(self.model)
+        model.reset()
+        y = model.train_pre_process(train_data).to_pd()[self.target_name]
         train_config = copy(train_config) if train_config is not None else {}
         if "enforce_stationarity" not in train_config:
             train_config["enforce_stationarity"] = False
         if "enforce_invertibility" not in train_config:
             train_config["enforce_invertibility"] = False
+
+        # read from val_dict
         val_dict = theta_value["val_dict"]
-        model = deepcopy(self.model)
-        model.reset()
-        y = model.train_pre_process(train_data).to_pd()[self.target_name]
         X = val_dict["X"]
         method = val_dict["method"]
         maxiter = val_dict["maxiter"]
@@ -366,7 +368,7 @@ class AutoSarima(SeasonalityLayer):
         name = model.target_name
         times = y.index
         yhat = model.model.fittedvalues
-        err = [np.sqrt(model.model.params[-1])] * len(train_data)
+        err = [np.sqrt(model.model.params[-1])] * len(yhat)
         train_result = (
             UnivariateTimeSeries(times, yhat, name).to_ts(),
             UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
