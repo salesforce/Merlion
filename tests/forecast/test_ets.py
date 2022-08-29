@@ -99,7 +99,16 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = ETS(ETSConfig(error="add", trend="mul", seasonal="mul", damped_trend=True, seasonal_periods=4, pred_interval_strategy="simulated"))
+        self.model = ETS(
+            ETSConfig(
+                error="add",
+                trend="mul",
+                seasonal="mul",
+                damped_trend=True,
+                seasonal_periods=4,
+                pred_interval_strategy="simulated",
+            )
+        )
 
     def _multi_setup(self):
         x = self.data.to_pd()
@@ -137,7 +146,7 @@ class TestETS(unittest.TestCase):
             target_seq_index=0,
         )
         logger.info(f"MSIS = {msis:.4f}")
-        self.assertLessEqual(np.abs(msis - 72.84), 10)
+        self.assertAlmostEqual(msis, 72.84, delta=10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
@@ -148,12 +157,11 @@ class TestETS(unittest.TestCase):
         loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
         self.assertSequenceEqual(list(loaded_pred), list(forecast))
 
-
         # streaming forecasting
         test_t = self.test_data.np_time_stamps
         t, tf = to_pd_datetime([test_t[0], test_t[-1]])
         forecast_results = None
-        while t < tf:
+        while t <= tf:
             cur_train, cur_test = self.data.bisect(t, t_in_left=False)
             cur_test = cur_test.window(t, t + self.model.timedelta)
             forecast, err = self.model.forecast(cur_test.time_stamps, cur_train)
@@ -163,7 +171,10 @@ class TestETS(unittest.TestCase):
             t += self.model.timedelta
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results, target_seq_index=0)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
-
+        df = pd.concat((self.test_data.to_pd(), loaded_pred.to_pd(), forecast_results.to_pd()), axis=1)
+        logger.info(
+            pd.DataFrame({"normal": df.iloc[:, 1] - df.iloc[:, 0], "stream": df.iloc[:, 2] - df.iloc[:, 0]}).abs()
+        )
 
         # streaming forecasting performs better than batch forecasting
         self.assertLessEqual(rmse_onestep, rmse)
