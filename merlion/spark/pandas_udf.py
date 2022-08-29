@@ -220,7 +220,7 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
     U = np.concatenate((-hier_matrix[n:], np.eye(m - n)), axis=1)  # U.T from the paper
 
     # Compute projection matrix to compute coherent leaf forecasts
-    inv = np.linalg.inv(U @ W @ U.T)  # (m-n) by (m-n)
+    inv = np.linalg.pinv(U @ W @ U.T)  # (m-n) by (m-n)
     P = J - ((J @ W) @ U.T) @ (inv @ U)  # n by m
 
     # Compute reconciled forecasts & errors

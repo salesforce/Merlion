@@ -164,15 +164,14 @@ class ETS(SeasonalityModel, ForecasterBase):
             # In this case we use point forcasting and set prediction_interval as None
             try:
                 forecast_result = self.model.get_prediction(
-                    start=self._n_train, end=self._n_train + len(time_stamps) - 1, method=self.config.pred_interval_strategy
+                    start=self._n_train,
+                    end=self._n_train + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
                 )
                 forecast = np.asarray(forecast_result.predicted_mean)
                 err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
             except NotImplementedError as v:
-                logger.warning(f"Caught exception {type(v).__name__}: {str(v)}")
-                forecast_result = self.model.predict(
-                    start=self._n_train, end=self._n_train + len(time_stamps) - 1
-                )
+                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
                 forecast = np.asarray(forecast_result)
                 err = np.full(len(forecast), np.nan)
 
@@ -216,15 +215,15 @@ class ETS(SeasonalityModel, ForecasterBase):
             # In this case we use point forcasting and set prediction_interval as None
             try:
                 forecast_result = self.model.get_prediction(
-                    start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1,
-                    method=self.config.pred_interval_strategy
+                    start=val_prev.shape[0],
+                    end=val_prev.shape[0] + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
                 )
                 forecast = np.asarray(forecast_result.predicted_mean)
                 err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
             except NotImplementedError as v:
-                logger.warning(f"Caught exception {type(v).__name__}: {str(v)}")
                 forecast_result = self.model.predict(
-                    start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1,
+                    start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1
                 )
                 forecast = np.asarray(forecast_result)
                 err = np.full(len(forecast), np.nan)
