@@ -59,7 +59,7 @@ class ETSConfig(ForecasterConfig):
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
         :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
-        :param pred_interval_strategy: Strategy to compucate prediction intervals. "exact" or "simulated".
+        :param pred_interval_strategy: Strategy to compute prediction intervals. "exact" or "simulated".
         Note that "simulated" setting supports more variants of ETS model.
         :param refit: if ``True``, refit the full ETS model when ``time_series_prev`` is given to the forecast method
             (slower). If ``False``, simply perform exponential smoothing (faster).
@@ -174,7 +174,7 @@ class ETS(SeasonalityModel, ForecasterBase):
                     start=self._n_train, end=self._n_train + len(time_stamps) - 1
                 )
                 forecast = np.asarray(forecast_result)
-                err = None
+                err = np.full(len(forecast), np.nan)
 
         # If there is a time_series_prev, use it to smooth/refit ETS model,
         # and then obtain its forecast (and standard error of that forecast)
@@ -227,7 +227,7 @@ class ETS(SeasonalityModel, ForecasterBase):
                     start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1,
                 )
                 forecast = np.asarray(forecast_result)
-                err = None
+                err = np.full(len(forecast), np.nan)
 
             # if return_prev is Ture, it will return the forecast and error of last train window
             # instead of time_series_prev
@@ -245,6 +245,8 @@ class ETS(SeasonalityModel, ForecasterBase):
                 "Trained ETS model is producing NaN forecast. Use the last training point as the prediction."
             )
             forecast[np.isnan(forecast)] = self._last_val
+        if any(np.isnan(err)):
+            err[np.isnan(err)] = 0
 
         # Return the forecast & its standard error
         name = self.target_name

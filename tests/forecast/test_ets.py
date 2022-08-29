@@ -137,7 +137,7 @@ class TestETS(unittest.TestCase):
             target_seq_index=0,
         )
         logger.info(f"MSIS = {msis:.4f}")
-
+        self.assertLessEqual(np.abs(msis - 72.84), 10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")

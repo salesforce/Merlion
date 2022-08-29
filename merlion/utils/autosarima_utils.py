@@ -251,6 +251,17 @@ def multiperiodicity_detection(x, pval=0.05, max_lag=None):
     candidates = candidates[candidates < int(x.shape[0] / 2)]
     if candidates.shape[0] == 0:
         return []
+    else:
+        candidates_idx = []
+        if candidates.shape[0] == 1:
+            candidates_idx += [0]
+        else:
+            if xacf[candidates[0]] > xacf[candidates[1]]:
+                candidates_idx += [0]
+            if xacf[candidates[-1]] > xacf[candidates[-2]]:
+                candidates_idx += [-1]
+            candidates_idx += argrelmax(xacf[candidates])[0].tolist()
+        candidates = candidates[candidates_idx]
 
     xacf = xacf[1:]
     clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))

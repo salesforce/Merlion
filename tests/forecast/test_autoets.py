@@ -58,8 +58,7 @@ class TestETS(unittest.TestCase):
                                                       index=pd.RangeIndex(start=len(self.train_data),
                                                                           stop= len(self.train_data)+test_data.shape[0])))
         self.max_forecast_steps = len(self.test_data)
-        self.autoets_model = AutoETS(AutoETSConfig(pval=0.1, max_lag=55, max_forecast_steps=self.max_forecast_steps,
-                                                   auto_error=True, auto_trend=True, auto_seasonal=True))
+        self.autoets_model = AutoETS(AutoETSConfig(pval=0.1, max_lag=55, max_forecast_steps=self.max_forecast_steps))
         self.ets_model = ETS(ETSConfig(seasonal_periods=4))
 
     def test_forecast(self):
@@ -67,11 +66,13 @@ class TestETS(unittest.TestCase):
         forecast, lb, ub = self.autoets_model.forecast(self.max_forecast_steps, return_iqr=True)
         smape_auto = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape_auto:.4f} for {self.max_forecast_steps} step forecasting for AutoETS")
+        self.assertAlmostEqual(smape_auto, 3.77, delta=1)
 
         _, _ = self.ets_model.train(self.train_data)
         forecast, lb, ub = self.ets_model.forecast(self.max_forecast_steps, return_iqr=True)
         smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting for ETS")
+        self.assertAlmostEqual(smape, 3.96, delta=1)
 
 
 if __name__ == "__main__":

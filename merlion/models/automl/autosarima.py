@@ -290,7 +290,9 @@ class AutoSarima(SeasonalityLayer):
         if "enforce_invertibility" not in train_config:
             train_config["enforce_invertibility"] = False
         val_dict = theta_value["val_dict"]
-        y = val_dict["y"]
+        model = deepcopy(self.model)
+        model.reset()
+        y = model.train_pre_process(train_data).to_pd()[self.target_name]
         X = val_dict["X"]
         method = val_dict["method"]
         maxiter = val_dict["maxiter"]
@@ -359,15 +361,10 @@ class AutoSarima(SeasonalityLayer):
         else:
             return theta_value["theta"], None, None
 
-        model = deepcopy(self.model)
-        model.reset()
         self.set_theta(model, best_model_theta, train_data)
-
-        model.train_pre_process(train_data)
         model.model = best_model_fit
         name = model.target_name
-        train_data = train_data.univariates[name].to_pd()
-        times = train_data.index
+        times = y.index
         yhat = model.model.fittedvalues
         err = [np.sqrt(model.model.params[-1])] * len(train_data)
         train_result = (
