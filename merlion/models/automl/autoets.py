@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -21,6 +21,7 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
+
 class AutoETSConfig(SeasonalityConfig):
     """
     Configuration class for `AutoETS`. Act as a wrapper around a `ETS` model, which automatically detects
@@ -29,7 +30,8 @@ class AutoETSConfig(SeasonalityConfig):
 
     # This is adapted from ets.R from forecast package
     def __init__(
-        self, model: Union[ETS, dict] = None,
+        self,
+        model: Union[ETS, dict] = None,
         auto_seasonality: bool = True,
         auto_error: bool = True,
         auto_trend: bool = True,
@@ -40,7 +42,7 @@ class AutoETSConfig(SeasonalityConfig):
         additive_only: bool = False,
         allow_multiplicative_trend: bool = False,
         restrict: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param auto_seasonality: Whether to automatically detect the seasonality.
@@ -62,19 +64,18 @@ class AutoETSConfig(SeasonalityConfig):
         self.auto_trend = auto_trend
         self.auto_seasonal = auto_seasonal
         self.auto_error = auto_error
-        self.auto_damped =auto_damped
+        self.auto_damped = auto_damped
         self.information_criterion = information_criterion
         self.additive_only = additive_only
         self.allow_multiplicative_trend = allow_multiplicative_trend
         self.restrict = restrict
 
 
-
-
 class AutoETS(SeasonalityLayer):
     """
     ETS with automatic seasonality detection.
     """
+
     config_class = AutoETSConfig
 
     def __init__(self, config: AutoETSConfig):
@@ -159,8 +160,7 @@ class AutoETS(SeasonalityLayer):
         self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
     ) -> Tuple[Any, Optional[ETS], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         model = deepcopy(self.model)
-        model.reset()
-        y = model.train_pre_process(train_data).to_pd()[self.target_name]
+        y = train_data.univariates[self.target_name].to_pd()
         for error, trend, seasonal, damped, m in thetas:
             start = time.time()
             _model_fit = _fit_ets_model(m, error, trend, seasonal, damped, y)
@@ -168,8 +168,10 @@ class AutoETS(SeasonalityLayer):
             ic = getattr(_model_fit, self.config.information_criterion)
             logger.debug(
                 "{model}   : {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
-                    model=_model_name(_model_fit.model), ic_name=self.config.information_criterion.upper(), ic=ic,
-                    time=fit_time
+                    model=_model_name(_model_fit.model),
+                    ic_name=self.config.information_criterion.upper(),
+                    ic=ic,
+                    time=fit_time,
                 )
             )
             self._results_dict[(error, trend, seasonal, damped, m)] = _model_fit
@@ -191,7 +193,7 @@ class AutoETS(SeasonalityLayer):
         name = model.target_name
         times = y.index
 
-        #match the minimum data size requirement when refitting new data for ETS model
+        # match the minimum data size requirement when refitting new data for ETS model
         last_train_window_size = 10
         if model.seasonal_periods is not None:
             last_train_window_size = max(10, 10 + 2 * (model.seasonal_periods // 2), 2 * model.seasonal_periods)
@@ -212,13 +214,13 @@ class AutoETS(SeasonalityLayer):
         return best_model_theta, model, train_result
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
-        error, trend,  seasonal, damped_trend, seasonal_periods = theta
+        error, trend, seasonal, damped_trend, seasonal_periods = theta
         model.config.error = error
         model.config.trend = trend
         model.config.damped_trend = damped_trend
         model.config.seasonal = seasonal
         model.config.seasonal_periods = seasonal_periods
-        model.config.pred_interval_strategy = self.model.config.pred_interval_strategy
+
 
 def _fit_ets_model(seasonal_periods, error, trend, seasonal, damped, train_data):
     with warnings.catch_warnings():
@@ -233,11 +235,12 @@ def _fit_ets_model(seasonal_periods, error, trend, seasonal, damped, train_data)
         ).fit(disp=False)
     return _model_fit
 
+
 def _model_name(model_spec):
     """
     Return model name
     """
-    error =  model_spec.error if model_spec.error is not None else "None"
+    error = model_spec.error if model_spec.error is not None else "None"
     trend = model_spec.trend if model_spec.trend is not None else "None"
     seasonal = model_spec.seasonal if model_spec.seasonal is not None else "None"
     damped_trend = "damped" if model_spec.damped_trend else "no damped"
@@ -245,6 +248,3 @@ def _model_name(model_spec):
     return " ETS({error},{trend},{seasonal},{damped_trend})".format(
         error=error, trend=trend, seasonal=seasonal, damped_trend=damped_trend
     )
-
-
-

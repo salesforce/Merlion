@@ -281,21 +281,16 @@ class AutoSarima(SeasonalityLayer):
         self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
     ) -> Tuple[Any, Optional[Sarima], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
-        theta_value = next(thetas)
-
         # preprocess
-        model = deepcopy(self.model)
-        model.reset()
-        y = model.train_pre_process(train_data).to_pd()[self.target_name]
         train_config = copy(train_config) if train_config is not None else {}
-        if "enforce_stationarity" not in train_config:
-            train_config["enforce_stationarity"] = False
-        if "enforce_invertibility" not in train_config:
-            train_config["enforce_invertibility"] = False
+        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
+            train_config[k] = train_config.get(k, v)
 
         # read from val_dict
+        theta_value = next(thetas)
         val_dict = theta_value["val_dict"]
         X = val_dict["X"]
+        y = val_dict["y"]
         method = val_dict["method"]
         maxiter = val_dict["maxiter"]
         information_criterion = val_dict["information_criterion"]
@@ -363,10 +358,11 @@ class AutoSarima(SeasonalityLayer):
         else:
             return theta_value["theta"], None, None
 
+        model = deepcopy(self.model)
         self.set_theta(model, best_model_theta, train_data)
         model.model = best_model_fit
         name = model.target_name
-        times = y.index
+        times = train_data.univariates[name].index
         yhat = model.model.fittedvalues
         err = [np.sqrt(model.model.params[-1])] * len(yhat)
         train_result = (

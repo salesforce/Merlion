@@ -18,7 +18,7 @@ from merlion.utils.misc import AutodocABCMeta
 
 class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     """
-    Abstract base class which converts `LayeredModel` into an AutoML models.
+    Abstract base class which converts `LayeredModel` into an AutoML model.
     """
 
     def train_model(self, train_data: TimeSeries, train_config=None, **kwargs):
@@ -28,8 +28,9 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
         :param train_data: the data to train on.
         :param train_config: the train config of the underlying model (optional).
         """
-        candidate_thetas = self.generate_theta(train_data)
-        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, **kwargs)
+        processed_train_data = self.model.train_pre_process(train_data)  # no need to call in generate/evaluate theta
+        candidate_thetas = self.generate_theta(processed_train_data)
+        theta, model, train_result = self.evaluate_theta(candidate_thetas, processed_train_data, **kwargs)
         if model is not None:
             train_result = model.train_post_process(train_data, train_result, **kwargs)
             self.model = model
