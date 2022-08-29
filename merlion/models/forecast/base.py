@@ -173,12 +173,16 @@ class ForecasterBase(ModelBase):
         :return: the model's prediction on ``train_data``, in the same format as
             if you called `ForecasterBase.forecast` on the time stamps of ``train_data``
         """
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        train_data = self.train_pre_process(train_data).to_pd()
-        train_pred, train_stderr = self._train(train_data=train_data, train_config=train_config)
-        train_pred = TimeSeries.from_pd(train_pred)
-        train_stderr = TimeSeries.from_pd(train_stderr)
+        return super().train(train_data=train_data, train_config=train_config)
+
+    def train_post_process(
+        self, train_data: TimeSeries, train_result: Tuple[pd.DataFrame, pd.DataFrame]
+    ) -> Tuple[TimeSeries, TimeSeries]:
+        """
+        Converts the train result (forecast & stderr for training data) into TimeSeries objects, and inverts the
+        model's transform if desired.
+        """
+        train_pred, train_stderr = [TimeSeries.from_pd(df) for df in train_result]
         if self.invert_transform:
             train_pred, train_stderr = self._apply_inverse_transform(train_pred, train_stderr)
         return train_pred, train_stderr

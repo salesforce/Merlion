@@ -11,7 +11,7 @@ from abc import abstractmethod
 from copy import deepcopy
 from typing import Any, Iterator, Optional, Tuple
 
-from merlion.models.layers import ModelBase, LayeredModel
+from merlion.models.layers import ModelBase, LayeredModel, ForecastingDetectorBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
@@ -21,15 +21,17 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     Abstract base class which converts `LayeredModel` into an AutoML models.
     """
 
-    def train_model(self, train_data: TimeSeries, **kwargs):
+    def train_model(self, train_data: TimeSeries, train_config=None, **kwargs):
         """
         Generates a set of candidate models and picks the best one.
 
-        :param train_data: the data to train on, after any pre-processing transforms have been applied.
+        :param train_data: the data to train on.
+        :param train_config: the train config of the underlying model (optional).
         """
         candidate_thetas = self.generate_theta(train_data)
-        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, kwargs)
+        theta, model, train_result = self.evaluate_theta(candidate_thetas, train_data, **kwargs)
         if model is not None:
+            train_result = model.train_post_process(train_data, train_result, **kwargs)
             self.model = model
             return train_result
         else:
@@ -37,7 +39,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
             model.reset()
             self.set_theta(model, theta, train_data)
             self.model = model
-            return self.model.train(train_data, **kwargs)
+            return super().train_model(train_data, **kwargs)
 
     @abstractmethod
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
