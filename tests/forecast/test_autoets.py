@@ -66,7 +66,7 @@ class TestETS(unittest.TestCase):
         forecast, lb, ub = self.autoets_model.forecast(self.max_forecast_steps, return_iqr=True)
         smape_auto = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape_auto:.4f} for {self.max_forecast_steps} step forecasting for AutoETS")
-        self.assertAlmostEqual(smape_auto, 3.77, delta=1)
+        self.assertAlmostEqual(smape_auto, 2.21, delta=1)
 
         _, _ = self.ets_model.train(self.train_data)
         forecast, lb, ub = self.ets_model.forecast(self.max_forecast_steps, return_iqr=True)
