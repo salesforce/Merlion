@@ -9,6 +9,7 @@ Ensembles of anomaly detectors.
 """
 import copy
 import logging
+import traceback
 from typing import List
 
 import pandas as pd
@@ -151,39 +152,48 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         )
 
         # Train each model individually, with its own post-rule train config
-        per_model_post_rule_train_configs = train_config.per_model_post_rule_train_configs
-        if per_model_post_rule_train_configs is None:
-            per_model_post_rule_train_configs = [None] * len(self.models)
-        assert len(per_model_post_rule_train_configs) == len(self.models), (
-            f"You must provide the same number of per-model post-rule train "
-            f"configs as models, but received {len(per_model_post_rule_train_configs)} "
-            f"post-rule train configs for an ensemble with {len(self.models)} models."
+        per_model_pr_cfgs = train_config.per_model_post_rule_train_configs
+        if per_model_pr_cfgs is None:
+            per_model_pr_cfgs = [None] * len(self.models)
+        assert len(per_model_pr_cfgs) == len(self.models), (
+            f"You must provide the same number of per-model post-rule train configs as models, but received "
+            f"{len(per_model_pr_cfgs)} post-rule train configs for an ensemble with {len(self.models)} models."
         )
         all_train_scores = []
-        for model, cfg, pr_cfg in zip(self.models, per_model_train_configs, per_model_post_rule_train_configs):
-            train_scores = model.train(
-                train_data=train, anomaly_labels=anomaly_labels, train_config=cfg, post_rule_train_config=pr_cfg
-            )
-            train_scores = model.post_rule(train_scores)
+        for i, (model, cfg, pr_cfg) in enumerate(zip(self.models, per_model_train_configs, per_model_pr_cfgs)):
+            try:
+                train_scores = model.train(
+                    train_data=train, anomaly_labels=anomaly_labels, train_config=cfg, post_rule_train_config=pr_cfg
+                )
+                train_scores = model.post_rule(train_scores)
+            except Exception:
+                logger.warning(
+                    f"Caught an exception while training model {i + 1}/{len(self.models)} ({type(model).__name__}). "
+                    f"Model will not be used. {traceback.format_exc()}"
+                )
+                self.combiner.set_model_used(i, False)
+                train_scores = None
             all_train_scores.append(train_scores)
 
         # Train combiner on validation data if there is any, otherwise use train data
         if train is valid:
             combined = self.train_combiner(all_train_scores, anomaly_labels)
         else:
-            # Train combiner on the validation data
             valid = self.truncate_valid_data(valid)
             all_valid_scores = [m.get_anomaly_label(valid) for m in self.models]
             self.train_combiner(all_valid_scores, anomaly_labels)
 
-            # Re-train models on the full data
+            # Re-train models on the full data if validation data was distinct from train data
             all_train_scores = []
-            for model, cfg in zip(self.models, per_model_post_rule_train_configs):
+            for model, cfg, used in zip(self.models, per_model_pr_cfgs, self.models_used):
                 model.reset()
-                train_scores = model.train(
-                    train_data=full_train, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
-                )
-                train_scores = model.post_rule(train_scores)
+                if used:
+                    train_scores = model.train(
+                        train_data=full_train, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
+                    )
+                    train_scores = model.post_rule(train_scores)
+                else:
+                    train_scores = None
                 all_train_scores.append(train_scores)
             combined = self.combiner(all_train_scores, anomaly_labels)
 
