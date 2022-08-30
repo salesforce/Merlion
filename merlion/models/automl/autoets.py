@@ -15,7 +15,7 @@ from typing import Union, Iterator, Any, Optional, Tuple
 from itertools import product
 import numpy as np
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
-from merlion.models.forecast.ets import ETS
+from merlion.models.forecast.ets import ETS, ETSConfig
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 
@@ -80,15 +80,6 @@ class AutoETS(SeasonalityLayer):
 
     def __init__(self, config: AutoETSConfig):
         super().__init__(config)
-        # results stored in dict
-        # dict[tuple -> ARIMA]
-        self._results_dict = dict()
-
-        # dict[tuple -> float]
-        self._ic_dict = dict()
-
-        self._bestfit = None
-        self._bestfit_key = None
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         """
@@ -153,65 +144,49 @@ class AutoETS(SeasonalityLayer):
                 if error == "mul" and trend == "mul" and seasonal == "add":
                     continue
 
-            thetas.append([error, trend, seasonal, damped, m])
+            thetas.append((error, trend, seasonal, damped, m))
         return iter(thetas)
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
     ) -> Tuple[Any, Optional[ETS], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
-        model = deepcopy(self.model)
-        y = train_data.univariates[self.target_name].to_pd()
-        for error, trend, seasonal, damped, m in thetas:
+        def _model_name(cfg: ETSConfig):
+            return " ETS(err={error},trend={trend},seas={seasonal},damped={damped})".format(
+                error=str(cfg.error), trend=str(cfg.trend), seasonal=str(cfg.seasonal), damped=str(cfg.damped_trend)
+            )
+
+        results_dict = {}
+        best_theta = None
+        y = train_data.to_pd()
+        for theta in thetas:
             start = time.time()
-            _model_fit = _fit_ets_model(m, error, trend, seasonal, damped, y)
+            model = deepcopy(self.model)
+            self.set_theta(model, theta, train_data)
+            train_result = model._train(y, train_config=train_config)
             fit_time = time.time() - start
-            ic = getattr(_model_fit, self.config.information_criterion)
+            ic = getattr(model.model, self.config.information_criterion)
             logger.debug(
-                "{model}   : {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
-                    model=_model_name(_model_fit.model),
+                "{model:47}: {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
+                    model=_model_name(model.config),
                     ic_name=self.config.information_criterion.upper(),
                     ic=ic,
                     time=fit_time,
                 )
             )
-            self._results_dict[(error, trend, seasonal, damped, m)] = _model_fit
-            self._ic_dict[(error, trend, seasonal, damped, m)] = ic
-            if self._bestfit is None:
-                self._bestfit = _model_fit
-                self._bestfit_key = (error, trend, seasonal, damped, m)
+            results_dict[theta] = {"model": model, "train_result": train_result, "ic": ic}
+            if best_theta is None:
+                best_theta = theta
                 logger.debug("First best model found (%.3f)" % ic)
-            current_ic = self._ic_dict[self._bestfit_key]
+            current_ic = results_dict[best_theta]["ic"]
             if ic < current_ic:
                 logger.debug("New best model found (%.3f < %.3f)" % (ic, current_ic))
-                self._bestfit = _model_fit
-                self._bestfit_key = (error, trend, seasonal, damped, m)
-        best_model_theta = self._bestfit_key
+                best_theta = theta
 
-        # construct ETS model
-        self.set_theta(model, best_model_theta, train_data)
-        model.model = self._bestfit
-        name = model.target_name
-        times = y.index
-
-        # match the minimum data size requirement when refitting new data for ETS model
-        last_train_window_size = 10
-        if model.seasonal_periods is not None:
-            last_train_window_size = max(10, 10 + 2 * (model.seasonal_periods // 2), 2 * model.seasonal_periods)
-            last_train_window_size = min(last_train_window_size, y.shape[0])
-        model.last_train_window = y[-last_train_window_size:]
-
-        # FORECASTING: forecast for next n steps using ETS model
-        model._n_train = y.shape[0]
-        model._last_val = y[-1]
-
-        yhat = model.model.fittedvalues
-        err = model.model.standardized_forecasts_error
-        train_result = (
-            UnivariateTimeSeries(times, yhat, name).to_ts(),
-            UnivariateTimeSeries(times, err, f"{name}_err").to_ts(),
-        )
-
-        return best_model_theta, model, train_result
+        # Return best ETS model after post-processing its train result
+        best_result = results_dict[best_theta]
+        model = best_result["model"]
+        train_result = best_result["train_result"]
+        return best_theta, model, model.train_post_process(train_result, **kwargs)
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         error, trend, seasonal, damped_trend, seasonal_periods = theta
@@ -220,31 +195,3 @@ class AutoETS(SeasonalityLayer):
         model.config.damped_trend = damped_trend
         model.config.seasonal = seasonal
         model.config.seasonal_periods = seasonal_periods
-
-
-def _fit_ets_model(seasonal_periods, error, trend, seasonal, damped, train_data):
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        _model_fit = ETSModel(
-            train_data,
-            error=error,
-            trend=trend,
-            seasonal=seasonal,
-            damped_trend=damped,
-            seasonal_periods=seasonal_periods,
-        ).fit(disp=False)
-    return _model_fit
-
-
-def _model_name(model_spec):
-    """
-    Return model name
-    """
-    error = model_spec.error if model_spec.error is not None else "None"
-    trend = model_spec.trend if model_spec.trend is not None else "None"
-    seasonal = model_spec.seasonal if model_spec.seasonal is not None else "None"
-    damped_trend = "damped" if model_spec.damped_trend else "no damped"
-
-    return " ETS({error},{trend},{seasonal},{damped_trend})".format(
-        error=error, trend=trend, seasonal=seasonal, damped_trend=damped_trend
-    )
