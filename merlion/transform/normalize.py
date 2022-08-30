@@ -169,7 +169,11 @@ class BoxCoxTransform(InvertibleTransformBase):
 
     def __init__(self, lmbda=None, offset=0.0):
         super().__init__()
-        assert lmbda is None or isinstance(lmbda, float) and lmbda >= 0
+        if lmbda is not None:
+            if isinstance(lmbda, list):
+                assert all(isinstance(x, (int, float)) for x in lmbda)
+            else:
+                assert isinstance(lmbda, (int, float))
         self.lmbda = lmbda
         self.offset = offset
 
@@ -184,8 +188,9 @@ class BoxCoxTransform(InvertibleTransformBase):
         if self.lmbda is None:
             self.lmbda = [scipy.stats.boxcox(var.np_values + self.offset)[1] for var in time_series.univariates]
             logger.info(f"Chose Box-Cox lambda = {self.lmbda}")
-        else:
+        elif not isinstance(self.lmbda, list):
             self.lmbda = [self.lmbda] * time_series.dim
+        assert len(self.lmbda) == time_series.dim
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = []
