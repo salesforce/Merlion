@@ -446,12 +446,10 @@ if <code class="docutils literal notranslate"><span class="pre">include_tf</span
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – a <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>. If it has a``pd.DatetimeIndex``, we will
-use that index for the timestamps. Otherwise, we will create one at
-the specified frequency.</p></li>
+<li><p><strong>series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – a <code class="docutils literal notranslate"><span class="pre">pd.Series</span></code>. If it has a``pd.DatetimeIndex``, we will use that index for the timestamps.
+Otherwise, we will create one at the specified frequency.</p></li>
 <li><p><strong>name</strong> – the name to assign the output</p></li>
-<li><p><strong>freq</strong> – if <code class="docutils literal notranslate"><span class="pre">series</span></code> is not indexed by time, this is the frequency
-at which we will assume it is sampled.</p></li>
+<li><p><strong>freq</strong> – if <code class="docutils literal notranslate"><span class="pre">series</span></code> is not indexed by time, this is the frequency at which we will assume it is sampled.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

@@ -412,7 +412,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 650.30it/s]
+100%|██████████| 414/414 [00:00&lt;00:00, 720.35it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -462,11 +462,11 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is 24
+INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is [24]
 INFO:merlion.models.automl.autosarima:Seasonal difference order is 1
 INFO:merlion.models.automl.autosarima:Difference order is 0
 INFO:merlion.models.automl.autosarima:Fitting models using approximations(approx_iter is 1) to speed things up
-INFO:merlion.models.automl.autosarima:Best model:  SARIMA(2,0,3)(1,1,1)[24] without constant
+INFO:merlion.models.automl.autosarima:Best model:  SARIMA(1,0,5)(0,1,2)[24] without constant
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -488,7 +488,7 @@ INFO:merlion.models.automl.autosarima:Best model:  SARIMA(2,0,3)(1,1,1)[24] with
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Full AutoSarima with approximation sMAPE is 3.4736
+Full AutoSarima with approximation sMAPE is 3.4972
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -533,10 +533,10 @@ Full AutoSarima with approximation sMAPE is 3.4736
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is 24
+INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is [24]
 INFO:merlion.models.automl.autosarima:Seasonal difference order is 1
 INFO:merlion.models.automl.autosarima:Difference order is 0
-INFO:merlion.models.automl.autosarima:Best model:  SARIMA(2,0,3)(1,1,1)[24] without constant
+INFO:merlion.models.automl.autosarima:Best model:  SARIMA(5,0,1)(2,1,0)[24] without constant
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -558,7 +558,7 @@ INFO:merlion.models.automl.autosarima:Best model:  SARIMA(2,0,3)(1,1,1)[24] with
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Full AutoSarima without approximation sMAPE is 3.6991
+Full AutoSarima without approximation sMAPE is 4.1451
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -608,7 +608,7 @@ Full AutoSarima without approximation sMAPE is 3.6991
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is 24
+INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is [24]
 INFO:merlion.models.automl.autosarima:Seasonal difference order is 1
 INFO:merlion.models.automl.autosarima:Difference order is 0
 </pre></div></div>
@@ -632,7 +632,7 @@ INFO:merlion.models.automl.autosarima:Difference order is 0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Partial AutoSarima without approximation sMAPE is 3.5288
+Partial AutoSarima without approximation sMAPE is 3.1810
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -676,11 +676,11 @@ Partial AutoSarima without approximation sMAPE is 3.5288
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is 24
+INFO:merlion.models.automl.seasonality:Automatically detect the periodicity is [24]
 INFO:merlion.models.automl.autosarima:Seasonal difference order is 1
 INFO:merlion.models.automl.autosarima:Difference order is 0
 INFO:merlion.models.automl.autosarima:Fitting models using approximations(approx_iter is 1) to speed things up
-INFO:merlion.models.automl.autosarima:Best model:  SARIMA(5,0,1)(2,1,0)[24] without constant
+INFO:merlion.models.automl.autosarima:Best model:  SARIMA(1,0,5)(0,1,2)[24] without constant
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -702,7 +702,7 @@ INFO:merlion.models.automl.autosarima:Best model:  SARIMA(5,0,1)(2,1,0)[24] with
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-AutoSarima without enforcing stationarity and invertibility sMAPE is 4.2063
+AutoSarima without enforcing stationarity and invertibility sMAPE is 3.4972
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
