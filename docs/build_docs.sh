@@ -55,7 +55,7 @@ checkout_files=("${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets" "se
 for version in $(git tag --list 'v[0-9]*'); do
     versions+=("$version")
     git checkout -b "${version}_local_docs_only"
-    for f in $(git diff --name-only --diff-filter=A "tags/${version}" "${DIRNAME}/source/*.rst"); do
+    for f in $(git diff --name-only --diff-filter=A "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
         git rm "$f"
     done
     git checkout "tags/${version}" -- "${checkout_files[@]}"
