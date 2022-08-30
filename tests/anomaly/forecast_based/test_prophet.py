@@ -40,7 +40,7 @@ class TestProphet(unittest.TestCase):
         self.model = AutoProphet(
             model=ProphetDetector(
                 ProphetDetectorConfig(
-                    transform=PowerTransform(lmbda=0.0),
+                    transform=PowerTransform(lmbda=0.5),
                     uncertainty_samples=1000,
                     holidays=holidays,
                     invert_transform=True,

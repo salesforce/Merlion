@@ -8,15 +8,19 @@
 Transforms that rescale the input or otherwise normalize it.
 """
 from collections import OrderedDict
+import logging
 from typing import Iterable
 
 import numpy as np
 import pandas as pd
 import scipy.special
+import scipy.stats
 from sklearn.preprocessing import StandardScaler
 
 from merlion.transform.base import InvertibleTransformBase, TransformBase
 from merlion.utils import UnivariateTimeSeries, TimeSeries
+
+logger = logging.getLogger(__name__)
 
 
 class AbsVal(TransformBase):
@@ -158,13 +162,14 @@ class MinMaxNormalize(Rescale):
 class PowerTransform(InvertibleTransformBase):
     """
     Applies the Box-Cox power transform to the time series, with power lmbda.
+    When lmbda is None, we
     When lmbda > 0, it is ((x + offset) ** lmbda - 1) / lmbda.
     When lmbda == 0, it is ln(lmbda + offset).
     """
 
-    def __init__(self, lmbda=0.0, offset=0.0):
+    def __init__(self, lmbda=None, offset=0.0):
         super().__init__()
-        assert lmbda >= 0
+        assert lmbda is None or isinstance(lmbda, float) and lmbda >= 0
         self.lmbda = lmbda
         self.offset = offset
 
@@ -176,12 +181,16 @@ class PowerTransform(InvertibleTransformBase):
         return False
 
     def train(self, time_series: TimeSeries):
-        pass
+        if self.lmbda is None:
+            self.lmbda = [scipy.stats.boxcox(var.np_values + self.offset)[1] for var in time_series.univariates]
+            logger.info(f"Chose Box-Cox lambda = {self.lmbda}")
+        else:
+            self.lmbda = [self.lmbda] * time_series.dim
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = []
-        for var in time_series.univariates:
-            y = scipy.special.boxcox(var + self.offset, self.lmbda)
+        for lmbda, var in zip(self.lmbda, time_series.univariates):
+            y = scipy.special.boxcox(var + self.offset, lmbda)
             var = pd.Series(y, index=var.index, name=var.name)
             new_vars.append(UnivariateTimeSeries.from_pd(var))
 
@@ -189,9 +198,14 @@ class PowerTransform(InvertibleTransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = []
-        for var in time_series.univariates:
-            if self.lmbda > 0:
-                var = (self.lmbda * var + 1).log() / self.lmbda
-            new_vars.append(UnivariateTimeSeries.from_pd(var.apply(np.exp)))
+        for lmbda, var in zip(self.lmbda, time_series.univariates):
+            if lmbda > 0:
+                var = (lmbda * var + 1) ** (1 / lmbda)
+                nanvals = var.isna()
+                if nanvals.any():
+                    var[nanvals] = 0
+            else:
+                var = var.apply(np.exp)
+            new_vars.append(UnivariateTimeSeries.from_pd(var - self.offset))
 
         return TimeSeries(new_vars)
