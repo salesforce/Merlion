@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -9,12 +9,13 @@ Datasets for time series forecasting. Really, these are just time series with
 no labels of any sort.
 """
 from ts_datasets.base import BaseDataset
+from ts_datasets.forecast.custom import CustomDataset
 from ts_datasets.forecast.m4 import M4
 from ts_datasets.forecast.energy_power import EnergyPower
 from ts_datasets.forecast.seattle_trail import SeattleTrail
 from ts_datasets.forecast.solar_plant import SolarPlant
 
-__all__ = ["get_dataset", "M4", "EnergyPower", "SeattleTrail", "SolarPlant"]
+__all__ = ["get_dataset", "CustomDataset", "M4", "EnergyPower", "SeattleTrail", "SolarPlant"]
 
 
 def get_dataset(dataset_name: str, rootdir: str = None) -> BaseDataset:
