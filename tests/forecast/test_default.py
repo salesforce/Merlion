@@ -108,17 +108,17 @@ class TestUnivariate(unittest.TestCase):
         self.model = DefaultForecaster(DefaultForecasterConfig())
 
     def test_forecast(self):
-        # batch forecasting RMSE = 6.5612
+        # batch forecasting RMSE = 3.001
         _, _ = self.model.train(self.train_data)
         forecast, lb, ub = self.model.forecast(self.max_forecast_steps, return_iqr=True)
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast)
         logger.info(f"RMSE = {rmse:.4f} for {self.max_forecast_steps} step forecasting")
-        self.assertAlmostEqual(rmse, 6.5, delta=1)
+        self.assertAlmostEqual(rmse, 3.0, delta=1)
         msis = ForecastMetric.MSIS.value(
             ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
         )
         logger.info(f"MSIS = {msis:.4f}")
-        self.assertLessEqual(np.abs(msis - 101.6), 10)
+        self.assertAlmostEqual(msis, 34, delta=10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -805,7 +805,7 @@ class TestAutoSarima(unittest.TestCase):
         else:
             self.model = model
 
-        train_pred, train_err = self.model.train(
+        train_scores = self.model.train(
             self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
         )
 
@@ -813,9 +813,6 @@ class TestAutoSarima(unittest.TestCase):
         k = self.test_data.names[0]
         m = autosarima_utils.multiperiodicity_detection(self.train_data.univariates[k].np_values)
         self.assertEqual(m[0], 24)
-
-        # check the length of training results
-        self.assertEqual(len(train_pred), len(train_err))
 
         # check the length of forecasting results
         pred, err = self.model.forecast(self.max_forecast_steps)

@@ -45,6 +45,7 @@ class ETSConfig(ForecasterConfig):
         damped_trend=True,
         seasonal="add",
         seasonal_periods=None,
+        pred_interval_strategy="exact",
         refit=True,
         **kwargs,
     ):
@@ -58,6 +59,8 @@ class ETSConfig(ForecasterConfig):
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
         :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
+        :param pred_interval_strategy: Strategy to compute prediction intervals. "exact" or "simulated".
+        Note that "simulated" setting supports more variants of ETS model.
         :param refit: if ``True``, refit the full ETS model when ``time_series_prev`` is given to the forecast method
             (slower). If ``False``, simply perform exponential smoothing (faster).
         """
@@ -67,6 +70,7 @@ class ETSConfig(ForecasterConfig):
         self.damped_trend = damped_trend
         self.seasonal = seasonal
         self.seasonal_periods = seasonal_periods
+        self.pred_interval_strategy = pred_interval_strategy
         self.refit = refit
 
 
@@ -156,11 +160,20 @@ class ETS(SeasonalityModel, ForecasterBase):
 
         # Basic forecasting without time_series_prev
         if time_series_prev is None:
-            forecast_result = self.model.get_prediction(
-                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method="exact"
-            )
-            forecast = np.asarray(forecast_result.predicted_mean)
-            err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
+            # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
+            # In this case we use point forecasting and set prediction_interval as None
+            try:
+                forecast_result = self.model.get_prediction(
+                    start=self._n_train,
+                    end=self._n_train + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
+                )
+                forecast = np.asarray(forecast_result.predicted_mean)
+                err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
+            except (NotImplementedError, AttributeError):
+                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
+                forecast = np.asarray(forecast_result)
+                err = None
 
         # If there is a time_series_prev, use it to smooth/refit ETS model,
         # and then obtain its forecast (and standard error of that forecast)
@@ -197,11 +210,21 @@ class ETS(SeasonalityModel, ForecasterBase):
                 self.model = new_model.fit(start_params=self.model.params, disp=False)
             else:
                 self.model = new_model.smooth(params=self.model.params)
-            forecast_result = self.model.get_prediction(
-                start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1, method="simulated"
-            )
-            forecast = np.asarray(forecast_result.predicted_mean)
-            err = np.asarray(forecast_result._results.simulation_results.std(axis=1))
+
+            # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
+            # In this case we use point forecasting and set prediction_interval as None
+            try:
+                forecast_result = self.model.get_prediction(
+                    start=val_prev.shape[0],
+                    end=val_prev.shape[0] + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
+                )
+                forecast = np.asarray(forecast_result.predicted_mean)
+                err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
+            except (NotImplementedError, AttributeError):
+                forecast_result = self.model.predict(start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1)
+                forecast = np.asarray(forecast_result)
+                err = None
 
             # if return_prev is Ture, it will return the forecast and error of last train window
             # instead of time_series_prev
@@ -219,11 +242,12 @@ class ETS(SeasonalityModel, ForecasterBase):
                 "Trained ETS model is producing NaN forecast. Use the last training point as the prediction."
             )
             forecast[np.isnan(forecast)] = self._last_val
-        if any(np.isnan(err)):
+        if err is not None and any(np.isnan(err)):
             err[np.isnan(err)] = 0
 
         # Return the forecast & its standard error
         name = self.target_name
         forecast = pd.DataFrame(forecast, index=to_pd_datetime(time_stamps), columns=[name])
-        err = pd.DataFrame(err, index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])
+        if err is not None:
+            err = pd.DataFrame(err, index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])
         return forecast, err
