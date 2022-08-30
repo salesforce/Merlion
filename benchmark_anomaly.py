@@ -61,6 +61,8 @@ def parse_args():
         "in ts_datasets/ts_datasets/anomaly/__init__.py for "
         "valid options.",
     )
+    parser.add_argument("--data_root", default=None, help="Root directory/file of dataset.")
+    parser.add_argument("--data_kwargs", default="{}", help="JSON of keyword arguemtns for the data loader.")
     parser.add_argument(
         "--models",
         type=str,
@@ -148,6 +150,8 @@ def parse_args():
     args.metric = TSADMetric[args.metric]
     args.pointwise_metric = TSADMetric[args.pointwise_metric]
     args.visualize = args.visualize and not args.eval_only
+    args.data_kwargs = json.loads(args.data_kwargs)
+    assert isinstance(args.data_kwargs, dict)
     if args.retrain_freq.lower() in ["", "none", "null"]:
         args.retrain_freq = None
     elif args.retrain_freq != "default":
@@ -164,10 +168,14 @@ def parse_args():
     return args
 
 
-def dataset_to_name(dataset: TSADBaseDataset):
-    if dataset.subset is not None:
-        return f"{type(dataset).__name__}_{dataset.subset}"
-    return type(dataset).__name__
+def get_dataset_name(dataset: TSADBaseDataset):
+    name = type(dataset).__name__
+    if hasattr(dataset, "subset") and dataset.subset is not None:
+        name += "_" + dataset.subset
+    if isinstance(dataset, CustomAnomalyDataset):
+        root = dataset.rootdir
+        name = os.path.join(name, os.path.basename(os.path.dirname(root) if os.path.isfile(root) else root))
+    return name
 
 
 def dataset_to_threshold(dataset: TSADBaseDataset, tune_on_test=False):
@@ -275,7 +283,7 @@ def train_model(
         resampler = TemporalResample("5min")
 
     model_name = resolve_model_name(model_name)
-    dataset_name = dataset_to_name(dataset)
+    dataset_name = get_dataset_name(dataset)
     model_dir = model_name if retrain_freq is None else f"{model_name}_{retrain_freq}"
     dirname = os.path.join("results", "anomaly", model_dir)
     csv = os.path.join(dirname, f"pred_{dataset_name}.csv.gz")
@@ -336,6 +344,7 @@ def train_model(
         if not visualize:
             if i == i0 == 0:
                 os.makedirs(os.path.dirname(csv), exist_ok=True)
+                os.makedirs(os.path.dirname(checkpoint), exist_ok=True)
                 df = pd.DataFrame({"timestamp": [], "y": [], "trainval": [], "idx": []})
                 df.to_csv(csv, index=False)
 
@@ -432,7 +441,7 @@ def read_model_predictions(dataset: TSADBaseDataset, model_dir: str):
     Returns a list of lists all_preds, where all_preds[i] is the model's raw
     anomaly scores for time series i in the dataset.
     """
-    csv = os.path.join("results", "anomaly", model_dir, f"pred_{dataset_to_name(dataset)}.csv.gz")
+    csv = os.path.join("results", "anomaly", model_dir, f"pred_{get_dataset_name(dataset)}.csv.gz")
     preds = pd.read_csv(csv, dtype={"trainval": bool, "idx": int})
     preds["timestamp"] = to_pd_datetime(preds["timestamp"])
     return [preds[preds["idx"] == i].set_index("timestamp") for i in sorted(preds["idx"].unique())]
@@ -648,7 +657,7 @@ def main():
     logging.basicConfig(
         format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=level
     )
-    dataset = get_dataset(args.dataset)
+    dataset = get_dataset(args.dataset, rootdir=args.data_root, **args.data_kwargs)
     retrain_freq, train_window = args.retrain_freq, args.train_window
     univariate = dataset[0][0].shape[1] == 1
     if retrain_freq == "default":
@@ -692,10 +701,11 @@ def main():
         )
 
         model_name = "+".join(sorted(resolve_model_name(m) for m in args.models))
-        summary = os.path.join("results", "anomaly", f"{dataset_to_name(dataset)}_summary.csv")
+        summary = os.path.join("results", "anomaly", f"{get_dataset_name(dataset)}_summary.csv")
         if os.path.exists(summary):
             df = pd.read_csv(summary, index_col=0)
         else:
+            os.makedirs(os.path.dirname(summary), exist_ok=True)
             df = pd.DataFrame()
         if retrain_freq:
             model_name += f"_{retrain_freq}"

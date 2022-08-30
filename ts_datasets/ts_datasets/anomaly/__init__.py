@@ -33,7 +33,7 @@ __all__ = [
 ]
 
 
-def get_dataset(dataset_name: str, rootdir: str = None) -> TSADBaseDataset:
+def get_dataset(dataset_name: str, rootdir: str = None, **kwargs) -> TSADBaseDataset:
     """
     :param dataset_name: the name of the dataset to load, formatted as
         ``<name>`` or ``<name>_<subset>``, e.g. ``IOPsCompetition``
@@ -41,6 +41,7 @@ def get_dataset(dataset_name: str, rootdir: str = None) -> TSADBaseDataset:
     :param rootdir: the directory where the desired dataset is stored. Not
         required if the package :py:mod:`ts_datasets` is installed in editable
         mode, i.e. with flag ``-e``.
+    :param kwargs: keyword arguments for the data loader you are trying to load.
     :return: the data loader for the desired dataset (and subset) desired
     """
     name_subset = dataset_name.split("_", maxsplit=1)
@@ -60,5 +61,6 @@ def get_dataset(dataset_name: str, rootdir: str = None) -> TSADBaseDataset:
             f"specifying dataset name {dataset_name}."
         )
 
-    kwargs = dict() if len(name_subset) == 1 else dict(subset=name_subset[1])
+    if len(name_subset) > 1:
+        kwargs.update(subset=name_subset[1])
     return cls(rootdir=rootdir, **kwargs)

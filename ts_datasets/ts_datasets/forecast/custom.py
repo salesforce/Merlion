@@ -17,15 +17,16 @@ class CustomDataset(BaseDataset):
     Wrapper to load a custom dataset. Please review the `tutorial <examples/CustomDataset>` to get started.
     """
 
-    def __init__(self, root, test_frac=0.5, time_col=None, time_unit="s", index_cols=None):
+    def __init__(self, rootdir, test_frac=0.5, time_col=None, time_unit="s", data_cols=None, index_cols=None):
         """
-        :param root: Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
+        :param rootdir: Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
             or more time series.
         :param test_frac: If we don't find a column "trainval" in the time series, this is the fraction of each
             time series which we use for testing.
         :param time_col: Name of the column used to index time. We use the first non-index, non-metadata column
             if none is given.
         :param time_unit: If the time column is numerical, we assume it is a timestamp expressed in this unit.
+        :param data_cols: Name of the columns to fetch from the dataset. If ``None``, use all non-time, non-index columns.
         :param index_cols: If a CSV file contains multiple time series, these are the columns used to index those
             time series. For example, a CSV file may contain time series of sales for many (store, department) pairs.
             In this case, ``index_cols`` may be ``["Store", "Dept"]``. The values of the index columns will be added
@@ -33,11 +34,12 @@ class CustomDataset(BaseDataset):
         """
         super().__init__()
         assert (
-            root is not None and os.path.isfile(root) or os.path.isdir(root)
+            rootdir is not None and os.path.isfile(rootdir) or os.path.isdir(rootdir)
         ), "You must give CSV file or directory where the data lives."
-        csvs = sorted(glob.glob(os.path.join(root, "*.csv*"))) if os.path.isdir(root) else [root]
-        assert len(csvs) > 0, f"The rootdir {root} must contain at least 1 CSV file. None found."
+        csvs = sorted(glob.glob(os.path.join(rootdir, "*.csv*"))) if os.path.isdir(rootdir) else [rootdir]
+        assert len(csvs) > 0, f"The rootdir {rootdir} must contain at least 1 CSV file. None found."
         self.test_frac = test_frac
+        self.rootdir = rootdir
 
         for csv in csvs:
             df = pd.read_csv(csv)
@@ -54,6 +56,7 @@ class CustomDataset(BaseDataset):
 
             # Split into multiple time series dataframes based on index
             df.set_index(index_cols + [time_col], inplace=True)
+            df = df.loc[:, data_cols] if data_cols is not None else df
             if len(index_cols) > 0:
                 dfs = [df.loc[idx] for idx in df.groupby(index_cols).groups.values()]
             else:

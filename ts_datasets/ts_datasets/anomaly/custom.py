@@ -22,9 +22,18 @@ class CustomAnomalyDataset(CustomDataset, TSADBaseDataset):
     to get started.
     """
 
-    def __init__(self, root, test_frac=0.5, assume_no_anomaly=False, time_col=None, time_unit="s", index_cols=None):
+    def __init__(
+        self,
+        rootdir,
+        test_frac=0.5,
+        assume_no_anomaly=False,
+        time_col=None,
+        time_unit="s",
+        data_cols=None,
+        index_cols=None,
+    ):
         """
-        :param root: Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
+        :param rootdir: Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
             or more time series.
         :param test_frac: If we don't find a column "trainval" in the time series, this is the fraction of each
             time series which we use for testing.
@@ -32,6 +41,7 @@ class CustomAnomalyDataset(CustomDataset, TSADBaseDataset):
             anomalies in the data if this value is ``True``, and we throw an exception if this value is ``False``.
         :param time_col: Name of the column used to index time. We use the first non-index, non-metadata column
             if none is given.
+        :param data_cols: Name of the columns to fetch from the dataset. If ``None``, use all non-time, non-index columns.
         :param time_unit: If the time column is numerical, we assume it is a timestamp expressed in this unit.
         :param index_cols: If a CSV file contains multiple time series, these are the columns used to index those
             time series. For example, a CSV file may contain time series of sales for many (store, department) pairs.
@@ -39,7 +49,14 @@ class CustomAnomalyDataset(CustomDataset, TSADBaseDataset):
             to the metadata of the data loader.
         """
         self.assume_no_anomaly = assume_no_anomaly
-        super().__init__(root=root, test_frac=test_frac, time_col=time_col, time_unit=time_unit, index_cols=index_cols)
+        super().__init__(
+            rootdir=rootdir,
+            test_frac=test_frac,
+            time_col=time_col,
+            time_unit=time_unit,
+            data_cols=data_cols,
+            index_cols=index_cols,
+        )
 
     @property
     def metadata_cols(self):
