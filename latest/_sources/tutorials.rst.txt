@@ -9,6 +9,7 @@ Basics
    :glob:
 
    examples/TimeSeries.ipynb
+   examples/CustomDataset.ipynb
 
 Anomaly Detection
 -----------------

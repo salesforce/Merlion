@@ -305,6 +305,12 @@
 </li>
       <li><a href="merlion.evaluate.html#merlion.evaluate.forecast.ForecastScoreAccumulator.check_before_eval">check_before_eval() (merlion.evaluate.forecast.ForecastScoreAccumulator method)</a>
 </li>
+      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.check_ts_for_metadata">check_ts_for_metadata() (ts_datasets.anomaly.CustomAnomalyDataset method)</a>
+
+      <ul>
+        <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.check_ts_for_metadata">(ts_datasets.forecast.CustomDataset method)</a>
+</li>
+      </ul></li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.base.EnsembleBase.combiner">combiner (merlion.models.ensemble.base.EnsembleBase property)</a>
 </li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.combine.CombinerBase">CombinerBase (class in merlion.models.ensemble.combine)</a>
@@ -430,6 +436,10 @@
       <li><a href="merlion.spark.html#merlion.spark.dataset.create_hier_dataset">create_hier_dataset() (in module merlion.spark.dataset)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.data_io.csv_to_time_series">csv_to_time_series() (in module merlion.utils.data_io)</a>
+</li>
+      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset">CustomAnomalyDataset (class in ts_datasets.anomaly)</a>
+</li>
+      <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset">CustomDataset (class in ts_datasets.forecast)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1601,8 +1611,6 @@
         <li><a href="merlion.transform.html#module-merlion.transform">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.transform.anomalize
 
@@ -1610,6 +1618,8 @@
         <li><a href="merlion.transform.html#module-merlion.transform.anomalize">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.transform.base
 
@@ -1715,9 +1725,11 @@
         <li><a href="merlion.utils.html#module-merlion.utils.ts_generator">module</a>
 </li>
       </ul></li>
-      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition.metadata">metadata (ts_datasets.anomaly.IOpsCompetition attribute)</a>
+      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.metadata">metadata (ts_datasets.anomaly.CustomAnomalyDataset attribute)</a>
 
       <ul>
+        <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition.metadata">(ts_datasets.anomaly.IOpsCompetition attribute)</a>
+</li>
         <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.MSL.metadata">(ts_datasets.anomaly.MSL attribute)</a>
 </li>
         <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.metadata">(ts_datasets.anomaly.NAB attribute)</a>
@@ -1734,6 +1746,8 @@
 </li>
         <li><a href="ts_datasets.html#ts_datasets.base.BaseDataset.metadata">(ts_datasets.base.BaseDataset attribute)</a>
 </li>
+        <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.metadata">(ts_datasets.forecast.CustomDataset attribute)</a>
+</li>
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.EnergyPower.metadata">(ts_datasets.forecast.EnergyPower attribute)</a>
 </li>
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.M4.metadata">(ts_datasets.forecast.M4 attribute)</a>
@@ -1741,6 +1755,12 @@
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.SeattleTrail.metadata">(ts_datasets.forecast.SeattleTrail attribute)</a>
 </li>
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.SolarPlant.metadata">(ts_datasets.forecast.SolarPlant attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.metadata_cols">metadata_cols (ts_datasets.anomaly.CustomAnomalyDataset property)</a>
+
+      <ul>
+        <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.metadata_cols">(ts_datasets.forecast.CustomDataset property)</a>
 </li>
       </ul></li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.combine.MetricWeightedMean">MetricWeightedMean (class in merlion.models.ensemble.combine)</a>
@@ -2666,9 +2686,11 @@
         <li><a href="merlion.post_process.html#merlion.post_process.threshold.AggregateAlarms.threshold_class">(merlion.post_process.threshold.AggregateAlarms attribute)</a>
 </li>
       </ul></li>
-      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition.time_series">time_series (ts_datasets.anomaly.IOpsCompetition attribute)</a>
+      <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.time_series">time_series (ts_datasets.anomaly.CustomAnomalyDataset attribute)</a>
 
       <ul>
+        <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition.time_series">(ts_datasets.anomaly.IOpsCompetition attribute)</a>
+</li>
         <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.MSL.time_series">(ts_datasets.anomaly.MSL attribute)</a>
 </li>
         <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.time_series">(ts_datasets.anomaly.NAB attribute)</a>
@@ -2684,6 +2706,8 @@
         <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.UCR.time_series">(ts_datasets.anomaly.UCR attribute)</a>
 </li>
         <li><a href="ts_datasets.html#ts_datasets.base.BaseDataset.time_series">(ts_datasets.base.BaseDataset attribute)</a>
+</li>
+        <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.time_series">(ts_datasets.forecast.CustomDataset attribute)</a>
 </li>
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.EnergyPower.time_series">(ts_datasets.forecast.EnergyPower attribute)</a>
 </li>

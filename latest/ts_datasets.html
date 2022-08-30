@@ -125,9 +125,10 @@ there is no need to specify a <code class="docutils literal notranslate"><span c
 <p>The core features of general data loaders (e.g. for forecasting) are outlined in the API doc for
 <a class="reference internal" href="#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.base.BaseDataset</span></code></a>, and the features for time series anomaly detection data loaders
 are outlined in the API doc for <a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.TSADBaseDataset</span></code></a>.</p>
-<span class="target" id="module-ts_datasets"></span><p>This package implements Python classes that manipulate numerous time series
-datasets (both open source and internal) into standardized <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> s.</p>
-<table class="autosummary longtable docutils align-default">
+<p>The easiest way to load a custom dataset is to use either the <a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset" title="ts_datasets.forecast.CustomDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.forecast.CustomDataset</span></code></a> or
+<a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset" title="ts_datasets.anomaly.CustomAnomalyDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.CustomAnomalyDataset</span></code></a> classes. Please review the <a class="reference internal" href="examples/CustomDataset.html"><span class="doc">tutorial</span></a>
+to get started.</p>
+<span class="target" id="module-ts_datasets"></span><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />

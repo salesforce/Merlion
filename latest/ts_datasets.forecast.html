@@ -134,6 +134,55 @@ mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">CustomDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.CustomDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>Wrapper to load a custom dataset. Please review the <a class="reference internal" href="examples/CustomDataset.html"><span class="doc">tutorial</span></a> to get started.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> – Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
+or more time series.</p></li>
+<li><p><strong>test_frac</strong> – If we don’t find a column “trainval” in the time series, this is the fraction of each
+time series which we use for testing.</p></li>
+<li><p><strong>time_col</strong> – Name of the column used to index time. We use the first non-index, non-metadata column
+if none is given.</p></li>
+<li><p><strong>time_unit</strong> – If the time column is numerical, we assume it is a timestamp expressed in this unit.</p></li>
+<li><p><strong>index_cols</strong> – If a CSV file contains multiple time series, these are the columns used to index those
+time series. For example, a CSV file may contain time series of sales for many (store, department) pairs.
+In this case, <code class="docutils literal notranslate"><span class="pre">index_cols</span></code> may be <code class="docutils literal notranslate"><span class="pre">[&quot;Store&quot;,</span> <span class="pre">&quot;Dept&quot;]</span></code>. The values of the index columns will be added
+to the metadata of the data loader.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset.metadata_cols">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata_cols</span></span><a class="headerlink" href="#ts_datasets.forecast.CustomDataset.metadata_cols" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset.check_ts_for_metadata">
+<span class="sig-name descname"><span class="pre">check_ts_for_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.CustomDataset.check_ts_for_metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset.time_series">
+<span class="sig-name descname"><span class="pre">time_series</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.CustomDataset.time_series" title="Permalink to this definition"></a></dt>
+<dd><p>A list of all individual time series contained in the dataset. Iterating over
+the dataset will iterate over this list. Note that for some large datasets, 
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
+iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.forecast.CustomDataset.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A list containing the metadata for all individual time series in the dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.forecast.M4">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">M4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Hourly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.M4" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
