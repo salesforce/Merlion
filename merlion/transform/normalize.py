@@ -159,7 +159,7 @@ class MinMaxNormalize(Rescale):
         self.scale = scale
 
 
-class PowerTransform(InvertibleTransformBase):
+class BoxCoxTransform(InvertibleTransformBase):
     """
     Applies the Box-Cox power transform to the time series, with power lmbda.
     When lmbda is None, we

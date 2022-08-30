@@ -148,7 +148,7 @@ def dynamic_import(import_path: str, alias: dict = None):
     Dynamically import a member from the specified module.
 
     :param import_path: syntax 'module_name:member_name',
-        e.g. 'merlion.transform.normalize:PowerTransform'
+        e.g. 'merlion.transform.normalize:BoxCoxTransform'
     :param alias: dict which maps shortcuts for the registered classes, to their
         full import paths.
     :return: imported class

@@ -17,7 +17,7 @@ from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.data_io import csv_to_time_series
 from merlion.utils.time_series import TimeSeries
-from merlion.transform.normalize import PowerTransform
+from merlion.transform.normalize import BoxCoxTransform
 from merlion.transform.resample import TemporalResample
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class TestProphet(unittest.TestCase):
         self.model = AutoProphet(
             model=ProphetDetector(
                 ProphetDetectorConfig(
-                    transform=PowerTransform(lmbda=0.5),
+                    transform=BoxCoxTransform(lmbda=0.5),
                     uncertainty_samples=1000,
                     holidays=holidays,
                     invert_transform=True,

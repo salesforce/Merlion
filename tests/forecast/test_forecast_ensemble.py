@@ -19,7 +19,7 @@ from merlion.models.automl.autoprophet import AutoProphet, AutoProphetConfig
 from merlion.models.forecast.arima import Arima, ArimaConfig
 from merlion.models.factory import ModelFactory
 from merlion.transform.base import Identity
-from merlion.transform.normalize import PowerTransform
+from merlion.transform.normalize import BoxCoxTransform
 from merlion.transform.resample import TemporalResample
 from merlion.utils.data_io import csv_to_time_series, TimeSeries
 
@@ -52,7 +52,7 @@ class TestForecastEnsemble(unittest.TestCase):
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), max_forecast_steps=50, transform=TemporalResample("10min")))
         model2 = AutoProphet(
-            config=AutoProphetConfig(target_seq_index=0, transform=PowerTransform(lmbda=0), periodicity_strategy="Max")
+            config=AutoProphetConfig(target_seq_index=0, transform=BoxCoxTransform(lmbda=0), periodicity_strategy="Max")
         )
         self.ensemble = ForecasterEnsemble(
             config=ForecasterEnsembleConfig(
