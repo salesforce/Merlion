@@ -102,11 +102,11 @@ class TestETS(unittest.TestCase):
         self.model = ETS(
             ETSConfig(
                 error="add",
-                trend="mul",
-                seasonal="mul",
+                trend="add",
+                seasonal="add",
                 damped_trend=True,
                 seasonal_periods=4,
-                pred_interval_strategy="simulated",
+                pred_interval_strategy="exact",
             )
         )
 
@@ -127,11 +127,12 @@ class TestETS(unittest.TestCase):
         self._test_forecast()
 
     def _test_forecast(self):
+        # batch forecasting RMSE = 6.5612
         _, _ = self.model.train(self.train_data)
         forecast, lb, ub = self.model.forecast(self.max_forecast_steps, return_iqr=True)
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"RMSE = {rmse:.4f} for {self.max_forecast_steps} step forecasting")
-
+        self.assertAlmostEqual(rmse, 6.5, delta=1)
         rmspe = ForecastMetric.RMSPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
         smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
@@ -147,7 +148,7 @@ class TestETS(unittest.TestCase):
                 target_seq_index=0,
             )
             logger.info(f"MSIS = {msis:.4f}")
-            self.assertAlmostEqual(msis, 72, delta=10)
+            self.assertLessEqual(np.abs(msis - 101.6), 10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
@@ -158,7 +159,7 @@ class TestETS(unittest.TestCase):
         loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
         self.assertSequenceEqual(list(loaded_pred), list(forecast))
 
-        # streaming forecasting
+        # streaming forecasting RMSE = 2.4689
         test_t = self.test_data.np_time_stamps
         t, tf = to_pd_datetime([test_t[0], test_t[-1]])
         forecast_results = None
@@ -172,6 +173,7 @@ class TestETS(unittest.TestCase):
             t += self.model.timedelta
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results, target_seq_index=0)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
+        self.assertAlmostEqual(rmse_onestep, 2.4, delta=1)
 
         # streaming forecasting performs better than batch forecasting
         self.assertLessEqual(rmse_onestep, rmse)
