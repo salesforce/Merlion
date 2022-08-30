@@ -222,7 +222,7 @@ class ETS(SeasonalityModel, ForecasterBase):
                 forecast = np.asarray(forecast_result.predicted_mean)
                 err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
             except (NotImplementedError, AttributeError):
-                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
+                forecast_result = self.model.predict(start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1)
                 forecast = np.asarray(forecast_result)
                 err = None
 
