@@ -16,7 +16,7 @@ import pandas as pd
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.plot import Figure
-from merlion.utils import UnivariateTimeSeries, TimeSeries
+from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
@@ -76,6 +76,17 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             train_result = self.forecast_to_anom_score(train_data, train_pred, train_err)
         return DetectorBase.train_post_process(
             self, train_data, train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
+        )
+
+    def train(
+        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+    ) -> TimeSeries:
+        return DetectorBase.train(
+            self,
+            train_data=train_data,
+            anomaly_labels=anomaly_labels,
+            train_config=train_config,
+            post_rule_train_config=post_rule_train_config,
         )
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
