@@ -257,14 +257,14 @@ class ForecasterBase(ModelBase):
         if time_series_prev is not None:
             time_series_prev = time_series_prev.univariates[time_series_prev.names[self.target_seq_index]].to_ts()
 
-        if return_iqr and err is None:
-            raise RuntimeError("Model does not support uncertainty estimation, but got return_iqr=True")
-
         # Handle the case where we want to return the IQR. If applying the inverse transform, we just apply
         # the inverse transform directly to the upper/lower bounds.
-        elif return_iqr:
-            # Compute positive & negative deviations
-            if isinstance(err, tuple) and len(err) == 2:
+        if return_iqr:
+            # Compute positive & negative deviations. Case 1 is where we return distinct upper & lower errors.
+            if err is None:
+                logger.warning("Model returned err = None, so returning IQR = (None, None)")
+                d_neg, d_pos = None, None
+            elif isinstance(err, tuple) and len(err) == 2:
                 d_neg, d_pos = err[0].values * norm.ppf(0.25), err[1].values * norm.ppf(0.75)
             else:
                 d_neg, d_pos = err.values * norm.ppf(0.25), err.values * norm.ppf(0.75)
@@ -272,18 +272,23 @@ class ForecasterBase(ModelBase):
             # Concatenate time_series_prev to the forecast & upper/lower bounds if inverting the transform
             if self.invert_transform:
                 time_series_prev_df = time_series_prev.to_pd()
-                d_neg = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_neg))
-                d_pos = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_pos))
+                if d_neg is not None and d_pos is not None:
+                    d_neg = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_neg))
+                    d_pos = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_pos))
                 forecast = pd.concat((time_series_prev_df, forecast))
 
             # Convert to time series & invert the transform if desired
-            lb = TimeSeries.from_pd((forecast + d_neg).rename(columns=lambda c: f"{c}_lower"))
-            ub = TimeSeries.from_pd((forecast + d_pos).rename(columns=lambda c: f"{c}_upper"))
+            if d_neg is None or d_pos is None:
+                lb, ub = None, None
+            else:
+                lb = TimeSeries.from_pd((forecast + d_neg).rename(columns=lambda c: f"{c}_lower"))
+                ub = TimeSeries.from_pd((forecast + d_pos).rename(columns=lambda c: f"{c}_upper"))
             forecast = TimeSeries.from_pd(forecast)
             if self.invert_transform:
                 forecast = self.transform.invert(forecast, retain_inversion_state=True)
-                lb = self.transform.invert(lb, retain_inversion_state=True)
-                ub = self.transform.invert(ub, retain_inversion_state=True)
+                if lb is not None and ub is not None:
+                    lb = self.transform.invert(lb, retain_inversion_state=True)
+                    ub = self.transform.invert(ub, retain_inversion_state=True)
             ret = forecast, lb, ub
 
         # Handle the case where we directly return the forecast and its standard error.
@@ -414,7 +419,7 @@ class ForecasterBase(ModelBase):
             yhat, lb, ub = self.forecast(
                 time_stamps, time_series_prev, return_iqr=True, return_prev=plot_time_series_prev
             )
-            yhat, lb, ub = [x.univariates[x.names[0]] for x in [yhat, lb, ub]]
+            yhat, lb, ub = [None if x is None else x.univariates[x.names[0]] for x in [yhat, lb, ub]]
 
         # Just get the forecast otherwise
         else:

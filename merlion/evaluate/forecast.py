@@ -196,6 +196,7 @@ class ForecastScoreAccumulator:
         """
         self.check_before_eval()
         assert self.insample.dim == 1
+        assert self.lb is not None and self.ub is not None
         insample_values = self.insample.univariates[self.insample.names[0]].np_values
         lb_values = self.lb.univariates[self.lb.names[0]].np_values
         ub_values = self.ub.univariates[self.ub.names[0]].np_values

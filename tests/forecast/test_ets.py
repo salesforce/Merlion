@@ -136,17 +136,18 @@ class TestETS(unittest.TestCase):
         logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
         smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting")
-        msis = ForecastMetric.MSIS.value(
-            ground_truth=self.test_data,
-            predict=forecast,
-            insample=self.train_data,
-            periodicity=4,
-            ub=ub,
-            lb=lb,
-            target_seq_index=0,
-        )
-        logger.info(f"MSIS = {msis:.4f}")
-        self.assertAlmostEqual(msis, 72.84, delta=10)
+        if lb is not None and ub is not None:
+            msis = ForecastMetric.MSIS.value(
+                ground_truth=self.test_data,
+                predict=forecast,
+                insample=self.train_data,
+                periodicity=4,
+                ub=ub,
+                lb=lb,
+                target_seq_index=0,
+            )
+            logger.info(f"MSIS = {msis:.4f}")
+            self.assertAlmostEqual(msis, 72, delta=10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
@@ -171,10 +172,6 @@ class TestETS(unittest.TestCase):
             t += self.model.timedelta
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results, target_seq_index=0)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")
-        df = pd.concat((self.test_data.to_pd(), loaded_pred.to_pd(), forecast_results.to_pd()), axis=1)
-        logger.info(
-            pd.DataFrame({"normal": df.iloc[:, 1] - df.iloc[:, 0], "stream": df.iloc[:, 2] - df.iloc[:, 0]}).abs()
-        )
 
         # streaming forecasting performs better than batch forecasting
         self.assertLessEqual(rmse_onestep, rmse)
