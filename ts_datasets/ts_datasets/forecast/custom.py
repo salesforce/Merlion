@@ -45,7 +45,7 @@ class CustomDataset(BaseDataset):
             # By default, the time column is the first non-index, non-metadata column
             if time_col is None:
                 time_col = [c for c in df.columns if c not in index_cols + self.metadata_cols][0]
-            df[time_col] = pd.to_datetime(df[time_col], unit=time_unit if df[time_col].dtype != "O" else None)
+            df[time_col] = pd.to_datetime(df[time_col], unit=None if df[time_col].dtype == "O" else time_unit)
 
             # Make sure we have metadata columns, and make sure they don't overlap with time/index columns
             assert all(
