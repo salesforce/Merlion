@@ -247,12 +247,21 @@ def multiperiodicity_detection(x, pval=0.05, max_lag=None):
     # select the local maximum points with acf > 0
     candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
 
-    # the periods should be smaller than one third of the lenght of time series
-    candidates = candidates[candidates < int(x.shape[0] / 3)]
+    # the periods should be smaller than one half of the length of time series
+    candidates = candidates[candidates < int(x.shape[0] / 2)]
     if candidates.shape[0] == 0:
         return []
     else:
-        candidates = candidates[np.insert(argrelmax(xacf[candidates])[0], 0, 0)]
+        candidates_idx = []
+        if candidates.shape[0] == 1:
+            candidates_idx += [0]
+        else:
+            if xacf[candidates[0]] > xacf[candidates[1]]:
+                candidates_idx += [0]
+            if xacf[candidates[-1]] > xacf[candidates[-2]]:
+                candidates_idx += [-1]
+            candidates_idx += argrelmax(xacf[candidates])[0].tolist()
+        candidates = candidates[candidates_idx]
 
     xacf = xacf[1:]
     clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))

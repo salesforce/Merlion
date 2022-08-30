@@ -11,7 +11,7 @@ from abc import abstractmethod
 import copy
 import inspect
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import pandas as pd
 from scipy.stats import norm
@@ -181,36 +181,40 @@ class DetectorBase(ModelBase):
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
-        Trains the anomaly detector (unsupervised) and its post-rule
-        (supervised, if labels are given) on the input time series.
+        Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
-        :param post_rule_train_config: The config to use for training the
-            model's post-rule. The model's default post-rule train config is
-            used if none is supplied here.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
+        :param train_config: Additional training configs, if needed. Only required for some models.
+        :param post_rule_train_config: The config to use for training the model's post-rule. The model's default
+            post-rule train config is used if none is supplied here.
 
-        :return: A `TimeSeries` of the model's anomaly scores on the training
-            data.
+        :return: A `TimeSeries` of the model's anomaly scores on the training data.
         """
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        train_data = self.train_pre_process(train_data).to_pd()
-        train_scores = self._train(train_data=train_data, train_config=train_config)
-        train_scores = UnivariateTimeSeries.from_pd(train_scores, name="anom_score").to_ts()
-        self.train_post_rule(train_scores, anomaly_labels, post_rule_train_config)
-        return train_scores
+        return super().train(
+            train_data=train_data,
+            anomaly_labels=anomaly_labels,
+            train_config=train_config,
+            post_rule_train_config=post_rule_train_config,
+        )
 
-    @abstractmethod
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        raise NotImplementedError
+    def train_post_process(
+        self,
+        train_data: TimeSeries,
+        train_result: Union[TimeSeries, pd.DataFrame],
+        anomaly_labels=None,
+        post_rule_train_config=None,
+    ) -> TimeSeries:
+        """
+        Converts the train result (anom scores on train data) into a TimeSeries object and trains the post-rule.
 
-    def train_post_rule(
-        self, anomaly_scores: TimeSeries, anomaly_labels: TimeSeries = None, post_rule_train_config=None
-    ):
+        :param train_data: a `TimeSeries` of metric values to train the model.
+        :param train_result: Raw anomaly scores on the training data.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
+        :param post_rule_train_config: The config to use for training the model's post-rule. The model's default
+            post-rule train config is used if none is supplied here.
+        """
+        anomaly_scores = UnivariateTimeSeries.from_pd(train_result, name="anom_score").to_ts()
         if self.post_rule is not None:
             kwargs = copy.copy(self._default_post_rule_train_config)
             if post_rule_train_config is not None:
@@ -219,6 +223,11 @@ class DetectorBase(ModelBase):
             if not any(v.kind.name == "VAR_KEYWORD" for v in params.values()):
                 kwargs = {k: v for k, v in kwargs.items() if k in params}
             self.post_rule.train(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, **kwargs)
+        return anomaly_scores
+
+    @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        raise NotImplementedError
 
     @abstractmethod
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:

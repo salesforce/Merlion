@@ -288,19 +288,21 @@ class UnivariateTimeSeries(pd.Series):
     @classmethod
     def from_pd(cls, series: Union[pd.Series, pd.DataFrame], name=None, freq="1h"):
         """
-        :param series: a ``pd.Series``. If it has a``pd.DatetimeIndex``, we will
-            use that index for the timestamps. Otherwise, we will create one at
-            the specified frequency.
+        :param series: a ``pd.Series``. If it has a``pd.DatetimeIndex``, we will use that index for the timestamps.
+            Otherwise, we will create one at the specified frequency.
         :param name: the name to assign the output
-        :param freq: if ``series`` is not indexed by time, this is the frequency
-            at which we will assume it is sampled.
+        :param freq: if ``series`` is not indexed by time, this is the frequency at which we will assume it is sampled.
 
         :rtype: UnivariateTimeSeries
         :return: the `UnivariateTimeSeries` represented by series.
         """
         if series is None:
             return None
+        if isinstance(series, TimeSeries) and series.dim == 1:
+            series = list(series.univariates)[0]
         if isinstance(series, UnivariateTimeSeries):
+            if name is not None:
+                series.name = name
             return series
         if isinstance(series, pd.DataFrame) and series.shape[1] == 1:
             series = series.iloc[:, 0]

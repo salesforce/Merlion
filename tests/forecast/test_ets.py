@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.automl.autoets import AutoETSConfig, AutoETS
+from merlion.models.forecast.ets import ETSConfig, ETS
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,16 @@ class TestETS(unittest.TestCase):
         self.test_data = data[idx:]
         self.data = data
         self.max_forecast_steps = len(self.test_data)
-        self.model = AutoETS(AutoETSConfig(pval=0.1, error="add", trend="add", seasonal="add", damped_trend=True))
+        self.model = ETS(
+            ETSConfig(
+                error="add",
+                trend="add",
+                seasonal="add",
+                damped_trend=True,
+                seasonal_periods=4,
+                pred_interval_strategy="exact",
+            )
+        )
 
     def _multi_setup(self):
         x = self.data.to_pd()
@@ -128,34 +137,33 @@ class TestETS(unittest.TestCase):
         logger.info(f"RMPSE = {rmspe:.4f} for {self.max_forecast_steps} step forecasting")
         smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=0)
         logger.info(f"sMAPE = {smape:.4f} for {self.max_forecast_steps} step forecasting")
-        msis = ForecastMetric.MSIS.value(
-            ground_truth=self.test_data,
-            predict=forecast,
-            insample=self.train_data,
-            periodicity=4,
-            ub=ub,
-            lb=lb,
-            target_seq_index=0,
-        )
-        logger.info(f"MSIS = {msis:.4f}")
-        self.assertLessEqual(np.abs(msis - 101.6), 10)
+        if lb is not None and ub is not None:
+            msis = ForecastMetric.MSIS.value(
+                ground_truth=self.test_data,
+                predict=forecast,
+                insample=self.train_data,
+                periodicity=4,
+                ub=ub,
+                lb=lb,
+                target_seq_index=0,
+            )
+            logger.info(f"MSIS = {msis:.4f}")
+            self.assertLessEqual(np.abs(msis - 101.6), 10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
         savedir = join(rootdir, "tmp", "ets")
         self.model.save(dirname=savedir)
-        loaded = AutoETS.load(dirname=savedir)
+        loaded = ETS.load(dirname=savedir)
 
         loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
         self.assertSequenceEqual(list(loaded_pred), list(forecast))
-        self.assertSequenceEqual(list(loaded_lb), list(lb))
-        self.assertSequenceEqual(list(loaded_ub), list(ub))
 
         # streaming forecasting RMSE = 2.4689
         test_t = self.test_data.np_time_stamps
         t, tf = to_pd_datetime([test_t[0], test_t[-1]])
         forecast_results = None
-        while t < tf:
+        while t <= tf:
             cur_train, cur_test = self.data.bisect(t, t_in_left=False)
             cur_test = cur_test.window(t, t + self.model.timedelta)
             forecast, err = self.model.forecast(cur_test.time_stamps, cur_train)
