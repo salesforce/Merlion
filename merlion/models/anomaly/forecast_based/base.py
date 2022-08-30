@@ -8,7 +8,7 @@
 Base class for anomaly detectors based on forecasting models.
 """
 import logging
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -16,7 +16,7 @@ import pandas as pd
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.plot import Figure
-from merlion.utils import UnivariateTimeSeries, TimeSeries
+from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
@@ -43,24 +43,19 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         self, time_series: TimeSeries, forecast: TimeSeries, stderr: Optional[TimeSeries]
     ) -> pd.DataFrame:
         """
-        Compare a model's forecast to a ground truth time series, in order to
-        compute anomaly scores. By default, we compute a z-score if model
-        uncertainty (``stderr``) is given, or the residuals if there is no
-        model uncertainty.
+        Compare a model's forecast to a ground truth time series, in order to compute anomaly scores. By default, we
+        compute a z-score if model uncertainty (``stderr``) is given, or the residuals if there is no model uncertainty.
 
         :param time_series: the ground truth time series.
         :param forecast: the model's forecasted values for the time series
         :param stderr: the standard errors of the model's forecast
 
-        :return: Anomaly scores based on the difference between the ground truth
-            values of the time series, and the model's forecast.
+        :return: Anomaly scores based on the difference between the ground truth values and the model's forecast.
         """
         if len(forecast) == 0:
             return pd.DataFrame(columns=["anom_score"])
-        i = self.target_seq_index
-        time_series = time_series.univariates[time_series.names[i]]
-        if len(time_series) > len(forecast):
-            time_series = time_series[-len(forecast) :]
+        time_series = time_series.align(reference=forecast.time_stamps)
+        time_series = time_series.univariates[time_series.names[self.target_seq_index]]
         times = time_series.index
         y = time_series.np_values
         yhat = forecast.univariates[forecast.names[0]].np_values
@@ -74,28 +69,36 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
                 sigma[np.isnan(sigma)] = np.mean(sigma)
             return pd.DataFrame((y - yhat) / (sigma + 1e-8), index=times, columns=["anom_score"])
 
+    def train_post_process(
+        self,
+        train_data: TimeSeries,
+        train_result: Tuple[pd.DataFrame, pd.DataFrame],
+        anomaly_labels=None,
+        post_rule_train_config=None,
+    ) -> TimeSeries:
+        if isinstance(train_result, tuple) and len(train_result) == 2:
+            train_pred, train_err = ForecasterBase.train_post_process(self, train_data, train_result)
+            train_data = train_data if self.invert_transform else self.transform(train_data)
+            train_result = self.forecast_to_anom_score(train_data, train_pred, train_err)
+        return DetectorBase.train_post_process(
+            self, train_data, train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
+        )
+
     def train(
         self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
     ) -> TimeSeries:
-        return DetectorBase.train(self, train_data, anomaly_labels, train_config, post_rule_train_config)
-
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        # Note: the train data is transformed, as are the forecasts. So we compute anomaly scores w/ transformed data.
-        forecast, err = super()._train(train_data, train_config)
-        train_data, forecast, err = [TimeSeries.from_pd(x) for x in [train_data, forecast, err]]
-        anomaly_scores = self.forecast_to_anom_score(train_data, forecast, err)
-        self.train_forecast = forecast
-        self.train_err = err
-        return anomaly_scores
+        return DetectorBase.train(
+            self,
+            train_data=train_data,
+            anomaly_labels=anomaly_labels,
+            train_config=train_config,
+            post_rule_train_config=post_rule_train_config,
+        )
 
     def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        # Forecast w/o inverting the transform to compute the anomaly score, since this is how we trained.
-        invert_transform = self.config.invert_transform
-        self.config.invert_transform = False
         if not self.invert_transform:
-            time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
+            time_series, _ = self.transform_time_series(time_series, time_series_prev)
         forecast, err = self.forecast(time_series.time_stamps, time_series_prev)
-        self.config.invert_transform = invert_transform
 
         # Make sure stderr & forecast are of the appropriate lengths
         assert err is None or len(forecast) == len(err), (

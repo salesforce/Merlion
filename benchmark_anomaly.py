@@ -356,8 +356,8 @@ def train_model(
             # Train the post-rule on the appropriate labels
             score = test_scores if tune_on_test else train_scores
             label = test_anom if tune_on_test else train_anom
-            model.train_post_rule(
-                anomaly_scores=score, anomaly_labels=label, post_rule_train_config=post_rule_train_config
+            model.train_post_process(
+                train_vals, train_result=score, anomaly_labels=label, post_rule_train_config=post_rule_train_config
             )
 
             # Log (many) evaluation metrics for the time series
@@ -412,13 +412,13 @@ def train_model(
                 plt.show()
 
     # Save full experimental config
-    if model is not None:
+    if model is not None and not visualize:
         full_config = dict(
             model_config=model.config.to_dict(),
             evaluator_config=evaluator.config.to_dict(),
             code_version_info=get_code_version_info(),
         )
-
+        os.makedirs(os.path.dirname(config_fname), exist_ok=True)
         with open(config_fname, "w") as f:
             json.dump(full_config, f, indent=2, sort_keys=True)
 
@@ -452,9 +452,14 @@ def evaluate_predictions(
 
     scores_rpa, scores_pw, scores_pa = [], [], []
     use_ucr_eval = isinstance(dataset, UCR) and (unsupervised or not tune_on_test)
+    resampler = None
+    if isinstance(dataset, IOpsCompetition):
+        resampler = TemporalResample("5min")
+
     for i, (true, md) in enumerate(tqdm(dataset)):
         # Get time series for the train & test splits of the ground truth
         idx = ~md.trainval if tune_on_test else md.trainval
+        train_vals = df_to_merlion(true[idx], md[idx], transform=resampler)
         true_train = df_to_merlion(true[idx], md[idx], get_ground_truth=True)
         true_test = df_to_merlion(true[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
@@ -495,7 +500,9 @@ def evaluate_predictions(
                     m.threshold = m.threshold.to_simple_threshold()
                 if tune_on_test and not unsupervised:
                     m.calibrator.train(TimeSeries.from_pd(og_pred["y"][og_pred["trainval"]]))
-                m.train_post_rule(anomaly_scores=train, anomaly_labels=true_train, post_rule_train_config=prtc)
+                m.train_post_process(
+                    train_vals, train_result=train, anomaly_labels=true_train, post_rule_train_config=prtc
+                )
                 models.append(m)
 
             # Get the lead & lag time for the dataset
@@ -529,7 +536,12 @@ def evaluate_predictions(
                 if simple_threshold:
                     model.threshold = model.threshold.to_simple_threshold()
                 model.threshold.alm_threshold = threshold
-                model.train_post_rule(pred_train, true_train, ensemble_threshold_train_config)
+                model.train_post_process(
+                    train_vals,
+                    train_result=pred_train,
+                    anomaly_labels=true_train,
+                    post_rule_train_config=ensemble_threshold_train_config,
+                )
                 pred_test_raw = model.combiner(pred_test, true_test)
 
             # For UCR dataset, the evaluation just checks whether the point with the highest

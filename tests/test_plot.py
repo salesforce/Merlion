@@ -16,6 +16,7 @@ from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.normalize import PowerTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
+from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
 from merlion.plot import plot_anoms, plot_anoms_plotly
 from merlion.utils.data_io import csv_to_time_series
 
@@ -41,23 +42,39 @@ class TestPlot(unittest.TestCase):
     def test_plot(self):
         print("-" * 80)
         logger.info("test_plot\n" + "-" * 80 + "\n")
-        self._test_plot(transform=Identity(), invert_transform=False, subdir="basic")
+        self.model = ProphetDetector(
+            ProphetDetectorConfig(transform=Identity(), invert_transform=False, uncertainty_samples=1000)
+        )
+        self._test_plot(subdir="basic")
 
     def test_plot_transform_inv(self):
         print("-" * 80)
         logger.info("test_plot_transform_inv\n" + "-" * 80 + "\n")
-        self._test_plot(transform=PowerTransform(), invert_transform=True, subdir="transform_inv")
+        self.model = ProphetDetector(
+            ProphetDetectorConfig(transform=PowerTransform(), invert_transform=True, uncertainty_samples=1000)
+        )
+        self._test_plot(subdir="transform_inv")
 
     def test_plot_transform_no_inv(self):
         print("-" * 80)
         logger.info("test_plot_transform_no_inv\n" + "-" * 80 + "\n")
-        self._test_plot(transform=DifferenceTransform(), invert_transform=False, subdir="transform_no_inv")
-
-    def _test_plot(self, transform, invert_transform, subdir):
-        logger.info("Training model...\n")
         self.model = ProphetDetector(
-            ProphetDetectorConfig(transform=transform, invert_transform=invert_transform, uncertainty_samples=1000)
+            ProphetDetectorConfig(transform=DifferenceTransform(), invert_transform=False, uncertainty_samples=1000)
         )
+        self._test_plot(subdir="transform_no_inv")
+
+    def test_no_uncertainty(self):
+        self.model = LGBMForecaster(
+            LGBMForecasterConfig(transform=TemporalResample("1h"), maxlags=24 * 7, prediction_stride=24)
+        )
+        self.model.train(self.vals_train)
+        fig, _ = self.model.plot_forecast(time_series=self.vals_test, plot_forecast_uncertainty=True)
+        figdir = join(rootdir, "tmp", "plot", "no_uncertainty")
+        os.makedirs(figdir, exist_ok=True)
+        fig.savefig(join(figdir, "lgbm_forecast.png"))
+
+    def _test_plot(self, subdir):
+        logger.info("Training model...\n")
         self.model.train(self.vals_train)
 
         figdir = join(rootdir, "tmp", "plot", subdir)

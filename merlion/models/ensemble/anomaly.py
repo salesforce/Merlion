@@ -198,7 +198,12 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
             combined = self.combiner(all_train_scores, anomaly_labels)
 
         # Train the model-level post-rule
-        self.train_post_rule(combined, anomaly_labels, post_rule_train_config)
+        self.train_post_process(
+            train_data=train_data,
+            train_result=combined,
+            anomaly_labels=anomaly_labels,
+            post_rule_train_config=post_rule_train_config,
+        )
         return combined
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:

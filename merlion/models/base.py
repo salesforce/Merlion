@@ -317,8 +317,7 @@ class ModelBase(metaclass=AutodocABCMeta):
             time_series = self.transform(time_series)
         return time_series, time_series_prev
 
-    @abstractmethod
-    def train(self, train_data: TimeSeries, train_config=None):
+    def train(self, train_data: TimeSeries, train_config=None, *args, **kwargs):
         """
         Trains the model on the specified time series, optionally with some
         additional implementation-specific config options ``train_config``.
@@ -326,10 +325,18 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param train_data: a `TimeSeries` to use as a training set
         :param train_config: additional configurations (if needed)
         """
-        raise NotImplementedError
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data_processed = self.train_pre_process(train_data).to_pd()
+        train_result = self._train(train_data=train_data_processed, train_config=train_config)
+        return self.train_post_process(train_data, train_result, *args, **kwargs)
 
     @abstractmethod
     def _train(self, train_data: pd.DataFrame, train_config=None):
+        raise NotImplementedError
+
+    @abstractmethod
+    def train_post_process(self, train_data, train_result, *args, **kwargs):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:

@@ -17,7 +17,7 @@ from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.data_io import csv_to_time_series
 from merlion.utils.time_series import TimeSeries
-from merlion.transform.moving_average import DifferenceTransform
+from merlion.transform.normalize import PowerTransform
 from merlion.transform.resample import TemporalResample
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class TestProphet(unittest.TestCase):
         self.csv_name = join(rootdir, "data", "example.csv")
         self.data = TemporalResample("15min")(csv_to_time_series(self.csv_name, timestamp_unit="ms", data_cols=["kpi"]))
         logger.info(f"Data looks like:\n{self.data[:5]}")
-        hols = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
+        holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 
         # Test Prophet with a log transform (Box-Cox with lmbda=0)
         self.test_len = math.ceil(len(self.data) / 5)
@@ -39,7 +39,12 @@ class TestProphet(unittest.TestCase):
         self.vals_test = self.data[-self.test_len :]
         self.model = AutoProphet(
             model=ProphetDetector(
-                ProphetDetectorConfig(transform=DifferenceTransform(), uncertainty_samples=1000, holidays=hols)
+                ProphetDetectorConfig(
+                    transform=PowerTransform(lmbda=0.0),
+                    uncertainty_samples=1000,
+                    holidays=holidays,
+                    invert_transform=True,
+                )
             )
         )
 

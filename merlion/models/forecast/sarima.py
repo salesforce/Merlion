@@ -94,15 +94,13 @@ class Sarima(ForecasterBase, SeasonalityModel):
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
+        train_config = train_config or {}
+        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
+            train_config[k] = train_config.get(k, v)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self.model = sm_Sarima(
-                train_data,
-                order=self.order,
-                seasonal_order=self.seasonal_order,
-                enforce_stationarity=False,
-                enforce_invertibility=False,
-            ).fit(method_kwargs={"disp": 0})
+            model = sm_Sarima(train_data, order=self.order, seasonal_order=self.seasonal_order, **train_config)
+            self.model = model.fit(method_kwargs={"disp": 0})
 
         # FORECASTING: forecast for next n steps using Sarima model
         self._last_val = train_data[-1]
