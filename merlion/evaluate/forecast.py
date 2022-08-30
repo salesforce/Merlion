@@ -46,9 +46,9 @@ class ForecastScoreAccumulator:
         :param lb (optional): lower bound of 95% prediction interval. This value is used for computing MSIS
         :param target_seq_index (optional): the index of the target sequence, for multivariate.
         """
-        ground_truth = ground_truth.to_ts() if isinstance(ground_truth, UnivariateTimeSeries) else ground_truth
-        predict = predict.to_ts() if isinstance(predict, UnivariateTimeSeries) else predict
-        insample = insample.to_ts() if isinstance(insample, UnivariateTimeSeries) else insample
+        ground_truth = TimeSeries.from_pd(ground_truth)
+        predict = TimeSeries.from_pd(predict)
+        insample = TimeSeries.from_pd(insample)
         t0, tf = predict.t0, predict.tf
         ground_truth = ground_truth.window(t0, tf, include_tf=True).align()
         if target_seq_index is not None:

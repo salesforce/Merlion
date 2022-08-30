@@ -69,22 +69,16 @@ class AutoProphet(SeasonalityLayer):
         candidates = []
         for seas, seasonality_mode in thetas:
             # Get the right seasonality & set the theta for this candidate model
-            model = copy.deepcopy(self.model)
+            model: Prophet = copy.deepcopy(self.model)
             seas, _, _ = super().evaluate_theta(thetas=seas, train_data=train_data, train_config=train_config, **kwargs)
             theta = seas, seasonality_mode
             self.set_theta(model=model, theta=theta, train_data=train_data)
 
             # Train the model and obtain its forecast on the training data
-            train_result = model.train(train_data=train_data, train_config=train_config, **kwargs)
-            if isinstance(model, ForecastingDetectorBase):
-                train_data = model.transform(train_data)
-                pred = model.train_forecast
-            else:
-                train_data = train_data if model.invert_transform else model.transform(train_data)
-                pred, err = train_result
-
+            train_pred, train_stderr = model._train(train_data=train_data.to_pd(), train_config=train_config)
+            train_result = model.train_post_process(train_result=(train_pred, train_stderr), **kwargs)
             # Evaluate the model based on RMSE.
-            rmse = ForecastMetric.RMSE.value(train_data, pred, target_seq_index=self.model.target_seq_index)
+            rmse = ForecastMetric.RMSE.value(train_data, train_pred, target_seq_index=self.model.target_seq_index)
             candidates.append({"theta": theta, "model": model, "rmse": rmse, "train_result": train_result})
 
         # Choose model with the best RMSE
