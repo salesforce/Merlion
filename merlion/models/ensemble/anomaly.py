@@ -199,10 +199,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
 
         # Train the model-level post-rule
         self.train_post_process(
-            train_data=train_data,
-            train_result=combined,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
+            train_result=combined, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
         return combined
 

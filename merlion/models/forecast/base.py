@@ -176,7 +176,7 @@ class ForecasterBase(ModelBase):
         return super().train(train_data=train_data, train_config=train_config)
 
     def train_post_process(
-        self, train_data: TimeSeries, train_result: Tuple[pd.DataFrame, pd.DataFrame]
+        self, train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]]
     ) -> Tuple[TimeSeries, TimeSeries]:
         """
         Converts the train result (forecast & stderr for training data) into TimeSeries objects, and inverts the

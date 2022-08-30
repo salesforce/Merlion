@@ -327,16 +327,16 @@ class ModelBase(metaclass=AutodocABCMeta):
         """
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        train_data_processed = self.train_pre_process(train_data).to_pd()
-        train_result = self._train(train_data=train_data_processed, train_config=train_config)
-        return self.train_post_process(train_data, train_result, *args, **kwargs)
+        train_data = self.train_pre_process(train_data).to_pd()
+        train_result = self._train(train_data=train_data, train_config=train_config)
+        return self.train_post_process(train_result, *args, **kwargs)
 
     @abstractmethod
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError
 
     @abstractmethod
-    def train_post_process(self, train_data, train_result, *args, **kwargs):
+    def train_post_process(self, train_result, *args, **kwargs):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:

@@ -28,24 +28,24 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
         :param train_data: the data to train on.
         :param train_config: the train config of the underlying model (optional).
         """
-        processed_train_data = self.model.train_pre_process(train_data)  # no need to call in generate/evaluate theta
+        # don't call train_pre_process() in generate/evaluate theta. get model.train_data for the original train data.
+        processed_train_data = self.model.train_pre_process(train_data)
         candidate_thetas = self.generate_theta(processed_train_data)
         theta, model, train_result = self.evaluate_theta(candidate_thetas, processed_train_data, **kwargs)
         if model is not None:
-            train_result = model.train_post_process(train_data, train_result, **kwargs)
             self.model = model
-            return train_result
+            return model.train_post_process(train_result, **kwargs)
         else:
             model = deepcopy(self.model)
             model.reset()
-            self.set_theta(model, theta, train_data)
+            self.set_theta(model, theta, processed_train_data)
             self.model = model
             return super().train_model(train_data, **kwargs)
 
     @abstractmethod
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         r"""
-        :param train_data: Training data to use for generation of hyperparameters :math:`\theta`
+        :param train_data: Pre-processed training data to use for generation of hyperparameters :math:`\theta`
 
         Returns an iterator of hyperparameter candidates for consideration with th underlying model.
         """
@@ -57,7 +57,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         r"""
         :param thetas: Iterator of the hyperparameter candidates
-        :param train_data: Training data
+        :param train_data: Pre-processed training data
         :param train_config: Training configuration
 
         Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.
@@ -69,7 +69,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
         r"""
         :param model: Underlying base model to which the new theta is applied
         :param theta: Hyperparameter to apply
-        :param train_data: Training data (Optional)
+        :param train_data: Pre-processed training data (Optional)
 
         Sets the hyperparameter to the provided ``model``. This is used to apply the :math:`\theta` to the model, since
         this behavior is custom to every model. Oftentimes in internal implementations, ``model`` is the optimal model.

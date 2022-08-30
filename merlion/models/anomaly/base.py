@@ -199,16 +199,11 @@ class DetectorBase(ModelBase):
         )
 
     def train_post_process(
-        self,
-        train_data: TimeSeries,
-        train_result: Union[TimeSeries, pd.DataFrame],
-        anomaly_labels=None,
-        post_rule_train_config=None,
+        self, train_result: Union[TimeSeries, pd.DataFrame], anomaly_labels=None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Converts the train result (anom scores on train data) into a TimeSeries object and trains the post-rule.
 
-        :param train_data: a `TimeSeries` of metric values to train the model.
         :param train_result: Raw anomaly scores on the training data.
         :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param post_rule_train_config: The config to use for training the model's post-rule. The model's default

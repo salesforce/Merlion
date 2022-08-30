@@ -357,7 +357,7 @@ def train_model(
             score = test_scores if tune_on_test else train_scores
             label = test_anom if tune_on_test else train_anom
             model.train_post_process(
-                train_vals, train_result=score, anomaly_labels=label, post_rule_train_config=post_rule_train_config
+                train_result=score, anomaly_labels=label, post_rule_train_config=post_rule_train_config
             )
 
             # Log (many) evaluation metrics for the time series
@@ -459,7 +459,6 @@ def evaluate_predictions(
     for i, (true, md) in enumerate(tqdm(dataset)):
         # Get time series for the train & test splits of the ground truth
         idx = ~md.trainval if tune_on_test else md.trainval
-        train_vals = df_to_merlion(true[idx], md[idx], transform=resampler)
         true_train = df_to_merlion(true[idx], md[idx], get_ground_truth=True)
         true_test = df_to_merlion(true[~md.trainval], md[~md.trainval], get_ground_truth=True)
 
@@ -500,9 +499,7 @@ def evaluate_predictions(
                     m.threshold = m.threshold.to_simple_threshold()
                 if tune_on_test and not unsupervised:
                     m.calibrator.train(TimeSeries.from_pd(og_pred["y"][og_pred["trainval"]]))
-                m.train_post_process(
-                    train_vals, train_result=train, anomaly_labels=true_train, post_rule_train_config=prtc
-                )
+                m.train_post_process(train_result=train, anomaly_labels=true_train, post_rule_train_config=prtc)
                 models.append(m)
 
             # Get the lead & lag time for the dataset
@@ -537,7 +534,6 @@ def evaluate_predictions(
                     model.threshold = model.threshold.to_simple_threshold()
                 model.threshold.alm_threshold = threshold
                 model.train_post_process(
-                    train_vals,
                     train_result=pred_train,
                     anomaly_labels=true_train,
                     post_rule_train_config=ensemble_threshold_train_config,
