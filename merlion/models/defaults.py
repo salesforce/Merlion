@@ -85,7 +85,7 @@ class DefaultDetector(LayeredDetector):
                 "DetectorEnsemble",
                 models=[
                     ModelFactory.create(
-                        "AutoETS", model=dict(name="ETSDetector"), damped_trend=True, transform=ets_transform
+                        "AutoETS", model=dict(name="ETSDetector"), additive_only=True, transform=ets_transform
                     ),
                     ModelFactory.create(
                         "RandomCutForest",
@@ -166,6 +166,6 @@ class DefaultForecaster(LayeredForecaster):
 
         # ETS for univariate data
         else:
-            self.model = ModelFactory.create("AutoETS", damped_trend=True, **kwargs)
+            self.model = ModelFactory.create("AutoETS", additive_only=True, **kwargs)
 
         return super().train(train_data=train_data, train_config=train_config)

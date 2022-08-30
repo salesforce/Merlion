@@ -10,7 +10,7 @@ Automatic seasonality detection for ETS.
 import warnings
 import logging
 import time
-from copy import copy, deepcopy
+from copy import deepcopy
 from typing import Union, Iterator, Any, Optional, Tuple
 from itertools import product
 import numpy as np

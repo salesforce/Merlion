@@ -162,13 +162,17 @@ class ETS(SeasonalityModel, ForecasterBase):
         if time_series_prev is None:
             # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
             # In this case we use point forecasting and set prediction_interval as None
-            forecast_result = self.model.get_prediction(
-                start=self._n_train, end=self._n_train + len(time_stamps) - 1, method=self.config.pred_interval_strategy
-            )
-            forecast = np.asarray(forecast_result.predicted_mean)
             try:
+                forecast_result = self.model.get_prediction(
+                    start=self._n_train,
+                    end=self._n_train + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
+                )
+                forecast = np.asarray(forecast_result.predicted_mean)
                 err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
             except (NotImplementedError, AttributeError):
+                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
+                forecast = np.asarray(forecast_result)
                 err = None
 
         # If there is a time_series_prev, use it to smooth/refit ETS model,
@@ -209,15 +213,17 @@ class ETS(SeasonalityModel, ForecasterBase):
 
             # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
             # In this case we use point forecasting and set prediction_interval as None
-            forecast_result = self.model.get_prediction(
-                start=val_prev.shape[0],
-                end=val_prev.shape[0] + len(time_stamps) - 1,
-                method=self.config.pred_interval_strategy,
-            )
-            forecast = np.asarray(forecast_result.predicted_mean)
             try:
+                forecast_result = self.model.get_prediction(
+                    start=val_prev.shape[0],
+                    end=val_prev.shape[0] + len(time_stamps) - 1,
+                    method=self.config.pred_interval_strategy,
+                )
+                forecast = np.asarray(forecast_result.predicted_mean)
                 err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
             except (NotImplementedError, AttributeError):
+                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
+                forecast = np.asarray(forecast_result)
                 err = None
 
             # if return_prev is Ture, it will return the forecast and error of last train window

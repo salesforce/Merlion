@@ -118,7 +118,7 @@ class TestUnivariate(unittest.TestCase):
             ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
         )
         logger.info(f"MSIS = {msis:.4f}")
-        self.assertLessEqual(np.abs(msis - 79.9), 10)
+        self.assertAlmostEqual(msis, 34, delta=10)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
