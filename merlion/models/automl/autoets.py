@@ -5,25 +5,27 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Automatic seasonality detection for ETS.
+Automatic hyperparamter selection for ETS.
 """
-import warnings
-import logging
-import time
 from copy import deepcopy
-from typing import Union, Iterator, Any, Optional, Tuple
 from itertools import product
+import logging
+from typing import Union, Iterator, Any, Optional, Tuple
+import warnings
+
 import numpy as np
+import pandas as pd
+
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 from merlion.models.forecast.ets import ETS, ETSConfig
-from merlion.models.automl.base import InformationCriterion, InformationCriterionConfigMixIn
+from merlion.models.automl.base import InformationCriterion, ICConfig, ICAutoMLForecaster
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class AutoETSConfig(SeasonalityConfig, InformationCriterionConfigMixIn):
+class AutoETSConfig(SeasonalityConfig, ICConfig):
     """
     Configuration class for `AutoETS`. Act as a wrapper around a `ETS` model, which automatically detects
     the seasonal_periods, error, trend, damped_trend and seasonal.
@@ -73,7 +75,7 @@ class AutoETSConfig(SeasonalityConfig, InformationCriterionConfigMixIn):
         self.restrict = restrict
 
 
-class AutoETS(SeasonalityLayer):
+class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
     """
     ETS with automatic seasonality detection.
     """
@@ -96,8 +98,8 @@ class AutoETS(SeasonalityLayer):
 
         # auto-detect seasonality if desired, otherwise just get it from seasonal order
         if self.config.auto_seasonality:
-            candidate_m = super().generate_theta(train_data=train_data)
-            m, _, _ = super().evaluate_theta(thetas=candidate_m, train_data=train_data)
+            candidate_m = SeasonalityLayer.generate_theta(self, train_data=train_data)
+            m, _, _ = SeasonalityLayer.evaluate_theta(self, thetas=candidate_m, train_data=train_data)
         else:
             if self.model.config.seasonal_periods is None:
                 m = 1
@@ -149,44 +151,6 @@ class AutoETS(SeasonalityLayer):
             thetas.append((error, trend, seasonal, damped, m))
         return iter(thetas)
 
-    def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
-    ) -> Tuple[Any, Optional[ETS], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
-        def _model_name(cfg: ETSConfig):
-            return " ETS(err={error},trend={trend},seas={seasonal},damped={damped})".format(
-                error=str(cfg.error), trend=str(cfg.trend), seasonal=str(cfg.seasonal), damped=str(cfg.damped_trend)
-            )
-
-        best = None
-        y = train_data.to_pd()
-        for theta in thetas:
-            start = time.time()
-            model = deepcopy(self.model)
-            self.set_theta(model, theta, train_data)
-            train_result = model._train(y, train_config=train_config)
-            fit_time = time.time() - start
-            ic = getattr(model.model, self.config.information_criterion.name.lower())
-            logger.debug(
-                "{model:47}: {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
-                    model=_model_name(model.config),
-                    ic_name=self.config.information_criterion.name,
-                    ic=ic,
-                    time=fit_time,
-                )
-            )
-            curr = {"theta": theta, "model": model, "train_result": train_result, "ic": ic}
-            if best is None:
-                best = curr
-                logger.debug("First best model found (%.3f)" % ic)
-            current_ic = best["ic"]
-            if ic < current_ic:
-                logger.debug("New best model found (%.3f < %.3f)" % (ic, current_ic))
-                best = curr
-
-        # Return best ETS model after post-processing its train result
-        theta, model, train_result = best["theta"], best["model"], best["train_result"]
-        return theta, model, model.train_post_process(train_result, **kwargs)
-
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         error, trend, seasonal, damped_trend, seasonal_periods = theta
         model.config.error = error
@@ -194,3 +158,11 @@ class AutoETS(SeasonalityLayer):
         model.config.damped_trend = damped_trend
         model.config.seasonal = seasonal
         model.config.seasonal_periods = seasonal_periods
+
+    @staticmethod
+    def _model_name(theta):
+        error, trend, seasonal, damped, seasonal_periods = theta
+        return f"ETS(err={error},trend={trend},seas={seasonal},damped={damped})"
+
+    def get_ic(self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
+        return getattr(model.base_model.model, self.information_criterion.name.lower())

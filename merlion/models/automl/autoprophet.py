@@ -5,7 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Automatic (multi)-seasonality detection for Facebook's Prophet.
+Automatic hyperparameter selection for Facebook's Prophet.
 """
 import copy
 import logging
@@ -15,8 +15,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
-from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.automl.base import InformationCriterion, InformationCriterionConfigMixIn
+from merlion.models.automl.base import InformationCriterion, ICConfig, ICAutoMLForecaster
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.models.forecast.prophet import Prophet
 from merlion.utils import TimeSeries
@@ -24,7 +23,7 @@ from merlion.utils import TimeSeries
 logger = logging.getLogger(__name__)
 
 
-class AutoProphetConfig(SeasonalityConfig, InformationCriterionConfigMixIn):
+class AutoProphetConfig(SeasonalityConfig, ICConfig):
     """
     Config class for `Prophet` with automatic seasonality detection.
     """
@@ -52,7 +51,7 @@ class AutoProphetConfig(SeasonalityConfig, InformationCriterionConfigMixIn):
         return True
 
 
-class AutoProphet(SeasonalityLayer):
+class AutoProphet(ICAutoMLForecaster, SeasonalityLayer):
     """
     `Prophet` with automatic seasonality detection. Automatically detects and adds
     additional seasonalities that the existing Prophet may not detect (e.g. hourly).
@@ -67,48 +66,26 @@ class AutoProphet(SeasonalityLayer):
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         seasonalities, seasonality_mode = theta
-        super().set_theta(model=model, theta=seasonalities, train_data=train_data)
+        seasonalities, _, _ = SeasonalityLayer.evaluate_theta(self, thetas=iter(seasonalities), train_data=train_data)
+        SeasonalityLayer.set_theta(self, model=model, theta=seasonalities, train_data=train_data)
         model.base_model.config.seasonality_mode = seasonality_mode
         model.base_model.model.seasonality_mode = seasonality_mode
 
-    def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
-    ) -> Tuple[Any, Prophet, Tuple[TimeSeries, Optional[TimeSeries]]]:
-        best = None
-        y = pd.DataFrame(train_data.univariates[self.model.target_name].to_pd())
+    def _model_name(self, theta) -> str:
+        seas, mode = theta
+        return f"Prophet(seasonalities={seas}, seasonality_mode={mode})"
 
-        for i, (seas, mode) in enumerate(thetas):
-            # Get the right seasonality & set the theta for this candidate model
-            model = copy.deepcopy(self.model)
-            seas, _, _ = super().evaluate_theta(thetas=seas, train_data=train_data, train_config=train_config, **kwargs)
-            theta = seas, mode
-            self.set_theta(model=model, theta=theta, train_data=train_data)
-
-            # Train the model & evaluate it based on AIC/BIC. We use the method suggested by the author to compute the
-            # log likelihood: https://github.com/facebook/prophet/issues/549#issuecomment-435482584
-            pred, stderr = model._train(train_data=train_data.to_pd(), train_config=train_config)
-            log_like = norm.logpdf((pred.values - y.values) / stderr.values).sum()
-            n_params = sum(len(v.flatten()) for k, v in model.base_model.model.params.items() if k != "trend")
-            ic_id = self.config.information_criterion
-            if ic_id is InformationCriterion.AIC:
-                ic = 2 * n_params - 2 * log_like.sum()
-            elif ic_id is InformationCriterion.BIC:
-                ic = n_params * np.log(len(y)) - 2 * log_like
-            elif ic_id is InformationCriterion.AICc:
-                ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / (len(y) - n_params - 1)
-            else:
-                raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic_id.name}")
-
-            logger.debug(f"Prophet(seas={seas}, mode={mode}) : {ic_id.name} = {ic:.3f}")
-            curr = {"theta": theta, "model": model, "train_result": (pred, stderr), "ic": ic}
-            if best is None:
-                best = curr
-                logger.debug("First best model found (%.3f)" % ic)
-            current_ic = best["ic"]
-            if ic < current_ic:
-                logger.debug("New best model found (%.3f < %.3f)" % (ic, current_ic))
-                best = curr
-
-        # Return best Prophet model after post-processing its train result
-        theta, model, train_result = best["theta"], best["model"], best["train_result"]
-        return theta, model, model.train_post_process(train_result, **kwargs)
+    def get_ic(self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
+        pred, stderr = train_result
+        log_like = norm.logpdf((pred.values - train_data_df.values) / stderr.values).sum()
+        n_params = sum(len(v.flatten()) for k, v in model.base_model.model.params.items() if k != "trend")
+        ic_id = self.config.information_criterion
+        if ic_id is InformationCriterion.AIC:
+            ic = 2 * n_params - 2 * log_like.sum()
+        elif ic_id is InformationCriterion.BIC:
+            ic = n_params * np.log(len(y)) - 2 * log_like
+        elif ic_id is InformationCriterion.AICc:
+            ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / (len(y) - n_params - 1)
+        else:
+            raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic_id.name}")
+        return ic

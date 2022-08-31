@@ -10,68 +10,17 @@ Base class/mixin for AutoML hyperparameter search.
 from abc import abstractmethod
 from copy import deepcopy
 from enum import Enum, auto
+import logging
 from typing import Any, Iterator, Optional, Tuple, Union
+import time
 
-from merlion.models.layers import Config, ModelBase, LayeredModel, ForecastingDetectorBase
+import pandas as pd
+
+from merlion.models.layers import Config, ModelBase, LayeredModel, LayeredModelConfig, ForecasterBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
-
-class InformationCriterion(Enum):
-    AIC = auto()
-    r"""
-    Akaike information criterion. Computed as
-    
-    .. math::
-        \mathrm{AIC} = 2k - 2\mathrm{ln}(L)
-    
-    where k is the number of parameters, and L is the model's likelihood.
-    """
-
-    BIC = auto()
-    r"""
-    Bayesian information criterion. Computed as
-    
-    .. math::
-        k \mathrm{ln}(n) - 2 \mathrm{ln}(L)
-    
-    where n is the sample size, k is the number of parameters, and L is the model's likelihood.
-    """
-
-    AICc = auto()
-    r"""
-    Akaike information criterion with correction for small sample size. Computed as
-    
-    .. math::
-        \mathrm{AICc} = \mathrm{AIC} + \frac{2k^2 + 2k}{n - k - 1}
-    
-    where n is the sample size, and k is the number of paramters.
-    """
-
-
-class InformationCriterionConfigMixIn(Config):
-    """
-    Mix-in to add an information criterion parameter to a model config.
-    """
-
-    def __init__(self, information_criterion: InformationCriterion = InformationCriterion.AIC, **kwargs):
-        """
-        :param information_criterion: information criterion to select the best model.
-        """
-        super().__init__(**kwargs)
-        self.information_criterion = information_criterion
-
-    @property
-    def information_criterion(self):
-        return self._information_criterion
-
-    @information_criterion.setter
-    def information_criterion(self, ic: Union[InformationCriterion, str]):
-        if not isinstance(ic, InformationCriterion):
-            valid = {k.lower(): k for k in InformationCriterion.__members__}
-            assert ic.lower() in valid, f"Unsupported InformationCriterion {ic}. Supported values: {valid.values()}"
-            ic = InformationCriterion[valid[ic.lower()]]
-        self._information_criterion = ic
+logger = logging.getLogger(__name__)
 
 
 class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
@@ -133,3 +82,122 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
         this behavior is custom to every model. Oftentimes in internal implementations, ``model`` is the optimal model.
         """
         raise NotImplementedError
+
+
+class InformationCriterion(Enum):
+    AIC = auto()
+    r"""
+    Akaike information criterion. Computed as
+
+    .. math::
+        \mathrm{AIC} = 2k - 2\mathrm{ln}(L)
+
+    where k is the number of parameters, and L is the model's likelihood.
+    """
+
+    BIC = auto()
+    r"""
+    Bayesian information criterion. Computed as
+
+    .. math::
+        k \mathrm{ln}(n) - 2 \mathrm{ln}(L)
+
+    where n is the sample size, k is the number of parameters, and L is the model's likelihood.
+    """
+
+    AICc = auto()
+    r"""
+    Akaike information criterion with correction for small sample size. Computed as
+
+    .. math::
+        \mathrm{AICc} = \mathrm{AIC} + \frac{2k^2 + 2k}{n - k - 1}
+
+    where n is the sample size, and k is the number of paramters.
+    """
+
+
+class ICConfig(Config):
+    """
+    Mix-in to add an information criterion parameter to a model config.
+    """
+
+    def __init__(self, information_criterion: InformationCriterion = InformationCriterion.AIC, **kwargs):
+        """
+        :param information_criterion: information criterion to select the best model.
+        """
+        super().__init__(**kwargs)
+        self.information_criterion = information_criterion
+
+    @property
+    def information_criterion(self):
+        return self._information_criterion
+
+    @information_criterion.setter
+    def information_criterion(self, ic: Union[InformationCriterion, str]):
+        if not isinstance(ic, InformationCriterion):
+            valid = {k.lower(): k for k in InformationCriterion.__members__}
+            assert ic.lower() in valid, f"Unsupported InformationCriterion {ic}. Supported values: {valid.values()}"
+            ic = InformationCriterion[valid[ic.lower()]]
+        self._information_criterion = ic
+
+
+class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
+    """
+    AutoML model which uses an information criterion to determine which model paramters are best.
+    """
+
+    config_class = ICConfig
+
+    @property
+    def information_criterion(self):
+        return self.config.information_criterion
+
+    @abstractmethod
+    def get_ic(
+        self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, Optional[pd.DataFrame]]
+    ) -> float:
+        """
+        Returns the information criterion of the model based on the given training data & the model's train result.
+
+        :param model: One of the models being tried. Must be trained.
+        :param train_data_df: The target sequence of the training data as a ``pandas.DataFrame``.
+        :param train_result: The result of calling ``model._train()``.
+        :return: The information criterion evaluating the model's goodness of fit.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _model_name(self, theta) -> str:
+        """
+        :return: a string describing the current model.
+        """
+
+    def evaluate_theta(
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+    ) -> Tuple[Any, ModelBase, Tuple[TimeSeries, Optional[TimeSeries]]]:
+        best = None
+        y = train_data.to_pd()
+        y_target = pd.DataFrame(y[self.model.target_name])
+        for theta in thetas:
+            # Start timer & fit model using the current theta
+            start = time.time()
+            model = deepcopy(self.model)
+            self.set_theta(model, theta, train_data)
+            train_result = model._train(y, train_config=train_config)
+            fit_time = time.time() - start
+            ic = float(self.get_ic(model=model, train_data_df=y_target, train_result=train_result))
+            logger.debug(f"{self._model_name(theta)}: {self.information_criterion.name}={ic:.3f}, Time={fit_time:.2f}s")
+
+            # Determine if current model is better than the best seen yet
+            curr = {"theta": theta, "model": model, "train_result": train_result, "ic": ic}
+            if best is None:
+                best = curr
+                logger.debug("First best model found (%.3f)" % ic)
+            current_ic = best["ic"]
+            if ic < current_ic:
+                logger.debug("New best model found (%.3f < %.3f)" % (ic, current_ic))
+                best = curr
+
+        # Return best model after post-processing its train result
+        theta, model, train_result = best["theta"], best["model"], best["train_result"]
+        return theta, model, model.train_post_process(train_result, **kwargs)
