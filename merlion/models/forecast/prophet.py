@@ -186,7 +186,7 @@ class Prophet(SeasonalityModel, ForecasterBase):
         for p in theta:
             if p > 1:
                 period = p * dt.total_seconds() / 86400
-                logger.info(f"Add seasonality {str(p)} ({p * dt})")
+                logger.debug(f"Add seasonality {str(p)} ({p * dt})")
                 self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
@@ -196,15 +196,14 @@ class Prophet(SeasonalityModel, ForecasterBase):
         with _suppress_stdout_stderr():
             self.model.fit(df)
 
-        # Get & return prediction & errors for train data
+        # Get & return prediction & errors for train data.
+        # sigma computation based on https://github.com/facebook/prophet/issues/549#issuecomment-435482584
         self.model.uncertainty_samples = 0
         forecast = self.model.predict(df)["yhat"].values.tolist()
+        sigma = (self.model.params["sigma_obs"] * self.model.y_scale).item()
         self.model.uncertainty_samples = self.uncertainty_samples
-        samples = self.model.predictive_samples(df)["yhat"]
-        samples = samples - np.expand_dims(forecast, -1)
-
         yhat = pd.DataFrame(forecast, index=df.ds, columns=[self.target_name])
-        err = pd.DataFrame(np.std(samples, axis=-1), index=df.ds, columns=[f"{self.target_name}_err"])
+        err = pd.DataFrame(sigma, index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
