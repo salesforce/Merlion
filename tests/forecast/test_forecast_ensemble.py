@@ -39,7 +39,9 @@ class TestForecastEnsemble(unittest.TestCase):
     def _test_mean(self, test_name):
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), max_forecast_steps=50, transform=TemporalResample("10min")))
-        model2 = AutoProphet(config=AutoProphetConfig(transform=Identity(), periodicity_strategy="All"))
+        model2 = AutoProphet(
+            config=AutoProphetConfig(transform=Identity(), periodicity_strategy="All", information_criterion="BIC")
+        )
         self.ensemble = ForecasterEnsemble(
             models=[model0, model1, model2], config=ForecasterEnsembleConfig(combiner=Mean(abs_score=False))
         )
@@ -52,7 +54,12 @@ class TestForecastEnsemble(unittest.TestCase):
         model0 = Arima(ArimaConfig(order=(6, 1, 2), max_forecast_steps=50, transform=TemporalResample("1h")))
         model1 = Arima(ArimaConfig(order=(24, 1, 0), max_forecast_steps=50, transform=TemporalResample("10min")))
         model2 = AutoProphet(
-            config=AutoProphetConfig(target_seq_index=0, transform=BoxCoxTransform(lmbda=0), periodicity_strategy="Max")
+            config=AutoProphetConfig(
+                target_seq_index=0,
+                transform=BoxCoxTransform(lmbda=0),
+                periodicity_strategy="Max",
+                information_criterion="AICc",
+            )
         )
         self.ensemble = ForecasterEnsemble(
             config=ForecasterEnsembleConfig(

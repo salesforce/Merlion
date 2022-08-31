@@ -33,7 +33,7 @@ class TestProphet(unittest.TestCase):
         logger.info(f"Data looks like:\n{self.data[:5]}")
         holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 
-        # Test Prophet with a log transform (Box-Cox with lmbda=0)
+        # Test Prophet with a Box-Cox transform
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
@@ -103,6 +103,6 @@ class TestProphet(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

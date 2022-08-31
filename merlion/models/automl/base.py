@@ -9,11 +9,69 @@ Base class/mixin for AutoML hyperparameter search.
 """
 from abc import abstractmethod
 from copy import deepcopy
-from typing import Any, Iterator, Optional, Tuple
+from enum import Enum, auto
+from typing import Any, Iterator, Optional, Tuple, Union
 
-from merlion.models.layers import ModelBase, LayeredModel, ForecastingDetectorBase
+from merlion.models.layers import Config, ModelBase, LayeredModel, ForecastingDetectorBase
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
+
+
+class InformationCriterion(Enum):
+    AIC = auto()
+    r"""
+    Akaike information criterion. Computed as
+    
+    .. math::
+        \mathrm{AIC} = 2k - 2\mathrm{ln}(L)
+    
+    where k is the number of parameters, and L is the model's likelihood.
+    """
+
+    BIC = auto()
+    r"""
+    Bayesian information criterion. Computed as
+    
+    .. math::
+        k \mathrm{ln}(n) - 2 \mathrm{ln}(L)
+    
+    where n is the sample size, k is the number of parameters, and L is the model's likelihood.
+    """
+
+    AICc = auto()
+    r"""
+    Akaike information criterion with correction for small sample size. Computed as
+    
+    .. math::
+        \mathrm{AICc} = \mathrm{AIC} + \frac{2k^2 + 2k}{n - k - 1}
+    
+    where n is the sample size, and k is the number of paramters.
+    """
+
+
+class InformationCriterionConfigMixIn(Config):
+    """
+    Mix-in to add an information criterion parameter to a model config.
+    """
+
+    def __init__(self, information_criterion: InformationCriterion = InformationCriterion.AIC, **kwargs):
+        """
+        :param information_criterion: information criterion to select the best model.
+        """
+        super().__init__(**kwargs)
+        self.information_criterion = information_criterion
+
+    @property
+    def information_criterion(self):
+        return self._information_criterion
+
+    @information_criterion.setter
+    def information_criterion(self, ic: Union[InformationCriterion, str]):
+        if not isinstance(ic, InformationCriterion):
+            valid = {k.lower(): k for k in InformationCriterion.__members__}
+            assert ic.lower() in valid, f"Unsupported InformationCriterion {ic}. Supported values: {valid.values()}"
+            ic = InformationCriterion[valid[ic.lower()]]
+        self._information_criterion = ic
 
 
 class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):

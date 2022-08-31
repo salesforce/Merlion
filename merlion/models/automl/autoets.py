@@ -16,13 +16,14 @@ from itertools import product
 import numpy as np
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 from merlion.models.forecast.ets import ETS, ETSConfig
+from merlion.models.automl.base import InformationCriterion, InformationCriterionConfigMixIn
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class AutoETSConfig(SeasonalityConfig):
+class AutoETSConfig(SeasonalityConfig, InformationCriterionConfigMixIn):
     """
     Configuration class for `AutoETS`. Act as a wrapper around a `ETS` model, which automatically detects
     the seasonal_periods, error, trend, damped_trend and seasonal.
@@ -38,7 +39,7 @@ class AutoETSConfig(SeasonalityConfig):
         auto_seasonal: bool = True,
         auto_damped: bool = True,
         periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.ACF,
-        information_criterion: str = "aic",
+        information_criterion: InformationCriterion = InformationCriterion.AIC,
         additive_only: bool = False,
         allow_multiplicative_trend: bool = False,
         restrict: bool = True,
@@ -50,22 +51,23 @@ class AutoETSConfig(SeasonalityConfig):
         :param auto_trend: Whether to automatically detect the trend components.
         :param auto_seasonal: Whether to automatically detect the seasonal components.
         :param auto_damped: Whether to automatically detect the damped trend components.
-        :param information_criterion: informationc_criterion to select the best model. It can be "aic",
-        "bic", or "aicc".
         :param additive_only: If True, the search space will only consider additive models.
-        :param allow_multiplicative_trend: If True, models with multiplicative trend are allowed in the search
-        space.
+        :param allow_multiplicative_trend: If True, models with multiplicative trend are allowed in the search space.
         :param restrict: If True, the models with infinite variance will not be allowed in the search space.
         """
         model = dict(name="ETS") if model is None else model
-        super().__init__(model=model, periodicity_strategy=periodicity_strategy, **kwargs)
+        super().__init__(
+            model=model,
+            periodicity_strategy=periodicity_strategy,
+            information_criterion=information_criterion,
+            **kwargs,
+        )
 
         self.auto_seasonality = auto_seasonality
         self.auto_trend = auto_trend
         self.auto_seasonal = auto_seasonal
         self.auto_error = auto_error
         self.auto_damped = auto_damped
-        self.information_criterion = information_criterion
         self.additive_only = additive_only
         self.allow_multiplicative_trend = allow_multiplicative_trend
         self.restrict = restrict
@@ -90,7 +92,7 @@ class AutoETS(SeasonalityLayer):
         # check the size of y
         n_samples = y.shape[0]
         if n_samples <= 3:
-            self.information_criterion = "aic"
+            self.information_criterion = InformationCriterion.AIC
 
         # auto-detect seasonality if desired, otherwise just get it from seasonal order
         if self.config.auto_seasonality:
@@ -155,8 +157,7 @@ class AutoETS(SeasonalityLayer):
                 error=str(cfg.error), trend=str(cfg.trend), seasonal=str(cfg.seasonal), damped=str(cfg.damped_trend)
             )
 
-        results_dict = {}
-        best_theta = None
+        best = None
         y = train_data.to_pd()
         for theta in thetas:
             start = time.time()
@@ -164,29 +165,27 @@ class AutoETS(SeasonalityLayer):
             self.set_theta(model, theta, train_data)
             train_result = model._train(y, train_config=train_config)
             fit_time = time.time() - start
-            ic = getattr(model.model, self.config.information_criterion)
+            ic = getattr(model.model, self.config.information_criterion.name.lower())
             logger.debug(
                 "{model:47}: {ic_name}={ic:.3f}, Time={time:.2f} sec".format(
                     model=_model_name(model.config),
-                    ic_name=self.config.information_criterion.upper(),
+                    ic_name=self.config.information_criterion.name,
                     ic=ic,
                     time=fit_time,
                 )
             )
-            results_dict[theta] = {"model": model, "train_result": train_result, "ic": ic}
-            if best_theta is None:
-                best_theta = theta
+            curr = {"theta": theta, "model": model, "train_result": train_result, "ic": ic}
+            if best is None:
+                best = curr
                 logger.debug("First best model found (%.3f)" % ic)
-            current_ic = results_dict[best_theta]["ic"]
+            current_ic = best["ic"]
             if ic < current_ic:
                 logger.debug("New best model found (%.3f < %.3f)" % (ic, current_ic))
-                best_theta = theta
+                best = curr
 
         # Return best ETS model after post-processing its train result
-        best_result = results_dict[best_theta]
-        model = best_result["model"]
-        train_result = best_result["train_result"]
-        return best_theta, model, model.train_post_process(train_result, **kwargs)
+        theta, model, train_result = best["theta"], best["model"], best["train_result"]
+        return theta, model, model.train_post_process(train_result, **kwargs)
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         error, trend, seasonal, damped_trend, seasonal_periods = theta
