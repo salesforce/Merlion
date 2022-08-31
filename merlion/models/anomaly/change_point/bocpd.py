@@ -114,13 +114,6 @@ class BOCPDConfig(ForecasterConfig, NoCalibrationDetectorConfig):
         self.lag = lag
         super().__init__(max_forecast_steps=max_forecast_steps, **kwargs)
 
-    def to_dict(self, _skipped_keys=None):
-        _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
-        config_dict = super().to_dict(_skipped_keys.union({"change_kind"}))
-        if "change_kind" not in _skipped_keys:
-            config_dict["change_kind"] = self.change_kind.name
-        return config_dict
-
     @property
     def change_kind(self) -> ChangeKind:
         return self._change_kind

@@ -9,6 +9,7 @@ Contains the base classes for all models.
 """
 from abc import abstractmethod
 import copy
+from enum import Enum
 import json
 import logging
 import os
@@ -64,6 +65,8 @@ class Config(object, metaclass=ModelConfigMeta):
             key = k_strip if hasattr(self, k_strip) else key
             if hasattr(value, "to_dict"):
                 value = value.to_dict()
+            elif isinstance(value, Enum):
+                value = value.name  # Relies on there being an appropriate getter/setter!
             if key not in skipped_keys:
                 config_dict[key] = copy.deepcopy(value)
         return config_dict

@@ -116,13 +116,6 @@ class SeasonalityConfig(LayeredModelConfig):
 
         self._periodicity_strategy = p
 
-    def to_dict(self, _skipped_keys=None):
-        _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
-        config_dict = super().to_dict(_skipped_keys.union({"periodicity_strategy"}))
-        if "periodicity_strategy" not in _skipped_keys:
-            config_dict["periodicity_strategy"] = self.periodicity_strategy.name
-        return config_dict
-
 
 class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
     """
