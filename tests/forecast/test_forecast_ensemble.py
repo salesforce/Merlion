@@ -81,7 +81,7 @@ class TestForecastEnsemble(unittest.TestCase):
     def test_univariate_selector(self):
         print("-" * 80)
         logger.info("test_univariate_selector\n" + "-" * 80 + "\n")
-        self.expected_smape = 43
+        self.expected_smape = 20
         self._test_selector(test_name="test_univariate_selector", expected_smapes=[34.66, 39.81, 21.46])
 
     def test_multivariate_selector(self):
