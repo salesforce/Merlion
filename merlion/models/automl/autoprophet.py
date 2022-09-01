@@ -75,17 +75,17 @@ class AutoProphet(ICAutoMLForecaster, SeasonalityLayer):
         seas, mode = theta
         return f"Prophet(seasonalities={seas}, seasonality_mode={mode})"
 
-    def get_ic(self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
+    def get_ic(self, model, train_data: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
         pred, stderr = train_result
-        log_like = norm.logpdf((pred.values - train_data_df.values) / stderr.values).sum()
+        log_like = norm.logpdf((pred.values - train_data.values) / stderr.values).sum()
         n_params = sum(len(v.flatten()) for k, v in model.base_model.model.params.items() if k != "trend")
         ic_id = self.config.information_criterion
         if ic_id is InformationCriterion.AIC:
             ic = 2 * n_params - 2 * log_like.sum()
         elif ic_id is InformationCriterion.BIC:
-            ic = n_params * np.log(len(y)) - 2 * log_like
+            ic = n_params * np.log(len(train_data)) - 2 * log_like
         elif ic_id is InformationCriterion.AICc:
-            ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / (len(y) - n_params - 1)
+            ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / max(1, len(train_data) - n_params - 1)
         else:
             raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic_id.name}")
         return ic

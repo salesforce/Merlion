@@ -154,13 +154,13 @@ class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
 
     @abstractmethod
     def get_ic(
-        self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, Optional[pd.DataFrame]]
+        self, model, train_data: pd.DataFrame, train_result: Tuple[pd.DataFrame, Optional[pd.DataFrame]]
     ) -> float:
         """
         Returns the information criterion of the model based on the given training data & the model's train result.
 
         :param model: One of the models being tried. Must be trained.
-        :param train_data_df: The target sequence of the training data as a ``pandas.DataFrame``.
+        :param train_data: The target sequence of the training data as a ``pandas.DataFrame``.
         :param train_result: The result of calling ``model._train()``.
         :return: The information criterion evaluating the model's goodness of fit.
         """
@@ -185,7 +185,7 @@ class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
             self.set_theta(model, theta, train_data)
             train_result = model._train(y, train_config=train_config)
             fit_time = time.time() - start
-            ic = float(self.get_ic(model=model, train_data_df=y_target, train_result=train_result))
+            ic = float(self.get_ic(model=model, train_data=y_target, train_result=train_result))
             logger.debug(f"{self._model_name(theta)}: {self.information_criterion.name}={ic:.3f}, Time={fit_time:.2f}s")
 
             # Determine if current model is better than the best seen yet

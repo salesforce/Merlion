@@ -164,5 +164,5 @@ class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
         error, trend, seasonal, damped, seasonal_periods = theta
         return f"ETS(err={error},trend={trend},seas={seasonal},damped={damped})"
 
-    def get_ic(self, model, train_data_df: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
+    def get_ic(self, model, train_data: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
         return getattr(model.base_model.model, self.information_criterion.name.lower())
