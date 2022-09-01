@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ts_datasets.forecast package &mdash; Merlion 1.2.5 documentation</title>
+  <title>ts_datasets.forecast package &mdash; Merlion 1.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -113,7 +113,7 @@
 no labels of any sort.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ts_datasets.forecast.get_dataset">
-<span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.get_dataset" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">get_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.get_dataset" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -122,6 +122,7 @@ no labels of any sort.</p>
 <li><p><strong>rootdir</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the directory where the desired dataset is stored. Not
 required if the package <a class="reference internal" href="ts_datasets.html#module-ts_datasets" title="ts_datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ts_datasets</span></code></a> is installed in editable
 mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre">-e</span></code>.</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments for the data loader you are trying to load.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -135,19 +136,20 @@ mode, i.e. with flag <code class="docutils literal notranslate"><span class="pre
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ts_datasets.forecast.CustomDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">CustomDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.CustomDataset" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ts_datasets.forecast.</span></span><span class="sig-name descname"><span class="pre">CustomDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.forecast.CustomDataset" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="ts_datasets.html#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
 <p>Wrapper to load a custom dataset. Please review the <a class="reference internal" href="examples/CustomDataset.html"><span class="doc">tutorial</span></a> to get started.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>root</strong> – Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
+<li><p><strong>rootdir</strong> – Filename of a single CSV, or a directory containing many CSVs. Each CSV must contain 1
 or more time series.</p></li>
 <li><p><strong>test_frac</strong> – If we don’t find a column “trainval” in the time series, this is the fraction of each
 time series which we use for testing.</p></li>
 <li><p><strong>time_col</strong> – Name of the column used to index time. We use the first non-index, non-metadata column
 if none is given.</p></li>
 <li><p><strong>time_unit</strong> – If the time column is numerical, we assume it is a timestamp expressed in this unit.</p></li>
+<li><p><strong>data_cols</strong> – Name of the columns to fetch from the dataset. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use all non-time, non-index columns.</p></li>
 <li><p><strong>index_cols</strong> – If a CSV file contains multiple time series, these are the columns used to index those
 time series. For example, a CSV file may contain time series of sales for many (store, department) pairs.
 In this case, <code class="docutils literal notranslate"><span class="pre">index_cols</span></code> may be <code class="docutils literal notranslate"><span class="pre">[&quot;Store&quot;,</span> <span class="pre">&quot;Dept&quot;]</span></code>. The values of the index columns will be added

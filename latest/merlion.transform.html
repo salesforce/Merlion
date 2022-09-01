@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.transform package &mdash; Merlion 1.2.5 documentation</title>
+  <title>merlion.transform package &mdash; Merlion 1.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -631,21 +631,22 @@ between zero and one.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">PowerTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lmbda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="merlion.transform.normalize.BoxCoxTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.normalize.</span></span><span class="sig-name descname"><span class="pre">BoxCoxTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lmbda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.BoxCoxTransform" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvertibleTransformBase</span></code></a></p>
 <p>Applies the Box-Cox power transform to the time series, with power lmbda.
+When lmbda is None, we
 When lmbda &gt; 0, it is ((x + offset) ** lmbda - 1) / lmbda.
 When lmbda == 0, it is ln(lmbda + offset).</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform.requires_inversion_state">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform.requires_inversion_state" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="merlion.transform.normalize.BoxCoxTransform.requires_inversion_state">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.normalize.BoxCoxTransform.requires_inversion_state" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">False</span></code> because the Box-Cox transform does is stateless to invert.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="merlion.transform.normalize.PowerTransform.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.PowerTransform.train" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="merlion.transform.normalize.BoxCoxTransform.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.normalize.BoxCoxTransform.train" title="Permalink to this definition"></a></dt>
 <dd><p>Sets all trainable parameters of the transform (if any), using the input time series as training data.</p>
 </dd></dl>
 

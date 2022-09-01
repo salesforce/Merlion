@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Loading Custom Datasets &mdash; Merlion 1.2.5 documentation</title>
+  <title>Loading Custom Datasets &mdash; Merlion 1.3.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -637,7 +637,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">CustomAnomalyDataset</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomAnomalyDataset</span><span class="p">(</span>
-    <span class="n">root</span><span class="o">=</span><span class="n">anom_dir</span><span class="p">,</span>          <span class="c1"># where the data is stored</span>
+    <span class="n">rootdir</span><span class="o">=</span><span class="n">anom_dir</span><span class="p">,</span>       <span class="c1"># where the data is stored</span>
     <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>         <span class="c1"># use 75% of each time series for testing.</span>
                             <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
     <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>          <span class="c1"># the timestamp column (automatically detected) is in units of seconds</span>
@@ -1127,7 +1127,7 @@ There are 18 time series in this dataset.
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomDataset</span><span class="p">(</span>
-    <span class="n">root</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>                     <span class="c1"># where the data is stored</span>
+    <span class="n">rootdir</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>                  <span class="c1"># where the data is stored</span>
     <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Store&quot;</span><span class="p">,</span> <span class="s2">&quot;Dept&quot;</span><span class="p">],</span> <span class="c1"># Individual time series are indexed by store &amp; department</span>
     <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>               <span class="c1"># use 25% of each time series for testing.</span>
                                   <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
@@ -1492,6 +1492,21 @@ There are 58 time series in this dataset.
 <h2>Broader Takeaways<a class="headerlink" href="#Broader-Takeaways" title="Permalink to this heading"></a></h2>
 <p>In general, a dataset can contain any number of CSVs stored under a single root directory. Each CSV can contain one or more time series, where the different time series within a single file are indicated by different values of the index column. Note that this works for anomaly detection as well! You just need to make sure that your CSVs all contain the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column. In general, all features supported by <code class="docutils literal notranslate"><span class="pre">CustomDataset</span></code> are also supported by <code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset</span></code>, as long as your CSV
 files have the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column.</p>
+<p>If you want to either of the above custom datasets for benchmarking, you can call</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_anomaly.py --model IsolationForest --retrain_freq 7d \
+    --dataset CustomAnomalyDataset --data_root data/synthetic_anomaly \
+    --data_kwargs &#39;{&quot;assume_no_anomaly&quot;: true, &quot;test_frac&quot;: 0.75}&#39;
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_forecast.py --model AutoETS  \
+    --dataset CustomDataset --data_root data/walmart/walmart_mini.csv \
+    --data_kwargs &#39;{&quot;test_frac&quot;: 0.25, \
+                    &quot;index_cols&quot;: [&quot;Store&quot;, &quot;Dept&quot;], \
+                    &quot;data_cols&quot;: [&quot;Weekly_Sales&quot;]}&#39;
+</pre></div>
+</div>
+<p>Note in the example above, we specify “data_cols” as “Weekly_Sales”. This indicates that we want</p>
 </section>
 </section>
 
