@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Use Anomaly Detectors in Merlion &mdash; Merlion 1.3.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Multivariate Time Series Anomaly Detection" href="2_AnomalyMultivariate.html" />
+    <link rel="prev" title="A Gentle Introduction to Anomaly Detection in Merlion" href="0_AnomalyIntro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../tutorials.html#anomaly-detection">Anomaly Detection</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="0_AnomalyIntro.html">A Gentle Introduction to Anomaly Detection in Merlion</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">How to Use Anomaly Detectors in Merlion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Initialization">Model Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Training">Model Training</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Inference">Model Inference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Quantitative-Evaluation">Quantitative Evaluation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Model-Visualization">Model Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Saving-&amp;-Loading-Models">Saving &amp; Loading Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Simulating-Live-Model-Deployment">Simulating Live Model Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="2_AnomalyMultivariate.html">Multivariate Time Series Anomaly Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_AnomalyNewModel.html">Adding New Anomaly Detection Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>How to Use Anomaly Detectors in Merlion</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/anomaly/1_AnomalyFeatures.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="How-to-Use-Anomaly-Detectors-in-Merlion">
+<h1>How to Use Anomaly Detectors in Merlion<a class="headerlink" href="#How-to-Use-Anomaly-Detectors-in-Merlion" title="Permalink to this heading"></a></h1>
+<p>This notebook will guide you through using all the key features of anomaly detectors in Merlion. Specifically, we will explain</p>
+<ol class="arabic simple">
+<li><p>Initializing an anomaly detection model (including ensembles)</p></li>
+<li><p>Training the model</p></li>
+<li><p>Producing a series of anomaly scores with the model</p></li>
+<li><p>Quantitatively evaluating the model</p></li>
+<li><p>Visualizing the model’s predictions</p></li>
+<li><p>Saving and loading a trained model</p></li>
+<li><p>Simulating the live deployment of a model using a <code class="docutils literal notranslate"><span class="pre">TSADEvaluator</span></code></p></li>
+</ol>
+<p>We will be using a single example time series for this whole notebook. We load and visualize it now:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">merlion.plot</span> <span class="kn">import</span> <span class="n">plot_anoms</span>
+<span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+<span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">NAB</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+
+<span class="c1"># This is a time series with anomalies in both the train and test split.</span>
+<span class="c1"># time_series and metadata are both time-indexed pandas DataFrames.</span>
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;realKnownCause&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="c1"># Visualize the full time series</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+
+<span class="c1"># Label the train/test split with a dashed line &amp; plot anomalies</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_1_AnomalyFeatures_1_1.png" src="../../_images/examples_anomaly_1_AnomalyFeatures_1_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="c1"># Get training split</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="n">train_labels</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">anomaly</span><span class="p">)</span>
+
+<span class="c1"># Get testing split</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="n">test_labels</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">anomaly</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Model-Initialization">
+<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this heading"></a></h2>
+<p>In this notebook, we will use three different anomaly detection models:</p>
+<ol class="arabic simple">
+<li><p>Isolation Forest (a classic anomaly detection model)</p></li>
+<li><p>WindStats (an in-house model that divides each week into windows of a specified size, and compares time series values to the historical values in the appropriate window)</p></li>
+<li><p>Prophet (Facebook’s popular forecasting model, adapted for anomaly detection.</p></li>
+</ol>
+<p>Let’s start by initializing each of them:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Import models &amp; configs</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.isolation_forest</span> <span class="kn">import</span> <span class="n">IsolationForest</span><span class="p">,</span> <span class="n">IsolationForestConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.windstats</span> <span class="kn">import</span> <span class="n">WindStats</span><span class="p">,</span> <span class="n">WindStatsConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.models.anomaly.forecast_based.prophet</span> <span class="kn">import</span> <span class="n">ProphetDetector</span><span class="p">,</span> <span class="n">ProphetDetectorConfig</span>
+
+<span class="c1"># Import a post-rule for thresholding</span>
+<span class="kn">from</span> <span class="nn">merlion.post_process.threshold</span> <span class="kn">import</span> <span class="n">AggregateAlarms</span>
+
+<span class="c1"># Import a data processing transform</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">DifferenceTransform</span>
+
+<span class="c1"># All models are initialized using the syntax ModelClass(config), where config</span>
+<span class="c1"># is a model-specific configuration object. This is where you specify any</span>
+<span class="c1"># algorithm-specific hyperparameters, any data pre-processing transforms, and</span>
+<span class="c1"># the post-rule you want to use to post-process the anomaly scores (to reduce</span>
+<span class="c1"># noisiness when firing alerts).</span>
+
+<span class="c1"># We initialize isolation forest using the default config</span>
+<span class="n">config1</span> <span class="o">=</span> <span class="n">IsolationForestConfig</span><span class="p">()</span>
+<span class="n">model1</span>  <span class="o">=</span> <span class="n">IsolationForest</span><span class="p">(</span><span class="n">config1</span><span class="p">)</span>
+
+<span class="c1"># We use a WindStats model that splits each week into windows of 60 minutes</span>
+<span class="c1"># each. Anomaly scores in Merlion correspond to z-scores. By default, we would</span>
+<span class="c1"># like to fire an alert for any 4-sigma event, so we specify a threshold rule</span>
+<span class="c1"># which achieves this.</span>
+<span class="n">config2</span> <span class="o">=</span> <span class="n">WindStatsConfig</span><span class="p">(</span><span class="n">wind_sz</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">model2</span>  <span class="o">=</span> <span class="n">WindStats</span><span class="p">(</span><span class="n">config2</span><span class="p">)</span>
+
+<span class="c1"># Prophet is a popular forecasting algorithm. Here, we specify that we would like</span>
+<span class="c1"># to pre-processes the input time series by applying a difference transform,</span>
+<span class="c1"># before running the model on it.</span>
+<span class="n">config3</span> <span class="o">=</span> <span class="n">ProphetDetectorConfig</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="n">DifferenceTransform</span><span class="p">())</span>
+<span class="n">model3</span>  <span class="o">=</span> <span class="n">ProphetDetector</span><span class="p">(</span><span class="n">config3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we have initialized the individual models, we will also combine them in an ensemble. We set this ensemble’s detection threshold to fire alerts for 4-sigma events (the same as WindStats).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.models.ensemble.anomaly</span> <span class="kn">import</span> <span class="n">DetectorEnsemble</span><span class="p">,</span> <span class="n">DetectorEnsembleConfig</span>
+
+<span class="n">ensemble_config</span> <span class="o">=</span> <span class="n">DetectorEnsembleConfig</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">DetectorEnsemble</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">ensemble_config</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Model-Training">
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this heading"></a></h2>
+<p>All anomaly detection models (and ensembles) share the same API for training. The <code class="docutils literal notranslate"><span class="pre">train()</span></code> method returns the model’s predicted anomaly scores on the training data. Note that you may optionally specify configs that modify the protocol used to train the model’s post-rule! You may optionally specify ground truth anomaly labels as well (if you have them), but they are not needed. We give examples of all these behaviors below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+
+<span class="c1"># Train IsolationForest in the default way, using the ground truth anomaly labels</span>
+<span class="c1"># to set the post-rule&#39;s threshold</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="n">train_scores_1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">train_labels</span><span class="p">)</span>
+
+<span class="c1"># Train WindStats completely unsupervised (this retains our anomaly detection</span>
+<span class="c1"># default anomaly detection threshold of 4)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model2</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="n">train_scores_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Train Prophet with the ground truth anomaly labels, with a post-rule</span>
+<span class="c1"># trained to optimize Precision score</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model3</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="n">post_rule_train_config_3</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="p">)</span>
+<span class="n">train_scores_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">train_labels</span><span class="p">,</span>
+    <span class="n">post_rule_train_config</span><span class="o">=</span><span class="n">post_rule_train_config_3</span><span class="p">)</span>
+
+<span class="c1"># We consider an unsupervised ensemble, which combines the anomaly scores</span>
+<span class="c1"># returned by the models &amp; sets a static anomaly detection threshold of 3.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Training ensemble...&quot;</span><span class="p">)</span>
+<span class="n">ensemble_post_rule_train_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">train_scores_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">train</span><span class="p">(</span>
+    <span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">train_labels</span><span class="p">,</span>
+    <span class="n">post_rule_train_config</span><span class="o">=</span><span class="n">ensemble_post_rule_train_config</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Training IsolationForest...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:merlion.post_process.threshold:Threshold 3.2263 achieves F1=0.5000.
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Training WindStats...
+
+Training ProphetDetector...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:merlion.post_process.threshold:Threshold 3.2263 achieves F1=0.6667.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Training ensemble...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Done!
+</pre></div></div>
+</div>
+</section>
+<section id="Model-Inference">
+<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this heading"></a></h2>
+<p>There are two ways to invoke an anomaly detection model: <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_score()</span></code> returns the model’s raw anomaly scores, while <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code> returns the model’s post-processed anomaly scores. The post-processing calibrates the anomaly scores to be interpretable as z-scores, and it also sparsifies them such that any nonzero values should be treated as an alert that a particular timestamp is anomalous.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Here is a full example for the first model, IsolationForest</span>
+<span class="n">scores_1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">scores_1_df</span> <span class="o">=</span> <span class="n">scores_1</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.get_anomaly_score() nonzero values (raw)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores_1_df</span><span class="p">[</span><span class="n">scores_1_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">labels_1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">labels_1_df</span> <span class="o">=</span> <span class="n">labels_1</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.get_anomaly_label() nonzero values (post-processed)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">labels_1_df</span><span class="p">[</span><span class="n">labels_1_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> fires </span><span class="si">{</span><span class="p">(</span><span class="n">labels_1_df</span><span class="o">.</span><span class="n">values</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> alarms&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Raw scores at the locations where alarms were fired:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores_1_df</span><span class="p">[</span><span class="n">labels_1_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Post-processed scores are interpretable as z-scores&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Raw scores are challenging to interpret&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+IsolationForest.get_anomaly_score() nonzero values (raw)
+                     anom_score
+2013-12-14 16:55:00    0.424103
+2013-12-14 17:00:00    0.418938
+2013-12-14 17:05:00    0.484891
+2013-12-14 17:10:00    0.500257
+2013-12-14 17:15:00    0.449213
+...                         ...
+2014-02-19 15:05:00    0.419456
+2014-02-19 15:10:00    0.415807
+2014-02-19 15:15:00    0.406724
+2014-02-19 15:20:00    0.427094
+2014-02-19 15:25:00    0.428348
+
+[19279 rows x 1 columns]
+
+IsolationForest.get_anomaly_label() nonzero values (post-processed)
+                     anom_score
+2013-12-16 16:00:00    3.251397
+2013-12-16 18:35:00    3.681691
+2013-12-27 19:25:00    3.914430
+2013-12-27 23:20:00    3.260543
+2013-12-28 04:15:00    3.738462
+2013-12-28 06:20:00    3.303482
+2014-01-02 10:00:00    3.233514
+2014-01-05 17:50:00    3.791805
+2014-01-12 09:25:00    3.535895
+2014-01-13 10:05:00    3.314500
+2014-01-16 12:50:00    3.850349
+2014-01-24 12:50:00    4.170855
+2014-01-27 17:45:00    3.537919
+2014-01-28 22:00:00    3.451974
+2014-01-30 23:40:00    3.550075
+2014-02-02 23:45:00    3.359105
+2014-02-03 11:55:00    4.175556
+2014-02-05 05:10:00    3.675433
+2014-02-09 11:55:00    4.005116
+2014-02-13 19:15:00    3.247573
+
+IsolationForest fires 20 alarms
+
+Raw scores at the locations where alarms were fired:
+                     anom_score
+2013-12-16 16:00:00    0.701491
+2013-12-16 18:35:00    0.772563
+2013-12-27 19:25:00    0.810997
+2013-12-27 23:20:00    0.702972
+2013-12-28 04:15:00    0.781997
+2013-12-28 06:20:00    0.709952
+2014-01-02 10:00:00    0.698602
+2014-01-05 17:50:00    0.790835
+2014-01-12 09:25:00    0.748293
+2014-01-13 10:05:00    0.711750
+2014-01-16 12:50:00    0.800493
+2014-01-24 12:50:00    0.852493
+2014-01-27 17:45:00    0.748630
+2014-01-28 22:00:00    0.734366
+2014-01-30 23:40:00    0.750652
+2014-02-02 23:45:00    0.719052
+2014-02-03 11:55:00    0.853260
+2014-02-05 05:10:00    0.771522
+2014-02-09 11:55:00    0.825713
+2014-02-13 19:15:00    0.700873
+Post-processed scores are interpretable as z-scores
+Raw scores are challenging to interpret
+</pre></div></div>
+</div>
+<p>The same API is shared for all models, including ensembles.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">scores_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">labels_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">scores_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">labels_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">scores_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">labels_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Quantitative-Evaluation">
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
+<p>It is fairly transparent to visualize a model’s predicted anomaly scores and also quantitatively evaluate its anomaly labels. For evaluation, we use specialized definitions of precision, recall, and F1 as revised point-adjusted metrics (see the technical report for more details). We also consider the mean time to detect anomalies.</p>
+<p>In general, you may use the <code class="docutils literal notranslate"><span class="pre">TSADMetric</span></code> enum to compute evaluation metrics for a time series using the syntax</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>TSADMetric.&lt;metric_name&gt;.value(ground_truth=ground_truth, predict=anomaly_labels)
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&lt;metric_name&gt;</span></code> is the name of the evaluation metric (see the API docs for details and more options), <code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> is a time series of ground truth anomaly labels, and <code class="docutils literal notranslate"><span class="pre">anomaly_labels</span></code> is the output of <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">model1</span><span class="p">,</span> <span class="n">labels_1</span><span class="p">),</span> <span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="n">labels_2</span><span class="p">),</span> <span class="p">(</span><span class="n">model3</span><span class="p">,</span> <span class="n">labels_3</span><span class="p">),</span> <span class="p">(</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">labels_e</span><span class="p">)]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">mttd</span> <span class="o">=</span> <span class="n">TSADMetric</span><span class="o">.</span><span class="n">MeanTimeToDetect</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">recall</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1:        </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MTTD:      </span><span class="si">{</span><span class="n">mttd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+IsolationForest
+Precision: 0.1667
+Recall:    1.0000
+F1:        0.2857
+MTTD:      0 days 23:31:40
+
+WindStats
+Precision: 0.2500
+Recall:    0.6667
+F1:        0.3636
+MTTD:      1 days 10:25:00
+
+ProphetDetector
+Precision: 0.3750
+Recall:    1.0000
+F1:        0.5455
+MTTD:      1 days 00:03:20
+
+DetectorEnsemble
+Precision: 0.4000
+Recall:    0.6667
+F1:        0.5000
+MTTD:      1 days 10:25:00
+
+</pre></div></div>
+</div>
+<p>Since the individual models are trained to optimize F1 directly, they all have low precision, high recall, and a mean time to detect of around 1 day. However, by instead training the individual models to optimize precision, and training a model combination unit to optimize F1, we are able to greatly increase the precision and F1 score, at the cost of a lower recall and higher mean time to detect.</p>
+</section>
+<section id="Model-Visualization">
+<h2>Model Visualization<a class="headerlink" href="#Model-Visualization" title="Permalink to this heading"></a></h2>
+<p>Let’s now visualize the model predictions that led to these outcomes. The option <code class="docutils literal notranslate"><span class="pre">filter_scores=True</span></code> means that we want to plot the post-processed anomaly scores (i.e. returned by <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code>). You may instead specify <code class="docutils literal notranslate"><span class="pre">filter_scores=False</span></code> to visualize the raw anomaly scores.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span>
+        <span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+        <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">test_labels</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+IsolationForest
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_1_AnomalyFeatures_19_1.png" src="../../_images/examples_anomaly_1_AnomalyFeatures_19_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+WindStats
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_1_AnomalyFeatures_19_3.png" src="../../_images/examples_anomaly_1_AnomalyFeatures_19_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ProphetDetector
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_1_AnomalyFeatures_19_5.png" src="../../_images/examples_anomaly_1_AnomalyFeatures_19_5.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<p>So all the individual models generate quite a few false positives. Let’s see how the ensemble does:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span>
+    <span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
+    <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">test_labels</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_anomaly_1_AnomalyFeatures_21_0.png" src="../../_images/examples_anomaly_1_AnomalyFeatures_21_0.png" />
+</div>
+</div>
+<p>So the ensemble misses one of the three anomalies in the test split, but it also greatly reduces the number of false positives relative to the other models.</p>
+</section>
+<section id="Saving-&amp;-Loading-Models">
+<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this heading"></a></h2>
+<p>All models have a <code class="docutils literal notranslate"><span class="pre">save()</span></code> method and <code class="docutils literal notranslate"><span class="pre">load()</span></code> class method. Models may also be loaded with the assistance of the <code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code>, which works for arbitrary models. The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method creates a new directory at the specified path, where it saves a <code class="docutils literal notranslate"><span class="pre">json</span></code> file representing the model’s config, as well as a binary file for the model’s state.</p>
+<p>We will demonstrate these behaviors using our <code class="docutils literal notranslate"><span class="pre">IsolationForest</span></code> model (<code class="docutils literal notranslate"><span class="pre">model1</span></code>) for concreteness. Note that the config explicitly tracks the transform (to pre-process the data), the calibrator (to transform raw anomaly scores into z-scores), the thresholding rule (to sparsify the calibrated anomaly scores).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">from</span> <span class="nn">merlion.models.factory</span> <span class="kn">import</span> <span class="n">ModelFactory</span>
+
+<span class="c1"># Save the model</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="s2">&quot;isf&quot;</span><span class="p">)</span>
+<span class="n">model1</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># Print the config saved</span>
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> Config&quot;</span><span class="p">)</span>
+    <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+<span class="c1"># Load the model using Prophet.load()</span>
+<span class="n">model2_loaded</span> <span class="o">=</span> <span class="n">IsolationForest</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># Load the model using the ModelFactory</span>
+<span class="n">model2_factory_loaded</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;IsolationForest&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+IsolationForest Config
+{&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
+                &#39;anchors&#39;: [[0.38992633996347176, 0.0],
+                            [0.4187750781361715, 0.5],
+                            [0.445336977389891, 1.0],
+                            [0.47974261897360404, 1.5],
+                            [0.5271631189090943, 2.0],
+                            [0.8301789920204418, 4.032894437734716],
+                            [1.0, 5.032894437734716]],
+                &#39;max_score&#39;: 1.0,
+                &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
+ &#39;dim&#39;: 1,
+ &#39;enable_calibrator&#39;: True,
+ &#39;enable_threshold&#39;: True,
+ &#39;max_n_samples&#39;: 1.0,
+ &#39;n_estimators&#39;: 100,
+ &#39;threshold&#39;: {&#39;abs_score&#39;: True,
+               &#39;alm_suppress_minutes&#39;: 120,
+               &#39;alm_threshold&#39;: 3.2263155501877727,
+               &#39;alm_window_minutes&#39;: 60,
+               &#39;min_alm_in_window&#39;: 2,
+               &#39;name&#39;: &#39;AggregateAlarms&#39;},
+ &#39;transform&#39;: {&#39;name&#39;: &#39;TransformSequence&#39;,
+               &#39;transforms&#39;: [{&#39;name&#39;: &#39;DifferenceTransform&#39;},
+                              {&#39;multivar_skip&#39;: True,
+                               &#39;name&#39;: &#39;Shingle&#39;,
+                               &#39;size&#39;: 2,
+                               &#39;stride&#39;: 1}]}}
+</pre></div></div>
+</div>
+<p>We can do the same exact thing with ensembles! Note that the ensemble stores its underlying models in a nested structure. This is all reflected in the config.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Save the ensemble</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">)</span>
+<span class="n">ensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># Print the config saved. Note that we&#39;ve saved all individual models,</span>
+<span class="c1"># and their paths are specified under the model_paths key.</span>
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;config.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ensemble Config&quot;</span><span class="p">)</span>
+    <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+<span class="c1"># Load the selector</span>
+<span class="n">selector_loaded</span> <span class="o">=</span> <span class="n">DetectorEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># Load the selector using the ModelFactory</span>
+<span class="n">selector_factory_loaded</span> <span class="o">=</span> <span class="n">ModelFactory</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DetectorEnsemble&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Ensemble Config
+{&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
+                &#39;anchors&#39;: None,
+                &#39;max_score&#39;: 1000,
+                &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
+ &#39;combiner&#39;: {&#39;abs_score&#39;: True, &#39;n_models&#39;: 3, &#39;name&#39;: &#39;Mean&#39;},
+ &#39;dim&#39;: 1,
+ &#39;enable_calibrator&#39;: False,
+ &#39;enable_threshold&#39;: True,
+ &#39;models&#39;: [{&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
+                            &#39;anchors&#39;: [[0.38992633996347176, 0.0],
+                                        [0.4187750781361715, 0.5],
+                                        [0.445336977389891, 1.0],
+                                        [0.47974261897360404, 1.5],
+                                        [0.5271631189090943, 2.0],
+                                        [0.8301789920204418, 4.032894437734716],
+                                        [1.0, 5.032894437734716]],
+                            &#39;max_score&#39;: 1.0,
+                            &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
+             &#39;dim&#39;: 1,
+             &#39;enable_calibrator&#39;: True,
+             &#39;enable_threshold&#39;: False,
+             &#39;max_n_samples&#39;: 1.0,
+             &#39;n_estimators&#39;: 100,
+             &#39;name&#39;: &#39;IsolationForest&#39;,
+             &#39;threshold&#39;: {&#39;abs_score&#39;: True,
+                           &#39;alm_suppress_minutes&#39;: 120,
+                           &#39;alm_threshold&#39;: 3.0,
+                           &#39;alm_window_minutes&#39;: 60,
+                           &#39;min_alm_in_window&#39;: 2,
+                           &#39;name&#39;: &#39;AggregateAlarms&#39;},
+             &#39;transform&#39;: {&#39;name&#39;: &#39;TransformSequence&#39;,
+                           &#39;transforms&#39;: [{&#39;name&#39;: &#39;DifferenceTransform&#39;},
+                                          {&#39;multivar_skip&#39;: True,
+                                           &#39;name&#39;: &#39;Shingle&#39;,
+                                           &#39;size&#39;: 2,
+                                           &#39;stride&#39;: 1}]}},
+            {&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
+                            &#39;anchors&#39;: [[0.0005687426322338457, 0.0],
+                                        [0.8270481271598537, 0.5],
+                                        [1.6872394706496963, 1.0],
+                                        [2.371538318320157, 1.5],
+                                        [2.9246837154735017, 2.0],
+                                        [4.064135464545045, 4.032821539569336],
+                                        [8.12827092909009, 5.032821539569336]],
+                            &#39;max_score&#39;: 1000,
+                            &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
+             &#39;dim&#39;: 1,
+             &#39;enable_calibrator&#39;: True,
+             &#39;enable_threshold&#39;: False,
+             &#39;max_day&#39;: 4,
+             &#39;name&#39;: &#39;WindStats&#39;,
+             &#39;threshold&#39;: {&#39;abs_score&#39;: True,
+                           &#39;alm_suppress_minutes&#39;: 120,
+                           &#39;alm_threshold&#39;: 4,
+                           &#39;alm_window_minutes&#39;: 60,
+                           &#39;min_alm_in_window&#39;: 2,
+                           &#39;name&#39;: &#39;AggregateAlarms&#39;},
+             &#39;transform&#39;: {&#39;name&#39;: &#39;DifferenceTransform&#39;},
+             &#39;wind_sz&#39;: 60},
+            {&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
+                            &#39;anchors&#39;: [[0.00034442266386701815, 0.0],
+                                        [0.50672704564658, 0.5],
+                                        [1.0444911207158671, 1.0],
+                                        [1.5495525355806337, 1.5],
+                                        [1.9643452887114796, 2.0],
+                                        [4.831069032732285, 4.032894437734716],
+                                        [9.66213806546457, 5.032894437734716]],
+                            &#39;max_score&#39;: 1000,
+                            &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
+             &#39;daily_seasonality&#39;: &#39;auto&#39;,
+             &#39;dim&#39;: 1,
+             &#39;enable_calibrator&#39;: True,
+             &#39;enable_threshold&#39;: False,
+             &#39;holidays&#39;: None,
+             &#39;max_forecast_steps&#39;: None,
+             &#39;name&#39;: &#39;ProphetDetector&#39;,
+             &#39;seasonality_mode&#39;: &#39;additive&#39;,
+             &#39;target_seq_index&#39;: 0,
+             &#39;threshold&#39;: {&#39;abs_score&#39;: True,
+                           &#39;alm_suppress_minutes&#39;: 120,
+                           &#39;alm_threshold&#39;: 3,
+                           &#39;alm_window_minutes&#39;: 60,
+                           &#39;min_alm_in_window&#39;: 2,
+                           &#39;name&#39;: &#39;AggregateAlarms&#39;},
+             &#39;transform&#39;: {&#39;name&#39;: &#39;DifferenceTransform&#39;},
+             &#39;uncertainty_samples&#39;: 100,
+             &#39;weekly_seasonality&#39;: &#39;auto&#39;,
+             &#39;yearly_seasonality&#39;: &#39;auto&#39;}],
+ &#39;threshold&#39;: {&#39;abs_score&#39;: True,
+               &#39;alm_suppress_minutes&#39;: 120,
+               &#39;alm_threshold&#39;: 4,
+               &#39;alm_window_minutes&#39;: 60,
+               &#39;min_alm_in_window&#39;: 2,
+               &#39;name&#39;: &#39;AggregateAlarms&#39;},
+ &#39;transform&#39;: {&#39;name&#39;: &#39;Identity&#39;}}
+</pre></div></div>
+</div>
+</section>
+<section id="Simulating-Live-Model-Deployment">
+<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this heading"></a></h2>
+<p>A typical model deployment scenario is as follows: 1. Train an initial model on some recent historical data, optionally with labels. 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">retrain_freq</span></code> (e.g. once per week), retrain the entire model unsupervised (i.e. with no labels) on the most recent data. 1. Obtain the model’s predicted anomaly scores for the time series values that occur between re-trainings. We perform this operation in batch, but a deployment scenario may do this in streaming. 1. Optionally, specify
+a maximum amount of data (<code class="docutils literal notranslate"><span class="pre">train_window</span></code>) that the model should use for training (e.g. the most recent 2 weeks of data).</p>
+<p>We provide a <code class="docutils literal notranslate"><span class="pre">TSADEvaluator</span></code> object which simulates the above deployment scenario, and also allows a user to evaluate the quality of the forecaster according to an evaluation metric of their choice. We illustrate an example below using the ensemble.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Initialize the evaluator</span>
+<span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADEvaluator</span><span class="p">,</span> <span class="n">TSADEvaluatorConfig</span>
+
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">TSADEvaluator</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">TSADEvaluatorConfig</span><span class="p">(</span><span class="n">retrain_freq</span><span class="o">=</span><span class="s2">&quot;7d&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># The kwargs we would provide to ensemble.train() for the initial training</span>
+<span class="c1"># Note that we are training the ensemble unsupervised.</span>
+<span class="n">train_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;anomaly_labels&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+<span class="c1"># We will use the default kwargs for re-training (these leave the</span>
+<span class="c1"># post-rules unchanged, since there are no new labels)</span>
+<span class="n">retrain_kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># We call evaluator.get_predict() to get the time series of anomaly scores</span>
+<span class="c1"># produced by the anomaly detector when deployed in this manner</span>
+<span class="n">train_scores</span><span class="p">,</span> <span class="n">test_scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">get_predict</span><span class="p">(</span>
+    <span class="n">train_vals</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">test_vals</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
+    <span class="n">train_kwargs</span><span class="o">=</span><span class="n">train_kwargs</span><span class="p">,</span> <span class="n">retrain_kwargs</span><span class="o">=</span><span class="n">retrain_kwargs</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1501940.88it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  21%|██        | 1209600/5783700 [00:02&lt;00:10, 421704.52it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:05&lt;00:13, 293996.29it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:08&lt;00:13, 241431.47it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:13&lt;00:14, 185310.19it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:16&lt;00:11, 186082.04it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:20&lt;00:09, 168778.34it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:24&lt;00:05, 166406.09it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:30&lt;00:02, 138865.20it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+TSADEvaluator: 100%|██████████| 5783700/5783700 [00:36&lt;00:00, 160502.25it/s]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Now let&#39;s evaluate how we did.</span>
+<span class="n">precision</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="p">)</span>
+<span class="n">recall</span>    <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="p">)</span>
+<span class="n">f1</span>        <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="p">)</span>
+<span class="n">mttd</span>      <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">MeanTimeToDetect</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ensemble Performance&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">precision</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">recall</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1:        </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MTTD:      </span><span class="si">{</span><span class="n">mttd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Ensemble Performance
+Precision: 0.6667
+Recall:    0.6667
+F1:        0.6667
+MTTD:      1 days 10:25:00
+
+</pre></div></div>
+</div>
+<p>In this case, we see that by simply re-training the ensemble weekly in an unsupervised manner, we have increased the precision from <span class="math notranslate nohighlight">\(\frac{2}{5}\)</span> to <span class="math notranslate nohighlight">\(\frac{2}{3}\)</span>, while leaving unchanged the recall and mean time to detect. This is due to data drift over time.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="0_AnomalyIntro.html" class="btn btn-neutral float-left" title="A Gentle Introduction to Anomaly Detection in Merlion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_AnomalyMultivariate.html" class="btn btn-neutral float-right" title="Multivariate Time Series Anomaly Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.3.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
