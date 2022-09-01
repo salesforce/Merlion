@@ -24,7 +24,7 @@ def read_file(fname):
 
 setup(
     name="salesforce-merlion",
-    version="1.2.5",
+    version="1.3.0",
     author=", ".join(read_file("AUTHORS.md").split("\n")),
     author_email="abhatnagar@salesforce.com",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",
@@ -48,7 +48,7 @@ setup(
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
         "prophet>=1.1; python_version >= '3.7'",  # 1.1 removes dependency on pystan
-        "prophet==1.0.1; python_version < '3.7'",  # however, prophet 1.1 requires python 3.7+
+        "prophet>=1.0; python_version < '3.7'",  # however, prophet 1.1 requires python 3.7+
         "scikit-learn>=0.22",  # >=0.22 for changes to isolation forest algorithm
         "scipy>=1.6.0; python_version >= '3.7'",  # 1.6.0 adds multivariate_t density to scipy.stats
         "scipy>=1.5.0; python_version < '3.7'",  # however, scipy 1.6.0 requires python 3.7+

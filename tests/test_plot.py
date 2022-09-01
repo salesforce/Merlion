@@ -13,7 +13,7 @@ import unittest
 
 from merlion.transform.base import Identity
 from merlion.transform.moving_average import DifferenceTransform
-from merlion.transform.normalize import PowerTransform
+from merlion.transform.normalize import BoxCoxTransform
 from merlion.transform.resample import TemporalResample
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
@@ -51,7 +51,7 @@ class TestPlot(unittest.TestCase):
         print("-" * 80)
         logger.info("test_plot_transform_inv\n" + "-" * 80 + "\n")
         self.model = ProphetDetector(
-            ProphetDetectorConfig(transform=PowerTransform(), invert_transform=True, uncertainty_samples=1000)
+            ProphetDetectorConfig(transform=BoxCoxTransform(), invert_transform=True, uncertainty_samples=1000)
         )
         self._test_plot(subdir="transform_inv")
 

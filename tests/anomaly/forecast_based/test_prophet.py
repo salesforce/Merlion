@@ -17,7 +17,7 @@ from merlion.models.automl.autoprophet import AutoProphet
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.utils.data_io import csv_to_time_series
 from merlion.utils.time_series import TimeSeries
-from merlion.transform.normalize import PowerTransform
+from merlion.transform.normalize import BoxCoxTransform
 from merlion.transform.resample import TemporalResample
 
 logger = logging.getLogger(__name__)
@@ -33,14 +33,14 @@ class TestProphet(unittest.TestCase):
         logger.info(f"Data looks like:\n{self.data[:5]}")
         holidays = pd.DataFrame({"ds": ["03-17-2020"], "holiday": ["St. Patrick's Day"]})
 
-        # Test Prophet with a log transform (Box-Cox with lmbda=0)
+        # Test Prophet with a Box-Cox transform
         self.test_len = math.ceil(len(self.data) / 5)
         self.vals_train = self.data[: -self.test_len]
         self.vals_test = self.data[-self.test_len :]
         self.model = AutoProphet(
             model=ProphetDetector(
                 ProphetDetectorConfig(
-                    transform=PowerTransform(lmbda=0.0),
+                    transform=BoxCoxTransform(lmbda=0.5),
                     uncertainty_samples=1000,
                     holidays=holidays,
                     invert_transform=True,
@@ -76,12 +76,10 @@ class TestProphet(unittest.TestCase):
         )
 
         # score function returns the raw anomaly scores
-        scores = self.model.get_anomaly_score(self.vals_test)
-        self.assertEqual(len(scores), len(self.vals_test))
+        scores = self.model.get_anomaly_score(self.vals_test).to_pd()
         logger.info(f"Scores look like:\n{scores[:5]}")
-        scores = scores.to_pd().values.flatten()
-        logger.info("max score = " + str(max(scores)))
-        logger.info("min score = " + str(min(scores)) + "\n")
+        logger.info("max score = " + str(np.max(scores.values.flatten())))
+        logger.info("min score = " + str(np.min(scores.values.flatten())) + "\n")
 
         # alarm function returns the post-rule processed anomaly scores
         alarms = self.model.get_anomaly_label(self.vals_test)
@@ -91,22 +89,20 @@ class TestProphet(unittest.TestCase):
         self.assertLessEqual(n_alarms, 15)
 
         logger.info("Verifying that scores don't change much on re-evaluation...\n")
-        scoresv2 = self.model.get_anomaly_score(self.vals_test, self.vals_train)
-        scoresv2 = scoresv2.to_pd().values.flatten()
-        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv2)), 0, delta=0.05)
+        scoresv2 = self.model.get_anomaly_score(self.vals_test, self.vals_train).to_pd().loc[scores.index]
+        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv2)).item(), 0, delta=0.05)
 
         # We test save/load AFTER our first prediction because we need the old
         # posterior samples for reproducibility
         logger.info("Verifying that scores don't change much after save/load...\n")
         self.model.save(dirname=join(rootdir, "tmp", "prophet"))
         loaded_model = AutoProphet.load(dirname=join(rootdir, "tmp", "prophet"))
-        scoresv3 = loaded_model.get_anomaly_score(self.vals_test)
-        scoresv3 = scoresv3.to_pd().values.flatten()
-        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv3)), 0, delta=0.05)
+        scoresv3 = loaded_model.get_anomaly_score(self.vals_test).to_pd()
+        self.assertAlmostEqual(np.mean(np.abs(scores - scoresv3)).item(), 0, delta=0.05)
 
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
     )
     unittest.main()

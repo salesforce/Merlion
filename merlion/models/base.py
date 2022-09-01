@@ -9,6 +9,7 @@ Contains the base classes for all models.
 """
 from abc import abstractmethod
 import copy
+from enum import Enum
 import json
 import logging
 import os
@@ -53,13 +54,6 @@ class Config(object, metaclass=ModelConfigMeta):
             self.transform = transform
         self.dim = None
 
-    @property
-    def base_model(self):
-        """
-        The base model of a base model is itself.
-        """
-        return self
-
     def to_dict(self, _skipped_keys=None):
         """
         :return: dict with keyword arguments used to initialize the config class.
@@ -71,6 +65,8 @@ class Config(object, metaclass=ModelConfigMeta):
             key = k_strip if hasattr(self, k_strip) else key
             if hasattr(value, "to_dict"):
                 value = value.to_dict()
+            elif isinstance(value, Enum):
+                value = value.name  # Relies on there being an appropriate getter/setter!
             if key not in skipped_keys:
                 config_dict[key] = copy.deepcopy(value)
         return config_dict
@@ -181,6 +177,13 @@ class ModelBase(metaclass=AutodocABCMeta):
         Resets the model's internal state.
         """
         self.__init__(self.config)
+
+    @property
+    def base_model(self):
+        """
+        The base model of a base model is itself.
+        """
+        return self
 
     @property
     @abstractmethod
@@ -327,16 +330,16 @@ class ModelBase(metaclass=AutodocABCMeta):
         """
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        train_data_processed = self.train_pre_process(train_data).to_pd()
-        train_result = self._train(train_data=train_data_processed, train_config=train_config)
-        return self.train_post_process(train_data, train_result, *args, **kwargs)
+        train_data = self.train_pre_process(train_data).to_pd()
+        train_result = self._train(train_data=train_data, train_config=train_config)
+        return self.train_post_process(train_result, *args, **kwargs)
 
     @abstractmethod
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError
 
     @abstractmethod
-    def train_post_process(self, train_data, train_result, *args, **kwargs):
+    def train_post_process(self, train_result, *args, **kwargs):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:

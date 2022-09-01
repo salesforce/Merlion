@@ -14,8 +14,6 @@ import warnings
 
 import numpy as np
 from numpy.linalg import LinAlgError
-from scipy.signal import argrelmax
-from scipy.stats import norm
 import statsmodels.api as sm
 
 logger = logging.getLogger(__name__)
@@ -228,49 +226,6 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **
         )
         logger.info(f"Automatically detect the maxiter is {maxiter}")
     return maxiter
-
-
-def multiperiodicity_detection(x, pval=0.05, max_lag=None):
-    """
-    Detect multiple periodicity of a time series
-    The idea can be found in theta method
-    (https://github.com/Mcompetitions/M4-methods/blob/master/4Theta%20method.R).
-    Returns a list of periods, which indicates the seasonal periods of the
-    time series
-    """
-    tcrit = norm.ppf(1 - pval / 2)
-    if max_lag is None:
-        max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
-    xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
-    xacf[np.isnan(xacf)] = 0
-
-    # select the local maximum points with acf > 0
-    candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
-
-    # the periods should be smaller than one half of the length of time series
-    candidates = candidates[candidates < int(x.shape[0] / 2)]
-    if candidates.shape[0] == 0:
-        return []
-    else:
-        candidates_idx = []
-        if candidates.shape[0] == 1:
-            candidates_idx += [0]
-        else:
-            if xacf[candidates[0]] > xacf[candidates[1]]:
-                candidates_idx += [0]
-            if xacf[candidates[-1]] > xacf[candidates[-2]]:
-                candidates_idx += [-1]
-            candidates_idx += argrelmax(xacf[candidates])[0].tolist()
-        candidates = candidates[candidates_idx]
-
-    xacf = xacf[1:]
-    clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-
-    # statistical test if acf is significant w.r.t a normal distribution
-    candidate_filter = candidates[xacf[candidates - 1] > clim[candidates - 1]]
-    # return candidate seasonalities, sorted by ACF value
-    candidate_filter = sorted(candidate_filter.tolist(), key=lambda c: xacf[c - 1], reverse=True)
-    return candidate_filter
 
 
 def seas_seasonalstationaritytest(x, m):

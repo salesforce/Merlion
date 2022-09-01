@@ -811,8 +811,7 @@ class TestAutoSarima(unittest.TestCase):
 
         # check automatic periodicity detection
         k = self.test_data.names[0]
-        m = autosarima_utils.multiperiodicity_detection(self.train_data.univariates[k].np_values)
-        self.assertEqual(m[0], 24)
+        self.assertEqual(self.model.base_model.config.seasonal_order[-1], 24)
 
         # check the length of forecasting results
         pred, err = self.model.forecast(self.max_forecast_steps)

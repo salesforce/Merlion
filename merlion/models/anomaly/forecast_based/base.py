@@ -8,7 +8,7 @@
 Base class for anomaly detectors based on forecasting models.
 """
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -65,17 +65,16 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
 
     def train_post_process(
         self,
-        train_data: TimeSeries,
-        train_result: Tuple[pd.DataFrame, pd.DataFrame],
+        train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]],
         anomaly_labels=None,
         post_rule_train_config=None,
     ) -> TimeSeries:
         if isinstance(train_result, tuple) and len(train_result) == 2:
-            train_pred, train_err = ForecasterBase.train_post_process(self, train_data, train_result)
-            train_data = train_data if self.invert_transform else self.transform(train_data)
+            train_pred, train_err = ForecasterBase.train_post_process(self, train_result)
+            train_data = self.train_data if self.invert_transform else self.transform(self.train_data)
             train_result = self.forecast_to_anom_score(train_data, train_pred, train_err)
         return DetectorBase.train_post_process(
-            self, train_data, train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
+            self, train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
 
     def train(
