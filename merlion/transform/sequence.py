@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -12,7 +12,7 @@ from collections import OrderedDict
 import logging
 from typing import List
 
-from merlion.transform.base import TransformBase, InvertibleTransformBase
+from merlion.transform.base import TransformBase, InvertibleTransformBase, Identity
 from merlion.transform.factory import TransformFactory
 from merlion.utils import TimeSeries
 
@@ -33,7 +33,14 @@ class TransformSequence(InvertibleTransformBase):
             ), f"Expected all transforms to be instances of TransformBase, or dict, but got {transforms}"
             if isinstance(t, dict):
                 t = TransformFactory.create(**t)
-            self.transforms.append(t)
+            self.transforms.extend(self.extract_nontrivial_transforms(t))
+
+    def extract_nontrivial_transforms(self, transform: TransformBase) -> List[TransformBase]:
+        if isinstance(transform, type(self)):
+            transforms = sum([self.extract_nontrivial_transforms(t) for t in transform.transforms], [])
+        else:
+            transforms = [transform]
+        return [t for t in transforms if not isinstance(t, Identity)]
 
     @property
     def proper_inversion(self):
@@ -87,30 +94,36 @@ class TransformSequence(InvertibleTransformBase):
         return "TransformSequence(\n " + ",\n ".join([repr(f) for f in self.transforms]) + "\n)"
 
 
-class TransformStack(TransformSequence):
+class TransformStack(InvertibleTransformBase):
     """
     Applies a set of data transformations individually to an input time series.
     Stacks all of the results into a multivariate time series.
     """
 
     def __init__(self, transforms, *, check_aligned=True):
-        super().__init__(transforms)
+        super().__init__()
+        self.transforms = []
+        for t in transforms:
+            assert isinstance(
+                t, (TransformBase, dict)
+            ), f"Expected all transforms to be instances of TransformBase, or dict, but got {transforms}"
+            if isinstance(t, dict):
+                t = TransformFactory.create(**t)
+            self.transforms.append(t)
         self.check_aligned = check_aligned
 
     @property
     def proper_inversion(self):
         """
-        A stacked transform is invertible if and only if at least one of the
-        transforms comprising it are invertible.
+        A stacked transform is invertible if and only if at least one of the transforms comprising it are invertible.
         """
         return any(f.proper_inversion for f in self.transforms)
 
     @property
     def requires_inversion_state(self):
         """
-        ``True`` because the inversion state tells us which stacked transform to
-        invert, and which part of the output time series to apply that inverse
-        to.
+        ``True`` because the inversion state tells us which stacked transform to invert, and which part of the
+        output time series to apply that inverse to.
         """
         return True
 
@@ -154,6 +167,13 @@ class TransformStack(TransformSequence):
         if not retain_inversion_state:
             self.inversion_state = None
         return inverted
+
+    def _invert(self, time_series: TimeSeries) -> TimeSeries:
+        logger.warning(
+            f"_invert() should not be called by a transform of type {type(self).__name__}. Applying the identity.",
+            stack_info=True,
+        )
+        return time_series
 
     def __repr__(self):
         return "TransformStack(\n " + ",\n ".join([repr(f) for f in self.transforms]) + "\n)"

@@ -171,6 +171,7 @@ class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
         """
         :return: a string describing the current model.
         """
+        raise NotImplementedError
 
     def evaluate_theta(
         self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
