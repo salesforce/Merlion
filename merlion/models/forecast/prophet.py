@@ -129,9 +129,6 @@ class Prophet(SeasonalityModel, ForecasterBase):
             uncertainty_samples=self.uncertainty_samples,
             holidays=None if self.holidays is None else pd.DataFrame(self.holidays),
         )
-        self.last_forecast_time_stamps_full = None
-        self.last_forecast_time_stamps = None
-        self.resid_samples = None
 
     @property
     def require_even_sampling(self) -> bool:

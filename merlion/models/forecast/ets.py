@@ -84,7 +84,6 @@ class ETS(SeasonalityModel, ForecasterBase):
     def __init__(self, config: ETSConfig):
         super().__init__(config)
         self.model = None
-        self.last_train_window = None
         self._last_val = None
         self._n_train = None
 
@@ -119,34 +118,34 @@ class ETS(SeasonalityModel, ForecasterBase):
             self.config.seasonal = None
             self.config.seasonal_periods = None
 
+    @property
+    def _max_lookback(self):
+        if self.seasonal_periods is None:
+            return 10
+        return max(10, 10 + 2 * (self.seasonal_periods // 2), 2 * self.seasonal_periods)
+
+    def _instantiate_model(self, data):
+        return ETSModel(
+            data,
+            error=self.error,
+            trend=self.trend,
+            seasonal=None if self.seasonal_periods is None else self.seasonal,
+            damped_trend=self.damped_trend,
+            seasonal_periods=self.seasonal_periods,
+        )
+
     def _train(self, train_data: pd.DataFrame, train_config=None):
         # train model
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
-
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            self.model = ETSModel(
-                train_data,
-                error=self.error,
-                trend=self.trend,
-                seasonal=None if self.seasonal_periods is None else self.seasonal,
-                damped_trend=self.damped_trend,
-                seasonal_periods=self.seasonal_periods,
-            ).fit(disp=False)
+            self.model = self._instantiate_model(train_data).fit(disp=False)
 
-        # to match the minimum data size requirement when refitting new data
-        last_train_window_size = 10
-        if self.seasonal_periods is not None:
-            last_train_window_size = max(10, 10 + 2 * (self.seasonal_periods // 2), 2 * self.seasonal_periods)
-            last_train_window_size = min(last_train_window_size, train_data.shape[0])
-        self.last_train_window = train_data[-last_train_window_size:]
-
-        # FORECASTING: forecast for next n steps using ETS model
-        self._n_train = train_data.shape[0]
+        # get forecast for the training data
+        self._n_train = len(train_data)
         self._last_val = train_data[-1]
-
         yhat = pd.DataFrame(self.model.fittedvalues.values.tolist(), index=times, columns=[name])
         err = pd.DataFrame(self.model.standardized_forecasts_error.tolist(), index=times, columns=[f"{name}_err"])
         return yhat, err
@@ -154,94 +153,52 @@ class ETS(SeasonalityModel, ForecasterBase):
     def _forecast(
         self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-        # Ignore time_series_prev if it comes after the training data
-        if time_series_prev is not None and time_series_prev.index[-1] < self.last_train_time + self.timedelta:
-            time_series_prev = None
-
-        # Basic forecasting without time_series_prev
+        # If there is a time_series_prev, use it to set the ETS model's state, and then obtain its forecast
         if time_series_prev is None:
-            # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
-            # In this case we use point forecasting and set prediction_interval as None
-            try:
-                forecast_result = self.model.get_prediction(
-                    start=self._n_train,
-                    end=self._n_train + len(time_stamps) - 1,
-                    method=self.config.pred_interval_strategy,
-                )
-                forecast = np.asarray(forecast_result.predicted_mean)
-                err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
-            except (NotImplementedError, AttributeError):
-                forecast_result = self.model.predict(start=self._n_train, end=self._n_train + len(time_stamps) - 1)
-                forecast = np.asarray(forecast_result)
-                err = None
-
-        # If there is a time_series_prev, use it to smooth/refit ETS model,
-        # and then obtain its forecast (and standard error of that forecast)
+            last_val = self._last_val
+            n_train = self._n_train
+            model = self.model
         else:
             time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
-            last_train_window_size = len(self.last_train_window)
+            val_prev = time_series_prev[-self._max_lookback :]
+            n_train = len(val_prev)
+            last_val = val_prev[-1]
 
-            # truncate time series window for smooth or refit
-            if len(time_series_prev) >= last_train_window_size:
-                mask = time_series_prev.index > self.last_train_window.index[-1]
-                if sum(mask) <= last_train_window_size:
-                    val_prev = time_series_prev[-last_train_window_size:]
-                else:
-                    val_prev = time_series_prev[-sum(mask) :]
-                self.last_train_window = time_series_prev[-last_train_window_size:]
+            # the default setting of refit=False is fast and conducts exponential smoothing with given parameters,
+            # while the setting of refit=True is slow and refits the model on time_series_prev.
+            model = self._instantiate_model(val_prev)
+            if self.config.refit and len(time_series_prev) > self._max_lookback:
+                model = model.fit(start_params=self.model.params, disp=False)
             else:
-                mask = self.last_train_window.index < time_series_prev.index[0]
-                val_prev = pd.concat([self.last_train_window[mask], time_series_prev])[-last_train_window_size:]
-                self.last_train_window = val_prev
-            self._last_val = val_prev[-1]
-            new_model = ETSModel(
-                val_prev,
-                error=self.error,
-                trend=self.trend,
-                seasonal=None if self.seasonal_periods is None else self.seasonal,
-                damped_trend=self.damped_trend,
-                seasonal_periods=self.seasonal_periods,
+                model = model.smooth(params=self.model.params)
+
+        # Run forecasting. Some variants of ETS model does not support prediction interval when
+        # pred_interval_strategy="exact". In this case we use point forecasting and set prediction_interval as None.
+        try:
+            forecast_result = model.get_prediction(
+                start=n_train, end=n_train + len(time_stamps) - 1, method=self.config.pred_interval_strategy
             )
+            forecast = np.asarray(forecast_result.predicted_mean)
+            err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
+        except (NotImplementedError, AttributeError):
+            forecast_result = model.predict(start=n_train, end=n_train + len(time_stamps) - 1)
+            forecast = np.asarray(forecast_result)
+            err = None
 
-            # the default setting of refit=False is fast and conduct exponential smoothing with given parameters,
-            # while the setting of refit=True is slow and refit the model with a selected training set from
-            # time_series_prev and self.last_train_window
-            if self.config.refit:
-                self.model = new_model.fit(start_params=self.model.params, disp=False)
-            else:
-                self.model = new_model.smooth(params=self.model.params)
-
-            # Some variants of ETS model does not support prediction interval when pred_interval_strategy="exact".
-            # In this case we use point forecasting and set prediction_interval as None
-            try:
-                forecast_result = self.model.get_prediction(
-                    start=val_prev.shape[0],
-                    end=val_prev.shape[0] + len(time_stamps) - 1,
-                    method=self.config.pred_interval_strategy,
-                )
-                forecast = np.asarray(forecast_result.predicted_mean)
-                err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
-            except (NotImplementedError, AttributeError):
-                forecast_result = self.model.predict(start=val_prev.shape[0], end=val_prev.shape[0] + len(time_stamps) - 1)
-                forecast = np.asarray(forecast_result)
-                err = None
-
-            # if return_prev is Ture, it will return the forecast and error of last train window
-            # instead of time_series_prev
-            if return_prev:
-                yhat_prev = self.model.fittedvalues.values.tolist()
-                err_prev = self.model.standardized_forecasts_error.tolist()
-                forecast = np.concatenate((yhat_prev, forecast))
-                err = np.concatenate((err_prev, err))
-                t_prev = self.last_train_window.index.values.astype("datetime64[s]").astype(np.int64).tolist()
-                time_stamps = t_prev + time_stamps
+        # If return_prev is True, it will return the forecast and error of last train window
+        # instead of time_series_prev
+        if time_series_prev is not None and return_prev:
+            m = len(time_series_prev) - len(val_prev)
+            params = dict(zip(model.param_names, model.params))
+            err_prev = np.concatenate((np.zeros(m), model.standardized_forecasts_error.values))
+            forecast = np.concatenate((time_series_prev.values[:m], model.fittedvalues.values, forecast))
+            err = np.concatenate((err_prev, err))
+            time_stamps = np.concatenate((to_timestamp(time_series_prev.index), time_stamps))
 
         # Check for NaN's
         if any(np.isnan(forecast)):
-            logger.warning(
-                "Trained ETS model is producing NaN forecast. Use the last training point as the prediction."
-            )
-            forecast[np.isnan(forecast)] = self._last_val
+            logger.warning("Trained ETS is producing NaN forecast. Use the last training point as the prediction.")
+            forecast[np.isnan(forecast)] = last_val
         if err is not None and any(np.isnan(err)):
             err[np.isnan(err)] = 0
 
