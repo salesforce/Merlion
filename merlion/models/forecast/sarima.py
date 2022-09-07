@@ -58,7 +58,6 @@ class Sarima(ForecasterBase, SeasonalityModel):
         super().__init__(config)
         self.model = None
         self._last_val = None
-        self._n_train = None
 
     @property
     def require_even_sampling(self) -> bool:
@@ -96,7 +95,6 @@ class Sarima(ForecasterBase, SeasonalityModel):
         train_data = train_data[name]
         times = train_data.index
         train_config = train_config or {}
-        self._n_train = len(train_data)
         for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
             train_config[k] = train_config.get(k, v)
         with warnings.catch_warnings():
@@ -115,17 +113,15 @@ class Sarima(ForecasterBase, SeasonalityModel):
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # If there is a time_series_prev, use it to set the SARIMA model's state, and then obtain its forecast
         if time_series_prev is None:
-            n_train = self._n_train
             last_val = self._last_val
             model = self.model
         else:
             val_prev = time_series_prev.iloc[-self._max_lookback :, self.target_seq_index]
-            n_train = len(val_prev)
             last_val = val_prev[-1]
             model = self.model.apply(val_prev, validate_specification=False)
 
         try:
-            forecast_result = model.get_prediction(start=n_train, end=n_train + len(time_stamps) - 1)
+            forecast_result = model.get_forecast(len(time_stamps))
             pred = np.asarray(forecast_result.predicted_mean)
             err = np.asarray(forecast_result.se_mean)
             assert len(pred) == len(

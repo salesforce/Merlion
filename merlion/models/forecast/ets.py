@@ -85,7 +85,6 @@ class ETS(SeasonalityModel, ForecasterBase):
         super().__init__(config)
         self.model = None
         self._last_val = None
-        self._n_train = None
 
     @property
     def require_even_sampling(self) -> bool:
@@ -144,7 +143,6 @@ class ETS(SeasonalityModel, ForecasterBase):
             self.model = self._instantiate_model(train_data).fit(disp=False)
 
         # get forecast for the training data
-        self._n_train = len(train_data)
         self._last_val = train_data[-1]
         yhat = pd.DataFrame(self.model.fittedvalues.values.tolist(), index=times, columns=[name])
         err = pd.DataFrame(self.model.standardized_forecasts_error.tolist(), index=times, columns=[f"{name}_err"])
@@ -154,14 +152,13 @@ class ETS(SeasonalityModel, ForecasterBase):
         self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # If there is a time_series_prev, use it to set the ETS model's state, and then obtain its forecast
+        time_stamps = to_pd_datetime(time_stamps)
         if time_series_prev is None:
             last_val = self._last_val
-            n_train = self._n_train
             model = self.model
         else:
             time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
             val_prev = time_series_prev[-self._max_lookback :]
-            n_train = len(val_prev)
             last_val = val_prev[-1]
 
             # the default setting of refit=False is fast and conducts exponential smoothing with given parameters,
@@ -176,12 +173,12 @@ class ETS(SeasonalityModel, ForecasterBase):
         # pred_interval_strategy="exact". In this case we use point forecasting and set prediction_interval as None.
         try:
             forecast_result = model.get_prediction(
-                start=n_train, end=n_train + len(time_stamps) - 1, method=self.config.pred_interval_strategy
+                start=time_stamps[0], end=time_stamps[-1], method=self.config.pred_interval_strategy
             )
             forecast = np.asarray(forecast_result.predicted_mean)
             err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
         except (NotImplementedError, AttributeError):
-            forecast_result = model.predict(start=n_train, end=n_train + len(time_stamps) - 1)
+            forecast_result = model.predict(start=time_stamps[0], end=time_stamps[-1])
             forecast = np.asarray(forecast_result)
             err = None
 
@@ -193,7 +190,7 @@ class ETS(SeasonalityModel, ForecasterBase):
             err_prev = np.concatenate((np.zeros(m), model.standardized_forecasts_error.values))
             forecast = np.concatenate((time_series_prev.values[:m], model.fittedvalues.values, forecast))
             err = np.concatenate((err_prev, err))
-            time_stamps = np.concatenate((to_timestamp(time_series_prev.index), time_stamps))
+            time_stamps = to_pd_datetime(np.concatenate((time_series_prev.index, time_stamps)))
 
         # Check for NaN's
         if any(np.isnan(forecast)):
@@ -204,7 +201,7 @@ class ETS(SeasonalityModel, ForecasterBase):
 
         # Return the forecast & its standard error
         name = self.target_name
-        forecast = pd.DataFrame(forecast, index=to_pd_datetime(time_stamps), columns=[name])
+        forecast = pd.DataFrame(forecast, index=time_stamps, columns=[name])
         if err is not None:
-            err = pd.DataFrame(err, index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])
+            err = pd.DataFrame(err, index=time_stamps, columns=[f"{name}_err"])
         return forecast, err
