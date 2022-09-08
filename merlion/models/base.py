@@ -270,7 +270,6 @@ class ModelBase(metaclass=AutodocABCMeta):
         Applies pre-processing steps common for training most models.
 
         :param train_data: the original time series of training data
-
         :return: the training data, after any necessary pre-processing has been applied
         """
         self.train_data = train_data
@@ -278,8 +277,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.transform.train(train_data)
         train_data = self.transform(train_data)
 
-        # Make sure the training data is univariate & all timestamps are equally
-        # spaced (this is a key assumption for ARIMA)
+        # Make sure the training data is univariate if needed
         if self.require_univariate and train_data.dim != 1:
             raise RuntimeError(
                 f"Transform {self.transform} transforms data into a {train_data.dim}-"
@@ -287,6 +285,7 @@ class ModelBase(metaclass=AutodocABCMeta):
                 f"only handle uni-variate time series. Change the transform or set target_seq_index."
             )
 
+        # Make sure timestamps are equally spaced if needed (e.g. for ARIMA)
         t = train_data.time_stamps
         if self.require_even_sampling:
             assert_equal_timedeltas(train_data.univariates[train_data.names[0]])
@@ -301,14 +300,11 @@ class ModelBase(metaclass=AutodocABCMeta):
         self, time_series: TimeSeries, time_series_prev: TimeSeries = None
     ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
-        Applies the model's pre-processing transform to ``time_series`` and
-        ``time_series_prev``.
+        Applies the model's pre-processing transform to ``time_series`` and ``time_series_prev``.
 
         :param time_series: The time series
-        :param time_series_prev: A time series of context, immediately preceding
-            ``time_series``. Optional.
-
-        :return: The transformed ``time_series``.
+        :param time_series_prev: A time series of context, immediately preceding `time_series``. Optional.
+        :return: The transformed ``time_series`` and ``time_series_prev``.
         """
         if time_series_prev is not None and not time_series.is_empty():
             t0 = time_series.t0
@@ -344,9 +340,8 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         """
-        Saves the model's state to the the specified file. If you override this
-        method, please also override _load_state(). By default, the model's state
-        dict is just serialized using dill.
+        Saves the model's state to the the specified file. If you override this method, please also override
+        ``_load_state()``. By default, the model's state dict is just serialized using dill.
 
         :param state_dict: The state dict to save.
         :param filename: The name of the file to save the model to.
@@ -381,13 +376,11 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     def _load_state(self, state_dict: Dict[str, Any], **kwargs):
         """
-        Loads the model's state from the specified file. Override this method if
-        you have overridden _save_state(). By default, the model's state dict is
-        loaded from a file (serialized by dill), and the state is set.
+        Loads the model's state from the specified file. Override this method if you have overridden _save_state().
+        By default, the model's state dict is loaded from a file (serialized by dill), and the state is set.
 
         :param filename: serialized file containing the model's state.
-        :param kwargs: any additional keyword arguments to set manually in the
-            state dict (after loading it).
+        :param kwargs: any additional keyword arguments to set manually in the state dict (after loading it).
         """
         if "config" in state_dict:  # don't re-set the config
             state_dict.pop("config")

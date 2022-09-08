@@ -120,8 +120,8 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
     def train(
         self,
         train_data: TimeSeries,
-        anomaly_labels: TimeSeries = None,
         train_config: DetectorEnsembleTrainConfig = None,
+        anomaly_labels: TimeSeries = None,
         post_rule_train_config=None,
     ) -> TimeSeries:
         """
@@ -129,8 +129,8 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         their post-rules supervised (if labels are given).
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param train_config: `DetectorEnsembleTrainConfig` for ensemble training.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param post_rule_train_config: the post-rule train config to use for the ensemble-level post-rule.
 
         :return: A `TimeSeries` of the ensemble's anomaly scores on the training data.
@@ -163,7 +163,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         for i, (model, cfg, pr_cfg) in enumerate(zip(self.models, per_model_train_configs, per_model_pr_cfgs)):
             try:
                 train_scores = model.train(
-                    train_data=train, anomaly_labels=anomaly_labels, train_config=cfg, post_rule_train_config=pr_cfg
+                    train_data=train, train_config=cfg, anomaly_labels=anomaly_labels, post_rule_train_config=pr_cfg
                 )
                 train_scores = model.post_rule(train_scores)
             except Exception:

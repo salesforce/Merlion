@@ -54,7 +54,7 @@ class DefaultDetector(LayeredDetector):
         return self.config.granularity
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
 

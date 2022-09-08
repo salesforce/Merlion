@@ -78,13 +78,13 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         )
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         return DetectorBase.train(
             self,
             train_data=train_data,
-            anomaly_labels=anomaly_labels,
             train_config=train_config,
+            anomaly_labels=anomaly_labels,
             post_rule_train_config=post_rule_train_config,
         )
 

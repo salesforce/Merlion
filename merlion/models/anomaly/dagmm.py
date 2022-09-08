@@ -192,8 +192,8 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     def train_multiple(
         self,
         multiple_train_data: List[TimeSeries],
-        anomaly_labels: List[TimeSeries] = None,
         train_config=None,
+        anomaly_labels: List[TimeSeries] = None,
         post_rule_train_config=None,
     ) -> List[TimeSeries]:
         """
@@ -201,14 +201,13 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         (supervised, if labels are given) on the input multiple time series.
 
         :param multiple_train_data: a list of `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
         :param train_config: Additional training config dict with keys:
 
             * | "n_epochs": ``int`` indicating how many times the model must be
               | trained on the timeseries in ``multiple_train_data``. Defaults to 1.
             * | "shuffle": ``bool`` indicating if the ``multiple_train_data`` collection
               | should be shuffled before every epoch. Defaults to True if "n_epochs" > 1.
+        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are  anomalous. Optional.
         :param post_rule_train_config: The config to use for training the
             model's post-rule. The model's default post-rule train config is
             used if none is supplied here.
@@ -233,8 +232,8 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                 train_scores_list.append(
                     self.train(
                         train_data=train_data,
-                        anomaly_labels=anomaly_series,
                         train_config=train_config,
+                        anomaly_labels=anomaly_series,
                         post_rule_train_config=post_rule_train_config
                         # FIXME: the post-rule (calibrator and threshold) is trained individually on each time series
                         # but ideally it needs to be re-trained on all of the `train_scores_list`

@@ -178,14 +178,14 @@ class DetectorBase(ModelBase):
         return self.config.post_rule
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param train_config: Additional training configs, if needed. Only required for some models.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param post_rule_train_config: The config to use for training the model's post-rule. The model's default
             post-rule train config is used if none is supplied here.
 
@@ -193,8 +193,8 @@ class DetectorBase(ModelBase):
         """
         return super().train(
             train_data=train_data,
-            anomaly_labels=anomaly_labels,
             train_config=train_config,
+            anomaly_labels=anomaly_labels,
             post_rule_train_config=post_rule_train_config,
         )
 
@@ -406,8 +406,8 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
     def train_multiple(
         self,
         multiple_train_data: List[TimeSeries],
-        anomaly_labels: List[TimeSeries] = None,
         train_config=None,
+        anomaly_labels: List[TimeSeries] = None,
         post_rule_train_config=None,
     ) -> List[TimeSeries]:
         """
@@ -415,10 +415,8 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
         (supervised, if labels are given) on the input multiple time series.
 
         :param multiple_train_data: a list of `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
+        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are anomalous. Optional.
+        :param train_config: Additional training configs, if needed. Only required for some models.
         :param post_rule_train_config: The config to use for training the
             model's post-rule. The model's default post-rule train config is
             used if none is supplied here.

@@ -199,31 +199,24 @@ class ForecasterBase(ModelBase):
         return_prev: bool = False,
     ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
         """
-        Returns the model's forecast on the timestamps given. Note that if
-        ``self.transform`` is specified in the config, the forecast is a forecast
-        of transformed values! It is up to you to manually invert the transform
-        if desired.
+        Returns the model's forecast on the timestamps given. If ``self.transform`` is specified in the config, the
+        forecast is a forecast of transformed values by default. To invert the transform and forecast the actual
+        values of the time series, specify ``invert_transform = True`` when specifying the config.
 
         :param time_stamps: Either a ``list`` of timestamps we wish to forecast for,
             or the number of steps (``int``) we wish to forecast for.
-        :param time_series_prev: a list of (timestamp, value) pairs immediately
-            preceding ``time_series``. If given, we use it to initialize the time
-            series model. Otherwise, we assume that ``time_series`` immediately
-            follows the training data.
-        :param return_iqr: whether to return the inter-quartile range for the
-            forecast. Note that not all models support this option.
-        :param return_prev: whether to return the forecast for
-            ``time_series_prev`` (and its stderr or IQR if relevant), in addition
-            to the forecast for ``time_stamps``. Only used if ``time_series_prev``
-            is provided.
-        :return: ``(forecast, forecast_stderr)`` if ``return_iqr`` is false,
-            ``(forecast, forecast_lb, forecast_ub)`` otherwise.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param return_iqr: whether to return the inter-quartile range for the forecast.
+            Only supported for models which  return error bars.
+        :param return_prev: whether to return the forecast for ``time_series_prev`` (and its stderr or IQR if relevant),
+            in addition to the forecast for ``time_stamps``. Only used if ``time_series_prev`` is provided.
+        :return: ``(forecast, stderr)`` if ``return_iqr`` is false, ``(forecast, lb, ub)`` otherwise.
 
             - ``forecast``: the forecast for the timestamps given
-            - ``forecast_stderr``: the standard error of each forecast value.
-                May be ``None``.
-            - ``forecast_lb``: 25th percentile of forecast values for each timestamp
-            - ``forecast_ub``: 75th percentile of forecast values for each timestamp
+            - ``stderr``: the standard error of each forecast value. May be ``None``.
+            - ``lb``: 25th percentile of forecast values for each timestamp
+            - ``ub``: 75th percentile of forecast values for each timestamp
         """
         # determine the time stamps to forecast for, and resample them if needed
         orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
