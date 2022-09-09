@@ -18,7 +18,7 @@ from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries
+from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +34,7 @@ class ForecasterConfig(Config):
 
     def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, invert_transform=False, **kwargs):
         """
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
-            Required for some models like `MSES` and `LGBMForecaster`.
+        :param max_forecast_steps: Max # of steps we would like to forecast for.  Required for some models like `MSES`.
         :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
             series) whose value we would like to forecast.
         :param invert_transform: Whether to automatically invert the ``transform`` before returning a forecast.
@@ -163,17 +162,30 @@ class ForecasterBase(ModelBase):
 
         return train_data
 
-    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(
+        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
+    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
         :param train_config: Additional training configs, if needed. Only required for some models.
+        :param exog_data: A time series of exogenous variables, sampled at the same time stamps as ``train_data``.
+            Exogenous variables are known a priori, and they are independent of the variable being forecasted.
+            Only supported for models which inherit from `ForecasterWithExog`.
 
         :return: the model's prediction on ``train_data``, in the same format as
             if you called `ForecasterBase.forecast` on the time stamps of ``train_data``
         """
-        return super().train(train_data=train_data, train_config=train_config)
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data = self.train_pre_process(train_data).to_pd()
+        exog_data, _ = self.resample_exog_data(exog_data=exog_data, time_stamps=train_data.index)
+        if exog_data is None:
+            train_result = self._train(train_data, train_config=train_config)
+        else:
+            train_result = self._train_with_exog(train_data, train_config=train_config, exog_data=exog_data.to_pd())
+        return self.train_post_process(train_result)
 
     def train_post_process(
         self, train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]]
@@ -191,10 +203,24 @@ class ForecasterBase(ModelBase):
     def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
+    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+        raise NotImplementedError
+
+    def resample_exog_data(
+        self,
+        exog_data: TimeSeries,
+        time_stamps: Union[List[int], pd.DatetimeIndex],
+        time_series_prev: TimeSeries = None,
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, None], Tuple[None, None]]:
+        if exog_data is not None:
+            logger.warning(f"Exogenous regressors are not supported for model {type(self).__name__}")
+        return None, None
+
     def forecast(
         self,
         time_stamps: Union[int, List[int]],
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         return_iqr: bool = False,
         return_prev: bool = False,
     ) -> Union[Tuple[TimeSeries, Optional[TimeSeries]], Tuple[TimeSeries, TimeSeries, TimeSeries]]:
@@ -203,12 +229,16 @@ class ForecasterBase(ModelBase):
         forecast is a forecast of transformed values by default. To invert the transform and forecast the actual
         values of the time series, specify ``invert_transform = True`` when specifying the config.
 
-        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for,
-            or the number of steps (``int``) we wish to forecast for.
+        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for, or the number of steps (``int``)
+            we wish to forecast for.
         :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
             the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
         :param return_iqr: whether to return the inter-quartile range for the forecast.
-            Only supported for models which  return error bars.
+            Only supported for models which return error bars.
         :param return_prev: whether to return the forecast for ``time_series_prev`` (and its stderr or IQR if relevant),
             in addition to the forecast for ``time_stamps``. Only used if ``time_series_prev`` is provided.
         :return: ``(forecast, stderr)`` if ``return_iqr`` is false, ``(forecast, lb, ub)`` otherwise.
@@ -240,9 +270,21 @@ class ForecasterBase(ModelBase):
             time_series_prev_df = time_series_prev.to_pd()
 
         # Make the prediction
-        forecast, err = self._forecast(
-            time_stamps=time_stamps, time_series_prev=time_series_prev_df, return_prev=return_prev
+        exog_data, exog_data_prev = self.resample_exog_data(
+            exog_data, time_stamps=time_stamps, time_series_prev=time_series_prev
         )
+        if exog_data is None:
+            forecast, err = self._forecast(
+                time_stamps=time_stamps, time_series_prev=time_series_prev_df, return_prev=return_prev
+            )
+        else:
+            forecast, err = self._forecast_with_exog(
+                time_stamps=time_stamps,
+                time_series_prev=time_series_prev_df,
+                return_prev=return_prev,
+                exog_data=exog_data.to_pd(),
+                exog_data_prev=None if exog_data_prev is None else exog_data_prev.to_pd(),
+            )
 
         # Format the return value(s)
         if self.invert_transform and time_series_prev is None:
@@ -324,6 +366,16 @@ class ForecasterBase(ModelBase):
     ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
         raise NotImplementedError
 
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
+    ):
+        raise NotImplementedError
+
     def batch_forecast(
         self,
         time_stamps_list: List[List[int]],
@@ -363,7 +415,12 @@ class ForecasterBase(ModelBase):
         if time_series_prev_list is None:
             time_series_prev_list = [None for _ in range(len(time_stamps_list))]
         for time_stamps, time_series_prev in zip(time_stamps_list, time_series_prev_list):
-            out = self.forecast(time_stamps, time_series_prev, return_iqr, return_prev)
+            out = self.forecast(
+                time_stamps=time_stamps,
+                time_series_prev=time_series_prev,
+                return_iqr=return_iqr,
+                return_prev=return_prev,
+            )
             out_list.append(out)
         return tuple(zip(*out_list))
 
@@ -373,24 +430,25 @@ class ForecasterBase(ModelBase):
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
     ) -> Figure:
         """
-        :param time_series: the time series over whose timestamps we wish to
-            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
-            should be provided.
-        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
-            one of ``time_series`` or ``time_stamps`` should be provided.
-        :param time_series_prev: a `TimeSeries` immediately preceding
-            ``time_stamps``. If given, we use it to initialize the time series
-            model. Otherwise, we assume that ``time_stamps`` immediately follows
-            the training data.
-        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
-            inter-quartile range) for forecast values. Not supported for all
-            models.
-        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
-            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for, or the number of steps (``int``)
+            we wish to forecast for. Exactly one of ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
+            values. Not supported for all  models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and  the model's fit for it).
+            Only used if ``time_series_prev`` is given.
         :return: a `Figure` of the model's forecast.
         """
         assert not (
@@ -410,7 +468,7 @@ class ForecasterBase(ModelBase):
         # Get forecast + bounds if plotting uncertainty
         if plot_forecast_uncertainty:
             yhat, lb, ub = self.forecast(
-                time_stamps, time_series_prev, return_iqr=True, return_prev=plot_time_series_prev
+                time_stamps, time_series_prev, exog_data=exog_data, return_iqr=True, return_prev=plot_time_series_prev
             )
             yhat, lb, ub = [None if x is None else x.univariates[x.names[0]] for x in [yhat, lb, ub]]
 
@@ -418,7 +476,7 @@ class ForecasterBase(ModelBase):
         else:
             lb, ub = None, None
             yhat, err = self.forecast(
-                time_stamps, time_series_prev, return_iqr=False, return_prev=plot_time_series_prev
+                time_stamps, time_series_prev, exog_data=exog_data, return_iqr=False, return_prev=plot_time_series_prev
             )
             yhat = yhat.univariates[yhat.names[0]]
 
@@ -461,6 +519,7 @@ class ForecasterBase(ModelBase):
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
         figsize=(1000, 600),
@@ -471,15 +530,16 @@ class ForecasterBase(ModelBase):
         plotting the uncertainty of the forecast, as well as the past values
         (both true and predicted) of the time series.
 
-        :param time_series: the time series over whose timestamps we wish to
-            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
-            should be provided.
-        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
-            one of ``time_series`` or ``time_stamps`` should be provided.
-        :param time_series_prev: a `TimeSeries` immediately preceding
-            ``time_stamps``. If given, we use it to initialize the time series
-            model. Otherwise, we assume that ``time_stamps`` immediately follows
-            the training data.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for, or the number of steps (``int``)
+            we wish to forecast for. Exactly one of ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
             inter-quartile range) for forecast values. Not supported for all
             models.
@@ -494,6 +554,7 @@ class ForecasterBase(ModelBase):
             time_series=time_series,
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
         )
@@ -506,6 +567,7 @@ class ForecasterBase(ModelBase):
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
         figsize=(1000, 600),
@@ -515,15 +577,16 @@ class ForecasterBase(ModelBase):
         plotting the uncertainty of the forecast, as well as the past values
         (both true and predicted) of the time series.
 
-        :param time_series: the time series over whose timestamps we wish to
-            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
-            should be provided.
-        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
-            one of ``time_series`` or ``time_stamps`` should be provided.
-        :param time_series_prev: a `TimeSeries` immediately preceding
-            ``time_stamps``. If given, we use it to initialize the time series
-            model. Otherwise, we assume that ``time_stamps`` immediately follows
-            the training data.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for, or the number of steps (``int``)
+            we wish to forecast for. Exactly one of ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
             inter-quartile range) for forecast values. Not supported for all
             models.
@@ -535,8 +598,115 @@ class ForecasterBase(ModelBase):
             time_series=time_series,
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
         )
         title = f"{type(self).__name__}: Forecast of {self.target_name}"
         return fig.plot_plotly(title=title, metric_name=self.target_name, figsize=figsize)
+
+
+class ForecasterWithExogConfig(ForecasterConfig):
+    def __init__(self, exog_missing_value_policy: Union[MissingValuePolicy, str] = "ZFill", **kwargs):
+        """
+        :param exog_missing_value_policy: The policy to use for imputing missing values in exogenous data.
+        """
+        super().__init__(**kwargs)
+        self.exog_missing_value_policy = exog_missing_value_policy
+
+    @property
+    def exog_missing_value_policy(self):
+        return self._exog_missing_value_policy
+
+    @exog_missing_value_policy.setter
+    def exog_missing_value_policy(self, mv: Union[MissingValuePolicy, str]):
+        if isinstance(mv, str):
+            valid = set(MissingValuePolicy.__members__.keys())
+            if mv not in valid:
+                raise KeyError(f"{mv} is not a valid change kind. Valid missing value policies are: {valid}")
+            mv = MissingValuePolicy[mv]
+        self._exog_missing_value_policy = mv
+
+
+class ForecasterWithExogBase(ForecasterBase):
+    """
+    Base class for a forecaster model which supports exogenous regressors.
+    """
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.exog_dim = None
+
+    @property
+    def exog_missing_value_policy(self):
+        return self.config.exog_missing_value_policy
+
+    def train(
+        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
+    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+        self.exog_dim = exog_data.dim if exog_data is not None else None
+        return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)
+
+    def resample_exog_data(
+        self,
+        exog_data: TimeSeries,
+        time_stamps: Union[List[int], pd.DatetimeIndex],
+        time_series_prev: TimeSeries = None,
+    ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, None], Tuple[None, None]]:
+        """
+        Resamples exogenous data and splits it into two subsets: one with the same timestamps as ``time_series_prev``
+        (``None`` if ``time_series_prev`` is ``None``), and one with the timestamps ``time_stamps``.
+
+        :param exog_data: The exogenous data of interest.
+        :param time_stamps: The timestamps of interest (either the timestamps of data, or the timestamps at which
+            we want to obtain a forecast)
+        :param time_series_prev: The timestamps of a time series preceding ``time_stamps`` as context. Optional.
+        :return: ``(exog_data, exog_data_prev)``, where ``exog_data`` has been resampled to match the ``time_stamps``
+            and ``exog_data_prev` has been resampled to match ``time_series_prev.time_stamps``.
+        """
+        if exog_data is None:
+            if self.exog_dim is not None:
+                raise ValueError(f"Trained with {self.exog_dim}-dim exogenous data, but received none.")
+            return None, None
+        if self.exog_dim is None:
+            raise ValueError("Trained without exogenous data, but received exogenous data.")
+        if self.exog_dim != exog_data.dim:
+            raise ValueError(f"Trained with {self.exog_dim}-dim exogenous data, but received {exog_data.dim}-dim.")
+
+        if time_series_prev is not None:
+            t = time_series_prev.time_stamps + to_timestamp(time_stamps).tolist()
+            exog_data = exog_data.align(reference=t, missing_value_policy=self.exog_missing_value_policy)
+            exog_data_prev, exog_data = exog_data.bisect(time_stamps[0], t_in_left=False)
+        else:
+            exog_data_prev = None
+            exog_data = exog_data.align(reference=time_stamps, missing_value_policy=self.exog_missing_value_policy)
+        return exog_data, exog_data_prev
+
+    @abstractmethod
+    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+        raise NotImplementedError
+
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        return self._train_with_exog(train_data=train_data, train_config=train_config, exog_data=None)
+
+    @abstractmethod
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
+    ):
+        raise NotImplementedError
+
+    def _forecast(
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
+        return self._forecast_with_exog(
+            time_stamps=time_stamps,
+            time_series_prev=time_series_prev,
+            return_prev=return_prev,
+            exog_data=None,
+            exog_data_prev=None,
+        )

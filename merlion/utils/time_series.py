@@ -676,7 +676,7 @@ class TimeSeries:
 
     def bisect(self, t: float, t_in_left: bool = False):
         """
-        Splits the time series at the point where the given timestap ``t`` occurs.
+        Splits the time series at the point where the given timestamp ``t`` occurs.
 
         :param t: a Unix timestamp or datetime object. Everything before time
             ``t`` is in the left split, and everything after time ``t`` is in
@@ -841,28 +841,20 @@ class TimeSeries:
         missing_value_policy: MissingValuePolicy = MissingValuePolicy.Interpolate,
     ):
         """
-        Aligns all the univariate time series comprising this multivariate time
-        series so that they all have the same time stamps.
+        Aligns all the univariates comprising this multivariate time series so that they all have the same time stamps.
 
-        :param reference: A specific set of timestamps we want the resampled
-            time series to contain. Required if ``alignment_policy`` is
-            `AlignPolicy.FixedReference`. Overrides other alignment policies
-            if specified.
-        :param granularity: The granularity (in seconds) of the resampled time
-            time series. Defaults to the GCD time difference between adjacent
-            elements of ``reference`` (when available) or ``time_series``
-            (otherwise). Ignored if ``reference`` is given or ``alignment_policy``
-            is `AlignPolicy.FixedReference`. Overrides other alignment policies
-            if specified.
-        :param origin: The first timestamp of the resampled time series. Only
-            used if the alignment policy is AlignPolicy.FixedGranularity.
-        :param remove_non_overlapping: If ``True``, we will only keep the portions
-            of the univariates that overlap with each other. For example, if we
-            have 3 univariates which span timestamps [0, 3600], [60, 3660], and
-            [30, 3540], we will only keep timestamps in the range [60, 3540]. If
-            ``False``, we will keep all timestamps produced by the resampling.
-        :param alignment_policy: The policy we want to use to align the time
-            time series.
+        :param reference: A specific set of timestamps we want the resampled time series to contain. Required if
+        ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
+        :param granularity: The granularity (in seconds) of the resampled time time series. Defaults to the GCD time
+            difference between adjacent elements of ``time_series`` (otherwise). Ignored if ``reference`` is given or
+            ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
+        :param origin: The first timestamp of the resampled time series. Only used if the alignment policy is
+            `AlignPolicy.FixedGranularity`.
+        :param remove_non_overlapping: If ``True``, we will only keep the portions of the univariates that overlap with
+            each other. For example, if we have 3 univariates which span timestamps [0, 3600], [60, 3660], and
+            [30, 3540], we will only keep timestamps in the range [60, 3540]. If ``False``, we will keep all timestamps
+            produced by the resampling.
+        :param alignment_policy: The policy we want to use to align the time series.
 
             - `AlignPolicy.FixedReference` aligns each single-variable time
               series to ``reference``, a user-specified sequence of timestamps.
@@ -873,10 +865,8 @@ class TimeSeries:
               all timestamps present in any single-variable time series.
             - `AlignPolicy.InnerJoin` returns a time series with the intersection
               of all timestamps present in all single-variable time series.
-        :param aggregation_policy: The policy used to aggregate windows of adjacent
-            observations when downsampling.
-        :param missing_value_policy: The policy used to impute missing values
-            created when upsampling.
+        :param aggregation_policy: The policy used to aggregate windows of adjacent observations when downsampling.
+        :param missing_value_policy: The policy used to impute missing values created when upsampling.
 
         :rtype: TimeSeries
         :return: The resampled multivariate time series.
