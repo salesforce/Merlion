@@ -200,7 +200,9 @@ class Prophet(SeasonalityModel, ForecasterWithExogBase):
         df.reset_index(inplace=True)
         return df
 
-    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         if exog_data is not None:
             for col in exog_data.columns:
                 self.model.add_regressor(col)

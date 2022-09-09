@@ -203,7 +203,9 @@ class ForecasterBase(ModelBase):
     def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
-    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
     def resample_exog_data(
@@ -363,7 +365,7 @@ class ForecasterBase(ModelBase):
     @abstractmethod
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
-    ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
     def _forecast_with_exog(
@@ -683,7 +685,9 @@ class ForecasterWithExogBase(ForecasterBase):
         return exog_data, exog_data_prev
 
     @abstractmethod
-    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
@@ -697,12 +701,12 @@ class ForecasterWithExogBase(ForecasterBase):
         return_prev=False,
         exog_data: pd.DataFrame = None,
         exog_data_prev: pd.DataFrame = None,
-    ):
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         raise NotImplementedError
 
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
-    ) -> Tuple[pd.DataFrame, Union[None, pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]]:
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         return self._forecast_with_exog(
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
