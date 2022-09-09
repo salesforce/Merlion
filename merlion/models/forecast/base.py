@@ -69,6 +69,7 @@ class ForecasterBase(ModelBase):
     def __init__(self, config: ForecasterConfig):
         super().__init__(config)
         self.target_name = None
+        self.exog_dim = None
 
     @property
     def max_forecast_steps(self):
@@ -163,7 +164,7 @@ class ForecasterBase(ModelBase):
         return train_data
 
     def train(
-        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
+        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None, *args, **kwargs
     ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
@@ -180,12 +181,13 @@ class ForecasterBase(ModelBase):
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
         train_data = self.train_pre_process(train_data).to_pd()
+        self.exog_dim = None if exog_data is None else exog_data.dim
         exog_data, _ = self.resample_exog_data(exog_data=exog_data, time_stamps=train_data.index)
         if exog_data is None:
             train_result = self._train(train_data, train_config=train_config)
         else:
             train_result = self._train_with_exog(train_data, train_config=train_config, exog_data=exog_data.to_pd())
-        return self.train_post_process(train_result)
+        return self.train_post_process(train_result, *args, **kwargs)
 
     def train_post_process(
         self, train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]]
@@ -199,15 +201,6 @@ class ForecasterBase(ModelBase):
             train_pred, train_stderr = self._apply_inverse_transform(train_pred, train_stderr)
         return train_pred, train_stderr
 
-    @abstractmethod
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
-        raise NotImplementedError
-
-    def _train_with_exog(
-        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
-    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
-        raise NotImplementedError
-
     def resample_exog_data(
         self,
         exog_data: TimeSeries,
@@ -217,6 +210,15 @@ class ForecasterBase(ModelBase):
         if exog_data is not None:
             logger.warning(f"Exogenous regressors are not supported for model {type(self).__name__}")
         return None, None
+
+    @abstractmethod
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        raise NotImplementedError
+
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        return self._train(train_data=train_data, train_config=train_config)
 
     def forecast(
         self,
@@ -375,8 +377,8 @@ class ForecasterBase(ModelBase):
         return_prev=False,
         exog_data: pd.DataFrame = None,
         exog_data_prev: pd.DataFrame = None,
-    ):
-        raise NotImplementedError
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        return self._forecast(time_stamps=time_stamps, time_series_prev=time_series_prev, return_prev=return_prev)
 
     def batch_forecast(
         self,
@@ -542,11 +544,10 @@ class ForecasterBase(ModelBase):
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
             Optional. Only supported for models which inherit from `ForecasterWithExog`.
-        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
-            inter-quartile range) for forecast values. Not supported for all
-            models.
-        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
-            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
+            values. Not supported for all models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and the model's fit for it). Only used if
+            ``time_series_prev`` is given.
         :param figsize: figure size in pixels
         :param ax: matplotlib axis to add this plot to
 
@@ -635,19 +636,9 @@ class ForecasterWithExogBase(ForecasterBase):
     Base class for a forecaster model which supports exogenous regressors.
     """
 
-    def __init__(self, config):
-        super().__init__(config)
-        self.exog_dim = None
-
     @property
     def exog_missing_value_policy(self):
         return self.config.exog_missing_value_policy
-
-    def train(
-        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
-    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
-        self.exog_dim = exog_data.dim if exog_data is not None else None
-        return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)
 
     def resample_exog_data(
         self,

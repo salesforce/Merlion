@@ -14,13 +14,13 @@ import pandas as pd
 from merlion.evaluate.forecast import ForecastEvaluator, ForecastEvaluatorConfig
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
-from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
+from merlion.models.forecast.base import ForecasterBase, ForecasterWithExogConfig, ForecasterWithExogBase
 from merlion.utils.time_series import TimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
+class ForecasterEnsembleConfig(ForecasterWithExogConfig, EnsembleConfig):
     """
     Config class for an ensemble of forecasters.
     """
@@ -60,7 +60,7 @@ class ForecasterEnsembleConfig(ForecasterConfig, EnsembleConfig):
         self._target_seq_index = target_seq_index
 
 
-class ForecasterEnsemble(EnsembleBase, ForecasterBase):
+class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
     """
     Class representing an ensemble of multiple forecasting models.
     """
@@ -99,8 +99,8 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
     def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries, **kwargs) -> TimeSeries:
         return super().train_combiner(all_model_outs, target, target_seq_index=self.target_seq_index, **kwargs)
 
-    def _train(
-        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None, exog_data: TimeSeries = None
     ) -> Tuple[Optional[TimeSeries], None]:
         full_train = TimeSeries.from_pd(train_data)
         train, valid = self.train_valid_split(full_train, train_config)
@@ -119,7 +119,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
             logger.info(f"Training model {i+1}/{len(self.models)} ({type(model).__name__})...")
             try:
-                pred, err = model.train(train, train_config=cfg)
+                pred, err = model.train(train, train_config=cfg, exog_data=exog_data)
                 preds.append(pred)
                 errs.append(err)
             except Exception:
@@ -164,7 +164,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             model.reset()
             if used:
                 logger.info(f"Re-training model {i+1}/{len(self.models)} ({type(model).__name__}) on full data...")
-                pred, err = model.train(full_train, train_config=cfg)
+                pred, err = model.train(full_train, train_config=cfg, exog_data=exog_data)
             else:
                 pred, err = None, None
             full_preds.append(pred)
@@ -175,15 +175,26 @@ class ForecasterEnsemble(EnsembleBase, ForecasterBase):
             err = self.combiner(full_errs, None)
         return self.combiner(full_preds, None), err
 
-    def _forecast(
-        self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev: bool = False
-    ) -> Tuple[pd.DataFrame, Union[pd.DataFrame, None]]:
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
+    ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         preds, errs = [], []
         time_series_prev = TimeSeries.from_pd(time_series_prev)
+        if exog_data is not None:
+            exog_data = pd.concat((exog_data_prev, exog_data)) if exog_data_prev is not None else exog_data
+            exog_data = TimeSeries.from_pd(exog_data)
         for model, used in zip(self.models, self.models_used):
             if used:
                 pred, err = model.forecast(
-                    time_stamps=time_stamps, time_series_prev=time_series_prev, return_prev=return_prev
+                    time_stamps=time_stamps,
+                    time_series_prev=time_series_prev,
+                    exog_data=exog_data,
+                    return_prev=return_prev,
                 )
                 preds.append(pred)
                 errs.append(err)

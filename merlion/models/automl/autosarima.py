@@ -278,7 +278,7 @@ class AutoSarima(SeasonalityLayer):
         return iter([{"action": action, "theta": [order, seasonal_order, trend], "val_dict": val_dict}])
 
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data=None, **kwargs
     ) -> Tuple[Any, Optional[Sarima], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
         # preprocess

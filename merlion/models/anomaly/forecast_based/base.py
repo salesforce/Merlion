@@ -77,21 +77,12 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             self, train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
 
-    def train(
-        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
+    def get_anomaly_score(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, exog_data: TimeSeries = None
     ) -> TimeSeries:
-        return DetectorBase.train(
-            self,
-            train_data=train_data,
-            train_config=train_config,
-            anomaly_labels=anomaly_labels,
-            post_rule_train_config=post_rule_train_config,
-        )
-
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
         if not self.invert_transform:
             time_series, _ = self.transform_time_series(time_series, time_series_prev)
-        forecast, err = self.forecast(time_series.time_stamps, time_series_prev)
+        forecast, err = self.forecast(time_series.time_stamps, time_series_prev=time_series_prev, exog_data=exog_data)
 
         # Make sure stderr & forecast are of the appropriate lengths
         assert err is None or len(forecast) == len(err), (
@@ -107,12 +98,19 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         raise NotImplementedError("_get_anomaly_score() should not be called from a forecast-based anomaly detector.")
 
+    def get_anomaly_label(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, exog_data: TimeSeries = None
+    ) -> TimeSeries:
+        scores = self.get_anomaly_score(time_series, time_series_prev, exog_data=exog_data)
+        return self.post_rule(scores) if self.post_rule is not None else scores
+
     def get_figure(
         self,
         *,
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_anomaly=True,
         filter_scores=True,
         plot_forecast=False,
@@ -120,36 +118,36 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         plot_time_series_prev=False,
     ) -> Figure:
         """
-        :param time_series: the time series over whose timestamps we wish to
-            make a forecast. Exactly one of ``time_series`` or ``time_stamps``
-            should be provided.
-        :param time_stamps: a list of timestamps we wish to forecast for. Exactly
-            one of ``time_series`` or ``time_stamps`` should be provided.
-        :param time_series_prev: a `TimeSeries` immediately preceding
-            ``time_stamps``. If given, we use it to initialize the time series
-            model. Otherwise, we assume that ``time_stamps`` immediately follows
-            the training data.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_stamps: Either a ``list`` of timestamps we wish to forecast for, or the number of steps (``int``)
+            we wish to forecast for. Exactly one of ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
         :param plot_anomaly: Whether to plot the model's predicted anomaly scores.
-        :param filter_scores: whether to filter the anomaly scores by the
-            post-rule before plotting them.
+        :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
         :param plot_forecast: Whether to plot the model's forecasted values.
-        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
-            inter-quartile range) for forecast values. Not supported for all
-            models.
-        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
-            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
+            values. Not supported for all models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and the model's fit for it). Only used if
+            ``time_series_prev`` is given.
         :return: a `Figure` of the model's anomaly score predictions and/or forecast.
         """
         assert not (
             time_series is None and time_stamps is None
         ), "Must provide at least one of time_series or time_stamps"
         fig = None
-        plot_forecast = plot_forecast or not plot_anomaly
+        plot_forecast = plot_forecast or plot_forecast_uncertainty or not plot_anomaly
         if plot_forecast or time_series is None:
             fig = ForecasterBase.get_figure(
                 self,
                 time_series=time_series,
                 time_stamps=time_stamps,
+                exog_data=exog_data,
                 time_series_prev=time_series_prev,
                 plot_forecast_uncertainty=plot_forecast_uncertainty,
                 plot_time_series_prev=plot_time_series_prev,
@@ -160,6 +158,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             self,
             time_series=time_series,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             plot_time_series_prev=plot_time_series_prev,
             filter_scores=filter_scores,
             fig=fig,
@@ -169,6 +168,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         self,
         time_series: TimeSeries,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         *,
         filter_scores=True,
         plot_forecast=False,
@@ -183,21 +183,20 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         anomalies. Optionally allows you to overlay the model's forecast & the
         model's uncertainty in its forecast (if applicable).
 
-        :param time_series: The time series we wish to plot, with color-coding
-            to indicate anomalies.
-        :param time_series_prev: A time series immediately preceding
-            ``time_series``, which is used to initialize the time series model.
-            Otherwise, we assume ``time_series`` immediately follows the training
-            data.
-        :param filter_scores: whether to filter the anomaly scores by the
-            post-rule before plotting them.
-        :param plot_forecast: Whether to plot the model's forecast, in addition
-            to the anomaly scores.
-        :param plot_forecast_uncertainty: Whether to plot the model's
-            uncertainty in its own forecast, in addition to the forecast and
-            anomaly scores. Only used if ``plot_forecast`` is ``True``.
-        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
-            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
+        :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
+        :param plot_forecast: Whether to plot the model's forecast, in addition to the anomaly scores.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
+            values. Not supported for all models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and the model's fit for it). Only used if
+            ``time_series_prev`` is given.
         :param figsize: figure size in pixels
         :param ax: matplotlib axis to add this plot to
 
@@ -207,6 +206,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         fig = self.get_figure(
             time_series=time_series,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             filter_scores=filter_scores,
             plot_anomaly=True,
             plot_forecast=plot_forecast,
@@ -223,6 +223,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         self,
         time_series: TimeSeries,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         *,
         filter_scores=True,
         plot_forecast=False,
@@ -236,21 +237,20 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         anomalies. Optionally allows you to overlay the model's forecast & the
         model's uncertainty in its forecast (if applicable).
 
-        :param time_series: The time series we wish to plot, with color-coding
-            to indicate anomalies.
-        :param time_series_prev: A time series immediately preceding
-            ``time_series``, which is used to initialize the time series model.
-            Otherwise, we assume ``time_series`` immediately follows the training
-            data.
-        :param filter_scores: whether to filter the anomaly scores by the
-            post-rule before plotting them.
-        :param plot_forecast: Whether to plot the model's forecast, in addition
-            to the anomaly scores.
-        :param plot_forecast_uncertainty: Whether to plot the model's
-            uncertainty in its own forecast, in addition to the forecast and
-            anomaly scores. Only used if ``plot_forecast`` is ``True``.
-        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and
-            the model's fit for it). Only used if ``time_series_prev`` is given.
+        :param time_series: the time series over whose timestamps we wish to make a forecast. Exactly one of
+            ``time_series`` or ``time_stamps`` should be provided.
+        :param time_series_prev: a time series immediately preceding ``time_series``. If given, we use it to initialize
+            the forecaster's state. Otherwise, we assume that ``time_series`` immediately follows the training data.
+        :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
+            independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
+            if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
+            Optional. Only supported for models which inherit from `ForecasterWithExog`.
+        :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
+        :param plot_forecast: Whether to plot the model's forecast, in addition to the anomaly scores.
+        :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
+            values. Not supported for all models.
+        :param plot_time_series_prev: whether to plot ``time_series_prev`` (and the model's fit for it). Only used if
+            ``time_series_prev`` is given.
         :param figsize: figure size in pixels
         :return: plotly figure
         """
@@ -258,6 +258,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         fig = self.get_figure(
             time_series=time_series,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             filter_scores=filter_scores,
             plot_forecast=plot_forecast,
             plot_anomaly=True,
@@ -275,6 +276,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
         figsize=(1000, 600),
@@ -284,6 +286,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             time_series=time_series,
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
             plot_anomaly=False,
@@ -298,6 +301,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         time_series: TimeSeries = None,
         time_stamps: List[int] = None,
         time_series_prev: TimeSeries = None,
+        exog_data: TimeSeries = None,
         plot_forecast_uncertainty=False,
         plot_time_series_prev=False,
         figsize=(1000, 600),
@@ -306,6 +310,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
             time_series=time_series,
             time_stamps=time_stamps,
             time_series_prev=time_series_prev,
+            exog_data=exog_data,
             plot_forecast_uncertainty=plot_forecast_uncertainty,
             plot_time_series_prev=plot_time_series_prev,
             plot_anomaly=False,

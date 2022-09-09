@@ -289,14 +289,14 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             return attr
         return self.__getattribute__(item)
 
-    def train_model(self, train_data, train_config=None, **kwargs):
+    def train_model(self, train_data, train_config=None, *args, **kwargs):
         """
         Trains the underlying model. May be overridden, e.g. for AutoML.
 
         :param train_data: the data to train on.
         :param train_config: the train config of the underlying model (optional).
         """
-        return self.model.train(train_data, train_config=train_config, **kwargs)
+        return self.model.train(train_data, train_config=train_config, *args, **kwargs)
 
     def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         # Push the layered model transform to the owned model, but make sure we only resample once.
@@ -329,8 +329,10 @@ class LayeredDetector(LayeredModel, DetectorBase):
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
-        return self.model.get_anomaly_score(time_series, time_series_prev)
+    def get_anomaly_score(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, *args, **kwargs
+    ) -> TimeSeries:
+        return self.model.get_anomaly_score(time_series, time_series_prev, *args, **kwargs)
 
 
 class LayeredForecaster(LayeredModel, ForecasterBase):

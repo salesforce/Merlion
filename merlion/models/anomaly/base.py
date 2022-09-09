@@ -291,6 +291,7 @@ class DetectorBase(ModelBase):
         filter_scores=True,
         plot_time_series_prev=False,
         fig: Figure = None,
+        **kwargs,
     ) -> Figure:
         """
         :param time_series: The `TimeSeries` we wish to plot & predict anomaly scores for.
@@ -306,7 +307,7 @@ class DetectorBase(ModelBase):
         :return: a `Figure` of the model's anomaly score predictions.
         """
         f = self.get_anomaly_label if filter_scores else self.get_anomaly_score
-        scores = f(time_series, time_series_prev=time_series_prev)
+        scores = f(time_series, time_series_prev=time_series_prev, **kwargs)
         scores = scores.univariates[scores.names[0]]
 
         # Get the severity level associated with each value & convert things to

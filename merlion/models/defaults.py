@@ -147,7 +147,9 @@ class DefaultForecaster(LayeredForecaster):
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError("Default model _train() should not be called")
 
-    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(
+        self, train_data: TimeSeries, train_config=None, exog_data=None
+    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
         kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
 
@@ -168,4 +170,4 @@ class DefaultForecaster(LayeredForecaster):
         else:
             self.model = ModelFactory.create("AutoETS", additive_only=True, **kwargs)
 
-        return super().train(train_data=train_data, train_config=train_config)
+        return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)

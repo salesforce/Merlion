@@ -28,7 +28,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
     Abstract base class which converts `LayeredModel` into an AutoML model.
     """
 
-    def train_model(self, train_data: TimeSeries, train_config=None, **kwargs):
+    def train_model(self, train_data: TimeSeries, train_config=None, exog_data=None, **kwargs):
         """
         Generates a set of candidate models and picks the best one.
 
@@ -60,7 +60,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
 
     @abstractmethod
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data=None, **kwargs
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         r"""
         :param thetas: Iterator of the hyperparameter candidates
@@ -174,7 +174,7 @@ class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
         raise NotImplementedError
 
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data=None, **kwargs
     ) -> Tuple[Any, ModelBase, Tuple[TimeSeries, Optional[TimeSeries]]]:
         best = None
         y = train_data.to_pd()
