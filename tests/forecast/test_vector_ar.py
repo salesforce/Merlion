@@ -6,7 +6,6 @@
 #
 import logging
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -100,11 +99,14 @@ class TestVectorAR(unittest.TestCase):
         self.model.save(dirname=savedir)
         VectorAR.load(dirname=savedir)
 
-    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast_univariate(self):
+        print("-" * 80)
+        logger.info("test_forecast_univariate\n" + "-" * 80)
         self.run_test(True)
 
     def test_forecast_multivariate(self):
+        print("-" * 80)
+        logger.info("test_forecast_multivariate\n" + "-" * 80)
         self.run_test(False)
 
 
