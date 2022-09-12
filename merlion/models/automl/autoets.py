@@ -15,6 +15,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 from merlion.models.forecast.ets import ETS, ETSConfig
@@ -121,9 +122,9 @@ class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
             m = 1
             S_range = [None]
         elif np.any(y <= 0):
-            S_range = ["add", None]
+            S_range = ["add"]
         else:
-            S_range = ["add", "mul", None]
+            S_range = ["add", "mul"]
         D_range = [True, False]
 
         if not self.config.auto_error:
@@ -153,6 +154,8 @@ class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         error, trend, seasonal, damped_trend, seasonal_periods = theta
+        if seasonal_periods <= 1:
+            seasonal = None
         model.config.error = error
         model.config.trend = trend
         model.config.damped_trend = damped_trend
@@ -165,4 +168,16 @@ class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
         return f"ETS(err={error},trend={trend},seas={seasonal},damped={damped})"
 
     def get_ic(self, model, train_data: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
-        return getattr(model.base_model.model, self.information_criterion.name.lower())
+        pred, stderr = train_result
+        log_like = norm.logpdf((pred.values - train_data.values) / stderr.values).sum()
+        n_params = model.base_model.model.df_model
+        ic_id = self.config.information_criterion
+        if ic_id is InformationCriterion.AIC:
+            ic = 2 * n_params - 2 * log_like.sum()
+        elif ic_id is InformationCriterion.BIC:
+            ic = n_params * np.log(len(train_data)) - 2 * log_like
+        elif ic_id is InformationCriterion.AICc:
+            ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / max(1, len(train_data) - n_params - 1)
+        else:
+            raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic_id.name}")
+        return ic

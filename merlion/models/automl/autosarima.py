@@ -20,7 +20,7 @@ from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
-
+# FIXME: convert to information criterion version
 class AutoSarimaConfig(SeasonalityConfig):
     """
     Configuration class for `AutoSarima`. Acts as a wrapper around a `Sarima` model, which automatically detects
@@ -358,6 +358,7 @@ class AutoSarima(SeasonalityLayer):
         else:
             return theta_value["theta"], None, None
 
+        # FIXME: model._last_val is not set correctly here
         model = deepcopy(self.model)
         self.set_theta(model, best_model_theta, train_data)
         model.model = best_model_fit

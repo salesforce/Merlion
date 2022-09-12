@@ -82,7 +82,6 @@ class VectorAR(ForecasterBase):
         else:
             self.model = sm_VAR(train_data).fit(self.maxlags)
 
-        # FORECASTING: forecast for next n steps using VAR model
         i = self.target_seq_index
         resid = self.model.resid
         pred = train_data - resid if self.dim == 1 else (train_data - resid).iloc[:, i]
@@ -111,30 +110,20 @@ class VectorAR(ForecasterBase):
             assert not return_prev, "VectorAR.forecast() does not support return_prev=True"
 
         n = len(time_stamps)
-        if time_series_prev is None:
-            if self.dim == 1:
-                forecast_result = self.model.get_forecast(steps=n)
-                yhat = forecast_result.predicted_mean
-                err = forecast_result.se_mean
+        i = self.target_seq_index
+        if self.dim == 1:
+            if time_series_prev is None:
+                model = self.model
             else:
-                i = self.target_seq_index
-                yhat = self.model.forecast(self._np_train_data, steps=n)[:, i]
-                err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
-
+                model = self.model.apply(time_series_prev.values[-self.maxlags :, 0], validate_specification=False)
+            forecast_result = model.get_forecast(steps=n)
+            yhat = forecast_result.predicted_mean
+            err = forecast_result.se_mean
         else:
-            if self.dim == 1:
-                new_state = self.model.apply(time_series_prev.values[-self.maxlags :, 0], validate_specification=False)
-                forecast_result = new_state.get_forecast(steps=n)
-                yhat = forecast_result.predicted_mean
-                err = forecast_result.se_mean
-            else:
-                yhat = self.model.forecast(time_series_prev.values[-self.maxlags :], steps=n)
-                yhat = yhat[:, self.target_seq_index]
-                # Compute forecast covariance matrices for desired number of steps,
-                # here we return the diagonal elements, i.e., variance (more rigorous math here?)
-                err = np.sqrt(self.model.forecast_cov(n)[:, self.target_seq_index, self.target_seq_index])
+            prev = self._np_train_data if time_series_prev is None else time_series_prev.values[-self.maxlags :]
+            yhat = self.model.forecast(prev, steps=n)[:, i]
+            err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
 
-        # Return the IQR (25%ile & 75%ile) along with the forecast if desired
         name = self.target_name
         forecast = pd.DataFrame(np.asarray(yhat), index=to_pd_datetime(time_stamps), columns=[name])
         err = pd.DataFrame(np.asarray(err), index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])

@@ -22,6 +22,7 @@ from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.transform.base import Identity
+from merlion.transform.resample import TemporalResample
 from merlion.transform.sequence import TransformSequence
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
@@ -298,9 +299,18 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return self.model.train(train_data, train_config=train_config, **kwargs)
 
     def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
-        # Push the layered model transform to the owned model
-        self.model.transform = TransformSequence([self.transform, self.model.transform])
+        # Push the layered model transform to the owned model, but make sure we only resample once.
+        has_resample = False
+        transforms = []
+        for t in TransformSequence([self.transform, self.model.transform]).transforms:
+            if isinstance(t, TemporalResample):
+                if not has_resample:
+                    transforms.append(t)
+                has_resample = True
+            else:
+                transforms.append(t)
         self.transform = Identity()
+        self.model.transform = TransformSequence(transforms)
         return super().train_pre_process(train_data)
 
     def train(self, train_data: TimeSeries, train_config=None, *args, **kwargs):
