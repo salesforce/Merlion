@@ -187,9 +187,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
 
         # the periods should be smaller than one half of the length of time series
         candidates = candidates[candidates < int(x.shape[0] / 2)]
-        if candidates.shape[0] == 0:
-            return []
-        else:
+        if candidates.shape[0] != 0:
             candidates_idx = []
             if candidates.shape[0] == 1:
                 candidates_idx += [0]
@@ -201,14 +199,14 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
                 candidates_idx += argrelmax(xacf[candidates])[0].tolist()
             candidates = candidates[candidates_idx]
 
-        # statistical test if acf is significant w.r.t a normal distribution
-        xacf = xacf[1:]
-        tcrit = norm.ppf(1 - self.pval / 2)
-        clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-        candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
+            # statistical test if acf is significant w.r.t a normal distribution
+            xacf = xacf[1:]
+            tcrit = norm.ppf(1 - self.pval / 2)
+            clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
+            candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
 
-        # sort candidates by ACF value
-        candidates = sorted(candidates.tolist(), key=lambda c: xacf[c - 1], reverse=True)
+            # sort candidates by ACF value
+            candidates = sorted(candidates.tolist(), key=lambda c: xacf[c - 1], reverse=True)
         if len(candidates) == 0:
             candidates = [1]
 
