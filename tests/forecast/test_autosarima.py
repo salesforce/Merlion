@@ -14,8 +14,8 @@ import pandas as pd
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.automl.autosarima import AutoSarima, AutoSarimaConfig
-from merlion.models.automl.seasonality import SeasonalityLayer
-from merlion.utils import TimeSeries, autosarima_utils
+from merlion.models.automl.seasonality import SeasonalityLayer, SeasonalityConfig
+from merlion.utils import TimeSeries
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -801,7 +801,7 @@ class TestAutoSarima(unittest.TestCase):
             )
         )
         if seasonality_layer:
-            self.model = SeasonalityLayer(model=model)
+            self.model = SeasonalityLayer(config=SeasonalityConfig(model=None), model=model)
         else:
             self.model = model
 
@@ -850,12 +850,12 @@ class TestAutoSarima(unittest.TestCase):
     def test_autosarima(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_autosarima\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
+        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.4130)
 
     def test_seasonality_layer(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_seasonality_layer\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.4130)
+        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
 
 
 if __name__ == "__main__":
