@@ -316,7 +316,8 @@ class ModelBase(metaclass=AutodocABCMeta):
             time_series = self.transform(time_series)
         return time_series, time_series_prev
 
-    def train(self, train_data: TimeSeries, train_config=None, *args, **kwargs):
+    @abstractmethod
+    def train(self, train_data: TimeSeries, train_config=None):
         """
         Trains the model on the specified time series, optionally with some
         additional implementation-specific config options ``train_config``.
@@ -324,18 +325,14 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param train_data: a `TimeSeries` to use as a training set
         :param train_config: additional configurations (if needed)
         """
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        train_data = self.train_pre_process(train_data).to_pd()
-        train_result = self._train(train_data=train_data, train_config=train_config)
-        return self.train_post_process(train_result, *args, **kwargs)
+        raise NotImplementedError
 
     @abstractmethod
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError
 
     @abstractmethod
-    def train_post_process(self, train_result, *args, **kwargs):
+    def train_post_process(self, train_result):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
@@ -348,8 +345,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param save_config: additional configurations (if needed)
         :return: The state dict to save.
         """
-        if "config" in state_dict:  # don't save the config
-            state_dict.pop("config")
+        state_dict.pop("config", None)  # don't save the model's config in binary
         if filename is not None:
             with open(filename, "wb") as f:
                 dill.dump(state_dict, f)
