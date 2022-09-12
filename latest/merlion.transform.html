@@ -792,6 +792,16 @@ is already multivariate.</p></li>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvertibleTransformBase</span></code></a></p>
 <p>Applies a series of data transformations sequentially.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.extract_nontrivial_transforms">
+<span class="sig-name descname"><span class="pre">extract_nontrivial_transforms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.extract_nontrivial_transforms" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence.proper_inversion">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence.proper_inversion" title="Permalink to this definition"></a></dt>
@@ -856,22 +866,20 @@ error of accidentally using a stale state.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformStack" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.transform.sequence.TransformSequence" title="merlion.transform.sequence.TransformSequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformSequence</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">InvertibleTransformBase</span></code></a></p>
 <p>Applies a set of data transformations individually to an input time series.
 Stacks all of the results into a multivariate time series.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack.proper_inversion">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.proper_inversion" title="Permalink to this definition"></a></dt>
-<dd><p>A stacked transform is invertible if and only if at least one of the
-transforms comprising it are invertible.</p>
+<dd><p>A stacked transform is invertible if and only if at least one of the transforms comprising it are invertible.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformStack.requires_inversion_state">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_inversion_state</span></span><a class="headerlink" href="#merlion.transform.sequence.TransformStack.requires_inversion_state" title="Permalink to this definition"></a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> because the inversion state tells us which stacked transform to
-invert, and which part of the output time series to apply that inverse
-to.</p>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> because the inversion state tells us which stacked transform to invert, and which part of the
+output time series to apply that inverse to.</p>
 </dd></dl>
 
 <dl class="py method">
