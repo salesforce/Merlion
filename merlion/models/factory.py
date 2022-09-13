@@ -43,7 +43,7 @@ import_alias = dict(
     DAGMM="merlion.models.anomaly.dagmm:DAGMM",
     LSTMED="merlion.models.anomaly.lstm_ed:LSTMED",
     # Change point detection models
-    BOCPD="merlion.models.anomaly.change_point.bocpd",
+    BOCPD="merlion.models.anomaly.change_point.bocpd:BOCPD",
     # Forecasting models
     Arima="merlion.models.forecast.arima:Arima",
     ETS="merlion.models.forecast.ets:ETS",
