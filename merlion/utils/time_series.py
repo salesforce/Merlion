@@ -782,6 +782,9 @@ class TimeSeries:
                 df = df[~df.index.duplicated()]
             if not df.index.is_monotonic_increasing:
                 df = df.sort_index()
+            if dt_index:
+                times = df.index.values.astype("datetime64[ms]").astype(np.int64)
+                df = df.reindex(pd.to_datetime(np.unique(times), unit="ms"), method="bfill")
 
         elif not aligned and not dt_index and df.index.dtype not in ("int64", "float64"):
             raise RuntimeError(
