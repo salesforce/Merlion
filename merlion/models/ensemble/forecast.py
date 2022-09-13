@@ -144,8 +144,8 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
                 pred = None
                 try:
                     if self.combiner.get_model_used(i):
-                        evaluator = ForecastEvaluator(model=model, config=ForecastEvaluatorConfig(horizon=h))
-                        _, pred = evaluator.get_predict(
+                        eval_cfg = ForecastEvaluatorConfig(retrain_freq=None, horizon=h)
+                        _, pred = ForecastEvaluator(model=model, config=eval_cfg).get_predict(
                             train_vals=train, test_vals=valid, exog_data=exog_data, pretrained=True
                         )
                 except Exception:

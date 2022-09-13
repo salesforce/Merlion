@@ -365,14 +365,20 @@ class ForecastEvaluator(EvaluatorBase):
         return self.config.cadence
 
     def _call_model(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries, return_err: bool = False
+        self,
+        time_series: TimeSeries,
+        time_series_prev: TimeSeries,
+        exog_data: TimeSeries = None,
+        return_err: bool = False,
     ) -> Union[Tuple[TimeSeries, TimeSeries], TimeSeries]:
         if self.model.target_seq_index is not None:
             name = time_series.names[self.model.target_seq_index]
             time_stamps = time_series.univariates[name].time_stamps
         else:
             time_stamps = time_series.time_stamps
-        forecast, err = self.model.forecast(time_stamps, time_series_prev)
+        forecast, err = self.model.forecast(
+            time_stamps=time_stamps, time_series_prev=time_series_prev, exog_data=exog_data
+        )
         return (forecast, err) if return_err else forecast
 
     def evaluate(
