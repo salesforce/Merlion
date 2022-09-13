@@ -6,7 +6,6 @@
 #
 import numpy as np
 from merlion.utils.time_series import TimeSeries
-from merlion.transform.base import TransformBase
 
 
 def process_one_step_prior(data: TimeSeries, maxlags: int, sampling_mode="normal"):

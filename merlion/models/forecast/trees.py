@@ -17,9 +17,9 @@ from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
-from merlion.utils.time_series import to_pd_datetime, TimeSeries, UnivariateTimeSeries
-from merlion.models.forecast.autoregression_utils import MultiVariateAutoRegressionMixin
-from merlion.models.forecast import seq_ar_common
+from merlion.utils.time_series import to_pd_datetime, TimeSeries
+from merlion.models.utils.autoregression_utils import MultiVariateAutoRegressionMixin
+from merlion.models.utils import seq_ar_common
 
 logger = logging.getLogger(__name__)
 
