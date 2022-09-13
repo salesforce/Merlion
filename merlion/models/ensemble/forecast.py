@@ -82,7 +82,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
             ), f"Expected all models in {type(self).__name__} to be forecasters, but got a {type(model).__name__}."
             model.config.invert_transform = True
 
-    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+    def train_pre_process(
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         idxs = [model.target_seq_index for model in self.models]
         if any(i is not None for i in idxs):
             self.config.target_seq_index = [i for i in idxs if i is not None][0]
@@ -91,7 +93,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
                 f"to be used in a ForecasterEnsemble, but got the following "
                 f"target_seq_idx values: {idxs}"
             )
-        return super().train_pre_process(train_data=train_data)
+        return super().train_pre_process(train_data=train_data, exog_data=exog_data, return_exog=return_exog)
 
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         return time_stamps
@@ -143,7 +145,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
                 try:
                     if self.combiner.get_model_used(i):
                         evaluator = ForecastEvaluator(model=model, config=ForecastEvaluatorConfig(horizon=h))
-                        _, pred = evaluator.get_predict(train_vals=train, test_vals=valid, pretrained=True)
+                        _, pred = evaluator.get_predict(
+                            train_vals=train, test_vals=valid, exog_data=exog_data, pretrained=True
+                        )
                 except Exception:
                     logger.warning(
                         f"Caught an exception while evaluating model {i + 1}/{len(self.models)} "

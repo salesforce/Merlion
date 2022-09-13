@@ -263,7 +263,9 @@ class BOCPD(ForecastingDetectorBase):
             _, data = train_data.bisect(t0, t_in_left=False)
             self.pw_model.append((t0, self.change_kind.value(data)))
 
-    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+    def train_pre_process(
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         # BOCPD doesn't _require_ target_seq_index to be specified, but train_pre_process() does.
         if self.target_seq_index is None and train_data.dim > 1:
             self.config.target_seq_index = 0
@@ -271,10 +273,10 @@ class BOCPD(ForecastingDetectorBase):
                 f"Received a {train_data.dim}-variate time series, but `target_seq_index` was not "
                 f"specified. Setting `target_seq_index = 0` so the `forecast()` method will work."
             )
-        train_data = super().train_pre_process(train_data)
+        ret = super().train_pre_process(train_data, exog_data=exog_data, return_exog=return_exog)
         # We manually update self.train_data in update(), so do nothing here
         self.train_data = None
-        return train_data
+        return ret
 
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False

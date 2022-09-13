@@ -18,7 +18,9 @@ from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, MissingValuePolicy
+from merlion.transform.base import TransformBase, Identity
+from merlion.transform.factory import TransformFactory
+from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +69,8 @@ class ForecasterBase(ModelBase):
     """
 
     def __init__(self, config: ForecasterConfig):
+        if self.supports_exog:
+            assert isinstance(config, ForecasterWithExogConfig)
         super().__init__(config)
         self.target_name = None
         self.exog_dim = None
@@ -94,6 +98,13 @@ class ForecasterBase(ModelBase):
     def require_univariate(self) -> bool:
         """
         All forecasters can work on multivariate data, since they only forecast a single target univariate.
+        """
+        return False
+
+    @property
+    def supports_exog(self):
+        """
+        Whether this forecaster supports exogenous data.
         """
         return False
 
@@ -145,7 +156,9 @@ class ForecasterBase(ModelBase):
 
         return to_timestamp(resampled).tolist()
 
-    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+    def train_pre_process(
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         train_data = super().train_pre_process(train_data)
         if self.dim == 1:
             self.config.target_seq_index = 0
@@ -161,10 +174,23 @@ class ForecasterBase(ModelBase):
         )
         self.target_name = train_data.names[self.target_seq_index]
 
-        return train_data
+        # Handle exogenous data
+        if not self.supports_exog:
+            if exog_data is not None:
+                exog_data = None
+                logger.warning(f"Exogenous regressors are not supported for model {type(self).__name__}")
+
+        if exog_data is not None:
+            self.exog_dim = exog_data.dim
+            self.config.exog_transform.train(exog_data)
+        else:
+            self.exog_dim = None
+        if return_exog and exog_data is not None:
+            exog_data, _ = self.transform_exog_data(exog_data=exog_data, time_stamps=train_data.time_stamps)
+        return (train_data, exog_data) if return_exog else train_data
 
     def train(
-        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None, *args, **kwargs
+        self, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
     ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
         Trains the forecaster on the input time series.
@@ -180,14 +206,14 @@ class ForecasterBase(ModelBase):
         """
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
-        train_data = self.train_pre_process(train_data).to_pd()
-        self.exog_dim = None if exog_data is None else exog_data.dim
-        exog_data, _ = self.resample_exog_data(exog_data=exog_data, time_stamps=train_data.index)
+        train_data, exog_data = self.train_pre_process(train_data, exog_data=exog_data, return_exog=True)
         if exog_data is None:
-            train_result = self._train(train_data, train_config=train_config)
+            train_result = self._train(train_data=train_data.to_pd(), train_config=train_config)
         else:
-            train_result = self._train_with_exog(train_data, train_config=train_config, exog_data=exog_data.to_pd())
-        return self.train_post_process(train_result, *args, **kwargs)
+            train_result = self._train_with_exog(
+                train_data=train_data.to_pd(), train_config=train_config, exog_data=exog_data.to_pd()
+            )
+        return self.train_post_process(train_result)
 
     def train_post_process(
         self, train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]]
@@ -201,7 +227,7 @@ class ForecasterBase(ModelBase):
             train_pred, train_stderr = self._apply_inverse_transform(train_pred, train_stderr)
         return train_pred, train_stderr
 
-    def resample_exog_data(
+    def transform_exog_data(
         self,
         exog_data: TimeSeries,
         time_stamps: Union[List[int], pd.DatetimeIndex],
@@ -274,7 +300,7 @@ class ForecasterBase(ModelBase):
             time_series_prev_df = time_series_prev.to_pd()
 
         # Make the prediction
-        exog_data, exog_data_prev = self.resample_exog_data(
+        exog_data, exog_data_prev = self.transform_exog_data(
             exog_data, time_stamps=time_stamps, time_series_prev=time_series_prev
         )
         if exog_data is None:
@@ -610,12 +636,45 @@ class ForecasterBase(ModelBase):
 
 
 class ForecasterWithExogConfig(ForecasterConfig):
-    def __init__(self, exog_missing_value_policy: Union[MissingValuePolicy, str] = "ZFill", **kwargs):
+    _default_exog_transform = Identity()
+    exog_transform: TransformBase = None
+
+    def __init__(
+        self,
+        exog_transform: TransformBase = None,
+        exog_aggregation_policy: Union[AggregationPolicy, str] = "Mean",
+        exog_missing_value_policy: Union[MissingValuePolicy, str] = "ZFill",
+        **kwargs,
+    ):
         """
-        :param exog_missing_value_policy: The policy to use for imputing missing values in exogenous data.
+        :param exog_transform: The pre-processing transform for exogenous data. Note: resampling is handled separately.
+        :param exog_aggregation_policy: The policy to use for aggregating values in exogenous data,
+            to ensure it is sampled at the same timestamps as the endogenous data.
+        :param exog_missing_value_policy: The policy to use for imputing missing values in exogenous data,
+            to ensure it is sampled at the same timestamps as the endogenous data.
         """
         super().__init__(**kwargs)
+        if exog_transform is None:
+            self.exog_transform = copy.deepcopy(self._default_exog_transform)
+        elif isinstance(exog_transform, dict):
+            self.exog_transform = TransformFactory.create(**exog_transform)
+        else:
+            self.exog_transform = exog_transform
+        self.exog_aggregation_policy = exog_aggregation_policy
         self.exog_missing_value_policy = exog_missing_value_policy
+
+    @property
+    def exog_aggregation_policy(self):
+        return self._exog_aggregation_policy
+
+    @exog_aggregation_policy.setter
+    def exog_aggregation_policy(self, agg):
+        if isinstance(agg, str):
+            valid = set(AggregationPolicy.__members__.keys())
+            if agg not in valid:
+                raise KeyError(f"{agg} is not a aggregation policy. Valid aggregation policies are: {valid}")
+            agg = AggregationPolicy[agg]
+        self._exog_aggregation_policy = agg
 
     @property
     def exog_missing_value_policy(self):
@@ -626,29 +685,43 @@ class ForecasterWithExogConfig(ForecasterConfig):
         if isinstance(mv, str):
             valid = set(MissingValuePolicy.__members__.keys())
             if mv not in valid:
-                raise KeyError(f"{mv} is not a valid change kind. Valid missing value policies are: {valid}")
+                raise KeyError(f"{mv} is not a valid missing value policy. Valid missing value policies are: {valid}")
             mv = MissingValuePolicy[mv]
         self._exog_missing_value_policy = mv
 
 
 class ForecasterWithExogBase(ForecasterBase):
     """
-    Base class for a forecaster model which supports exogenous regressors.
+    Base class for a forecaster model which supports exogenous variables. Exogenous variables are known a priori, and
+    they are independent of the variable being forecasted.
     """
+
+    @property
+    def supports_exog(self):
+        return True
+
+    @property
+    def exog_transform(self):
+        return self.config.exog_transform
+
+    @property
+    def exog_aggregation_policy(self):
+        return self.config.exog_aggregation_policy
 
     @property
     def exog_missing_value_policy(self):
         return self.config.exog_missing_value_policy
 
-    def resample_exog_data(
+    def transform_exog_data(
         self,
         exog_data: TimeSeries,
         time_stamps: Union[List[int], pd.DatetimeIndex],
         time_series_prev: TimeSeries = None,
     ) -> Union[Tuple[TimeSeries, TimeSeries], Tuple[TimeSeries, None], Tuple[None, None]]:
         """
-        Resamples exogenous data and splits it into two subsets: one with the same timestamps as ``time_series_prev``
-        (``None`` if ``time_series_prev`` is ``None``), and one with the timestamps ``time_stamps``.
+        Transforms & resamples exogenous data and splits it into two subsets:
+        one with the same timestamps as ``time_series_prev`` (``None`` if ``time_series_prev`` is ``None``),
+        and one with the timestamps ``time_stamps``.
 
         :param exog_data: The exogenous data of interest.
         :param time_stamps: The timestamps of interest (either the timestamps of data, or the timestamps at which
@@ -657,6 +730,7 @@ class ForecasterWithExogBase(ForecasterBase):
         :return: ``(exog_data, exog_data_prev)``, where ``exog_data`` has been resampled to match the ``time_stamps``
             and ``exog_data_prev` has been resampled to match ``time_series_prev.time_stamps``.
         """
+        # Check validity
         if exog_data is None:
             if self.exog_dim is not None:
                 raise ValueError(f"Trained with {self.exog_dim}-dim exogenous data, but received none.")
@@ -666,13 +740,25 @@ class ForecasterWithExogBase(ForecasterBase):
         if self.exog_dim != exog_data.dim:
             raise ValueError(f"Trained with {self.exog_dim}-dim exogenous data, but received {exog_data.dim}-dim.")
 
+        # Transform
+        exog_data = self.exog_transform(exog_data)
+
+        # Resample
         if time_series_prev is not None:
             t = time_series_prev.time_stamps + to_timestamp(time_stamps).tolist()
-            exog_data = exog_data.align(reference=t, missing_value_policy=self.exog_missing_value_policy)
+            exog_data = exog_data.align(
+                reference=t,
+                aggregation_policy=self.exog_aggregation_policy,
+                missing_value_policy=self.exog_missing_value_policy,
+            )
             exog_data_prev, exog_data = exog_data.bisect(time_stamps[0], t_in_left=False)
         else:
             exog_data_prev = None
-            exog_data = exog_data.align(reference=time_stamps, missing_value_policy=self.exog_missing_value_policy)
+            exog_data = exog_data.align(
+                reference=time_stamps,
+                aggregation_policy=self.exog_aggregation_policy,
+                missing_value_policy=self.exog_missing_value_policy,
+            )
         return exog_data, exog_data_prev
 
     @abstractmethod
