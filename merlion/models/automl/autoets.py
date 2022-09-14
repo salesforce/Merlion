@@ -7,21 +7,18 @@
 """
 Automatic hyperparamter selection for ETS.
 """
-from copy import deepcopy
-from itertools import product
+from collections import OrderedDict
 import logging
-from typing import Union, Iterator, Any, Optional, Tuple
-import warnings
+from typing import Union, Iterator, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
 
-from statsmodels.tsa.exponential_smoothing.ets import ETSModel
-from merlion.models.forecast.ets import ETS, ETSConfig
+from merlion.models.forecast.ets import ETS
 from merlion.models.automl.base import InformationCriterion, ICConfig, ICAutoMLForecaster
+from merlion.models.automl.search import GridSearch
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
-from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils import TimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -136,48 +133,31 @@ class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
         if not self.config.auto_damped:
             D_range = [self.model.config.damped_trend]
 
-        thetas = []
-        for error, trend, seasonal, damped in product(E_range, T_range, S_range, D_range):
-            if trend is None and damped:
-                continue
-            if self.config.additive_only:
-                if error == "mul" or trend == "mul" or seasonal == "mul":
-                    continue
-            if self.config.restrict:
-                if error == "add" and (trend == "mul" or seasonal == "mul"):
-                    continue
-                if error == "mul" and trend == "mul" and seasonal == "add":
-                    continue
-
-            thetas.append((error, trend, seasonal, damped, m))
-        return iter(thetas)
+        # Construct a grid search object
+        param_values = OrderedDict(error=E_range, trend=T_range, seasonal=S_range, damped=D_range, m=[m])
+        restrictions = [dict(trend=None, damped=True)]
+        if self.config.additive_only:
+            restrictions.extend([dict(error="mul"), dict(trend="mul"), dict(seasonal="mul")])
+        if self.config.restrict:
+            restrictions.append(dict(error="add", trend="mul"))
+            restrictions.append(dict(error="add", seasonal="mul"))
+            restrictions.append(dict(error="mul", trend="mul", seasonal="add"))
+        return iter(GridSearch(param_values=param_values, restrictions=restrictions))
 
     def set_theta(self, model, theta, train_data: TimeSeries = None):
-        error, trend, seasonal, damped_trend, seasonal_periods = theta
-        if seasonal_periods <= 1:
-            seasonal = None
-        model.config.error = error
-        model.config.trend = trend
-        model.config.damped_trend = damped_trend
-        model.config.seasonal = seasonal
-        model.config.seasonal_periods = seasonal_periods
+        m = theta["m"]
+        model.config.error = theta["error"]
+        model.config.trend = theta["trend"]
+        model.config.damped_trend = theta["damped"]
+        model.config.seasonal = None if m <= 1 else theta["seasonal"]
+        model.config.seasonal_periods = m
 
-    @staticmethod
-    def _model_name(theta):
-        error, trend, seasonal, damped, seasonal_periods = theta
-        return f"ETS(err={error},trend={trend},seas={seasonal},damped={damped})"
+    def _model_name(self, theta):
+        return f"ETS(err={theta['error']},trend={theta['trend']},seas={theta['seasonal']},damped={theta['damped']})"
 
     def get_ic(self, model, train_data: pd.DataFrame, train_result: Tuple[pd.DataFrame, pd.DataFrame]) -> float:
-        pred, stderr = train_result
-        log_like = norm.logpdf((pred.values - train_data.values) / stderr.values).sum()
-        n_params = model.base_model.model.df_model
-        ic_id = self.config.information_criterion
-        if ic_id is InformationCriterion.AIC:
-            ic = 2 * n_params - 2 * log_like.sum()
-        elif ic_id is InformationCriterion.BIC:
-            ic = n_params * np.log(len(train_data)) - 2 * log_like
-        elif ic_id is InformationCriterion.AICc:
-            ic = 2 * n_params - 2 * log_like + (2 * n_params * (n_params + 1)) / max(1, len(train_data) - n_params - 1)
+        ic = self.config.information_criterion.name
+        if ic in ["AIC", "BIC", "AICc"]:
+            return getattr(model.base_model.model, ic.lower())
         else:
-            raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic_id.name}")
-        return ic
+            raise ValueError(f"{type(self.model).__name__} doesn't support information criterion {ic}")
