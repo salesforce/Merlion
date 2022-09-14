@@ -15,8 +15,9 @@ import numpy as np
 
 from merlion.models.automl.seasonality import PeriodicityStrategy, SeasonalityConfig, SeasonalityLayer
 from merlion.models.forecast.sarima import Sarima
+from merlion.models.utils import autosarima_utils
 from merlion.transform.resample import TemporalResample
-from merlion.utils import autosarima_utils, TimeSeries, UnivariateTimeSeries
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 

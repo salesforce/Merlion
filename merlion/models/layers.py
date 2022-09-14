@@ -210,6 +210,9 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             )
         elif config is not None and model is not None:
             if config.model is None:
+                if isinstance(model, dict):
+                    model = ModelFactory.create(**model)
+                config = copy.copy(config)
                 config.model = model
             else:
                 raise RuntimeError(
