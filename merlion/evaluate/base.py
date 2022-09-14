@@ -171,24 +171,23 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
             (``None`` if ``pretrained`` is ``True``). ``result`` is the model's predictions on ``test_vals``, and is
             specific to each evaluation task.
         """
-        # Initially the model w/ appropriate train kwargs
+        # Determine the appropriate training/retraining kwargs
         train_kwargs = {} if train_kwargs is None else train_kwargs
         full_train_kwargs = self.default_train_kwargs()
         full_train_kwargs.update(train_kwargs)
+        retrain_kwargs = {} if retrain_kwargs is None else retrain_kwargs
+        full_retrain_kwargs = self.default_retrain_kwargs()
+        full_retrain_kwargs.update(retrain_kwargs)
         if isinstance(self.model, ForecasterWithExogBase):
             full_train_kwargs.update(exog_data=exog_data)
+            full_retrain_kwargs.update(exog_data=exog_data)
+
+        # Train the initial model (if not pretrained)
         if not pretrained:
             self.model.reset()
             train_result = self._train_model(train_vals, **full_train_kwargs)
         else:
             train_result = None
-
-        # Determine the appropriate kwargs for re-training
-        retrain_kwargs = {} if retrain_kwargs is None else retrain_kwargs
-        full_retrain_kwargs = self.default_retrain_kwargs()
-        full_retrain_kwargs.update(retrain_kwargs)
-        if isinstance(self.model, ForecasterWithExogBase):
-            full_retrain_kwargs.update(exog_data=exog_data)
 
         # We will incrementally build up the final result window-by-window,
         # where each window is a time series. t_next is the next time we will

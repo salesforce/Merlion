@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.models.forecast.prophet import Prophet, ProphetConfig
 from merlion.utils.resample import to_timestamp
 from merlion.utils.time_series import TimeSeries
@@ -53,7 +54,7 @@ class TestProphet(unittest.TestCase):
         model = Prophet(ProphetConfig())
         model.train(train_data=train)
         pred, _ = model.forecast(time_stamps=test.time_stamps)
-        exog_model = Prophet(ProphetConfig())
+        exog_model = ProphetDetector(ProphetDetectorConfig())
         exog_model.train(train_data=train, exog_data=exog)
         exog_pred, _ = exog_model.forecast(time_stamps=test.time_stamps, exog_data=exog)
 
@@ -62,6 +63,10 @@ class TestProphet(unittest.TestCase):
         exog_smape = ForecastMetric.sMAPE.value(test, exog_pred)
         logger.info(f"sMAPE = {smape:.2f} (no exog)")
         logger.info(f"sMAPE = {exog_smape:.2f} (with exog)")
+
+        # Test that exog model can also get anomaly scores
+        anomaly_labels = exog_model.get_anomaly_label(test, exog_data=exog).to_pd()
+        logger.info(f"Alarms detected (anomaly detection): {anomaly_labels.sum().sum().item()}")
 
 
 if __name__ == "__main__":

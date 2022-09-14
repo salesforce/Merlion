@@ -413,6 +413,7 @@ class TSADEvaluator(EvaluatorBase):
         self,
         train_vals: TimeSeries,
         test_vals: TimeSeries,
+        exog_data: TimeSeries = None,
         train_kwargs: dict = None,
         retrain_kwargs: dict = None,
         post_process=True,
@@ -425,6 +426,7 @@ class TSADEvaluator(EvaluatorBase):
         :param train_vals: initial training data
         :param test_vals: all data where we want to get the model's predictions
             and compare it to the ground truth
+        :param exog_data: any exogenous data (only used for some models)
         :param train_kwargs: dict of keyword arguments we want to use for the
             initial training process. Typically, you will want to provide the
             key "anomaly_labels" here, if you have training data with labeled
@@ -441,7 +443,11 @@ class TSADEvaluator(EvaluatorBase):
             `TimeSeries` of the model's anomaly scores on ``test_vals``.
         """
         train_result, result = super().get_predict(
-            train_vals=train_vals, test_vals=test_vals, train_kwargs=train_kwargs, retrain_kwargs=retrain_kwargs
+            train_vals=train_vals,
+            test_vals=test_vals,
+            exog_data=exog_data,
+            train_kwargs=train_kwargs,
+            retrain_kwargs=retrain_kwargs,
         )
         if post_process:
             train_result = self.model.post_rule(train_result)

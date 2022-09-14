@@ -102,8 +102,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
         return super().train_combiner(all_model_outs, target, target_seq_index=self.target_seq_index, **kwargs)
 
     def _train_with_exog(
-        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None, exog_data: TimeSeries = None
+        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None, exog_data: pd.DataFrame = None
     ) -> Tuple[Optional[TimeSeries], None]:
+        exog_data = TimeSeries.from_pd(exog_data)
         full_train = TimeSeries.from_pd(train_data)
         train, valid = self.train_valid_split(full_train, train_config)
 
