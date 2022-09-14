@@ -7,7 +7,7 @@
 import logging
 import numpy as np
 from merlion.utils.time_series import TimeSeries
-from merlion.models.forecast import seq_ar_common
+from merlion.models.utils import seq_ar_common
 
 logger = logging.getLogger(__name__)
 

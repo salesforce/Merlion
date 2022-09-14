@@ -17,7 +17,7 @@ from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.moving_average import DifferenceTransform
 from merlion.models.forecast.trees import RandomForestForecaster, RandomForestForecasterConfig
-from merlion.models.forecast.seq_ar_common import gen_next_seq_label_pairs
+from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))

@@ -21,7 +21,7 @@ from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
 from merlion.models.layers import LayeredModelConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils import TimeSeries, UnivariateTimeSeries, autosarima_utils
+from merlion.utils import TimeSeries, UnivariateTimeSeries
 from merlion.utils.misc import AutodocABCMeta
 
 logger = logging.getLogger(__name__)
