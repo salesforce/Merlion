@@ -10,11 +10,10 @@ import sys
 import unittest
 
 import pandas as pd
-import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
-from merlion.models.forecast.seq_ar_common import gen_next_seq_label_pairs
+from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.normalize import MinMaxNormalize
 from merlion.transform.resample import TemporalResample
