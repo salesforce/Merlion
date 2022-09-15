@@ -263,7 +263,7 @@ class LSTM(ForecasterBase):
         return True
 
     @property
-    def _default_post_rule_train_config(self):
+    def _default_train_config(self):
         return LSTMTrainConfig()
 
     def _train(self, train_data: pd.DataFrame, train_config: LSTMTrainConfig = None):

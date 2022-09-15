@@ -116,7 +116,6 @@ class DynamicBaseline(DetectorBase):
     """
 
     config_class = DynamicBaselineConfig
-    _default_post_rule_train_config = dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def __init__(self, config: DynamicBaselineConfig):
         super().__init__(config)
@@ -130,6 +129,10 @@ class DynamicBaseline(DetectorBase):
     @property
     def require_univariate(self) -> bool:
         return True
+
+    @property
+    def _default_post_rule_train_config(self):
+        return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     @property
     def train_window(self):

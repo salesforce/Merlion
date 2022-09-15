@@ -62,7 +62,6 @@ class WindStats(DetectorBase):
     """
 
     config_class = WindStatsConfig
-    _default_post_rule_train_config = dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def __init__(self, config: WindStatsConfig = None):
         """
@@ -80,6 +79,10 @@ class WindStats(DetectorBase):
     @property
     def require_univariate(self) -> bool:
         return True
+
+    @property
+    def _default_post_rule_train_config(self):
+        return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         times, scores = [], []

@@ -106,7 +106,7 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
         return False
 
     @property
-    def _default_post_rule_train_config(self):
+    def _default_train_config(self):
         return dict()
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
