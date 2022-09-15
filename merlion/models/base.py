@@ -303,7 +303,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         Applies the model's pre-processing transform to ``time_series`` and ``time_series_prev``.
 
         :param time_series: The time series
-        :param time_series_prev: A time series of context, immediately preceding `time_series``. Optional.
+        :param time_series_prev: A time series of context, immediately preceding ``time_series``. Optional.
         :return: The transformed ``time_series`` and ``time_series_prev``.
         """
         if time_series_prev is not None and not time_series.is_empty():

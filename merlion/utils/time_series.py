@@ -847,7 +847,7 @@ class TimeSeries:
         Aligns all the univariates comprising this multivariate time series so that they all have the same time stamps.
 
         :param reference: A specific set of timestamps we want the resampled time series to contain. Required if
-        ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
+            ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
         :param granularity: The granularity (in seconds) of the resampled time time series. Defaults to the GCD time
             difference between adjacent elements of ``time_series`` (otherwise). Ignored if ``reference`` is given or
             ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.

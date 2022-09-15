@@ -9,9 +9,6 @@ import logging
 import sys
 import unittest
 
-import pandas as pd
-import numpy as np
-
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.arima import Arima, ArimaConfig
 from merlion.models.forecast.prophet import Prophet, ProphetConfig
