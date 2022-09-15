@@ -11,6 +11,7 @@ import copy
 import logging
 import os
 from typing import Iterable, List, Tuple, Union
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -146,7 +147,9 @@ class Prophet(SeasonalityModel, ForecasterWithExogBase):
             model = state["model"]
             if isinstance(model, str):
                 state = copy.copy(state)
-                state["model"] = prophet.serialize.model_from_json(model)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    state["model"] = prophet.serialize.model_from_json(model)
         super().__setstate__(state)
 
     @property
