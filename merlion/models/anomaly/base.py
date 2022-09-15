@@ -23,6 +23,7 @@ from merlion.post_process.factory import PostRuleFactory
 from merlion.post_process.sequence import PostRuleSequence
 from merlion.post_process.threshold import AggregateAlarms, Threshold
 from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.misc import call_with_accepted_kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -191,9 +192,13 @@ class DetectorBase(ModelBase):
 
         :return: A `TimeSeries` of the model's anomaly scores on the training data.
         """
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
         train_data = self.train_pre_process(train_data)
         train_data = train_data.to_pd() if self._pandas_train else train_data
-        train_result = self._train(train_data=train_data, train_config=train_config)
+        train_result = call_with_accepted_kwargs(  # For ensembles
+            self._train, train_data=train_data, train_config=train_config, anomaly_labels=anomaly_labels
+        )
         return self.train_post_process(
             train_result=train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
@@ -214,10 +219,8 @@ class DetectorBase(ModelBase):
             kwargs = copy.copy(self._default_post_rule_train_config)
             if post_rule_train_config is not None:
                 kwargs.update(post_rule_train_config)
-            params = inspect.signature(self.post_rule.train).parameters
-            if not any(v.kind.name == "VAR_KEYWORD" for v in params.values()):
-                kwargs = {k: v for k, v in kwargs.items() if k in params}
-            self.post_rule.train(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, **kwargs)
+            kwargs.update(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels)
+            call_with_accepted_kwargs(self.post_rule.train, **kwargs)
         return anomaly_scores
 
     @abstractmethod

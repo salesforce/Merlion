@@ -169,7 +169,6 @@ class MSES(ForecasterBase):
             \end{align*}
     """
     config_class = MSESConfig
-    _default_train_config = MSESTrainConfig()
 
     def __init__(self, config: MSESConfig):
         super().__init__(config)
@@ -198,11 +197,13 @@ class MSES(ForecasterBase):
     def max_horizon(self):
         return self.max_forecast_steps * self.timedelta
 
+    @property
+    def _default_train_config(self):
+        return MSESTrainConfig()
+
     def _train(self, train_data: pd.DataFrame, train_config: MSESTrainConfig = None):
-        if train_config is None:
-            train_config = deepcopy(self._default_train_config)
-            if isinstance(train_config, dict):
-                train_config = MSESTrainConfig(**train_config)
+        if isinstance(train_config, dict):
+            train_config = MSESTrainConfig(**train_config)
 
         name = self.target_name
         train_data = UnivariateTimeSeries.from_pd(train_data[name])

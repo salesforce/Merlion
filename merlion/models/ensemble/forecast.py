@@ -68,7 +68,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
     models: List[ForecasterBase]
     config_class = ForecasterEnsembleConfig
 
-    _default_train_config = EnsembleTrainConfig(valid_frac=0.2)
+    @property
+    def _default_train_config(self):
+        return EnsembleTrainConfig(valid_frac=0.2)
 
     @property
     def require_even_sampling(self) -> bool:

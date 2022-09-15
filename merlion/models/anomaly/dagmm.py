@@ -81,7 +81,6 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     """
 
     config_class = DAGMMConfig
-    _default_train_config = dict()
 
     def __init__(self, config: DAGMMConfig):
         super().__init__(config)
@@ -107,6 +106,10 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
     @property
     def require_univariate(self) -> bool:
         return False
+
+    @property
+    def _default_train_config(self):
+        return dict()
 
     def _build_model(self, dim):
         hidden_size = self.hidden_size + int(dim / 20)

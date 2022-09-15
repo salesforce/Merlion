@@ -158,7 +158,6 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     filename = "model.pkl"
     config_class = Config
-    _default_train_config = None
 
     train_data: Optional[TimeSeries] = None
     """
@@ -205,6 +204,10 @@ class ModelBase(metaclass=AutodocABCMeta):
         Whether to ensure that all univariates in the training data are aligned.
         """
         return True
+
+    @property
+    def _default_train_config(self):
+        return None
 
     def __getstate__(self):
         return {k: copy.deepcopy(v) for k, v in self.__dict__.items()}

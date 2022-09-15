@@ -101,7 +101,6 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
     """
 
     config_class = EnsembleConfig
-    _default_train_config = EnsembleTrainConfig(valid_frac=0.0)
 
     def __init__(self, config: EnsembleConfig = None, models: List[ModelBase] = None):
         """
@@ -131,6 +130,10 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         """
         return self.config.combiner
 
+    @property
+    def _default_train_config(self):
+        return EnsembleTrainConfig(valid_frac=0.0)
+
     def reset(self):
         for model in self.models:
             model.reset()
@@ -142,6 +145,10 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
             return self.combiner.models_used
         else:
             return [True] * len(self.models)
+
+    @property
+    def _pandas_train(self):
+        return False
 
     def train_valid_split(
         self, transformed_train_data: TimeSeries, train_config: EnsembleTrainConfig

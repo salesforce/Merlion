@@ -7,7 +7,6 @@
 """
 Ensembles of anomaly detectors.
 """
-import copy
 import logging
 import traceback
 from typing import List
@@ -83,7 +82,6 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
 
     models: List[DetectorBase]
     config_class = DetectorEnsembleConfig
-    _default_train_config = DetectorEnsembleTrainConfig()
 
     def __init__(self, config: DetectorEnsembleConfig = None, models: List[DetectorBase] = None):
         super().__init__(config=config, models=models)
@@ -107,6 +105,10 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         return dict(metric=TSADMetric.F1, unsup_quantile=None)
 
     @property
+    def _default_train_config(self):
+        return DetectorEnsembleTrainConfig()
+
+    @property
     def per_model_threshold(self):
         """
         :return: whether to apply the threshold rule of each individual model
@@ -114,15 +116,11 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         """
         return self.config.per_model_threshold
 
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        raise NotImplementedError("_train() is not meant to be called for DetectorEnsemble")
-
-    def train(
+    def _train(
         self,
         train_data: TimeSeries,
         train_config: DetectorEnsembleTrainConfig = None,
         anomaly_labels: TimeSeries = None,
-        post_rule_train_config=None,
     ) -> TimeSeries:
         """
         Trains each anomaly detector in the ensemble unsupervised, and each of
@@ -131,13 +129,10 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         :param train_data: a `TimeSeries` of metric values to train the model.
         :param train_config: `DetectorEnsembleTrainConfig` for ensemble training.
         :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
-        :param post_rule_train_config: the post-rule train config to use for the ensemble-level post-rule.
 
         :return: A `TimeSeries` of the ensemble's anomaly scores on the training data.
         """
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        full_train = self.train_pre_process(train_data)
+        full_train = train_data
         train, valid = self.train_valid_split(full_train, train_config)
         if train is not valid:
             logger.warning("Using a train/validation split to train a DetectorEnsemble is not recommended!")
@@ -197,10 +192,6 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
                 all_train_scores.append(train_scores)
             combined = self.combiner(all_train_scores, anomaly_labels)
 
-        # Train the model-level post-rule
-        self.train_post_process(
-            train_result=combined, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
-        )
         return combined
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:

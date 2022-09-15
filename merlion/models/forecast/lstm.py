@@ -248,7 +248,6 @@ class LSTM(ForecasterBase):
     """
 
     config_class = LSTMConfig
-    _default_train_config = LSTMTrainConfig()
 
     def __init__(self, config: LSTMConfig):
         super().__init__(config)
@@ -262,6 +261,10 @@ class LSTM(ForecasterBase):
     @property
     def require_even_sampling(self) -> bool:
         return True
+
+    @property
+    def _default_post_rule_train_config(self):
+        return LSTMTrainConfig()
 
     def _train(self, train_data: pd.DataFrame, train_config: LSTMTrainConfig = None):
         train_data = train_data[self.target_name]

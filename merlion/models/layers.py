@@ -255,6 +255,10 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         if self.model is not None:
             self.model.train_data = train_data
 
+    @property
+    def _default_train_config(self):
+        return self.model._default_train_config
+
     def reset(self):
         self.model.reset()
         self.__init__(config=self.config)
