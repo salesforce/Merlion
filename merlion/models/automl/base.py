@@ -46,10 +46,7 @@ class AutoMLMixIn(LayeredModel, metaclass=AutodocABCMeta):
             self.model = model
             return train_result
         else:
-            model = deepcopy(self.model)
-            model.reset()
-            self.set_theta(model, theta, train_data)
-            self.model = model
+            self.set_theta(self.model, theta, train_data)
             train_data = train_data.to_pd() if self.model._pandas_train else train_data
             exog_data = exog_data.to_pd() if exog_data is not None and self.model._pandas_train else exog_data
             if exog_data is None:
