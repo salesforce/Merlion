@@ -83,7 +83,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
             model.config.invert_transform = True
 
     def train_pre_process(
-        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
     ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         idxs = [model.target_seq_index for model in self.models]
         if any(i is not None for i in idxs):

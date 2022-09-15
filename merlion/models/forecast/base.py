@@ -157,7 +157,7 @@ class ForecasterBase(ModelBase):
         return to_timestamp(resampled).tolist()
 
     def train_pre_process(
-        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
     ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         train_data = super().train_pre_process(train_data)
         if self.dim == 1:
@@ -175,11 +175,12 @@ class ForecasterBase(ModelBase):
         self.target_name = train_data.names[self.target_seq_index]
 
         # Handle exogenous data
+        if return_exog is None:
+            return_exog = exog_data is not None
         if not self.supports_exog:
             if exog_data is not None:
                 exog_data = None
                 logger.warning(f"Exogenous regressors are not supported for model {type(self).__name__}")
-
         if exog_data is not None:
             self.exog_dim = exog_data.dim
             self.config.exog_transform.train(exog_data)

@@ -316,9 +316,9 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         self.model.transform = TransformSequence(transforms)
         return super().train_pre_process(train_data)
 
-    def train(self, train_data: TimeSeries, train_config=None, *args, **kwargs):
+    def train(self, train_data: TimeSeries, train_config=None, **kwargs):
         train_data = self.train_pre_process(train_data)
-        return self.train_model(train_data, train_config=train_config, *args, **kwargs)
+        return self.train_model(train_data, train_config=train_config, **kwargs)
 
 
 class LayeredDetector(LayeredModel, DetectorBase):

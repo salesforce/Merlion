@@ -431,7 +431,9 @@ class BOCPD(ForecastingDetectorBase):
         logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
         return train_scores
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+    def get_anomaly_score(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, exog_data: TimeSeries = None
+    ) -> TimeSeries:
         return DetectorBase.get_anomaly_score(self, time_series, time_series_prev)
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
@@ -439,27 +441,7 @@ class BOCPD(ForecastingDetectorBase):
             self.update(TimeSeries.from_pd(time_series_prev))
         return self.update(TimeSeries.from_pd(time_series)).to_pd()
 
-    def get_figure(
-        self,
-        *,
-        time_series: TimeSeries = None,
-        time_stamps: List[int] = None,
-        time_series_prev: TimeSeries = None,
-        plot_anomaly=True,
-        filter_scores=True,
-        plot_forecast=False,
-        plot_forecast_uncertainty=False,
-        plot_time_series_prev=False,
-    ) -> Figure:
+    def get_figure(self, *, time_series: TimeSeries = None, **kwargs) -> Figure:
         if time_series is not None:
             self.update(self.transform(time_series))
-        return super().get_figure(
-            time_series=time_series,
-            time_stamps=time_stamps,
-            time_series_prev=time_series_prev,
-            plot_anomaly=plot_anomaly,
-            filter_scores=filter_scores,
-            plot_forecast=plot_forecast,
-            plot_forecast_uncertainty=plot_forecast_uncertainty,
-            plot_time_series_prev=plot_time_series_prev,
-        )
+        return super().get_figure(time_series=time_series, **kwargs)
