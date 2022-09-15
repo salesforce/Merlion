@@ -107,9 +107,6 @@ class DefaultDetector(LayeredDetector):
             post_rule_train_config=post_rule_train_config,
         )
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Default model _train() should not be called")
-
 
 class DefaultForecasterConfig(LayeredModelConfig):
     """
@@ -143,9 +140,6 @@ class DefaultForecaster(LayeredForecaster):
     @property
     def granularity(self):
         return self.config.granularity
-
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Default model _train() should not be called")
 
     def train(
         self, train_data: TimeSeries, train_config=None, exog_data=None

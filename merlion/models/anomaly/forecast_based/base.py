@@ -75,12 +75,13 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         if train_config is None:
             train_config = copy.deepcopy(self._default_train_config)
         train_data, exog_data = self.train_pre_process(train_data, exog_data=exog_data, return_exog=True)
+        if self._pandas_train:
+            train_data = train_data.to_pd()
+            exog_data = None if exog_data is None else exog_data.to_pd()
         if exog_data is None:
-            train_result = self._train(train_data.to_pd(), train_config=train_config)
+            train_result = self._train(train_data=train_data, train_config=train_config)
         else:
-            train_result = self._train_with_exog(
-                train_data.to_pd(), train_config=train_config, exog_data=exog_data.to_pd()
-            )
+            train_result = self._train_with_exog(train_data=train_data, train_config=train_config, exog_data=exog_data)
         return self.train_post_process(
             train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )

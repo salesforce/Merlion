@@ -223,6 +223,10 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
         return config
 
     @property
+    def _pandas_train(self):
+        return self.model._pandas_train
+
+    @property
     def require_even_sampling(self) -> bool:
         return False
 
@@ -292,16 +296,16 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             return attr
         return self.__getattribute__(item)
 
-    def train_model(self, train_data, train_config=None, **kwargs):
+    def _train(self, train_data: pd.DataFrame, train_config=None):
         """
         Trains the underlying model. May be overridden, e.g. for AutoML.
 
         :param train_data: the data to train on.
         :param train_config: the train config of the underlying model (optional).
         """
-        return self.model.train(train_data, train_config=train_config, **kwargs)
+        return self.model._train(train_data, train_config=train_config)
 
-    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+    def train_pre_process(self, train_data: TimeSeries, **kwargs) -> TimeSeries:
         # Push the layered model transform to the owned model, but make sure we only resample once.
         has_resample = False
         transforms = []
@@ -314,20 +318,20 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
                 transforms.append(t)
         self.transform = Identity()
         self.model.transform = TransformSequence(transforms)
-        return super().train_pre_process(train_data)
 
-    def train(self, train_data: TimeSeries, train_config=None, **kwargs):
-        train_data = self.train_pre_process(train_data)
-        return self.train_model(train_data, train_config=train_config, **kwargs)
+        # Return the result of calling the underlying model's train_pre_process()
+        train_data = super().train_pre_process(train_data)
+        return self.model.train_pre_process(train_data, **kwargs)
+
+    def train_post_process(self, train_result, **kwargs):
+        # All post_processing is handled by the underlying model
+        return self.model.train_post_process(train_result, **kwargs)
 
 
 class LayeredDetector(LayeredModel, DetectorBase):
     """
     Base class for a layered anomaly detector. Only to be used as a subclass.
     """
-
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Layered model _train() should not be called.")
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
@@ -343,8 +347,8 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
     Base class for a layered forecaster. Only to be used as a subclass.
     """
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Layered model _train() should not be called.")
+    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
+        return self.model._train_with_exog(train_data, train_config=train_config, exog_data=exog_data)
 
     def _forecast(self, time_stamps: List[int], time_series_prev: TimeSeries = None, return_prev=False):
         raise NotImplementedError("Layered model _forecast() should not be called.")
@@ -357,6 +361,3 @@ class LayeredForecastingDetector(LayeredForecaster, LayeredDetector, Forecasting
     """
     Base class for a layered forecasting detector. Only to be used as a subclass.
     """
-
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Layered model _train() should not be called.")

@@ -192,7 +192,8 @@ class DetectorBase(ModelBase):
         :return: A `TimeSeries` of the model's anomaly scores on the training data.
         """
         train_data = self.train_pre_process(train_data)
-        train_result = self._train(train_data=train_data.to_pd(), train_config=train_config)
+        train_data = train_data.to_pd() if self._pandas_train else train_data
+        train_result = self._train(train_data=train_data, train_config=train_config)
         return self.train_post_process(
             train_result=train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )

@@ -265,6 +265,13 @@ class ModelBase(metaclass=AutodocABCMeta):
     def last_train_time(self, last_train_time):
         self._last_train_time = to_pd_datetime(last_train_time)
 
+    @property
+    def _pandas_train(self):
+        """
+        Whether the _train() method requires ``pandas.DataFrame``. If False, we assume it accepts `TimeSeries`.
+        """
+        return True
+
     def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         """
         Applies pre-processing steps common for training most models.

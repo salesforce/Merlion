@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 
 from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.automl.autoprophet import AutoProphet, AutoProphetConfig
 from merlion.models.anomaly.forecast_based.prophet import ProphetDetector, ProphetDetectorConfig
 from merlion.models.forecast.prophet import Prophet, ProphetConfig
 from merlion.utils.resample import to_timestamp
@@ -38,9 +39,9 @@ class TestProphet(unittest.TestCase):
         # assert
         assert output == target
 
-    def test_exog(self):
+    def _test_exog(self, auto: bool):
         print("-" * 80)
-        logger.info("TestProphet.test_exog\n" + "-" * 80)
+        logger.info(f"TestProphet.test_exog{'_auto' if auto else ''}\n" + "-" * 80)
         # Get train, test, and exogenous data
         csv = os.path.join(rootdir, "data", "walmart", "walmart_mini.csv")
         index_cols = ["Store", "Dept"]
@@ -52,10 +53,13 @@ class TestProphet(unittest.TestCase):
 
         # Train model & get prediction
         model = Prophet(ProphetConfig())
-        model.train(train_data=train)
-        pred, _ = model.forecast(time_stamps=test.time_stamps)
         exog_model = ProphetDetector(ProphetDetectorConfig())
+        if auto:
+            model = AutoProphet(model=model)
+            exog_model = AutoProphet(model=exog_model)
+        model.train(train_data=train)
         exog_model.train(train_data=train, exog_data=exog)
+        pred, _ = model.forecast(time_stamps=test.time_stamps)
         exog_pred, _ = exog_model.forecast(time_stamps=test.time_stamps, exog_data=exog)
 
         # Evaluate model
@@ -67,6 +71,12 @@ class TestProphet(unittest.TestCase):
         # Test that exog model can also get anomaly scores
         anomaly_labels = exog_model.get_anomaly_label(test, exog_data=exog).to_pd()
         logger.info(f"Alarms detected (anomaly detection): {anomaly_labels.sum().sum().item()}")
+
+    def test_exog(self):
+        self._test_exog(auto=False)
+
+    def test_exog_auto(self):
+        self._test_exog(auto=True)
 
 
 if __name__ == "__main__":

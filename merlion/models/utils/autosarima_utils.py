@@ -88,7 +88,7 @@ def _root_test(model_fit, ic):
     return ic
 
 
-def _fit_sarima_model(y, X, order, seasonal_order, trend, method, maxiter, information_criterion, **kwargs):
+def _fit_sarima_model(y, order, seasonal_order, trend, method, maxiter, information_criterion, exog=None, **kwargs):
     """
     Train a sarima model with the given time-series and hyperparamteres tuple.
     Return the trained model, training time and information criterion
@@ -97,7 +97,13 @@ def _fit_sarima_model(y, X, order, seasonal_order, trend, method, maxiter, infor
     ic = np.inf
     model_fit = None
     model_spec = sm.tsa.SARIMAX(
-        endog=y, exog=X, order=order, seasonal_order=seasonal_order, trend=trend, validate_specification=False, **kwargs
+        endog=y,
+        exog=exog,
+        order=order,
+        seasonal_order=seasonal_order,
+        trend=trend,
+        validate_specification=False,
+        **kwargs,
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -163,7 +169,7 @@ def _refit_sarima_model(model_fitted, approx_ic, method, inititer, maxiter, info
     return best_fit
 
 
-def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **kwargs):
+def detect_maxiter_sarima_model(y, d, D, m, method, information_criterion, exog=None, **kwargs):
     """
     run a zero model with SARIMA(2; d; 2)(1; D; 1) / ARIMA(2; d; 2) determine the optimal maxiter
     """
@@ -180,7 +186,7 @@ def detect_maxiter_sarima_model(y, X, d, D, m, method, information_criterion, **
     maxiter = 10
     ic = np.inf
     model_spec = sm.tsa.SARIMAX(
-        endog=y, exog=X, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False
+        endog=y, exog=exog, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -332,7 +338,6 @@ class _StepwiseFitWrapper:
     def __init__(
         self,
         y,
-        X,
         p,
         d,
         q,
@@ -351,12 +356,13 @@ class _StepwiseFitWrapper:
         relative_improve,
         max_k,
         max_dur,
+        exog=None,
         **kwargs,
     ):
         self._fit_arima = functools.partial(
             _fit_sarima_model,
             y=y,
-            X=X,
+            exog=exog,
             method=method,
             maxiter=maxiter,
             information_criterion=information_criterion,

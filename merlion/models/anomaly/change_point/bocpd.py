@@ -152,6 +152,10 @@ class BOCPD(ForecastingDetectorBase):
         self.pw_model: List[Tuple[pd.Timestamp, ConjPrior]] = []
 
     @property
+    def _pandas_train(self):
+        return False
+
+    @property
     def _online_model(self) -> bool:
         return True
 
@@ -409,10 +413,10 @@ class BOCPD(ForecastingDetectorBase):
         # Return the anomaly scores
         return self._get_anom_scores(time_stamps)
 
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+    def _train(self, train_data: TimeSeries, train_config=None) -> TimeSeries:
         # If not automatically detecting the change kind, train as normal
         if self.change_kind is not ChangeKind.Auto:
-            return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
+            return self.update(time_series=train_data)
 
         # Otherwise, evaluate all change kinds as options
         candidates = []
