@@ -131,7 +131,6 @@ def _refit_sarima_model(model_fitted, approx_ic, method, inititer, maxiter, info
     Return the trained model
     """
     start = time.time()
-    fit_time = np.nan
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         best_fit = model_fitted

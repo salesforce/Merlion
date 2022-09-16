@@ -19,18 +19,14 @@ import pandas as pd
 from merlion.models.base import Config, ModelBase
 from merlion.models.factory import ModelFactory
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
-from merlion.models.forecast.base import (
-    ForecasterBase,
-    ForecasterWithExogBase,
-    ForecasterConfig,
-    ForecasterWithExogConfig,
-)
+from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+from merlion.models.forecast.base import ForecasterWithExogBase, ForecasterWithExogConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
 from merlion.transform.sequence import TransformSequence
 from merlion.utils import TimeSeries
-from merlion.utils.misc import AutodocABCMeta
+from merlion.utils.misc import AutodocABCMeta, call_with_accepted_kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -312,14 +308,14 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
             return attr
         return self.__getattribute__(item)
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
+    def _train(self, train_data: pd.DataFrame, train_config=None, **kwargs):
         """
         Trains the underlying model. May be overridden, e.g. for AutoML.
 
         :param train_data: the data to train on.
         :param train_config: the train config of the underlying model (optional).
         """
-        return self.model._train(train_data, train_config=train_config)
+        return call_with_accepted_kwargs(self.model._train, train_data=train_data, train_config=train_config, **kwargs)
 
     def train_pre_process(self, train_data: TimeSeries, **kwargs) -> TimeSeries:
         # Push the layered model transform to the owned model, but make sure we only resample once.
@@ -337,11 +333,11 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
 
         # Return the result of calling the underlying model's train_pre_process()
         train_data = super().train_pre_process(train_data)
-        return self.model.train_pre_process(train_data, **kwargs)
+        return call_with_accepted_kwargs(self.model.train_pre_process, train_data=train_data, **kwargs)
 
     def train_post_process(self, train_result, **kwargs):
         # All post_processing is handled by the underlying model
-        return self.model.train_post_process(train_result, **kwargs)
+        return call_with_accepted_kwargs(self.model.train_post_process, train_result=train_result, **kwargs)
 
 
 class LayeredDetector(LayeredModel, DetectorBase):
@@ -352,10 +348,9 @@ class LayeredDetector(LayeredModel, DetectorBase):
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         raise NotImplementedError("Layered model _get_anomaly_score() should not be called.")
 
-    def get_anomaly_score(
-        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, *args, **kwargs
-    ) -> TimeSeries:
-        return self.model.get_anomaly_score(time_series, time_series_prev, *args, **kwargs)
+    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None, **kwargs) -> TimeSeries:
+        kwargs.update(time_series=time_series, time_series_prev=time_series_prev)
+        return call_with_accepted_kwargs(self.model.get_anomaly_score, **kwargs)
 
 
 class LayeredForecaster(LayeredModel, ForecasterBase):
@@ -363,14 +358,16 @@ class LayeredForecaster(LayeredModel, ForecasterBase):
     Base class for a layered forecaster. Only to be used as a subclass.
     """
 
-    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None):
-        return self.model._train_with_exog(train_data, train_config=train_config, exog_data=exog_data)
+    def _train_with_exog(self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None, **kwargs):
+        kwargs.update(train_data=train_data, train_config=train_config, exog_data=exog_data)
+        return call_with_accepted_kwargs(self.model._train_with_exog, **kwargs)
 
     def _forecast(self, time_stamps: List[int], time_series_prev: TimeSeries = None, return_prev=False):
         raise NotImplementedError("Layered model _forecast() should not be called.")
 
-    def forecast(self, time_stamps, time_series_prev: TimeSeries = None, *args, **kwargs):
-        return self.model.forecast(time_stamps, time_series_prev, *args, **kwargs)
+    def forecast(self, time_stamps, time_series_prev: TimeSeries = None, **kwargs):
+        kwargs.update(time_stamps=time_stamps, time_series_prev=time_series_prev)
+        return call_with_accepted_kwargs(self.model.forecast, **kwargs)
 
 
 class LayeredForecastingDetector(LayeredForecaster, LayeredDetector, ForecastingDetectorBase):
