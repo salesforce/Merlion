@@ -96,17 +96,17 @@ def _fit_sarima_model(y, order, seasonal_order, trend, method, maxiter, informat
     start = time.time()
     ic = np.inf
     model_fit = None
-    model_spec = sm.tsa.SARIMAX(
-        endog=y,
-        exog=exog,
-        order=order,
-        seasonal_order=seasonal_order,
-        trend=trend,
-        validate_specification=False,
-        **kwargs,
-    )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
+        model_spec = sm.tsa.SARIMAX(
+            endog=y,
+            exog=exog,
+            order=order,
+            seasonal_order=seasonal_order,
+            trend=trend,
+            validate_specification=False,
+            **kwargs,
+        )
         try:
             model_fit = model_spec.fit(method=method, maxiter=maxiter, disp=0)
         except (LinAlgError, ValueError) as v:

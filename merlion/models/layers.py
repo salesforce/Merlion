@@ -19,7 +19,12 @@ import pandas as pd
 from merlion.models.base import Config, ModelBase
 from merlion.models.factory import ModelFactory
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
-from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+from merlion.models.forecast.base import (
+    ForecasterBase,
+    ForecasterWithExogBase,
+    ForecasterConfig,
+    ForecasterWithExogConfig,
+)
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
@@ -31,6 +36,16 @@ logger = logging.getLogger(__name__)
 
 _DETECTOR_MEMBERS = dict(inspect.getmembers(DetectorConfig)).keys()
 _FORECASTER_MEMBERS = dict(inspect.getmembers(ForecasterConfig)).keys()
+_FORECASTER_EXOG_MEMBERS = dict(inspect.getmembers(ForecasterWithExogConfig)).keys()
+
+
+def _is_detector_attr(base_model, attr):
+    return isinstance(base_model, DetectorBase) and attr in _DETECTOR_MEMBERS
+
+
+def _is_forecaster_attr(base_model, attr):
+    is_member = isinstance(base_model, ForecasterBase) and attr in _FORECASTER_MEMBERS
+    return is_member or (isinstance(base_model, ForecasterWithExogBase) and attr in _FORECASTER_EXOG_MEMBERS)
 
 
 class LayeredModelConfig(Config):
@@ -95,7 +110,8 @@ class LayeredModelConfig(Config):
     def from_dict(cls, config_dict: Dict[str, Any], return_unused_kwargs=False, dim=None, **kwargs):
         config, kwargs = super().from_dict(config_dict=config_dict, return_unused_kwargs=True, dim=dim, **kwargs)
         if config.model is None:
-            used = {k: v for k, v in kwargs.items() if k in _DETECTOR_MEMBERS or k in _FORECASTER_MEMBERS}
+            base_class_members = set(_DETECTOR_MEMBERS).union(_FORECASTER_MEMBERS).union(_FORECASTER_EXOG_MEMBERS)
+            used = {k: v for k, v in kwargs.items() if k in base_class_members}
             config.model_kwargs.update(used)
             kwargs = {k: v for k, v in kwargs.items() if k not in used}
 
@@ -119,9 +135,7 @@ class LayeredModelConfig(Config):
         if item in ["model", "base_model"]:
             return super().__getattribute__(item)
         base_model = self.base_model
-        is_detector_attr = isinstance(base_model, DetectorBase) and item in _DETECTOR_MEMBERS
-        is_forecaster_attr = isinstance(base_model, ForecasterBase) and item in _FORECASTER_MEMBERS
-        if is_detector_attr or is_forecaster_attr:
+        if _is_detector_attr(base_model, item) or _is_forecaster_attr(base_model, item):
             return getattr(base_model.config, item)
         elif base_model is None and item in self.model_kwargs:
             return self.model_kwargs.get(item)
@@ -129,10 +143,8 @@ class LayeredModelConfig(Config):
 
     def __setattr__(self, key, value):
         if hasattr(self, "model") and hasattr(self.model, "config"):
-            base_model = self.base_model
-            is_detector_attr = isinstance(base_model, DetectorBase) and key in _DETECTOR_MEMBERS
-            is_forecaster_attr = isinstance(base_model, ForecasterBase) and key in _FORECASTER_MEMBERS
-            if key not in _LAYERED_MEMBERS and (is_detector_attr or is_forecaster_attr):
+            base = self.base_model
+            if key not in _LAYERED_MEMBERS and (_is_detector_attr(base, key) or _is_forecaster_attr(base, key)):
                 return setattr(self.model.config, key, value)
         return super().__setattr__(key, value)
 

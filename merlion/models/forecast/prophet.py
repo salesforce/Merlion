@@ -112,7 +112,7 @@ class ProphetConfig(ForecasterWithExogConfig):
         self.holidays = holidays
 
 
-class Prophet(SeasonalityModel, ForecasterWithExogBase):
+class Prophet(ForecasterWithExogBase, SeasonalityModel):
     """
     Facebook's model for time series forecasting. See docs for `ProphetConfig`
     and `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__ for more details.
