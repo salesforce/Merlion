@@ -10,12 +10,14 @@ import sys
 import unittest
 
 from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.factory import ModelFactory
 from merlion.models.automl.autoprophet import AutoProphet, AutoProphetConfig
 from merlion.models.automl.autosarima import AutoSarima, AutoSarimaConfig
 from merlion.models.forecast.arima import Arima, ArimaConfig
+from merlion.models.forecast.ets import ETS, ETSConfig
 from merlion.models.forecast.prophet import Prophet, ProphetConfig
 from merlion.models.ensemble.combine import ModelSelector
-from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
+from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig, EnsembleTrainConfig
 from merlion.utils.time_series import TimeSeries
 from ts_datasets.forecast import CustomDataset
 
@@ -45,15 +47,15 @@ class TestExog(unittest.TestCase):
         if automl:
             models = [AutoProphet(AutoProphetConfig()), AutoSarima(AutoSarimaConfig(maxiter=10))]
         else:
-            models = [Prophet(ProphetConfig()), Arima(ArimaConfig(order=(4, 1, 2)))]
+            models = [Prophet(ProphetConfig()), Arima(ArimaConfig(order=(4, 1, 2))), ETS(ETSConfig())]
 
         for ex in [None, exog]:
             # Train models & get prediction
             logger.info("With exogenous data..." if ex is not None else "No exogenous data...")
             model = ForecasterEnsemble(
-                config=ForecasterEnsembleConfig(combiner=ModelSelector(metric=ForecastMetric.RMSE), models=models)
+                config=ForecasterEnsembleConfig(combiner=ModelSelector(metric=ForecastMetric.sMAPE), models=models)
             )
-            model.train(train_data=train, exog_data=ex)
+            model.train(train_data=train, train_config=EnsembleTrainConfig(valid_frac=0.5), exog_data=ex)
             val_results = [(type(m).__name__, v) for m, v in zip(model.models, model.combiner.metric_values)]
             logger.info(f"Validation {model.combiner.metric.name}: {', '.join(f'{m}={v:.2f}' for m, v in val_results)}")
             pred, _ = model.forecast(time_stamps=test.time_stamps, exog_data=ex)
@@ -61,6 +63,13 @@ class TestExog(unittest.TestCase):
             # Evaluate model
             smape = ForecastMetric.sMAPE.value(test, pred)
             logger.info(f"Ensemble test sMAPE = {smape:.2f}\n")
+
+            # Test save/load
+            name = ("automl" if automl else "base") + "_" + ("no_exog" if ex is None else "exog")
+            model.save(os.path.join(rootdir, "tmp", "exog", name))
+            loaded_model = ModelFactory.load("ForecasterEnsemble", os.path.join(rootdir, "tmp", "exog", name))
+            loaded_pred, _ = loaded_model.forecast(time_stamps=test.time_stamps, exog_data=ex)
+            self.assertListEqual(list(pred), list(loaded_pred))
 
 
 if __name__ == "__main__":
