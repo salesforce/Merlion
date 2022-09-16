@@ -104,11 +104,9 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
         return super().train_combiner(all_model_outs, target, target_seq_index=self.target_seq_index, **kwargs)
 
     def _train_with_exog(
-        self, train_data: pd.DataFrame, train_config: EnsembleTrainConfig = None, exog_data: pd.DataFrame = None
+        self, train_data: TimeSeries, train_config: EnsembleTrainConfig = None, exog_data: TimeSeries = None
     ) -> Tuple[Optional[TimeSeries], None]:
-        exog_data = TimeSeries.from_pd(exog_data)
-        full_train = TimeSeries.from_pd(train_data)
-        train, valid = self.train_valid_split(full_train, train_config)
+        train, valid = self.train_valid_split(train_data, train_config)
 
         per_model_train_configs = train_config.per_model_train_configs
         if per_model_train_configs is None:
@@ -171,7 +169,7 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
             model.reset()
             if used:
                 logger.info(f"Re-training model {i+1}/{len(self.models)} ({type(model).__name__}) on full data...")
-                pred, err = model.train(full_train, train_config=cfg, exog_data=exog_data)
+                pred, err = model.train(train_data, train_config=cfg, exog_data=exog_data)
             else:
                 pred, err = None, None
             full_preds.append(pred)

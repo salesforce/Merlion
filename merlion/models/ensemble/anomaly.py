@@ -132,8 +132,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
 
         :return: A `TimeSeries` of the ensemble's anomaly scores on the training data.
         """
-        full_train = train_data
-        train, valid = self.train_valid_split(full_train, train_config)
+        train, valid = self.train_valid_split(train_data, train_config)
         if train is not valid:
             logger.warning("Using a train/validation split to train a DetectorEnsemble is not recommended!")
 
@@ -184,7 +183,7 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
                 model.reset()
                 if used:
                     train_scores = model.train(
-                        train_data=full_train, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
+                        train_data=train_data, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
                     )
                     train_scores = model.post_rule(train_scores)
                 else:
