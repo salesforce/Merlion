@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
     - uses: actions/checkout@v2
@@ -40,15 +40,8 @@ jobs:
         script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
         source_modules=$(python -c "$script")
 
-        # A BLAS bug causes high-dim multivar Bayesian LR test to segfault in 3.6. Run the test first to avoid.
-        if [[ $PYTHON_VERSION == 3.6 ]]; then
-          python -m pytest -v tests/change_point/test_conj_prior.py
-          coverage run --source=${source_modules} -L -m pytest -v --ignore tests/change_point/test_conj_prior.py
-        else
-          coverage run --source=${source_modules} -L -m pytest -v
-        fi
-
-        # Obtain code coverage from coverage report
+        # Run tests & obtain code coverage from coverage report
+        coverage run --source=${source_modules} -L -m pytest -v
         coverage report
         coverage xml -o .github/badges/coverage.xml
         COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
@@ -68,11 +61,9 @@ jobs:
           COLOR=red
         fi
         echo "##[set-output name=color;]${COLOR}"
-      env:
-        PYTHON_VERSION: ${{ matrix.python-version }}
 
     - name: Create coverage badge
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' }}
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}
       uses: emibcn/badge-action@v1.2.1
       with:
         label: coverage
@@ -81,8 +72,8 @@ jobs:
         path: .github/badges/coverage.svg
 
     - name: Push badge to badges branch
-      uses: s0/git-publish-subdir-action@develop
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' }}
+      uses: s0/git-publish-subdir-action@v2.5.1
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}
       env:
         REPO: self
         BRANCH: badges
