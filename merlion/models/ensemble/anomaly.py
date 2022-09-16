@@ -13,7 +13,7 @@ from typing import List
 
 import pandas as pd
 
-from merlion.evaluate.anomaly import TSADMetric
+from merlion.evaluate.anomaly import TSADMetric, TSADEvaluator, TSADEvaluatorConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
@@ -133,65 +133,64 @@ class DetectorEnsemble(EnsembleBase, DetectorBase):
         :return: A `TimeSeries` of the ensemble's anomaly scores on the training data.
         """
         train, valid = self.train_valid_split(train_data, train_config)
-        if train is not valid:
+        if valid is not None:
             logger.warning("Using a train/validation split to train a DetectorEnsemble is not recommended!")
 
-        per_model_train_configs = train_config.per_model_train_configs
-        if per_model_train_configs is None:
-            per_model_train_configs = [None] * len(self.models)
-        assert len(per_model_train_configs) == len(self.models), (
-            f"You must provide the same number of per-model train configs "
-            f"as models, but received received {len(per_model_train_configs)} "
-            f"train configs for an ensemble with {len(self.models)} models"
+        train_cfgs = train_config.per_model_train_configs
+        if train_cfgs is None:
+            train_cfgs = [None] * len(self.models)
+        assert len(train_cfgs) == len(self.models), (
+            f"You must provide the same number of per-model train configs as models, but received received"
+            f"{len(train_cfgs)} train configs for an ensemble with {len(self.models)} models."
         )
 
-        # Train each model individually, with its own post-rule train config
-        per_model_pr_cfgs = train_config.per_model_post_rule_train_configs
-        if per_model_pr_cfgs is None:
-            per_model_pr_cfgs = [None] * len(self.models)
-        assert len(per_model_pr_cfgs) == len(self.models), (
+        pr_cfgs = train_config.per_model_post_rule_train_configs
+        if pr_cfgs is None:
+            pr_cfgs = [None] * len(self.models)
+        assert len(pr_cfgs) == len(self.models), (
             f"You must provide the same number of per-model post-rule train configs as models, but received "
-            f"{len(per_model_pr_cfgs)} post-rule train configs for an ensemble with {len(self.models)} models."
+            f"{len(pr_cfgs)} post-rule train configs for an ensemble with {len(self.models)} models."
         )
-        all_train_scores = []
-        for i, (model, cfg, pr_cfg) in enumerate(zip(self.models, per_model_train_configs, per_model_pr_cfgs)):
+
+        # Train each model individually, with its own train config & post-rule train config
+        all_scores = []
+        eval_cfg = TSADEvaluatorConfig(retrain_freq=None, cadence=self.get_max_common_horizon(train))
+        # TODO: parallelize me
+        for i, (model, cfg, pr_cfg) in enumerate(zip(self.models, train_cfgs, pr_cfgs)):
             try:
-                train_scores = model.train(
-                    train_data=train, train_config=cfg, anomaly_labels=anomaly_labels, post_rule_train_config=pr_cfg
+                train_kwargs = dict(train_config=cfg, anomaly_labels=anomaly_labels, post_rule_train_config=pr_cfg)
+                train_scores, valid_scores = TSADEvaluator(model=model, config=eval_cfg).get_predict(
+                    train_vals=train, test_vals=valid, train_kwargs=train_kwargs, post_process=True
                 )
-                train_scores = model.post_rule(train_scores)
+                scores = train_scores if valid is None else valid_scores
             except Exception:
                 logger.warning(
                     f"Caught an exception while training model {i + 1}/{len(self.models)} ({type(model).__name__}). "
                     f"Model will not be used. {traceback.format_exc()}"
                 )
                 self.combiner.set_model_used(i, False)
+                scores = None
+            all_scores.append(scores)
+
+        # Train combiner on train data if there is no validation data
+        if valid is None:
+            return self.train_combiner(all_scores, anomaly_labels)
+
+        # Otherwise, train the combiner on the validation data, and re-train the models on the full data
+        self.train_combiner(all_scores, anomaly_labels.bisect(t=valid.time_stamps[0], t_in_left=False)[1])
+        all_scores = []
+        # TODO: parallelize me
+        for i, (model, cfg, pr_cfg, used) in enumerate(zip(self.models, train_cfgs, pr_cfgs, self.models_used)):
+            model.reset()
+            if used:
+                logger.info(f"Re-training model {i+1}/{len(self.models)} ({type(model).__name__}) on full data...")
+                train_kwargs = dict(train_config=cfg, anomaly_labels=anomaly_labels, post_rule_train_config=pr_cfg)
+                train_scores = model.train(train_data, **train_kwargs)
+                train_scores = model.post_rule(train_scores)
+            else:
                 train_scores = None
-            all_train_scores.append(train_scores)
-
-        # Train combiner on validation data if there is any, otherwise use train data
-        if train is valid:
-            combined = self.train_combiner(all_train_scores, anomaly_labels)
-        else:
-            valid = self.truncate_valid_data(valid)
-            all_valid_scores = [m.get_anomaly_label(valid) for m in self.models]
-            self.train_combiner(all_valid_scores, anomaly_labels)
-
-            # Re-train models on the full data if validation data was distinct from train data
-            all_train_scores = []
-            for model, cfg, used in zip(self.models, per_model_pr_cfgs, self.models_used):
-                model.reset()
-                if used:
-                    train_scores = model.train(
-                        train_data=train_data, anomaly_labels=anomaly_labels, post_rule_train_config=cfg
-                    )
-                    train_scores = model.post_rule(train_scores)
-                else:
-                    train_scores = None
-                all_train_scores.append(train_scores)
-            combined = self.combiner(all_train_scores, anomaly_labels)
-
-        return combined
+            all_scores.append(train_scores)
+        return self.combiner(all_scores, anomaly_labels)
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         time_series, time_series_prev = TimeSeries.from_pd(time_series), TimeSeries.from_pd(time_series_prev)

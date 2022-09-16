@@ -16,8 +16,8 @@ import numpy as np
 import pandas as pd
 
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
-from merlion.models.forecast.base import ForecasterWithExogBase
 from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.misc import call_with_accepted_kwargs
 
 
 def scaled_sigmoid(x, scale=2.5):
@@ -395,10 +395,8 @@ class TSADEvaluator(EvaluatorBase):
     def _call_model(
         self, time_series: TimeSeries, time_series_prev: TimeSeries, exog_data: TimeSeries = None
     ) -> TimeSeries:
-        kwargs = dict(time_series=time_series, time_series_prev=time_series_prev)
-        if isinstance(self.model, ForecasterWithExogBase):
-            kwargs.update(exog_data=exog_data)
-        return self.model.get_anomaly_score(**kwargs)
+        kwargs = dict(time_series=time_series, time_series_prev=time_series_prev, exog_data=exog_data)
+        return call_with_accepted_kwargs(self.model.get_anomaly_score, **kwargs)
 
     def default_retrain_kwargs(self) -> dict:
         from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleTrainConfig
@@ -451,7 +449,7 @@ class TSADEvaluator(EvaluatorBase):
         )
         if post_process:
             train_result = self.model.post_rule(train_result)
-            result = self.model.post_rule(result)
+            result = None if result is None else self.model.post_rule(result)
         return train_result, result
 
     def evaluate(

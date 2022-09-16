@@ -119,12 +119,17 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
 
         # Train individual models on the training data
         preds, errs = [], []
+        eval_cfg = ForecastEvaluatorConfig(retrain_freq=None, horizon=self.get_max_common_horizon(train))
+        # TODO: parallelize me
         for i, (model, cfg) in enumerate(zip(self.models, per_model_train_configs)):
-            logger.info(f"Training model {i+1}/{len(self.models)} ({type(model).__name__})...")
+            logger.info(f"Training & evaluating model {i+1}/{len(self.models)} ({type(model).__name__})...")
             try:
-                pred, err = model.train(train, train_config=cfg, exog_data=exog_data)
-                preds.append(pred)
-                errs.append(err)
+                train_kwargs = dict(train_config=cfg)
+                (train_pred, train_err), pred = ForecastEvaluator(model=model, config=eval_cfg).get_predict(
+                    train_vals=train, test_vals=valid, exog_data=exog_data, train_kwargs=train_kwargs
+                )
+                preds.append(train_pred if valid is None else pred)
+                errs.append(train_err if valid is None else None)
             except Exception:
                 logger.warning(
                     f"Caught an exception while training model {i+1}/{len(self.models)} ({type(model).__name__}). "
@@ -134,37 +139,16 @@ class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
                 preds.append(None)
                 errs.append(None)
 
-        # Train the combiner on the validation data
-        if train is valid:
-            combined = self.train_combiner(preds, train)
-        else:
-            logger.info("Evaluating validation performance...")
-            h = self.get_max_common_horizon()
-            preds = []
-            for i, model in enumerate(self.models):
-                pred = None
-                try:
-                    if self.combiner.get_model_used(i):
-                        eval_cfg = ForecastEvaluatorConfig(retrain_freq=None, horizon=h)
-                        _, pred = ForecastEvaluator(model=model, config=eval_cfg).get_predict(
-                            train_vals=train, test_vals=valid, exog_data=exog_data, pretrained=True
-                        )
-                except Exception:
-                    logger.warning(
-                        f"Caught an exception while evaluating model {i + 1}/{len(self.models)} "
-                        f"({type(model).__name__}). Model will not be used. {traceback.format_exc()}"
-                    )
-                    self.combiner.set_model_used(i, False)
-                preds.append(pred)
-            combined = self.train_combiner(preds, valid)
-
-        # No need to re-train if we didn't use a validation split
-        if train is valid:
+        # Train the combiner on the train data if we didn't use validation data.
+        if valid is None:
+            pred = self.train_combiner(preds, train)
             err = None if any(e is None for e in errs) else self.combiner(errs, None)
-            return combined, err
+            return pred, err
 
-        # Re-train on the full data if we used a validation split
+        # Otherwise, train the combiner on the validation data, and re-train the models on the full data
+        self.train_combiner(preds, valid)
         full_preds, full_errs = [], []
+        # TODO: parallelize me
         for i, (model, used, cfg) in enumerate(zip(self.models, self.models_used, per_model_train_configs)):
             model.reset()
             if used:
