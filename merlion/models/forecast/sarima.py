@@ -17,14 +17,14 @@ import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA as sm_Sarima
 
 from merlion.models.automl.seasonality import SeasonalityModel
-from merlion.models.forecast.base import ForecasterWithExogBase, ForecasterWithExogConfig
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.transform.resample import TemporalResample
 from merlion.utils.time_series import UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
 
 
-class SarimaConfig(ForecasterWithExogConfig):
+class SarimaConfig(ForecasterExogConfig):
     """
     Config class for `Sarima` (Seasonal AutoRegressive Integrated Moving Average).
     """
@@ -46,7 +46,7 @@ class SarimaConfig(ForecasterWithExogConfig):
         self.seasonal_order = seasonal_order
 
 
-class Sarima(ForecasterWithExogBase, SeasonalityModel):
+class Sarima(ForecasterExogBase, SeasonalityModel):
     """
     Implementation of the classic statistical model SARIMA (Seasonal
     AutoRegressive Integrated Moving Average) for forecasting.

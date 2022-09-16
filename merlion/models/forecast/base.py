@@ -70,7 +70,7 @@ class ForecasterBase(ModelBase):
 
     def __init__(self, config: ForecasterConfig):
         if self.supports_exog:
-            assert isinstance(config, ForecasterWithExogConfig)
+            assert isinstance(config, ForecasterExogConfig)
         super().__init__(config)
         self.target_name = None
         self.exog_dim = None
@@ -200,7 +200,7 @@ class ForecasterBase(ModelBase):
         :param train_config: Additional training configs, if needed. Only required for some models.
         :param exog_data: A time series of exogenous variables, sampled at the same time stamps as ``train_data``.
             Exogenous variables are known a priori, and they are independent of the variable being forecasted.
-            Only supported for models which inherit from `ForecasterWithExogBase`.
+            Only supported for models which inherit from `ForecasterExogBase`.
 
         :return: the model's prediction on ``train_data``, in the same format as
             if you called `ForecasterBase.forecast` on the time stamps of ``train_data``
@@ -268,7 +268,7 @@ class ForecasterBase(ModelBase):
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param return_iqr: whether to return the inter-quartile range for the forecast.
             Only supported for models which return error bars.
         :param return_prev: whether to return the forecast for ``time_series_prev`` (and its stderr or IQR if relevant),
@@ -476,7 +476,7 @@ class ForecasterBase(ModelBase):
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
             values. Not supported for all  models.
         :param plot_time_series_prev: whether to plot ``time_series_prev`` (and  the model's fit for it).
@@ -571,7 +571,7 @@ class ForecasterBase(ModelBase):
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
             values. Not supported for all models.
         :param plot_time_series_prev: whether to plot ``time_series_prev`` (and the model's fit for it). Only used if
@@ -617,7 +617,7 @@ class ForecasterBase(ModelBase):
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the
             inter-quartile range) for forecast values. Not supported for all
             models.
@@ -637,7 +637,7 @@ class ForecasterBase(ModelBase):
         return fig.plot_plotly(title=title, metric_name=self.target_name, figsize=figsize)
 
 
-class ForecasterWithExogConfig(ForecasterConfig):
+class ForecasterExogConfig(ForecasterConfig):
     _default_exog_transform = Identity()
     exog_transform: TransformBase = None
 
@@ -692,7 +692,7 @@ class ForecasterWithExogConfig(ForecasterConfig):
         self._exog_missing_value_policy = mv
 
 
-class ForecasterWithExogBase(ForecasterBase):
+class ForecasterExogBase(ForecasterBase):
     """
     Base class for a forecaster model which supports exogenous variables. Exogenous variables are known a priori, and
     they are independent of the variable being forecasted.

@@ -19,8 +19,7 @@ import pandas as pd
 from merlion.models.base import Config, ModelBase
 from merlion.models.factory import ModelFactory
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
-from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
-from merlion.models.forecast.base import ForecasterWithExogBase, ForecasterWithExogConfig
+from merlion.models.forecast.base import ForecasterBase, ForecasterConfig, ForecasterExogBase, ForecasterExogConfig
 from merlion.models.anomaly.forecast_based.base import ForecastingDetectorBase
 from merlion.transform.base import Identity
 from merlion.transform.resample import TemporalResample
@@ -32,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 _DETECTOR_MEMBERS = dict(inspect.getmembers(DetectorConfig)).keys()
 _FORECASTER_MEMBERS = dict(inspect.getmembers(ForecasterConfig)).keys()
-_FORECASTER_EXOG_MEMBERS = dict(inspect.getmembers(ForecasterWithExogConfig)).keys()
+_FORECASTER_EXOG_MEMBERS = dict(inspect.getmembers(ForecasterExogConfig)).keys()
 
 
 def _is_detector_attr(base_model, attr):
@@ -41,7 +40,7 @@ def _is_detector_attr(base_model, attr):
 
 def _is_forecaster_attr(base_model, attr):
     is_member = isinstance(base_model, ForecasterBase) and attr in _FORECASTER_MEMBERS
-    return is_member or (isinstance(base_model, ForecasterWithExogBase) and attr in _FORECASTER_EXOG_MEMBERS)
+    return is_member or (isinstance(base_model, ForecasterExogBase) and attr in _FORECASTER_EXOG_MEMBERS)
 
 
 class LayeredModelConfig(Config):

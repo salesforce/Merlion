@@ -19,7 +19,7 @@ import prophet
 import prophet.serialize
 
 from merlion.models.automl.seasonality import SeasonalityModel
-from merlion.models.forecast.base import ForecasterWithExogBase, ForecasterWithExogConfig
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class _suppress_stdout_stderr(object):
             os.close(fd)
 
 
-class ProphetConfig(ForecasterWithExogConfig):
+class ProphetConfig(ForecasterExogConfig):
     """
     Configuration class for Facebook's `Prophet` model, as described by
     `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__.
@@ -112,7 +112,7 @@ class ProphetConfig(ForecasterWithExogConfig):
         self.holidays = holidays
 
 
-class Prophet(ForecasterWithExogBase, SeasonalityModel):
+class Prophet(ForecasterExogBase, SeasonalityModel):
     """
     Facebook's model for time series forecasting. See docs for `ProphetConfig`
     and `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__ for more details.

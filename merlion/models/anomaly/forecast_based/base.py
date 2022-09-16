@@ -150,7 +150,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param plot_anomaly: Whether to plot the model's predicted anomaly scores.
         :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
         :param plot_forecast: Whether to plot the model's forecasted values.
@@ -213,7 +213,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
         :param plot_forecast: Whether to plot the model's forecast, in addition to the anomaly scores.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast
@@ -267,7 +267,7 @@ class ForecastingDetectorBase(ForecasterBase, DetectorBase, metaclass=AutodocABC
         :param exog_data: A time series of exogenous variables. Exogenous variables are known a priori, and they are
             independent of the variable being forecasted. ``exog_data`` must include data for all of ``time_stamps``;
             if ``time_series_prev`` is given, it must include data for all of ``time_series_prev.time_stamps`` as well.
-            Optional. Only supported for models which inherit from `ForecasterWithExogBase`.
+            Optional. Only supported for models which inherit from `ForecasterExogBase`.
         :param filter_scores: whether to filter the anomaly scores by the post-rule before plotting them.
         :param plot_forecast: Whether to plot the model's forecast, in addition to the anomaly scores.
         :param plot_forecast_uncertainty: whether to plot uncertainty estimates (the inter-quartile range) for forecast

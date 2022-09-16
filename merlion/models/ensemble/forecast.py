@@ -14,13 +14,13 @@ import pandas as pd
 from merlion.evaluate.forecast import ForecastEvaluator, ForecastEvaluatorConfig
 from merlion.models.ensemble.base import EnsembleConfig, EnsembleTrainConfig, EnsembleBase
 from merlion.models.ensemble.combine import Mean
-from merlion.models.forecast.base import ForecasterBase, ForecasterWithExogConfig, ForecasterWithExogBase
+from merlion.models.forecast.base import ForecasterBase, ForecasterExogConfig, ForecasterExogBase
 from merlion.utils.time_series import TimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class ForecasterEnsembleConfig(ForecasterWithExogConfig, EnsembleConfig):
+class ForecasterEnsembleConfig(ForecasterExogConfig, EnsembleConfig):
     """
     Config class for an ensemble of forecasters.
     """
@@ -60,7 +60,7 @@ class ForecasterEnsembleConfig(ForecasterWithExogConfig, EnsembleConfig):
         self._target_seq_index = target_seq_index
 
 
-class ForecasterEnsemble(EnsembleBase, ForecasterWithExogBase):
+class ForecasterEnsemble(EnsembleBase, ForecasterExogBase):
     """
     Class representing an ensemble of multiple forecasting models.
     """
