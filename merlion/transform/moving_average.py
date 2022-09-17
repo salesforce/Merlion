@@ -50,12 +50,12 @@ class MovingAverage(TransformBase):
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
-        conv_remainders = []
+        conv_remainders = {}
         for name, var in time_series.items():
             t, x = var.index, var.np_values
             ma = scipy.signal.correlate(x, self.weights, mode="full")
             y0, y1 = ma[: self.n_steps - 1], ma[self.n_steps - 1 :]
-            conv_remainders.append(y0)
+            conv_remainders[name] = y0
             if not self.pad:
                 t = t[self.n_steps - 1 :]
             new_vars[name] = UnivariateTimeSeries(t, y1[: len(t)])
@@ -67,7 +67,8 @@ class MovingAverage(TransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
-        for (name, var), y0 in zip(time_series.items(), self.inversion_state):
+        for name, var in time_series.items():
+            y0 = self.inversion_state[name]
             t, y1 = var.index, var.np_values
             y = np.concatenate((y0, y1))
             x = scipy.signal.deconvolve(y, self.weights[-1::-1])[0]
@@ -105,7 +106,7 @@ class MovingPercentile(TransformBase):
         for name, var in time_series.items():
             x = var.np_values
             new_x = []
-            for i, _ in enumerate(x):
+            for i in range(len(x)):
                 window = x[max(0, i - self.n_steps + 1) : i + 1]
                 new_x.append(np.percentile(window, self.q))
             new_vars[name] = UnivariateTimeSeries(var.index, new_x)
@@ -229,10 +230,10 @@ class DifferenceTransform(InvertibleTransformBase):
         pass
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
-        x0 = []
+        x0 = {}
         new_vars = OrderedDict()
         for name, var in time_series.items():
-            x0.append(var[0])
+            x0[name] = var[0]
             if len(var) <= 1:
                 logger.warning(f"Cannot apply a difference transform to a time series of length {len(var)} < 2")
                 new_vars[name] = UnivariateTimeSeries([], [])
@@ -246,7 +247,8 @@ class DifferenceTransform(InvertibleTransformBase):
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
-        for (t0, x0), (name, var) in zip(self.inversion_state, time_series.items()):
+        for name, var in time_series.items():
+            t0, x0 = self.inversion_state[name]
             var = UnivariateTimeSeries([t0], [x0]).concat(var).cumsum()
             new_vars[name] = UnivariateTimeSeries.from_pd(var)
 
@@ -274,17 +276,17 @@ class LagTransform(InvertibleTransformBase):
         pass
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
-        all_tk, all_xk = [], []
+        all_tk, all_xk = {}, {}
         new_vars = OrderedDict()
         for name, var in time_series.items():
             # Apply any x-padding or t-truncating necessary
             t, x = var.index, var.np_values
-            all_xk.append(x[: self.k])
+            all_xk[name] = x[: self.k]
             if self.pad:
-                all_tk.append(t[:0])
+                all_tk[name] = t[:0]
                 x = np.concatenate((np.full(self.k, x[0]), x))
             else:
-                all_tk.append(t[: self.k])
+                all_tk[name] = t[: self.k]
                 t = t[self.k :]
 
             if len(var) <= self.k and not self.pad:
@@ -301,7 +303,8 @@ class LagTransform(InvertibleTransformBase):
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         all_tk, all_xk = self.inversion_state
         new_vars = OrderedDict()
-        for (name, var), tk, xk in zip(time_series.items(), all_tk, all_xk):
+        for name, var in time_series.items():
+            tk, xk = all_tk[name], all_xk[name]
             t = tk.union(var.index)
             if len(t) == len(xk) + len(var):  # no padding
                 y = np.concatenate((xk, var.np_values))

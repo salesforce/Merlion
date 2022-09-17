@@ -10,7 +10,7 @@ each associated with its own sub-package:
         for getting started.
     -   :py:mod:`merlion.models.anomaly`: Anomaly detection models
     -   :py:mod:`merlion.models.anomaly.change_point`: Change point detection models
-    -   :py:mod:`merlion.models.forecast`: Forecasting models
+    -   :py:mod:`merlion.models.forecast`: Forecasting models, including those which support exogenous regressors
     -   :py:mod:`merlion.models.anomaly.forecast_based`: Forecasting models adapted for anomaly detection. Anomaly
         scores are based on the residual between the predicted and true value at each timestamp.
     -   :py:mod:`merlion.models.ensemble`: Ensembles & automated model selection of models for both anomaly

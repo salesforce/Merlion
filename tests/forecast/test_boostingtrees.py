@@ -9,15 +9,17 @@ from os.path import abspath, dirname, join
 import sys
 import unittest
 
+import numpy as np
+
 from merlion.utils import TimeSeries
 from ts_datasets.forecast import SeattleTrail
-from merlion.transform.normalize import MinMaxNormalize
+from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
+from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
 from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
-from merlion.transform.moving_average import DifferenceTransform
-from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
-from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
+from merlion.transform.normalize import MinMaxNormalize
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -38,39 +40,19 @@ class TestLGBMForecaster(unittest.TestCase):
         self.max_forecast_steps = 2
         self.maxlags = 6
         self.i = 0
-        # t = int(datetime(2019, 1, 1, 0, 0, 0).timestamp())
 
         dataset = "seattle_trail"
-        d, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", dataset))[0]
-        d_uni = d["BGT North of NE 70th Total"]
-        t = int(d[md["trainval"]].index[-1].to_pydatetime().timestamp())
-        data = TimeSeries.from_pd(d)
-        cleanup_transform = TransformSequence(
-            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
-        )
-        cleanup_transform.train(data)
-        data = cleanup_transform(data)
+        df, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", dataset))[0]
+        t = int(df[md["trainval"]].index[-1].to_pydatetime().timestamp())
+        data = TimeSeries.from_pd(df)
+        cleanup = TransformSequence([TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300)])
+        cleanup.train(data)
+        self.train_data, self.test_data = cleanup(data).bisect(t)
 
-        train_data, test_data = data.bisect(t)
-
-        minmax_transform = MinMaxNormalize()
-        minmax_transform.train(train_data)
-        self.train_data_norm = minmax_transform(train_data)
-        self.test_data_norm = minmax_transform(test_data)
-
-        data_uni = TimeSeries.from_pd(d_uni)
-        cleanup_transform = TransformSequence(
-            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
-        )
-        cleanup_transform.train(data_uni)
-        data_uni = cleanup_transform(data_uni)
-
-        train_data_uni, test_data_uni = data_uni.bisect(t)
-
-        minmax_transform = MinMaxNormalize()
-        minmax_transform.train(train_data_uni)
-        self.train_data_uni_norm = minmax_transform(train_data_uni)
-        self.test_data_uni_norm = minmax_transform(test_data_uni)
+        data_uni = TimeSeries.from_pd(df["BGT North of NE 70th Total"])
+        cleanup = TransformSequence([TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300)])
+        cleanup.train(data_uni)
+        self.train_data_uni, self.test_data_uni = cleanup(data_uni).bisect(t)
 
         self.model = LGBMForecaster(
             LGBMForecasterConfig(
@@ -82,49 +64,52 @@ class TestLGBMForecaster(unittest.TestCase):
                 n_estimators=20,
                 max_depth=5,
                 n_jobs=1,
+                transform=MinMaxNormalize(),
+                invert_transform=True,
             )
         )
 
     def test_forecast_multi(self):
-        logger.info("Training model...")
-        yhat, _ = self.model.train(self.train_data_norm)
-        name = self.model.target_name
+        logger.info("Training multivariate model...")
+        yhat, _ = self.model.train(self.train_data)
 
-        self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        forecast = self.model.forecast(self.max_forecast_steps)[0]
-        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
-        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
+        # Check sMAPE with multi-dimensional forecast inversion
+        forecast, _ = self.model.forecast(self.max_forecast_steps)
+        smape = ForecastMetric.sMAPE.value(self.test_data, forecast, target_seq_index=self.i)
+        logger.info(f"Immediate forecast sMAPE: {smape:.2f}")
+        self.assertAlmostEqual(smape, 7.09, delta=0.1)
+
+        # Check look-ahead sMAPE using time_series_prev
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(pred), self.max_forecast_steps)
-        pred = pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), 0.50, 1)
+        lookahead_smape = ForecastMetric.sMAPE.value(testing_label, pred, target_seq_index=self.i)
+        logger.info(f"Look-ahead sMAPE with time_series_prev: {lookahead_smape:.2f}")
+        self.assertAlmostEqual(lookahead_smape, 13.8, delta=0.1)
 
         # save and load
         self.model.save(dirname=join(rootdir, "tmp", "lgbmforecaster"))
         loaded_model = LGBMForecaster.load(dirname=join(rootdir, "tmp", "lgbmforecaster"))
-        new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(new_pred), self.max_forecast_steps)
-        new_pred = new_pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), new_pred.mean(), 5)
+        loaded_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
+        self.assertEqual(len(loaded_pred), self.max_forecast_steps)
+        self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
     def test_forecast_uni(self):
-        logger.info("Training model...")
+        logger.info("Training univariate model with prediction stride 2...")
         self.model.config.prediction_stride = 2
-        yhat, _ = self.model.train(self.train_data_uni_norm)
-        name = self.model.target_name
+        yhat, _ = self.model.train(self.train_data_uni)
 
-        self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        forecast = self.model.forecast(self.max_forecast_steps)[0]
-        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
-        testing_data_gen = gen_next_seq_label_pairs(
-            self.test_data_uni_norm, self.i, self.maxlags, self.max_forecast_steps
-        )
+        forecast, _ = self.model.forecast(self.max_forecast_steps)
+        smape = ForecastMetric.sMAPE.value(self.test_data_uni, forecast)
+        logger.info(f"Immediate forecast sMAPE: {smape:.2f}")
+        self.assertAlmostEqual(smape, 4.8, delta=0.1)
+
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(pred), self.max_forecast_steps)
-        pred = pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), 0.50, 1)
+        lookahead_smape = ForecastMetric.sMAPE.value(testing_label, pred, target_seq_index=self.i)
+        logger.info(f"Look-ahead sMAPE with time_series_prev: {lookahead_smape:.2f}")
+        self.assertAlmostEqual(lookahead_smape, 12.7, delta=0.1)
 
 
 if __name__ == "__main__":

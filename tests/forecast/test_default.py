@@ -121,7 +121,7 @@ class TestUnivariate(unittest.TestCase):
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
-        savedir = join(rootdir, "tmp", "ets")
+        savedir = join(rootdir, "tmp", "default", "forecast", "uni")
         self.model.save(dirname=savedir)
         loaded = DefaultForecaster.load(dirname=savedir)
 
@@ -197,8 +197,9 @@ class TestMultivariate(unittest.TestCase):
         logger.info(f"SMAPE = {smape}")
 
         # save and load
-        self.model.save(dirname=join(rootdir, "tmp", "default"))
-        loaded_model = DefaultForecaster.load(dirname=join(rootdir, "tmp", "default"))
+        savedir = join(rootdir, "tmp", "default", "forecast", "multi")
+        self.model.save(dirname=savedir)
+        loaded_model = DefaultForecaster.load(dirname=savedir)
         new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
         new_smape = ForecastMetric.sMAPE.value(predict=new_pred, ground_truth=testing_label.to_ts())
         self.assertAlmostEqual(smape, new_smape, places=4)
@@ -206,6 +207,6 @@ class TestMultivariate(unittest.TestCase):
 
 if __name__ == "__main__":
     logging.basicConfig(
-        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.DEBUG
+        format="%(asctime)s (%(module)s:%(lineno)d) %(levelname)s: %(message)s", stream=sys.stdout, level=logging.INFO
     )
     unittest.main()

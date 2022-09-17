@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -16,9 +16,7 @@ import pandas as pd
 
 from merlion.transform.base import Identity, TransformBase
 from merlion.transform.bound import LowerUpperClip
-from merlion.transform.moving_average import DifferenceTransform
 from merlion.utils.time_series import UnivariateTimeSeries, TimeSeries
-from merlion.utils.resample import get_gcd_timedelta
 
 
 class Anomalize(TransformBase):
