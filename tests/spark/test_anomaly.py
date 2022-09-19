@@ -16,6 +16,7 @@ rootdir = dirname(dirname(dirname(abspath(__file__))))
 
 
 def _run_job(spark, name: str, data_cols: list, model: dict, robust: bool = False):
+    logger.info(f"test_spark_anomaly_{name}\n{'-' * 80}")
     index_cols = ["Store", "Dept"]
     time_col = "Date"
     train_test_split = "2012-09-15" if robust else "2012-06-01"
@@ -60,7 +61,7 @@ def test_multivariate(spark_session):
 def test_robust(spark_session):
     _run_job(
         spark=spark_session,
-        name="multivariate",
+        name="robust",
         data_cols=["Weekly_Sales", "Temperature", "CPI"],
         model={"name": "IsolationForest"},
         robust=True,

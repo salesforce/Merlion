@@ -32,16 +32,22 @@ class ForecasterConfig(Config):
 
     max_forecast_steps: Optional[int] = None
     target_seq_index: Optional[int] = None
-    invert_transform: bool = False
+    invert_transform: bool = None
 
-    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, invert_transform=False, **kwargs):
+    def __init__(self, max_forecast_steps: int = None, target_seq_index: int = None, invert_transform=None, **kwargs):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.  Required for some models like `MSES`.
         :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
             series) whose value we would like to forecast.
         :param invert_transform: Whether to automatically invert the ``transform`` before returning a forecast.
+            By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
+            we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.
         """
+        from merlion.models.anomaly.base import DetectorConfig
+
         super().__init__(**kwargs)
+        if invert_transform is None:
+            invert_transform = self.transform.proper_inversion and not isinstance(self, DetectorConfig)
         self.max_forecast_steps = max_forecast_steps
         self.target_seq_index = target_seq_index
         self.invert_transform = invert_transform
@@ -224,10 +230,7 @@ class ForecasterBase(ModelBase):
         Converts the train result (forecast & stderr for training data) into TimeSeries objects, and inverts the
         model's transform if desired.
         """
-        train_pred, train_stderr = [TimeSeries.from_pd(df) for df in train_result]
-        if self.invert_transform:
-            train_pred, train_stderr = self._apply_inverse_transform(train_pred, train_stderr)
-        return train_pred, train_stderr
+        return self._process_forecast(*train_result)
 
     def transform_exog_data(
         self,
@@ -280,7 +283,7 @@ class ForecasterBase(ModelBase):
             - ``lb``: 25th percentile of forecast values for each timestamp
             - ``ub``: 75th percentile of forecast values for each timestamp
         """
-        # determine the time stamps to forecast for, and resample them if needed
+        # Determine the time stamps to forecast for, and resample them if needed
         orig_t = None if isinstance(time_stamps, (int, float)) else time_stamps
         time_stamps = self.resample_time_stamps(time_stamps, time_series_prev)
         if return_prev and time_series_prev is not None:
@@ -289,7 +292,7 @@ class ForecasterBase(ModelBase):
             else:
                 orig_t = time_series_prev.time_stamps + to_timestamp(orig_t).tolist()
 
-        # transform time_series_prev if relevant (before making the prediction)
+        # Transform time_series_prev if it is given
         old_inversion_state = self.transform.inversion_state
         if time_series_prev is None:
             time_series_prev_df = None
@@ -318,78 +321,67 @@ class ForecasterBase(ModelBase):
                 exog_data_prev=None if exog_data_prev is None else exog_data_prev.to_pd(),
             )
 
-        # Format the return value(s)
+        # Format the return values and reset the transform's inversion state
         if self.invert_transform and time_series_prev is None:
             time_series_prev = self.transform(self.train_data)
         if time_series_prev is not None:
-            time_series_prev = time_series_prev.univariates[time_series_prev.names[self.target_seq_index]].to_ts()
-
-        # Handle the case where we want to return the IQR. If applying the inverse transform, we just apply
-        # the inverse transform directly to the upper/lower bounds.
-        if return_iqr:
-            # Compute positive & negative deviations. Case 1 is where we return distinct upper & lower errors.
-            if err is None:
-                logger.warning("Model returned err = None, so returning IQR = (None, None)")
-                d_neg, d_pos = None, None
-            elif isinstance(err, tuple) and len(err) == 2:
-                d_neg, d_pos = err[0].values * norm.ppf(0.25), err[1].values * norm.ppf(0.75)
-            else:
-                d_neg, d_pos = err.values * norm.ppf(0.25), err.values * norm.ppf(0.75)
-
-            # Concatenate time_series_prev to the forecast & upper/lower bounds if inverting the transform
-            if self.invert_transform:
-                time_series_prev_df = time_series_prev.to_pd()
-                if d_neg is not None and d_pos is not None:
-                    d_neg = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_neg))
-                    d_pos = np.concatenate((np.zeros((len(time_series_prev_df), d_neg.shape[1])), d_pos))
-                forecast = pd.concat((time_series_prev_df, forecast))
-
-            # Convert to time series & invert the transform if desired
-            if d_neg is None or d_pos is None:
-                lb, ub = None, None
-            else:
-                lb = TimeSeries.from_pd((forecast + d_neg).rename(columns=lambda c: f"{c}_lower"))
-                ub = TimeSeries.from_pd((forecast + d_pos).rename(columns=lambda c: f"{c}_upper"))
-            forecast = TimeSeries.from_pd(forecast)
-            if self.invert_transform:
-                forecast = self.transform.invert(forecast, retain_inversion_state=True)
-                if lb is not None and ub is not None:
-                    lb = self.transform.invert(lb, retain_inversion_state=True)
-                    ub = self.transform.invert(ub, retain_inversion_state=True)
-            ret = forecast, lb, ub
-
-        # Handle the case where we directly return the forecast and its standard error.
-        # If applying the inverse transform, we compute an upper/lower bound, apply the inverse transform to those
-        # bounds, and use the difference of those bounds as the stderr.
-        else:
-            if isinstance(err, tuple) and len(err) == 2:
-                err = (err[0].abs().values + err[1].abs().values) / 2
-                err = pd.DataFrame(err, index=forecast.index, columns=[f"{c}_err" for c in forecast.columns])
-            forecast = TimeSeries.from_pd(forecast)
-            err = None if err is None else TimeSeries.from_pd(err)
-            ret = forecast, err
-            if self.invert_transform:
-                ret = self._apply_inverse_transform(forecast, err, None if return_prev else time_series_prev)
-
+            time_series_prev = pd.DataFrame(time_series_prev.univariates[time_series_prev.names[self.target_seq_index]])
+        ret = self._process_forecast(forecast, err, time_series_prev, return_prev=return_prev, return_iqr=return_iqr)
         self.transform.inversion_state = old_inversion_state
         return tuple(None if x is None else x.align(reference=orig_t) for x in ret)
 
-    def _apply_inverse_transform(self, forecast, err, time_series_prev=None):
-        forecast = forecast if time_series_prev is None else time_series_prev + forecast
+    def _process_forecast(self, forecast, err, time_series_prev=None, return_prev=False, return_iqr=False):
+        forecast = forecast.to_pd() if isinstance(forecast, TimeSeries) else forecast
+        if return_prev and time_series_prev is not None:
+            forecast = pd.concat((time_series_prev, forecast))
 
+        # Obtain negative & positive error bars which are appropriately padded
         if err is not None:
-            forecast_df, err_df = forecast.to_pd(), err.to_pd()
-            n = len(time_series_prev) if time_series_prev is not None else 0
-            if n > 0:
-                zeros = pd.DataFrame(np.zeros((n, err.dim)), index=forecast_df.index[:n], columns=err_df.columns)
-                err_df = pd.concat((zeros, err_df))
-            lb = TimeSeries.from_pd(forecast_df.values - err_df)
-            ub = TimeSeries.from_pd(forecast_df.values + err_df)
-            lb = self.transform.invert(lb, retain_inversion_state=True)
-            ub = self.transform.invert(ub, retain_inversion_state=True)
-            err = TimeSeries.from_pd((ub.to_pd() - lb.to_pd()).abs() / 2)
+            err = (err,) if not isinstance(err, tuple) else err
+            assert isinstance(err, tuple) and len(err) in (1, 2)
+            assert all(isinstance(e, (pd.DataFrame, TimeSeries)) for e in err)
+            new_err = []
+            for e in err:
+                e = e.to_pd() if isinstance(e, TimeSeries) else e
+                n, d = len(forecast) - len(e), e.shape[1]
+                if n > 0:
+                    e = pd.concat((pd.DataFrame(np.zeros((n, d)), index=forecast.index[:n], columns=e.columns), e))
+                e.columns = [f"{c}_err" for c in forecast.columns]
+                new_err.append(e.abs())
+            e_neg, e_pos = new_err if len(new_err) == 2 else (new_err[0], new_err[0])
+        else:
+            e_neg = e_pos = None
 
-        forecast = self.transform.invert(forecast, retain_inversion_state=True)
+        # Compute upper/lower bounds for the (potentially inverted) forecast
+        if (return_iqr or self.invert_transform) and e_neg is not None and e_pos is not None:
+            lb = TimeSeries.from_pd((forecast + e_neg.values * (norm.ppf(0.25) if return_iqr else -1)))
+            ub = TimeSeries.from_pd((forecast + e_pos.values * (norm.ppf(0.75) if return_iqr else 1)))
+            if self.invert_transform:
+                lb = self.transform.invert(lb, retain_inversion_state=True)
+                ub = self.transform.invert(ub, retain_inversion_state=True)
+        else:
+            lb = ub = None
+
+        # Convert the forecast to TimeSeries and invert the transform on it if desired
+        forecast = TimeSeries.from_pd(forecast)
+        if self.invert_transform:
+            forecast = self.transform.invert(forecast, retain_inversion_state=True)
+
+        # Return the IQR if desired
+        if return_iqr:
+            if lb is None or ub is None:
+                logger.warning("Model returned err = None, so returning IQR = (None, None)")
+            else:
+                lb, ub = lb.rename(lambda c: f"{c}_lower"), ub.rename(lambda c: f"{c}_upper")
+            return forecast, lb, ub
+
+        # Otherwise, either compute the stderr from the upper/lower bounds (if relevant), or just use the error
+        if lb is not None and ub is not None:
+            err = TimeSeries.from_pd((ub.to_pd() - lb.to_pd().values).rename(columns=lambda c: f"{c}_err").abs() / 2)
+        elif e_neg is not None and e_pos is not None:
+            err = TimeSeries.from_pd(e_pos if e_neg is e_pos else (e_neg + e_pos) / 2)
+        else:
+            err = None
         return forecast, err
 
     @abstractmethod
@@ -421,25 +413,19 @@ class ForecasterBase(ModelBase):
         ]
     ]:
         """
-        Returns the model's forecast on a batch of timestamps given. Note that if
-        ``self.transform`` is specified in the config, the forecast is a forecast
-        of transformed values! It is up to you to manually invert the transform
-        if desired.
+        Returns the model's forecast on a batch of timestamps given.
 
         :param time_stamps_list: a list of lists of timestamps we wish to forecast for
         :param time_series_prev_list: a list of TimeSeries immediately preceding the time stamps in time_stamps_list
-        :param return_iqr: whether to return the inter-quartile range for the
-            forecast. Note that not all models support this option.
-        :param return_prev: whether to return the forecast for
-            ``time_series_prev`` (and its stderr or IQR if relevant), in addition
-            to the forecast for ``time_stamps``. Only used if ``time_series_prev``
-            is provided.
+        :param return_iqr: whether to return the inter-quartile range for the forecast.
+            Only supported by models which can return error bars.
+        :param return_prev: whether to return the forecast for `time_series_prev`` (and its stderr or IQR if relevant),
+            in addition to the forecast for ``time_stamps``. Only used if ``time_series_prev`` is provided.
         :return: ``(forecast, forecast_stderr)`` if ``return_iqr`` is false,
             ``(forecast, forecast_lb, forecast_ub)`` otherwise.
 
             - ``forecast``: the forecast for the timestamps given
-            - ``forecast_stderr``: the standard error of each forecast value.
-                May be ``None``.
+            - ``forecast_stderr``: the standard error of each forecast value. May be ``None``.
             - ``forecast_lb``: 25th percentile of forecast values for each timestamp
             - ``forecast_ub``: 75th percentile of forecast values for each timestamp
         """
@@ -742,10 +728,8 @@ class ForecasterExogBase(ForecasterBase):
         if self.exog_dim != exog_data.dim:
             raise ValueError(f"Trained with {self.exog_dim}-dim exogenous data, but received {exog_data.dim}-dim.")
 
-        # Transform
+        # Transform & resample
         exog_data = self.exog_transform(exog_data)
-
-        # Resample
         if time_series_prev is not None:
             t = time_series_prev.time_stamps + to_timestamp(time_stamps).tolist()
             exog_data = exog_data.align(

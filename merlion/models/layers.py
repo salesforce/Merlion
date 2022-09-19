@@ -118,11 +118,10 @@ class LayeredModelConfig(Config):
 
     @staticmethod
     def _remove_used_kwargs(config_dict, kwargs):
-        # Removes kwargs which have already been used by given config dict
-        used_keys = set()
-        while isinstance(config_dict, dict) and "model" in config_dict:
+        used_keys = set()  # Removes kwargs which have already been used by given config dict
+        while isinstance(config_dict, dict):
             used_keys = used_keys.union(config_dict.keys())
-            config_dict = config_dict["model"]
+            config_dict = config_dict.get("model", None)
         return {k: v for k, v in kwargs.items() if k not in used_keys}
 
     def __copy__(self):

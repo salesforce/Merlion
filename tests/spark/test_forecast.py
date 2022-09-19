@@ -19,6 +19,7 @@ rootdir = dirname(dirname(dirname(abspath(__file__))))
 def _run_job(
     spark, name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool, robust: bool
 ):
+    logger.info(f"test_spark_forecast_{name}\n{'-' * 80}")
     index_cols = ["Store", "Dept"]
     target_col = "Weekly_Sales"
     time_col = "Date"
