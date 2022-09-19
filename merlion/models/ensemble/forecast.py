@@ -141,8 +141,8 @@ class ForecasterEnsemble(EnsembleBase, ForecasterExogBase):
 
         # Train the combiner on the train data if we didn't use validation data.
         if valid is None:
-            pred = self.train_combiner(preds, train)
-            err = None if any(e is None for e in errs) else self.combiner(errs, None)
+            pred = self.train_combiner(preds, train_data)
+            err = None if any(e is None for e in errs) else self.combiner(errs, train_data)
             return pred, err
 
         # Otherwise, train the combiner on the validation data, and re-train the models on the full data
@@ -161,8 +161,8 @@ class ForecasterEnsemble(EnsembleBase, ForecasterExogBase):
         if any(used and e is None for used, e in zip(self.models_used, full_errs)):
             err = None
         else:
-            err = self.combiner(full_errs, None)
-        return self.combiner(full_preds, None), err
+            err = self.combiner(full_errs, train_data)
+        return self.combiner(full_preds, train_data), err
 
     def _forecast_with_exog(
         self,

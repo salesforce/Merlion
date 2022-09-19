@@ -74,7 +74,7 @@ class LayeredModelConfig(Config):
         super().__init__(**kwargs)
 
         # Reserve unused kwargs to initialize the model with (useful if model is None, and can be helpful for reset())
-        model_kwargs = {k: v.to_dict() for k, v in {**kwargs, **model_kwargs}.items() if hasattr(v, "to_dict")}
+        model_kwargs = {k: v.to_dict() if hasattr(v, "to_dict") else v for k, v in {**kwargs, **model_kwargs}.items()}
         self.model_kwargs = self._remove_used_kwargs(self.to_dict(), model_kwargs)
 
     @property
