@@ -419,7 +419,7 @@ class ForecasterBase(ModelBase):
         :param time_series_prev_list: a list of TimeSeries immediately preceding the time stamps in time_stamps_list
         :param return_iqr: whether to return the inter-quartile range for the forecast.
             Only supported by models which can return error bars.
-        :param return_prev: whether to return the forecast for `time_series_prev`` (and its stderr or IQR if relevant),
+        :param return_prev: whether to return the forecast for ``time_series_prev`` (and its stderr or IQR if relevant),
             in addition to the forecast for ``time_stamps``. Only used if ``time_series_prev`` is provided.
         :return: ``(forecast, forecast_stderr)`` if ``return_iqr`` is false,
             ``(forecast, forecast_lb, forecast_ub)`` otherwise.
