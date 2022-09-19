@@ -73,11 +73,9 @@ class LayeredModelConfig(Config):
         self.model_kwargs = {}
         super().__init__(**kwargs)
 
-        # Reserve unused kwargs to try initializing the model with
-        # (useful if model is None, and can be helpful for reset())
-        extra_kwargs = {k: v for k, v in kwargs.items() if k not in self.to_dict()}
-        model_kwargs = {**extra_kwargs, **model_kwargs}
-        self.model_kwargs = {k: v.to_dict() if hasattr(v, "to_dict") else v for k, v in model_kwargs.items()}
+        # Reserve unused kwargs to initialize the model with (useful if model is None, and can be helpful for reset())
+        model_kwargs = {k: v.to_dict() for k, v in {**kwargs, **model_kwargs}.items() if hasattr(v, "to_dict")}
+        self.model_kwargs = self._remove_used_kwargs(self.to_dict(), model_kwargs)
 
     @property
     def base_model(self):
@@ -92,13 +90,15 @@ class LayeredModelConfig(Config):
     def to_dict(self, _skipped_keys=None):
         _skipped_keys = _skipped_keys if _skipped_keys is not None else set()
         config_dict = super().to_dict(_skipped_keys.union({"model"}))
-        if not self.model_kwargs and "model_kwargs" in config_dict:
-            config_dict["model_kwargs"] = None
+        # Serialize only the model's config (the model itself is serialized separately)
         if "model" not in _skipped_keys:
             if self.model is None:
                 config_dict["model"] = None
             else:
                 config_dict["model"] = dict(name=type(self.model).__name__, **self.model.config.to_dict(_skipped_keys))
+        # Don't serialize any of the used keys from model_kwargs
+        if "model_kwargs" in config_dict:
+            config_dict["model_kwargs"] = self._remove_used_kwargs(config_dict, config_dict["model_kwargs"])
         return config_dict
 
     @classmethod
@@ -115,6 +115,15 @@ class LayeredModelConfig(Config):
         elif return_unused_kwargs:
             return config, kwargs
         return config
+
+    @staticmethod
+    def _remove_used_kwargs(config_dict, kwargs):
+        # Removes kwargs which have already been used by given config dict
+        used_keys = set()
+        while isinstance(config_dict, dict) and "model" in config_dict:
+            used_keys = used_keys.union(config_dict.keys())
+            config_dict = config_dict["model"]
+        return {k: v for k, v in kwargs.items() if k not in used_keys}
 
     def __copy__(self):
         config_dict = super().to_dict(_skipped_keys={"model"})
@@ -140,7 +149,7 @@ class LayeredModelConfig(Config):
         if hasattr(self, "model") and hasattr(self.model, "config"):
             base = self.base_model
             if key not in _LAYERED_MEMBERS and (_is_detector_attr(base, key) or _is_forecaster_attr(base, key)):
-                return setattr(self.model.config, key, value)
+                return setattr(base.config, key, value)
         return super().__setattr__(key, value)
 
     def get_unused_kwargs(self, **kwargs):
