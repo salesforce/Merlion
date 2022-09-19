@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -153,8 +153,8 @@ class TestDynamicBaseline(unittest.TestCase):
                     group_keys += [df.index.day]
                     keys += [lambda t: (t.day,)]
                 group = df.groupby(group_keys)
-                mu = group[0].mean()
-                sd = group[0].std()
+                mu = pd.DataFrame(group.mean())
+                sd = pd.DataFrame(group.std())
 
                 # determine key
                 key = (
@@ -164,7 +164,7 @@ class TestDynamicBaseline(unittest.TestCase):
                 )
 
                 expected_scores = np.asarray(
-                    [(x - mu[key(t)]) / sd[key(t)] for t, x in self.vals_test.to_pd().iterrows()]
+                    [(x - mu.loc[key(t)]) / sd.loc[key(t)] for t, x in self.vals_test.to_pd().iterrows()]
                 ).flatten()
                 score_diffs = scores - expected_scores
                 self.assertAlmostEqual(np.abs(score_diffs).max(), 0, delta=1e-3)

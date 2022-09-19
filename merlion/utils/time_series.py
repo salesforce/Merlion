@@ -10,7 +10,7 @@ Implementation of `TimeSeries` class.
 from bisect import bisect_left, bisect_right
 import itertools
 import logging
-from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, Mapping, Sequence, Tuple, Union
 import warnings
 
 import numpy as np
@@ -429,19 +429,17 @@ class TimeSeries:
     ):
         # Type/length checking of univariates
         if isinstance(univariates, Mapping):
-            if not isinstance(univariates, ValIterOrderedDict):
-                univariates = ValIterOrderedDict(univariates.items())
+            univariates = ValIterOrderedDict((str(k), v) for k, v in univariates.items())
             assert all(isinstance(var, UnivariateTimeSeries) for var in univariates.values())
         elif isinstance(univariates, Iterable):
             univariates = list(univariates)
             assert all(isinstance(var, UnivariateTimeSeries) for var in univariates)
-
-            names = [var.name for var in univariates]
+            names = [str(var.name) for var in univariates]
             if len(set(names)) == len(names):
-                names = [i if name is None else name for i, name in enumerate(names)]
+                names = [str(i) if name is None else name for i, name in enumerate(names)]
                 univariates = ValIterOrderedDict(zip(names, univariates))
             else:
-                univariates = ValIterOrderedDict(enumerate(univariates))
+                univariates = ValIterOrderedDict((str(i), v) for i, v in enumerate(univariates))
         else:
             raise TypeError(
                 "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
@@ -505,11 +503,23 @@ class TimeSeries:
         """
         return len(self.univariates)
 
+    def rename(self, mapper: Union[Iterable[str], Mapping[str, str], Callable[[str], str]]):
+        """
+        :param mapper: Dict-like or function transformations to apply to the univariate names. Can also be an iterable
+             of new univariate names.
+        :return: the time series with renamed univariates.
+        """
+        if isinstance(mapper, Callable):
+            mapper = [mapper(old) for old in self.names]
+        elif isinstance(mapper, Mapping):
+            mapper = [mapper.get(old, old) for old in self.names]
+        univariates = ValIterOrderedDict((new_name, var) for new_name, var in zip(mapper, self.univariates))
+        return self.__class__(univariates)
+
     @property
     def is_aligned(self) -> bool:
         """
-        :return: Whether all individual variable time series are sampled at the
-            same time stamps, i.e. they are aligned.
+        :return: Whether all individual variable time series are sampled at the same time stamps, i.e. they are aligned.
         """
         return self._is_aligned
 

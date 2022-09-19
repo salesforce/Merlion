@@ -161,8 +161,8 @@ class BoxCoxTransform(InvertibleTransformBase):
     def __init__(self, lmbda=None, offset=0.0):
         super().__init__()
         if lmbda is not None:
-            if isinstance(lmbda, list):
-                assert all(isinstance(x, (int, float)) for x in lmbda)
+            if isinstance(lmbda, dict):
+                assert all(isinstance(x, (int, float)) for x in lmbda.values())
             else:
                 assert isinstance(lmbda, (int, float))
         self.lmbda = lmbda
