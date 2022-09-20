@@ -75,7 +75,7 @@ class TestLGBMForecaster(unittest.TestCase):
         logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
         # self.assertAlmostEqual(rmse, 2.9, delta=0.1)
 
-        # Check look-ahead sMAPE using time_series_prev
+        # Check look-ahead RMSE using time_series_prev
         testing_data_gen = gen_next_seq_label_pairs(self.test_data, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
@@ -101,7 +101,7 @@ class TestLGBMForecaster(unittest.TestCase):
         logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
         # self.assertAlmostEqual(rmse, 1.4, delta=0.1)
 
-        # Check look-ahead sMAPE using time_series_prev
+        # Check look-ahead RMSE using time_series_prev
         testing_data_gen = gen_next_seq_label_pairs(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)

@@ -6,6 +6,7 @@
 #
 import logging
 from os.path import abspath, dirname, join
+import pytest
 import sys
 import unittest
 
@@ -83,11 +84,13 @@ class TestVectorAR(unittest.TestCase):
             self.assertEqual(len(loaded_pred), self.max_forecast_steps)
             self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
+    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast_univariate(self):
         print("-" * 80)
         logger.info("test_forecast_univariate\n" + "-" * 80)
         self.run_test(True)
 
+    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast_multivariate(self):
         print("-" * 80)
         logger.info("test_forecast_multivariate\n" + "-" * 80)
