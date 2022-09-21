@@ -33,10 +33,8 @@ logger = logging.getLogger(__name__)
 
 class TemporalResample(TransformBase):
     """
-    Defines a policy to temporally resample a time series at a specified
-    granularity. Note that while this transform does support inversion, the
-    recovered time series may differ from the input due to information loss
-    when downsampling.
+    Defines a policy to temporally resample a time series at a specified  granularity. Note that while this transform
+    does support inversion, the recovered time series may differ from the input due to information loss when resampling.
     """
 
     def __init__(

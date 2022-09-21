@@ -35,6 +35,10 @@ class AbsVal(TransformBase):
         """
         return False
 
+    @property
+    def identity_inversion(self):
+        return True
+
     def train(self, time_series: TimeSeries):
         pass
 

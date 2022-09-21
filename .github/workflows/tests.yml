@@ -42,14 +42,9 @@ jobs:
         script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
         source_modules=$(python -c "$script")
 
-        # Run tests & obtain code coverage from coverage report. Skip spark tests for Python 3.10 b/c they segfault.
-        if [[ $PYTHON_VERSION == 3.10 ]]; then
-          coverage run --source=${source_modules} -L -m pytest -v --ignore tests/spark
-        else
-          coverage run --source=${source_modules} -L -m pytest -v
-        fi
-        coverage report
-        coverage xml -o .github/badges/coverage.xml
+        # Run tests & obtain code coverage from coverage report.
+        coverage run --source=${source_modules} -L -m pytest -v -s
+        coverage report && coverage xml -o .github/badges/coverage.xml
         COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
         echo "##[set-output name=coverage;]${COVERAGE}"
 
