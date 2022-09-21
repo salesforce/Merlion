@@ -37,30 +37,35 @@ class TestVectorAR(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.max_forecast_steps = 3
-        self.maxlags = 24 * 7
+        self.maxlags = 28
         self.i = 0
 
         df, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", "seattle_trail"))[0]
         t = int(df[md["trainval"]].index[-1].to_pydatetime().timestamp())
         data = TimeSeries.from_pd(df)
         cleanup = TransformSequence(
-            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), MinMaxNormalize()]
+            [TemporalResample(granularity="1d", missing_value_policy="FFill"), LowerUpperClip(upper=300)]
         )
         cleanup.train(data)
         self.train_data, self.test_data = cleanup(data).bisect(t)
 
         self.model = VectorAR(
-            VectorARConfig(max_forecast_steps=self.max_forecast_steps, maxlags=self.maxlags, target_seq_index=self.i)
+            VectorARConfig(
+                max_forecast_steps=self.max_forecast_steps,
+                maxlags=self.maxlags,
+                target_seq_index=self.i,
+                transform=MinMaxNormalize(),
+                invert_transform=True,
+            )
         )
 
     def run_test(self, univariate):
         logger.info("Training model...")
         if univariate:
             name = self.train_data.names[self.i]
-            self.model.config.maxlags = 7
-            self.train_data = self.train_data.univariates[name][::24].to_ts()
-            self.test_data = self.test_data.univariates[name][::24].to_ts()
-            self.i = 0
+            self.train_data = self.train_data.univariates[name].to_ts()
+            self.test_data = self.test_data.univariates[name].to_ts()
+            self.model.config.maxlags = self.maxlags = 7
 
         yhat, _ = self.model.train(self.train_data)
 
@@ -84,13 +89,11 @@ class TestVectorAR(unittest.TestCase):
             self.assertEqual(len(loaded_pred), self.max_forecast_steps)
             self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
-    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast_univariate(self):
         print("-" * 80)
         logger.info("test_forecast_univariate\n" + "-" * 80)
         self.run_test(True)
 
-    @pytest.mark.skip(reason="platform-specific segfaults")
     def test_forecast_multivariate(self):
         print("-" * 80)
         logger.info("test_forecast_multivariate\n" + "-" * 80)
