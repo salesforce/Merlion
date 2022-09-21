@@ -10,5 +10,13 @@ from pyspark.sql import SparkSession
 
 @pytest.fixture(scope="session")
 def spark_session():
+    # Can result in more helpful debug messages if Spark tests fail for some Java-related reason
+    try:
+        import faulthandler
+
+        faulthandler.enable()
+        faulthandler.disable()
+    except:
+        pass
     spark = SparkSession.builder.master("local[2]").appName("unit-tests").getOrCreate()
     return spark
