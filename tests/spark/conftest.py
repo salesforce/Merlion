@@ -5,12 +5,13 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import pytest
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
 
 @pytest.fixture(scope="session")
 def spark_session():
-    # Can result in more helpful debug messages if Spark tests fail for some Java-related reason
+    # Creates more helpful debug messages if Spark tests fail for some Java-related reason
     try:
         import faulthandler
 
@@ -18,4 +19,7 @@ def spark_session():
         faulthandler.disable()
     except:
         pass
-    return SparkSession.builder.master("local[2]").appName("unit-tests").getOrCreate()
+    # Set timeout & heartbeat interval to 10 minutes to ensure tests can run to completion
+    conf = SparkConf(False).setMaster("local[2]").setAppName("unit-tests")
+    conf = conf.set("spark.network.timeout", "600000").set("spark.executor.heartbeatInterval", "600000")
+    return SparkSession.builder.config(conf=conf).getOrCreate()
