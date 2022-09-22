@@ -61,6 +61,7 @@ def _run_job(
         ),
         schema=output_schema,
     )
+    df.unpersist()
 
     if hierarchical:
         forecast_df = forecast_df.groupBy(time_col).applyInPandas(
@@ -69,6 +70,7 @@ def _run_job(
 
     output_path = join(rootdir, "tmp", "spark", "forecast", name)
     write_dataset(df=forecast_df, time_col=time_col, path=output_path, file_format="csv")
+    forecast_df.unpersist()
 
 
 def test_univariate(spark_session):

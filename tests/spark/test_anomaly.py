@@ -40,9 +40,11 @@ def _run_job(spark, name: str, data_cols: list, model: dict, robust: bool = Fals
         ),
         schema=output_schema,
     )
+    df.unpersist()
 
     output_path = join(rootdir, "tmp", "spark", "anomaly", name)
     write_dataset(df=anomaly_df, time_col=time_col, path=output_path, file_format="csv")
+    anomaly_df.unpersist()
 
 
 def test_univariate(spark_session):
