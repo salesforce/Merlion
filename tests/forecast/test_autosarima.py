@@ -796,8 +796,7 @@ class TestAutoSarima(unittest.TestCase):
                 seasonal_order=(2, 1, 1, 0),
                 max_forecast_steps=self.max_forecast_steps,
                 maxiter=5,
-                transform=dict(name="Identity") if seasonality_layer else None,
-                model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
+                model=dict(name="SarimaDetector", enable_threshold=False),
             )
         )
         if seasonality_layer:
@@ -805,9 +804,7 @@ class TestAutoSarima(unittest.TestCase):
         else:
             self.model = model
 
-        train_scores = self.model.train(
-            self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
-        )
+        self.model.train(self.train_data)
 
         # check automatic periodicity detection
         k = self.test_data.names[0]

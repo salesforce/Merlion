@@ -21,6 +21,7 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
+
 # FIXME: convert to information criterion version
 class AutoSarimaConfig(SeasonalityConfig):
     """
@@ -282,8 +283,6 @@ class AutoSarima(SeasonalityLayer):
 
         # preprocess
         train_config = copy(train_config) if train_config is not None else {}
-        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
-            train_config[k] = train_config.get(k, v)
         if exog_data is not None:
             train_config["exog"] = exog_data.to_pd()
 

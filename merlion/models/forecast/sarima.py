@@ -97,8 +97,6 @@ class Sarima(ForecasterExogBase, SeasonalityModel):
         train_data = train_data[name]
         times = train_data.index
         train_config = train_config or {}
-        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
-            train_config[k] = train_config.get(k, v)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             model = sm_Sarima(

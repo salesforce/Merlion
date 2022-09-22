@@ -336,15 +336,8 @@ def train_model(
                 config=ForecastEvaluatorConfig(train_window=train_window, horizon=horizon, retrain_freq=retrain_freq),
             )
 
-            # Initialize train config
-            train_kwargs = {}
-            if type(model).__name__ == "AutoSarima":
-                train_kwargs = {"train_config": {"enforce_stationarity": True, "enforce_invertibility": True}}
-
             # Get Evaluate Results
-            train_result, test_pred = evaluator.get_predict(
-                train_vals=train_vals, test_vals=test_vals, train_kwargs=train_kwargs, retrain_kwargs=train_kwargs
-            )
+            train_result, test_pred = evaluator.get_predict(train_vals=train_vals, test_vals=test_vals)
 
             rmses = evaluator.evaluate(ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.RMSE)
             smapes = evaluator.evaluate(ground_truth=test_vals, predict=test_pred, metric=ForecastMetric.sMAPE)
