@@ -23,12 +23,11 @@ except ImportError as e:
     )
     raise ImportError(str(e) + ". " + err)
 
-from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
-from merlion.models.anomaly.utils import InputData, batch_detect
+from merlion.models.utils.torch_utils import InputData, batch_detect
 
 
 class VAEConfig(DetectorConfig, NormalizingConfig):

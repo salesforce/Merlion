@@ -6,7 +6,6 @@
 #
 import logging
 from os.path import abspath, dirname, join
-import pytest
 import sys
 import unittest
 
@@ -16,7 +15,7 @@ from merlion.transform.normalize import MinMaxNormalize
 from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
-from merlion.models.forecast.vector_ar import VectorAR, VectorARConfig
+from merlion.models.factory import instantiate_or_copy_model, ModelFactory
 from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
 from merlion.utils import TimeSeries
 
@@ -49,8 +48,9 @@ class TestVectorAR(unittest.TestCase):
         cleanup.train(data)
         self.train_data, self.test_data = cleanup(data).bisect(t)
 
-        self.model = VectorAR(
-            VectorARConfig(
+        self.model = instantiate_or_copy_model(
+            dict(
+                name="VectorAR",
                 max_forecast_steps=self.max_forecast_steps,
                 maxlags=self.maxlags,
                 target_seq_index=self.i,
@@ -84,7 +84,7 @@ class TestVectorAR(unittest.TestCase):
         # save and load
         if not univariate:
             self.model.save(dirname=join(rootdir, "tmp", "vector_ar"))
-            loaded_model = VectorAR.load(dirname=join(rootdir, "tmp", "vector_ar"))
+            loaded_model = ModelFactory.load(name="VectorAR", model_path=join(rootdir, "tmp", "vector_ar"))
             loaded_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
             self.assertEqual(len(loaded_pred), self.max_forecast_steps)
             self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
