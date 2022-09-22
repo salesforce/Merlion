@@ -14,6 +14,7 @@ from merlion.evaluate.forecast import ForecastEvaluator, ForecastEvaluatorConfig
 from merlion.models.ensemble.combine import MetricWeightedMean
 from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
 from merlion.models.forecast.arima import ArimaConfig, Arima
+from merlion.models.forecast.ets import ETSConfig, ETS
 from merlion.transform.base import Identity
 from merlion.utils.data_io import csv_to_time_series
 from merlion.utils.time_series import UnivariateTimeSeries
@@ -58,7 +59,7 @@ class TestEvaluateForecast(unittest.TestCase):
 
         # Calculate evaluation metric
         smape = evaluator.evaluate(ground_truth=self.test_data, predict=pred, metric=ForecastMetric.sMAPE)
-        self.assertAlmostEqual(smape, 9.823, delta=0.001)
+        self.assertAlmostEqual(smape, 9.9, delta=0.1)
 
     def test_ensemble(self):
         print("-" * 80)
@@ -71,10 +72,10 @@ class TestEvaluateForecast(unittest.TestCase):
 
         # Construct ensemble to forecast up to 120hr in the future
         n = 120
-        kwargs = dict(max_forecast_steps=n, transform=Identity())
-        model0 = Arima(ArimaConfig(order=(4, 1, 2), **kwargs))
-        model1 = Arima(ArimaConfig(order=(20, 0, 0), **kwargs))
-        model2 = Arima(ArimaConfig(order=(6, 2, 1), **kwargs))
+        kwargs = dict(max_forecast_steps=n, transform=Identity(), refit=False)
+        model0 = ETS(ETSConfig(error="add", trend="add", damped_trend=True, **kwargs))
+        model1 = ETS(ETSConfig(error="mul", trend="mul", damped_trend=True, **kwargs))
+        model2 = ETS(ETSConfig(error="mul", trend="add", damped_trend=False, **kwargs))
         ensemble = ForecasterEnsemble(
             config=ForecasterEnsembleConfig(combiner=MetricWeightedMean(metric=ForecastMetric.sMAPE)),
             models=[model0, model1, model2],
@@ -92,7 +93,7 @@ class TestEvaluateForecast(unittest.TestCase):
 
         # Compute ensemble's sMAPE
         smape = evaluator.evaluate(ground_truth=test, predict=pred, metric=ForecastMetric.sMAPE)
-        logger.info(f"Ensemble sMAPE: {smape}")
+        self.assertAlmostEqual(smape, 79.4, delta=0.2)
 
         # Do a quick test of save/load
         ensemble.save("tmp/eval/forecast_ensemble")

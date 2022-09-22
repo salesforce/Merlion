@@ -124,23 +124,23 @@ class ETS(SeasonalityModel, ForecasterBase):
         return max(10, 10 + 2 * (self.seasonal_periods // 2), 2 * self.seasonal_periods)
 
     def _instantiate_model(self, data):
-        return ETSModel(
-            data,
-            error=self.error,
-            trend=self.trend,
-            seasonal=None if self.seasonal_periods is None else self.seasonal,
-            damped_trend=self.damped_trend,
-            seasonal_periods=self.seasonal_periods,
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return ETSModel(
+                data,
+                error=self.error,
+                trend=self.trend,
+                seasonal=None if self.seasonal_periods is None else self.seasonal,
+                damped_trend=self.damped_trend,
+                seasonal_periods=self.seasonal_periods,
+            )
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
         # train model
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.model = self._instantiate_model(train_data).fit(disp=False)
+        self.model = self._instantiate_model(train_data).fit(disp=False)
 
         # get forecast for the training data
         self._last_val = train_data[-1]

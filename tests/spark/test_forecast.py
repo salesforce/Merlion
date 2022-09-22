@@ -55,7 +55,7 @@ def _run_job(
             time_col=time_col,
             target_col=target_col,
             time_stamps=time_stamps,
-            model={"name": "DefaultForecaster", "target_seq_index": target_seq_index},
+            model=dict(name="DefaultForecaster", target_seq_index=target_seq_index),
             predict_on_train=predict_on_train,
             agg_dict=agg_dict,
         ),

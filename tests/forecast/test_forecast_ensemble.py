@@ -106,7 +106,7 @@ class TestForecastEnsemble(unittest.TestCase):
         logger.info("test_selector_small_train\n" + "-" * 80 + "\n")
         self.vals_train = self.vals_train[-8:]
         self.expected_smape = 194
-        self._test_selector(test_name="test_selector_small_train", expected_smapes=[np.inf, 7.27, 6.16])
+        self._test_selector(test_name="test_selector_small_train", expected_smapes=[np.inf, 50.64, 6.16])
 
     def run_test(self, test_name):
         logger.info("Training model...")

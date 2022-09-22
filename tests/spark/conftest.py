@@ -18,5 +18,4 @@ def spark_session():
         faulthandler.disable()
     except:
         pass
-    spark = SparkSession.builder.master("local[2]").appName("unit-tests").getOrCreate()
-    return spark
+    return SparkSession.builder.master("local[1]").appName("unit-tests").getOrCreate()

@@ -126,7 +126,9 @@ class Sarima(ForecasterExogBase, SeasonalityModel):
             val_prev = time_series_prev.iloc[-self._max_lookback :, self.target_seq_index]
             last_val = val_prev[-1]
             exog_data_prev = None if exog_data_prev is None else exog_data_prev.loc[val_prev.index]
-            model = self.model.apply(val_prev, exog=exog_data_prev, validate_specification=False)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                model = self.model.apply(val_prev, exog=exog_data_prev, validate_specification=False)
 
         try:
             forecast_result = model.get_forecast(len(time_stamps), exog=exog_data)
