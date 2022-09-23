@@ -43,7 +43,13 @@ jobs:
         source_modules=$(python -c "$script")
 
         # Run tests & obtain code coverage from coverage report.
-        coverage run --source=${source_modules} -L -m pytest -v -s
+        # Run spark tests separately for 3.8/3.9 because they often segfault.
+        if [[ $PYTHON_VERSION == 3.8 || $PYTHON_VERSION == 3.9 ]]; then
+          python3 -m pytest -v -s tests/spark
+          coverage run --source=${source_modules} -L -m pytest -v -s --ignore tests/spark
+        else
+          coverage run --source=${source_modules} -L -m pytest -v -s
+        fi
         coverage report && coverage xml -o .github/badges/coverage.xml
         COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
         echo "##[set-output name=coverage;]${COVERAGE}"
@@ -64,7 +70,7 @@ jobs:
         echo "##[set-output name=color;]${COLOR}"
 
     - name: Create coverage badge
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.9' }}
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}
       uses: emibcn/badge-action@v1.2.1
       with:
         label: coverage
@@ -74,7 +80,7 @@ jobs:
 
     - name: Push badge to badges branch
       uses: s0/git-publish-subdir-action@v2.5.1
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.9' }}
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}
       env:
         REPO: self
         BRANCH: badges
