@@ -34,7 +34,7 @@ _time_col_name = "time"
 
 class UnivariateTimeSeries(pd.Series):
     """
-    Please read the `tutorial <examples/TimeSeries>` before reading this API doc.
+    Please read the `tutorial <tutorials/TimeSeries>` before reading this API doc.
     This class is a time-indexed ``pd.Series`` which represents a univariate
     time series. For the most part, it supports all the same features as
     ``pd.Series``, with the following key differences to iteration and indexing:
@@ -331,7 +331,7 @@ class UnivariateTimeSeries(pd.Series):
 
 class TimeSeries:
     """
-    Please read the `tutorial <examples/TimeSeries>` before reading this API doc.
+    Please read the `tutorial <tutorials/TimeSeries>` before reading this API doc.
     This class represents a general multivariate time series as a wrapper around
     a number of (optionally named) `UnivariateTimeSeries`. A `TimeSeries` object
     is initialized as ``time_series = TimeSeries(univariates)``, where

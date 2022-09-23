@@ -59,9 +59,9 @@ Note the following external dependencies:
 
 Getting Started
 ---------------
-To get started, we recommend the linked tutorials on `anomaly detection <examples/anomaly/0_AnomalyIntro>`
-and `forecasting <examples/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
-main data structure for representing time series `here <examples/TimeSeries>`.
+To get started, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
+and `forecasting <tutorials/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
+main data structure for representing time series `here <tutorials/TimeSeries>`.
 
 .. toctree::
    :maxdepth: 2

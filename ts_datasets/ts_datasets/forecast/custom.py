@@ -14,7 +14,7 @@ from ts_datasets.base import BaseDataset
 
 class CustomDataset(BaseDataset):
     """
-    Wrapper to load a custom dataset. Please review the `tutorial <examples/CustomDataset>` to get started.
+    Wrapper to load a custom dataset. Please review the `tutorial <tutorials/CustomDataset>` to get started.
     """
 
     def __init__(self, rootdir, test_frac=0.5, time_col=None, time_unit="s", data_cols=None, index_cols=None):

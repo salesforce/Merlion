@@ -53,6 +53,10 @@ class DefaultDetector(LayeredDetector):
     def granularity(self):
         return self.config.granularity
 
+    def reset(self):
+        if self.model is not None:
+            self.model.reset()
+
     def train(
         self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
@@ -140,6 +144,10 @@ class DefaultForecaster(LayeredForecaster):
     @property
     def granularity(self):
         return self.config.granularity
+
+    def reset(self):
+        if self.model is not None:
+            self.model.reset()
 
     def train(
         self, train_data: TimeSeries, train_config=None, exog_data=None

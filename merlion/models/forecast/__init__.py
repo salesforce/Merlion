@@ -1,11 +1,12 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Contains all forecasting models.
+Contains all forecasting models, including those which support
+`exogenous regressors <tutorials/forecast/3_ForecastExogenous>`.
 
 For forecasting, we define an abstract base `ForecasterBase` class which inherits from `ModelBase` and supports the
 following interface, in addition to ``model.save()`` and ``ForecasterClass.load`` defined for ``ModelBase``:

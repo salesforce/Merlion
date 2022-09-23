@@ -38,27 +38,22 @@ trap exit_handler EXIT
 pip3 install -r "${DIRNAME}/requirements.txt"
 sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
 
-# Build API docs for current head
-export current_version="latest"
-pip3 install ".[all]"
-pip3 install ts_datasets/
-sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
-rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
-pip3 uninstall -y salesforce-merlion
-pip3 uninstall -y ts_datasets
-
-# Install all previous released versions of Merlion/ts_datasets
-# and use them to build the appropriate API docs.
+# Install all released versions of Merlion/ts_datasets and use them to build the appropriate API docs.
 # Uninstall after we're done with each one.
-versions=()
-checkout_files=("${DIRNAME}/source/*.rst" "examples" "merlion" "ts_datasets" "setup.py" "MANIFEST.in")
-for version in $(git tag --list 'v[0-9]*'); do
-    versions+=("$version")
-    git checkout -b "${version}_local_docs_only"
-    for f in $(git diff --name-only --diff-filter=A "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
-        git rm "$f"
-    done
-    git checkout "tags/${version}" -- "${checkout_files[@]}"
+versions=("latest")
+for v in $(git tag --list 'v[0-9]*'); do
+  versions+=("$v")
+done
+docs_files=("${DIRNAME}/source/*.rst" "examples")
+checkout_files=("${docs_files[@]}" "merlion" "ts_datasets" "setup.py" "MANIFEST.in")
+for version in "${versions[@]}"; do
+    if [[ $version != "latest" ]]; then
+        git checkout -b "${version}_local_docs_only"
+        for f in $(git diff --name-only --diff-filter=AR "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
+            git rm "$f"
+        done
+        git checkout "tags/${version}" -- "${checkout_files[@]}"
+    fi
     export current_version=${version}
     pip3 install ".[all]"
     pip3 install ts_datasets/
@@ -71,7 +66,7 @@ for version in $(git tag --list 'v[0-9]*'); do
 done
 
 # Determine the latest stable version if there is one
-if (( ${#versions[@]} > 0 )); then
+if (( ${#versions[@]} > 1 )); then
   stable_hash=$(git rev-list --tags --max-count=1)
   stable_version=$(git describe --tags "$stable_hash")
   export stable_version

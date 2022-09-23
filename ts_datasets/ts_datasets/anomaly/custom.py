@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class CustomAnomalyDataset(CustomDataset, TSADBaseDataset):
     """
-    Wrapper to load a custom dataset for anomaly detection. Please review the `tutorial <examples/CustomDataset>`
+    Wrapper to load a custom dataset for anomaly detection. Please review the `tutorial <tutorials/CustomDataset>`
     to get started.
     """
 
