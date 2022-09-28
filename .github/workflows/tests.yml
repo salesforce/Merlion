@@ -1,4 +1,4 @@
-name: build
+name: tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  tests:
 
     runs-on: ubuntu-latest
     strategy:
@@ -34,40 +34,38 @@ jobs:
 
     - name: Test with pytest
       id: test
+      uses: nick-fields/retry@v2
       env:
         PYTHON_VERSION: ${{ matrix.python-version }}
-      run: |
-        # Get a comma-separated list of the directories of all python source files
-        source_files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
-        script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
-        source_modules=$(python -c "$script")
+      with:
+        max_attempts: 3
+        timeout_minutes: 40
+        command: |
+          # Get a comma-separated list of the directories of all python source files
+          source_files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
+          script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
+          source_modules=$(python -c "$script")
 
-        # Run tests & obtain code coverage from coverage report.
-        # Run spark tests separately for 3.8/3.9 because they often segfault.
-        if [[ $PYTHON_VERSION == 3.8 || $PYTHON_VERSION == 3.9 ]]; then
-          python3 -m pytest -v -s tests/spark
-          coverage run --source=${source_modules} -L -m pytest -v -s --ignore tests/spark
-        else
+          # Run tests & obtain code coverage from coverage report.
           coverage run --source=${source_modules} -L -m pytest -v -s
-        fi
-        coverage report && coverage xml -o .github/badges/coverage.xml
-        COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
-        echo "##[set-output name=coverage;]${COVERAGE}"
+          coverage report && coverage xml -o .github/badges/coverage.xml
+          COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
+          echo "##[set-output name=coverage;]${COVERAGE}"
 
-        # Choose a color based on code coverage
-        COVERAGE=${COVERAGE/\%/}
-        if (($COVERAGE > 90)); then
-          COLOR=brightgreen
-        elif (($COVERAGE > 80)); then
-          COLOR=green
-        elif (($COVERAGE > 70)); then
-          COLOR=yellow
-        elif (($COVERAGE > 60)); then
-          COLOR=orange
-        else
-          COLOR=red
-        fi
-        echo "##[set-output name=color;]${COLOR}"
+          # Choose a color based on code coverage
+          COVERAGE=${COVERAGE/\%/}
+          if (($COVERAGE > 90)); then
+            COLOR=brightgreen
+          elif (($COVERAGE > 80)); then
+            COLOR=green
+          elif (($COVERAGE > 70)); then
+            COLOR=yellow
+          elif (($COVERAGE > 60)); then
+            COLOR=orange
+          else
+            COLOR=red
+          fi
+          echo "##[set-output name=color;]${COLOR}"
 
     - name: Create coverage badge
       if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}

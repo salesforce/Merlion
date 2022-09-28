@@ -9,7 +9,7 @@ on:
     types: [ published ]
 
 jobs:
-  build:
+  docs:
 
     runs-on: ubuntu-latest
 
