@@ -13,18 +13,21 @@ if [ ! -d venv ]; then
 fi
 source venv/bin/activate
 
-# Get current git branch & stash unsaved changes
+# Get current git head & stash unsaved changes
+GIT_HEAD=$(git rev-parse HEAD)
 GIT_BRANCH=$(git branch --show-current)
 if [ -z "${GIT_BRANCH}" ]; then
     GIT_BRANCH="main"
 fi
+n_stash=$(git stash list | wc -l)
 git stash
 
 # Set up exit handler to restore git state & delete temp branches
 function exit_handler {
-    git reset --hard
-    git checkout "${GIT_BRANCH}" --
-    git stash pop || true
+    git reset --hard && git checkout "${GIT_BRANCH}" --
+    if (( n_stash < $(git stash list | wc -l) )); then
+        git stash pop
+    fi
     for version in $(git tag --list 'v[0-9]*'); do
         branch="${version}_local_docs_only"
         if git show-ref --verify --quiet "refs/heads/$branch"; then
@@ -34,9 +37,17 @@ function exit_handler {
 }
 trap exit_handler EXIT
 
-# Clean up build directory and install Sphinx requirements
+# Install Sphinx requirements. Get old Merlion docs from gh-pages branch, but only keep the version-tagged ones.
 pip3 install -r "${DIRNAME}/requirements.txt"
+git checkout gh-pages && git pull && git checkout --force "${GIT_HEAD}"
 sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
+mkdir -p "${DIRNAME}/build" "${DIRNAME}/build/html"
+git --work-tree "${DIRNAME}/build/html" checkout gh-pages . && git reset --hard
+python -c \
+"import re; import os; import shutil;
+for f in [os.path.join('${DIRNAME}/build/html', f) for f in os.listdir('${DIRNAME}/build/html')]:
+    if not (os.path.isdir(f) and re.search('v([0-9].)+[0-9]$', f)):
+        shutil.rmtree(f) if os.path.isdir(f) else os.remove(f)"
 
 # Install all released versions of Merlion/ts_datasets and use them to build the appropriate API docs.
 # Uninstall after we're done with each one.
@@ -47,22 +58,22 @@ done
 docs_files=("${DIRNAME}/source/*.rst" "examples")
 checkout_files=("${docs_files[@]}" "merlion" "ts_datasets" "setup.py" "MANIFEST.in")
 for version in "${versions[@]}"; do
-    if [[ $version != "latest" ]]; then
-        git checkout -b "${version}_local_docs_only"
-        for f in $(git diff --name-only --diff-filter=AR "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
-            git rm "$f"
-        done
-        git checkout "tags/${version}" -- "${checkout_files[@]}"
+    if [[ ! -d "${DIRNAME}/build/html/${version}" ]]; then
+        if [[ ${version} != "latest" ]]; then
+            git checkout -b "${version}_local_docs_only"
+            for f in $(git diff --name-only --diff-filter=AR "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
+                git rm "$f"
+            done
+            git checkout "tags/${version}" -- "${checkout_files[@]}"
+        fi
+        export current_version=${version}
+        pip3 install ".[all]"
+        pip3 install ts_datasets/
+        sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
+        rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
+        pip3 uninstall -y salesforce-merlion ts_datasets
+        git reset --hard && git checkout --force "${GIT_HEAD}"
     fi
-    export current_version=${version}
-    pip3 install ".[all]"
-    pip3 install ts_datasets/
-    sphinx-build -b html "${DIRNAME}/source" "${DIRNAME}/build/html/${current_version}" -W --keep-going
-    rm -rf "${DIRNAME}/build/html/${current_version}/.doctrees"
-    pip3 uninstall -y salesforce-merlion
-    pip3 uninstall -y ts_datasets
-    git reset --hard
-    git checkout "${GIT_BRANCH}" --
 done
 
 # Determine the latest stable version if there is one
