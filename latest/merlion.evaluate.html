@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.evaluate package &mdash; Merlion 1.3.0 documentation</title>
+  <title>merlion.evaluate package &mdash; Merlion 1.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -54,9 +55,113 @@
 <li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.evaluate package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.base">merlion.evaluate.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.anomaly">merlion.evaluate.anomaly module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.forecast">merlion.evaluate.forecast module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.base">merlion.evaluate.base module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.cadence"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.cadence</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.horizon"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.horizon</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.config_class"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.config_class</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.train_window"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.train_window</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.retrain_freq"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.retrain_freq</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.cadence"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.cadence</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.horizon"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.horizon</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.default_train_kwargs"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.default_train_kwargs()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.default_retrain_kwargs"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.default_retrain_kwargs()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.get_predict"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.get_predict()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorBase.evaluate"><code class="docutils literal notranslate"><span class="pre">EvaluatorBase.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.anomaly">merlion.evaluate.anomaly module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.ScoreType"><code class="docutils literal notranslate"><span class="pre">ScoreType</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.ScoreType.Pointwise"><code class="docutils literal notranslate"><span class="pre">ScoreType.Pointwise</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.ScoreType.PointAdjusted"><code class="docutils literal notranslate"><span class="pre">ScoreType.PointAdjusted</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.ScoreType.RevisedPointAdjusted"><code class="docutils literal notranslate"><span class="pre">ScoreType.RevisedPointAdjusted</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.precision"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.precision()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.recall"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.recall()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.f1"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.f1()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.f_beta"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.f_beta()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.mean_time_to_detect"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.mean_time_to_detect()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.mean_detected_anomaly_duration"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.mean_detected_anomaly_duration()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.mean_anomaly_duration"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.mean_anomaly_duration()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADScoreAccumulator.nab_score"><code class="docutils literal notranslate"><span class="pre">TSADScoreAccumulator.nab_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.accumulate_tsad_score"><code class="docutils literal notranslate"><span class="pre">accumulate_tsad_score()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric"><code class="docutils literal notranslate"><span class="pre">TSADMetric</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.MeanTimeToDetect"><code class="docutils literal notranslate"><span class="pre">TSADMetric.MeanTimeToDetect</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.F1"><code class="docutils literal notranslate"><span class="pre">TSADMetric.F1</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.Precision"><code class="docutils literal notranslate"><span class="pre">TSADMetric.Precision</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.Recall"><code class="docutils literal notranslate"><span class="pre">TSADMetric.Recall</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseF1"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointwiseF1</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointwisePrecision"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointwisePrecision</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointwiseRecall"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointwiseRecall</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedF1"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointAdjustedF1</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedPrecision"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointAdjustedPrecision</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.PointAdjustedRecall"><code class="docutils literal notranslate"><span class="pre">TSADMetric.PointAdjustedRecall</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.NABScore"><code class="docutils literal notranslate"><span class="pre">TSADMetric.NABScore</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFN"><code class="docutils literal notranslate"><span class="pre">TSADMetric.NABScoreLowFN</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFP"><code class="docutils literal notranslate"><span class="pre">TSADMetric.NABScoreLowFP</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.F2"><code class="docutils literal notranslate"><span class="pre">TSADMetric.F2</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADMetric.F5"><code class="docutils literal notranslate"><span class="pre">TSADMetric.F5</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluatorConfig"><code class="docutils literal notranslate"><span class="pre">TSADEvaluatorConfig</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.config_class"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.config_class</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.max_early_sec"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.max_early_sec</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.max_delay_sec"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.max_delay_sec</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.default_retrain_kwargs"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.default_retrain_kwargs()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.get_predict"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.get_predict()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.anomaly.TSADEvaluator.evaluate"><code class="docutils literal notranslate"><span class="pre">TSADEvaluator.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.evaluate.forecast">merlion.evaluate.forecast module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.check_before_eval"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.check_before_eval()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.mae"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.mae()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.marre"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.marre()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.rmse"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.rmse()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.smape"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.smape()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.rmspe"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.rmspe()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.mase"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.mase()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastScoreAccumulator.msis"><code class="docutils literal notranslate"><span class="pre">ForecastScoreAccumulator.msis()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.forecast.accumulate_forecast_score"><code class="docutils literal notranslate"><span class="pre">accumulate_forecast_score()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric"><code class="docutils literal notranslate"><span class="pre">ForecastMetric</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.MAE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.MAE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.MARRE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.MARRE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.RMSE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.RMSE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.sMAPE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.sMAPE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.RMSPE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.RMSPE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.MASE"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.MASE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastMetric.MSIS"><code class="docutils literal notranslate"><span class="pre">ForecastMetric.MSIS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluatorConfig</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluatorConfig.horizon</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluatorConfig.cadence</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator.config_class"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluator.config_class</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator.horizon"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluator.horizon</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator.cadence"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluator.cadence</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.evaluate.forecast.ForecastEvaluator.evaluate"><code class="docutils literal notranslate"><span class="pre">ForecastEvaluator.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
@@ -265,7 +370,7 @@ anomaly detection vs. forecasting.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorBase.get_predict">
-<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrained</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.get_predict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorBase.get_predict" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize the model by training it on an initial set of train data.
 Get the model’s predictions on the test data, retraining the model as
 appropriate.</p>
@@ -274,9 +379,9 @@ appropriate.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – initial training data</p></li>
 <li><p><strong>test_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – all data where we want to get the model’s predictions and compare it to the ground truth</p></li>
+<li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – any exogenous data (only used for some models)</p></li>
 <li><p><strong>train_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for the initial training process</p></li>
 <li><p><strong>retrain_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for all subsequent retrainings</p></li>
-<li><p><strong>pretrained</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the model has already been trained</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -581,7 +686,7 @@ seconds after its start, it is not counted as being detected.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.evaluate.anomaly.TSADEvaluator.get_predict">
-<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.get_predict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retrain_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.evaluate.anomaly.TSADEvaluator.get_predict" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize the model by training it on an initial set of train data.
 Simulate real-time anomaly detection by the model, while re-training it
 at the desired frequency.</p>
@@ -591,6 +696,7 @@ at the desired frequency.</p>
 <li><p><strong>train_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – initial training data</p></li>
 <li><p><strong>test_vals</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – all data where we want to get the model’s predictions
 and compare it to the ground truth</p></li>
+<li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – any exogenous data (only used for some models)</p></li>
 <li><p><strong>train_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – dict of keyword arguments we want to use for the
 initial training process. Typically, you will want to provide the
 key “anomaly_labels” here, if you have training data with labeled

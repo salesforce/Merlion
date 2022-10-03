@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.post_process package &mdash; Merlion 1.3.0 documentation</title>
+  <title>merlion.post_process package &mdash; Merlion 1.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -51,11 +52,88 @@
 <li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.post_process package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.base">merlion.post_process.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.factory">merlion.post_process.factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.sequence">merlion.post_process.sequence module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.calibrate">merlion.post_process.calibrate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.threshold">merlion.post_process.threshold module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.base">merlion.post_process.base module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.base.PostRuleBase"><code class="docutils literal notranslate"><span class="pre">PostRuleBase</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.base.PostRuleBase.to_dict"><code class="docutils literal notranslate"><span class="pre">PostRuleBase.to_dict()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.base.PostRuleBase.from_dict"><code class="docutils literal notranslate"><span class="pre">PostRuleBase.from_dict()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.base.PostRuleBase.train"><code class="docutils literal notranslate"><span class="pre">PostRuleBase.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.factory">merlion.post_process.factory module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory"><code class="docutils literal notranslate"><span class="pre">PostRuleFactory</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory.get_post_rule_class"><code class="docutils literal notranslate"><span class="pre">PostRuleFactory.get_post_rule_class()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory.create"><code class="docutils literal notranslate"><span class="pre">PostRuleFactory.create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.sequence">merlion.post_process.sequence module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.sequence.PostRuleSequence"><code class="docutils literal notranslate"><span class="pre">PostRuleSequence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.sequence.PostRuleSequence.train"><code class="docutils literal notranslate"><span class="pre">PostRuleSequence.train()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.sequence.PostRuleSequence.to_dict"><code class="docutils literal notranslate"><span class="pre">PostRuleSequence.to_dict()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.sequence.PostRuleSequence.from_dict"><code class="docutils literal notranslate"><span class="pre">PostRuleSequence.from_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.calibrate">merlion.post_process.calibrate module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.calibrate.AnomScoreCalibrator"><code class="docutils literal notranslate"><span class="pre">AnomScoreCalibrator</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.calibrate.AnomScoreCalibrator.anchors"><code class="docutils literal notranslate"><span class="pre">AnomScoreCalibrator.anchors</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.calibrate.AnomScoreCalibrator.train"><code class="docutils literal notranslate"><span class="pre">AnomScoreCalibrator.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.post_process.threshold">merlion.post_process.threshold module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.threshold.Threshold"><code class="docutils literal notranslate"><span class="pre">Threshold</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.MeanTimeToDetect"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.MeanTimeToDetect</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.F1"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.F1</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.Precision"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.Precision</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.Recall"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.Recall</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwiseF1"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointwiseF1</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwisePrecision"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointwisePrecision</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointwiseRecall"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointwiseRecall</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedF1"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointAdjustedF1</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedPrecision"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointAdjustedPrecision</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.PointAdjustedRecall"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.PointAdjustedRecall</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScore"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.NABScore</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFN"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.NABScoreLowFN</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFP"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.NABScoreLowFP</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.F2"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.F2</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.TSADMetric.F5"><code class="docutils literal notranslate"><span class="pre">Threshold.TSADMetric.F5</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.train"><code class="docutils literal notranslate"><span class="pre">Threshold.train()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.Threshold.to_simple_threshold"><code class="docutils literal notranslate"><span class="pre">Threshold.to_simple_threshold()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.threshold_class"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.threshold_class</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.alm_threshold"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.alm_threshold</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.abs_score"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.abs_score</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.window_secs"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.window_secs</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.suppress_secs"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.suppress_secs</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.filter"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.filter()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.train"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.train()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AggregateAlarms.to_simple_threshold"><code class="docutils literal notranslate"><span class="pre">AggregateAlarms.to_simple_threshold()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.threshold.get_adaptive_thres"><code class="docutils literal notranslate"><span class="pre">get_adaptive_thres()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveThreshold"><code class="docutils literal notranslate"><span class="pre">AdaptiveThreshold</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveThreshold.train"><code class="docutils literal notranslate"><span class="pre">AdaptiveThreshold.train()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms"><code class="docutils literal notranslate"><span class="pre">AdaptiveAggregateAlarms</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.threshold_class"><code class="docutils literal notranslate"><span class="pre">AdaptiveAggregateAlarms.threshold_class</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.bin_sz"><code class="docutils literal notranslate"><span class="pre">AdaptiveAggregateAlarms.bin_sz</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.post_process.threshold.AdaptiveAggregateAlarms.default_hist_gap_thres"><code class="docutils literal notranslate"><span class="pre">AdaptiveAggregateAlarms.default_hist_gap_thres</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>

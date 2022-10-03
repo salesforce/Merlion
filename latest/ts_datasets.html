@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ts_datasets: Easy Data Loading &mdash; Merlion 1.3.0 documentation</title>
+  <title>ts_datasets: Easy Data Loading &mdash; Merlion 1.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -52,7 +53,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-ts_datasets.base">datasets.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ts_datasets.base">datasets.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ts_datasets.base.BaseDataset"><code class="docutils literal notranslate"><span class="pre">BaseDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ts_datasets.base.BaseDataset.time_series"><code class="docutils literal notranslate"><span class="pre">BaseDataset.time_series</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ts_datasets.base.BaseDataset.metadata"><code class="docutils literal notranslate"><span class="pre">BaseDataset.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ts_datasets.base.BaseDataset.describe"><code class="docutils literal notranslate"><span class="pre">BaseDataset.describe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
@@ -126,7 +135,7 @@ there is no need to specify a <code class="docutils literal notranslate"><span c
 <a class="reference internal" href="#ts_datasets.base.BaseDataset" title="ts_datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.base.BaseDataset</span></code></a>, and the features for time series anomaly detection data loaders
 are outlined in the API doc for <a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset" title="ts_datasets.anomaly.TSADBaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.TSADBaseDataset</span></code></a>.</p>
 <p>The easiest way to load a custom dataset is to use either the <a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset" title="ts_datasets.forecast.CustomDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.forecast.CustomDataset</span></code></a> or
-<a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset" title="ts_datasets.anomaly.CustomAnomalyDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.CustomAnomalyDataset</span></code></a> classes. Please review the <a class="reference internal" href="examples/CustomDataset.html"><span class="doc">tutorial</span></a>
+<a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset" title="ts_datasets.anomaly.CustomAnomalyDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ts_datasets.anomaly.CustomAnomalyDataset</span></code></a> classes. Please review the <a class="reference internal" href="tutorials/CustomDataset.html"><span class="doc">tutorial</span></a>
 to get started.</p>
 <span class="target" id="module-ts_datasets"></span><table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -146,8 +155,73 @@ to get started.</p>
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ts_datasets.anomaly.html">ts_datasets.anomaly package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ts_datasets.forecast.html">ts_datasets.forecast package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.anomaly.html">ts_datasets.anomaly package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.get_dataset"><code class="docutils literal notranslate"><span class="pre">get_dataset()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset"><code class="docutils literal notranslate"><span class="pre">TSADBaseDataset</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset.max_lead_sec"><code class="docutils literal notranslate"><span class="pre">TSADBaseDataset.max_lead_sec</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset.max_lag_sec"><code class="docutils literal notranslate"><span class="pre">TSADBaseDataset.max_lag_sec</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.TSADBaseDataset.describe"><code class="docutils literal notranslate"><span class="pre">TSADBaseDataset.describe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset"><code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.metadata_cols"><code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset.metadata_cols</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.CustomAnomalyDataset.check_ts_for_metadata"><code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset.check_ts_for_metadata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition"><code class="docutils literal notranslate"><span class="pre">IOpsCompetition</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.IOpsCompetition.max_lag_sec"><code class="docutils literal notranslate"><span class="pre">IOpsCompetition.max_lag_sec</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB"><code class="docutils literal notranslate"><span class="pre">NAB</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.valid_subsets"><code class="docutils literal notranslate"><span class="pre">NAB.valid_subsets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.load_labels"><code class="docutils literal notranslate"><span class="pre">NAB.load_labels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.max_lead_sec"><code class="docutils literal notranslate"><span class="pre">NAB.max_lead_sec</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.NAB.download"><code class="docutils literal notranslate"><span class="pre">NAB.download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.Synthetic"><code class="docutils literal notranslate"><span class="pre">Synthetic</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.Synthetic.base_ts_subsets"><code class="docutils literal notranslate"><span class="pre">Synthetic.base_ts_subsets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.Synthetic.anomaly_subsets"><code class="docutils literal notranslate"><span class="pre">Synthetic.anomaly_subsets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.Synthetic.valid_subsets"><code class="docutils literal notranslate"><span class="pre">Synthetic.valid_subsets</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.UCR"><code class="docutils literal notranslate"><span class="pre">UCR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.UCR.download"><code class="docutils literal notranslate"><span class="pre">UCR.download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMD"><code class="docutils literal notranslate"><span class="pre">SMD</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMD.filename"><code class="docutils literal notranslate"><span class="pre">SMD.filename</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMD.url"><code class="docutils literal notranslate"><span class="pre">SMD.url</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMD.valid_subsets"><code class="docutils literal notranslate"><span class="pre">SMD.valid_subsets</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMAP"><code class="docutils literal notranslate"><span class="pre">SMAP</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMAP.url"><code class="docutils literal notranslate"><span class="pre">SMAP.url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.MSL"><code class="docutils literal notranslate"><span class="pre">MSL</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.anomaly.html#ts_datasets.anomaly.MSL.url"><code class="docutils literal notranslate"><span class="pre">MSL.url</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.forecast.html">ts_datasets.forecast package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.get_dataset"><code class="docutils literal notranslate"><span class="pre">get_dataset()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset"><code class="docutils literal notranslate"><span class="pre">CustomDataset</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.metadata_cols"><code class="docutils literal notranslate"><span class="pre">CustomDataset.metadata_cols</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.check_ts_for_metadata"><code class="docutils literal notranslate"><span class="pre">CustomDataset.check_ts_for_metadata()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.M4"><code class="docutils literal notranslate"><span class="pre">M4</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.M4.valid_subsets"><code class="docutils literal notranslate"><span class="pre">M4.valid_subsets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.M4.url"><code class="docutils literal notranslate"><span class="pre">M4.url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.EnergyPower"><code class="docutils literal notranslate"><span class="pre">EnergyPower</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.SeattleTrail"><code class="docutils literal notranslate"><span class="pre">SeattleTrail</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.forecast.html#ts_datasets.forecast.SolarPlant"><code class="docutils literal notranslate"><span class="pre">SolarPlant</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

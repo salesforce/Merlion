@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly package &mdash; Merlion 1.3.0 documentation</title>
+  <title>merlion.models.anomaly package &mdash; Merlion 1.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -57,19 +58,226 @@
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig"><code class="docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.enable_threshold"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.enable_threshold</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.enable_calibrator"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.enable_calibrator</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.calibrator"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.calibrator</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.threshold"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.threshold</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.post_rule"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.post_rule</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.from_dict"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.from_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.NoCalibrationDetectorConfig.calibrator"><code class="docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig.calibrator</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.NoCalibrationDetectorConfig.enable_calibrator"><code class="docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig.enable_calibrator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase"><code class="docutils literal notranslate"><span class="pre">DetectorBase</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.config_class"><code class="docutils literal notranslate"><span class="pre">DetectorBase.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.threshold"><code class="docutils literal notranslate"><span class="pre">DetectorBase.threshold</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.calibrator"><code class="docutils literal notranslate"><span class="pre">DetectorBase.calibrator</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.post_rule"><code class="docutils literal notranslate"><span class="pre">DetectorBase.post_rule</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.train"><code class="docutils literal notranslate"><span class="pre">DetectorBase.train()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">DetectorBase.train_post_process()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">DetectorBase.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">DetectorBase.get_anomaly_label()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">DetectorBase.get_figure()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">DetectorBase.plot_anomaly()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">DetectorBase.plot_anomaly_plotly()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin"><code class="docutils literal notranslate"><span class="pre">MultipleTimeseriesDetectorMixin</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple"><code class="docutils literal notranslate"><span class="pre">MultipleTimeseriesDetectorMixin.train_multiple()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.fixed_period"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.fixed_period</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.trends"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.trends</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.determine_train_window"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.determine_train_window()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.config_class"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.require_univariate"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.train_window"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.train_window</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.fixed_period"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.fixed_period</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.has_fixed_period"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.has_fixed_period</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.data"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.data</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.get_relevant"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.get_relevant()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.get_baseline"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.get_baseline()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.update"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.update()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaseline.get_baseline_figure"><code class="docutils literal notranslate"><span class="pre">DynamicBaseline.get_baseline_figure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.Trend"><code class="docutils literal notranslate"><span class="pre">Trend</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Trend.daily"><code class="docutils literal notranslate"><span class="pre">Trend.daily</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Trend.weekly"><code class="docutils literal notranslate"><span class="pre">Trend.weekly</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Trend.monthly"><code class="docutils literal notranslate"><span class="pre">Trend.monthly</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segment"><code class="docutils literal notranslate"><span class="pre">Segment</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segment.add"><code class="docutils literal notranslate"><span class="pre">Segment.add()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segment.drop"><code class="docutils literal notranslate"><span class="pre">Segment.drop()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segment.score"><code class="docutils literal notranslate"><span class="pre">Segment.score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter"><code class="docutils literal notranslate"><span class="pre">Segmenter</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.day_delta"><code class="docutils literal notranslate"><span class="pre">Segmenter.day_delta</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.hour_delta"><code class="docutils literal notranslate"><span class="pre">Segmenter.hour_delta</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.min_delta"><code class="docutils literal notranslate"><span class="pre">Segmenter.min_delta</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.zero_delta"><code class="docutils literal notranslate"><span class="pre">Segmenter.zero_delta</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.reset"><code class="docutils literal notranslate"><span class="pre">Segmenter.reset()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.wind_delta"><code class="docutils literal notranslate"><span class="pre">Segmenter.wind_delta</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.trends"><code class="docutils literal notranslate"><span class="pre">Segmenter.trends</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.trend"><code class="docutils literal notranslate"><span class="pre">Segmenter.trend</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.window_key"><code class="docutils literal notranslate"><span class="pre">Segmenter.window_key()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.weekday_key"><code class="docutils literal notranslate"><span class="pre">Segmenter.weekday_key()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.day_key"><code class="docutils literal notranslate"><span class="pre">Segmenter.day_key()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.segment_key"><code class="docutils literal notranslate"><span class="pre">Segmenter.segment_key()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.add"><code class="docutils literal notranslate"><span class="pre">Segmenter.add()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.drop"><code class="docutils literal notranslate"><span class="pre">Segmenter.drop()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.score"><code class="docutils literal notranslate"><span class="pre">Segmenter.score()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.Segmenter.get_baseline"><code class="docutils literal notranslate"><span class="pre">Segmenter.get_baseline()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStatsConfig"><code class="docutils literal notranslate"><span class="pre">WindStatsConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats"><code class="docutils literal notranslate"><span class="pre">WindStats</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats.config_class"><code class="docutils literal notranslate"><span class="pre">WindStats.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">WindStats.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats.require_univariate"><code class="docutils literal notranslate"><span class="pre">WindStats.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest"><code class="docutils literal notranslate"><span class="pre">IsolationForest</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.config_class"><code class="docutils literal notranslate"><span class="pre">IsolationForest.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton"><code class="docutils literal notranslate"><span class="pre">JVMSingleton</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway"><code class="docutils literal notranslate"><span class="pre">JVMSingleton.gateway()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig.java_params</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.online_updates</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidualConfig"><code class="docutils literal notranslate"><span class="pre">SpectralResidualConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual"><code class="docutils literal notranslate"><span class="pre">SpectralResidual</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual.config_class"><code class="docutils literal notranslate"><span class="pre">SpectralResidual.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">SpectralResidual.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual.require_univariate"><code class="docutils literal notranslate"><span class="pre">SpectralResidual.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual.target_seq_index"><code class="docutils literal notranslate"><span class="pre">SpectralResidual.target_seq_index</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThresholdConfig"><code class="docutils literal notranslate"><span class="pre">StatThresholdConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold"><code class="docutils literal notranslate"><span class="pre">StatThreshold</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold.config_class"><code class="docutils literal notranslate"><span class="pre">StatThreshold.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">StatThreshold.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold.require_univariate"><code class="docutils literal notranslate"><span class="pre">StatThreshold.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig"><code class="docutils literal notranslate"><span class="pre">ZMSConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.full_transform"><code class="docutils literal notranslate"><span class="pre">ZMSConfig.full_transform</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">ZMSConfig.to_dict()</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.n_lags"><code class="docutils literal notranslate"><span class="pre">ZMSConfig.n_lags</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS"><code class="docutils literal notranslate"><span class="pre">ZMS</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.config_class"><code class="docutils literal notranslate"><span class="pre">ZMS.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">ZMS.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.require_univariate"><code class="docutils literal notranslate"><span class="pre">ZMS.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.n_lags"><code class="docutils literal notranslate"><span class="pre">ZMS.n_lags</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.lag_scales"><code class="docutils literal notranslate"><span class="pre">ZMS.lag_scales</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.lag_inflation"><code class="docutils literal notranslate"><span class="pre">ZMS.lag_inflation</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.adjust_z_scores"><code class="docutils literal notranslate"><span class="pre">ZMS.adjust_z_scores</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMS.train"><code class="docutils literal notranslate"><span class="pre">ZMS.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoderConfig"><code class="docutils literal notranslate"><span class="pre">AutoEncoderConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder"><code class="docutils literal notranslate"><span class="pre">AutoEncoder</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder.config_class"><code class="docutils literal notranslate"><span class="pre">AutoEncoder.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">AutoEncoder.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder.require_univariate"><code class="docutils literal notranslate"><span class="pre">AutoEncoder.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.vae.VAEConfig"><code class="docutils literal notranslate"><span class="pre">VAEConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE"><code class="docutils literal notranslate"><span class="pre">VAE</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE.config_class"><code class="docutils literal notranslate"><span class="pre">VAE.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">VAE.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE.require_univariate"><code class="docutils literal notranslate"><span class="pre">VAE.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMMConfig"><code class="docutils literal notranslate"><span class="pre">DAGMMConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM"><code class="docutils literal notranslate"><span class="pre">DAGMM</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM.config_class"><code class="docutils literal notranslate"><span class="pre">DAGMM.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">DAGMM.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM.require_univariate"><code class="docutils literal notranslate"><span class="pre">DAGMM.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM.train_multiple"><code class="docutils literal notranslate"><span class="pre">DAGMM.train_multiple()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMEDConfig"><code class="docutils literal notranslate"><span class="pre">LSTMEDConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED"><code class="docutils literal notranslate"><span class="pre">LSTMED</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMED.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">LSTMED.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED.require_univariate"><code class="docutils literal notranslate"><span class="pre">LSTMED.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetectorConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector.config_class"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector.require_univariate"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
@@ -262,18 +470,105 @@ default is provided for all models.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train_post_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_label()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_figure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly_plotly()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast_plotly()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates"><code class="docutils literal notranslate"><span class="pre">MSESDetector.online_updates</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">MSESDetector.get_anomaly_score()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="docutils literal notranslate"><span class="pre">ChangeKind</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto"><code class="docutils literal notranslate"><span class="pre">ChangeKind.Auto</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift"><code class="docutils literal notranslate"><span class="pre">ChangeKind.LevelShift</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind.TrendChange"><code class="docutils literal notranslate"><span class="pre">ChangeKind.TrendChange</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig.change_kind</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="docutils literal notranslate"><span class="pre">BOCPD</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.config_class"><code class="docutils literal notranslate"><span class="pre">BOCPD.config_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_even_sampling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_univariate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.last_train_time"><code class="docutils literal notranslate"><span class="pre">BOCPD.last_train_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.n_seen"><code class="docutils literal notranslate"><span class="pre">BOCPD.n_seen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPD.change_kind</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior"><code class="docutils literal notranslate"><span class="pre">BOCPD.cp_prior</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.lag"><code class="docutils literal notranslate"><span class="pre">BOCPD.lag</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood"><code class="docutils literal notranslate"><span class="pre">BOCPD.min_likelihood</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.train_pre_process"><code class="docutils literal notranslate"><span class="pre">BOCPD.train_pre_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.update"><code class="docutils literal notranslate"><span class="pre">BOCPD.update()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.BOCPD.get_figure"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_figure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -432,14 +727,14 @@ when post-processing anomaly scores</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorBase.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorBase.train" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorBase.train" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>train_config</strong> – Additional training configs, if needed. Only required for some models.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the model’s post-rule. The model’s default
 post-rule train config is used if none is supplied here.</p></li>
 </ul>
@@ -524,7 +819,7 @@ model’s post-rule</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorBase.get_figure">
-<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorBase.get_figure" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.DetectorBase.get_figure" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -609,17 +904,15 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 <p>Abstract mixin for anomaly detectors supporting training on multiple time series.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.base.MultipleTimeseriesDetectorMixin.train_multiple" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the anomaly detector (unsupervised) and its post-rule
 (supervised, if labels are given) on the input multiple time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>multiple_train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are
-anomalous. Optional.</p></li>
-<li><p><strong>train_config</strong> – Additional training configs, if needed. Only
-required for some models.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
+<li><p><strong>train_config</strong> – Additional training configs, if needed. Only required for some models.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the
 model’s post-rule. The model’s default post-rule train config is
 used if none is supplied here.</p></li>
@@ -1529,14 +1822,14 @@ of all the models of normalcy as the overall anomaly score.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.zms.ZMS.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.zms.ZMS.train" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.zms.ZMS.train" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>train_config</strong> – Additional training configs, if needed. Only required for some models.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the model’s post-rule. The model’s default
 post-rule train config is used if none is supplied here.</p></li>
 </ul>
@@ -1795,15 +2088,13 @@ Deep Autoencoding Gaussian Mixture Model for Unsupervised Anomaly Detection. 201
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dagmm.DAGMM.train_multiple">
-<span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dagmm.DAGMM.train_multiple" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiple_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dagmm.DAGMM.train_multiple" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the anomaly detector (unsupervised) and its post-rule
 (supervised, if labels are given) on the input multiple time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>multiple_train_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are
-anomalous. Optional.</p></li>
 <li><p><strong>train_config</strong> – <p>Additional training config dict with keys:</p>
 <ul>
 <li><div class="line-block">
@@ -1818,6 +2109,7 @@ anomalous. Optional.</p></li>
 </li>
 </ul>
 </p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]) – a list of <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are  anomalous. Optional.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the
 model’s post-rule. The model’s default post-rule train config is
 used if none is supplied here.</p></li>
