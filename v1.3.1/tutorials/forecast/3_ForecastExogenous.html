@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forecasting With Exogenous Regressors &mdash; Merlion 1.3.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Adding a New Forecasting Model" href="4_ForecastNewModel.html" />
+    <link rel="prev" title="Multivariate Time Series Forecasting" href="2_ForecastMultivariate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v1.3.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../tutorials.html#forecasting">Forecasting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="0_ForecastIntro.html">A Gentle Introduction to Forecasting in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_ForecastFeatures.html">How to Use Forecasters in Merlion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_ForecastMultivariate.html">Multivariate Time Series Forecasting</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Forecasting With Exogenous Regressors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_ForecastNewModel.html">Adding a New Forecasting Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+      <li>Forecasting With Exogenous Regressors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/tutorials/forecast/3_ForecastExogenous.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Forecasting-With-Exogenous-Regressors">
+<h1>Forecasting With Exogenous Regressors<a class="headerlink" href="#Forecasting-With-Exogenous-Regressors" title="Permalink to this heading"></a></h1>
+<p>Consider a multivariate time series <span class="math notranslate nohighlight">\(X^{(1)}, \ldots, X^{(t)}\)</span>, where each <span class="math notranslate nohighlight">\(X^{(i)} \in \mathbb{R}^d\)</span> is a d-dimensional vector. In multivariate forecasting, our goal is to predict the future values of the k’th univariate <span class="math notranslate nohighlight">\(X_k^{(t+1)}, \ldots, X_k^{(t+h)}\)</span>.</p>
+<p>Exogenous regressors <span class="math notranslate nohighlight">\(Y^{(i)}\)</span> are a set of additional variables whose values we know a priori. The task of forecasting with exogenous regressors is to predict our target univariate <span class="math notranslate nohighlight">\(X_k^{(t+1)}, \ldots, X_k^{(t+h)}\)</span>, conditioned on - The past values of the time series <span class="math notranslate nohighlight">\(X^{(1)}, \ldots, X^{(t)}\)</span> - The past values of the exogenous regressors <span class="math notranslate nohighlight">\(Y^{(1)}, \ldots, Y^{(t)}\)</span> - The <em>future</em> values of the exogenous regressors <span class="math notranslate nohighlight">\(Y^{(t+1)}, \ldots, Y^{(t+h)}\)</span></p>
+<p>For example, one can consider the task of predicting the sales of a specific item at a store. Endogenous variables <span class="math notranslate nohighlight">\(X^{(i)} \in \mathbb{R}^4\)</span> may contain the number of units sold (the target univariate), the temperature outside, the consumer price index, and the current unemployemnt rate. Exogenous variables <span class="math notranslate nohighlight">\(Y^{(i)} \in \mathbb{R}^6\)</span> are variables that the store has control over or prior knowledge of. They may include whether a particular day is a holiday, and various information
+about the sort of markdowns the store is running.</p>
+<p>To be more concrete, let’s show this with some real data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># This is the same dataset used in the custom dataset tutorial</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
+<span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart_mini.csv&quot;</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomDataset</span><span class="p">(</span><span class="n">rootdir</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span> <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Store&quot;</span><span class="p">,</span> <span class="s2">&quot;Dept&quot;</span><span class="p">],</span> <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.10</span><span class="p">)</span>
+<span class="n">ts</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Weekly_Sales</th>
+      <th>Temperature</th>
+      <th>Fuel_Price</th>
+      <th>MarkDown1</th>
+      <th>MarkDown2</th>
+      <th>MarkDown3</th>
+      <th>MarkDown4</th>
+      <th>MarkDown5</th>
+      <th>CPI</th>
+      <th>Unemployment</th>
+      <th>IsHoliday</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2010-02-05</th>
+      <td>24924.50</td>
+      <td>42.31</td>
+      <td>2.572</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.096358</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-02-12</th>
+      <td>46039.49</td>
+      <td>38.51</td>
+      <td>2.548</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.242170</td>
+      <td>8.106</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2010-02-19</th>
+      <td>41595.55</td>
+      <td>39.93</td>
+      <td>2.514</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.289143</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-02-26</th>
+      <td>19403.54</td>
+      <td>46.63</td>
+      <td>2.561</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.319643</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-03-05</th>
+      <td>21827.90</td>
+      <td>46.50</td>
+      <td>2.625</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.350143</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2012-09-28</th>
+      <td>18947.81</td>
+      <td>76.08</td>
+      <td>3.666</td>
+      <td>3666.27</td>
+      <td>7.64</td>
+      <td>1.65</td>
+      <td>1417.96</td>
+      <td>4744.28</td>
+      <td>222.981658</td>
+      <td>6.908</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-05</th>
+      <td>21904.47</td>
+      <td>68.55</td>
+      <td>3.617</td>
+      <td>8077.89</td>
+      <td>NaN</td>
+      <td>18.22</td>
+      <td>3617.43</td>
+      <td>3626.14</td>
+      <td>223.181477</td>
+      <td>6.573</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-12</th>
+      <td>22764.01</td>
+      <td>62.99</td>
+      <td>3.601</td>
+      <td>2086.18</td>
+      <td>NaN</td>
+      <td>8.11</td>
+      <td>602.36</td>
+      <td>5926.45</td>
+      <td>223.381296</td>
+      <td>6.573</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-19</th>
+      <td>24185.27</td>
+      <td>67.97</td>
+      <td>3.594</td>
+      <td>950.33</td>
+      <td>NaN</td>
+      <td>4.93</td>
+      <td>80.25</td>
+      <td>2312.85</td>
+      <td>223.425723</td>
+      <td>6.573</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-26</th>
+      <td>27390.81</td>
+      <td>69.16</td>
+      <td>3.506</td>
+      <td>2585.85</td>
+      <td>31.75</td>
+      <td>6.00</td>
+      <td>1057.16</td>
+      <td>1305.01</td>
+      <td>223.444251</td>
+      <td>6.573</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>143 rows × 11 columns</p>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="c1"># Get the endogenous variables X and split them into train &amp; test</span>
+<span class="n">endog</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[[</span><span class="s2">&quot;Weekly_Sales&quot;</span><span class="p">,</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;CPI&quot;</span><span class="p">,</span> <span class="s2">&quot;Unemployment&quot;</span><span class="p">]]</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">endog</span><span class="p">[</span><span class="n">md</span><span class="o">.</span><span class="n">trainval</span><span class="p">])</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">endog</span><span class="p">[</span><span class="o">~</span><span class="n">md</span><span class="o">.</span><span class="n">trainval</span><span class="p">])</span>
+
+<span class="c1"># Get the exogenous variables Y</span>
+<span class="n">exog</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[[</span><span class="s2">&quot;IsHoliday&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown1&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown2&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown3&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown4&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown5&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<p>Here, our task is to predict the weekly sales. We would like our model to also account for variables which may have an impact on consumer demand (i.e. temperature, consumer price index, and unemployment), as knowledge of these variables could improve the quality of our sales forecast. This would be a multivariate forecasting problem, covered <a class="reference internal" href="2_ForecastMultivariate.html"><span class="doc">here</span></a>.</p>
+<p>In principle, we could add markdowns and holidays to the multivariate model. However, as a retailer, we know a priori which days are holidays, and we ourselves control the markdowns. In many cases, we can get better forecasts by providing the future values of these variables in addition to the past values. Moreover, we may wish to model how changing the future markdowns would change the future sales. This is why we should model these variables as exogenous regressors instead.</p>
+<p>All Merlion forecasters support an API which accepts exogenous regressors at both training and inference time, though only some models actually support the feature. Using the feature is as easy as specifying an optional argument <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> to both <code class="docutils literal notranslate"><span class="pre">train()</span></code> and <code class="docutils literal notranslate"><span class="pre">forecast()</span></code>. We show how to use the feature for the popular <code class="docutils literal notranslate"><span class="pre">Prophet</span></code> model below, and demonstrate that adding exogenous regressors can improve the quality of the forecast.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
+<span class="kn">from</span> <span class="nn">merlion.models.forecast.prophet</span> <span class="kn">import</span> <span class="n">Prophet</span><span class="p">,</span> <span class="n">ProphetConfig</span>
+
+<span class="c1"># Train a model without exogenous data</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">target_seq_index</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="n">pred</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)</span>
+<span class="n">smape</span> <span class="o">=</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">target_seq_index</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">target_seq_index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sMAPE (w/o exog) = </span><span class="si">{</span><span class="n">smape</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Train a model with exogenous data</span>
+<span class="n">exog_model</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">target_seq_index</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">exog_model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">exog_data</span><span class="o">=</span><span class="n">exog</span><span class="p">)</span>
+<span class="n">exog_pred</span><span class="p">,</span> <span class="n">exog_err</span> <span class="o">=</span> <span class="n">exog_model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">,</span> <span class="n">exog_data</span><span class="o">=</span><span class="n">exog</span><span class="p">)</span>
+<span class="n">exog_smape</span> <span class="o">=</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">exog_pred</span><span class="p">,</span> <span class="n">target_seq_index</span><span class="o">=</span><span class="n">exog_model</span><span class="o">.</span><span class="n">target_seq_index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sMAPE (w/ exog)  = </span><span class="si">{</span><span class="n">exog_smape</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+12:31:47 - cmdstanpy - INFO - Chain [1] start processing
+12:31:47 - cmdstanpy - INFO - Chain [1] done processing
+12:31:48 - cmdstanpy - INFO - Chain [1] start processing
+12:31:48 - cmdstanpy - INFO - Chain [1] done processing
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+sMAPE (w/o exog) = 8.21
+sMAPE (w/ exog)  = 7.67
+</pre></div></div>
+</div>
+<p>Before we wrap up this tutorial, we note that the exogenous variables contain a lot of missing data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">display</span><span class="p">(</span><span class="n">exog</span><span class="o">.</span><span class="n">to_pd</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IsHoliday</th>
+      <th>MarkDown1</th>
+      <th>MarkDown2</th>
+      <th>MarkDown3</th>
+      <th>MarkDown4</th>
+      <th>MarkDown5</th>
+    </tr>
+    <tr>
+      <th>time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2010-02-05</th>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2010-02-12</th>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2010-02-19</th>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2010-02-26</th>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2010-03-05</th>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2012-09-28</th>
+      <td>0.0</td>
+      <td>3666.27</td>
+      <td>7.64</td>
+      <td>1.65</td>
+      <td>1417.96</td>
+      <td>4744.28</td>
+    </tr>
+    <tr>
+      <th>2012-10-05</th>
+      <td>0.0</td>
+      <td>8077.89</td>
+      <td>NaN</td>
+      <td>18.22</td>
+      <td>3617.43</td>
+      <td>3626.14</td>
+    </tr>
+    <tr>
+      <th>2012-10-12</th>
+      <td>0.0</td>
+      <td>2086.18</td>
+      <td>NaN</td>
+      <td>8.11</td>
+      <td>602.36</td>
+      <td>5926.45</td>
+    </tr>
+    <tr>
+      <th>2012-10-19</th>
+      <td>0.0</td>
+      <td>950.33</td>
+      <td>NaN</td>
+      <td>4.93</td>
+      <td>80.25</td>
+      <td>2312.85</td>
+    </tr>
+    <tr>
+      <th>2012-10-26</th>
+      <td>0.0</td>
+      <td>2585.85</td>
+      <td>31.75</td>
+      <td>6.00</td>
+      <td>1057.16</td>
+      <td>1305.01</td>
+    </tr>
+  </tbody>
+</table>
+<p>143 rows × 6 columns</p>
+</div></div>
+</div>
+<p>Behind the scenes, Merlion models will apply an optional <code class="docutils literal notranslate"><span class="pre">exog_transform</span></code> to the exogenous variables, and they will then resample the exogenous variables to the same timestamps as the endogenous variables. This resampling is achieved using the <code class="docutils literal notranslate"><span class="pre">exog_missing_value_policy</span></code> and <code class="docutils literal notranslate"><span class="pre">exog_aggregation_policy</span></code>, which can be specified in the config of any model which accepts exogenous regressors. We can see the default values for each of these parameters by inspecting the config:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_transform:            </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_transform</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_missing_value_policy: </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_missing_value_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_aggregation_policy:   </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_aggregation_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Default exog_transform:            Identity()
+Default exog_missing_value_policy: MissingValuePolicy.ZFill
+Default exog_aggregation_policy:   AggregationPolicy.Mean
+</pre></div></div>
+</div>
+<p>So in this case, we first apply the identity transform to the exogenous data. Then, we impute missing values by filling them with zeros (<code class="docutils literal notranslate"><span class="pre">ZFill</span></code>), and we downsample the exogenous data by taking the <code class="docutils literal notranslate"><span class="pre">Mean</span></code> of any relevant windows.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_ForecastMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Forecasting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_ForecastNewModel.html" class="btn btn-neutral float-right" title="Adding a New Forecasting Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v1.3.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../../v1.3.1/index.html">v1.3.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
