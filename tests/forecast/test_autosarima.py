@@ -796,8 +796,7 @@ class TestAutoSarima(unittest.TestCase):
                 seasonal_order=(2, 1, 1, 0),
                 max_forecast_steps=self.max_forecast_steps,
                 maxiter=5,
-                transform=dict(name="Identity") if seasonality_layer else None,
-                model=dict(name="SarimaDetector", enable_threshold=False, transform=dict(name="Identity")),
+                model=dict(name="SarimaDetector", enable_threshold=False),
             )
         )
         if seasonality_layer:
@@ -805,9 +804,7 @@ class TestAutoSarima(unittest.TestCase):
         else:
             self.model = model
 
-        train_scores = self.model.train(
-            self.train_data, train_config={"enforce_stationarity": False, "enforce_invertibility": False}
-        )
+        self.model.train(self.train_data)
 
         # check automatic periodicity detection
         k = self.test_data.names[0]
@@ -835,7 +832,7 @@ class TestAutoSarima(unittest.TestCase):
         y_hat = pred.univariates[pred.names[0]].np_values
         smape = np.mean(200.0 * np.abs((y_true - y_hat) / (np.abs(y_true) + np.abs(y_hat)))).item()
         logger.info(f"sMAPE = {smape:.4f}")
-        self.assertAlmostEqual(smape, expected_sMAPE, delta=0.0001)
+        self.assertAlmostEqual(smape, expected_sMAPE, places=3)
 
         # check smape in evalution
         smape_compare = ForecastMetric.sMAPE.value(self.test_data, pred)
@@ -850,12 +847,12 @@ class TestAutoSarima(unittest.TestCase):
     def test_autosarima(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_autosarima\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.4130)
+        self.run_test(auto_pqPQ=False, seasonality_layer=False, expected_sMAPE=3.806)
 
     def test_seasonality_layer(self):
         print("-" * 80)
         logger.info("TestAutoSarima.test_seasonality_layer\n" + "-" * 80 + "\n")
-        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.4130)
+        self.run_test(auto_pqPQ=False, seasonality_layer=True, expected_sMAPE=3.806)
 
 
 if __name__ == "__main__":

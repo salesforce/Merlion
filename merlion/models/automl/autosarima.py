@@ -21,6 +21,7 @@ from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
 
+
 # FIXME: convert to information criterion version
 class AutoSarimaConfig(SeasonalityConfig):
     """
@@ -98,7 +99,6 @@ class AutoSarima(SeasonalityLayer):
 
     def _generate_sarima_parameters(self, train_data: TimeSeries) -> dict:
         y = train_data.univariates[self.target_name].np_values
-        X = None
 
         order = list(self.config.order)
         seasonal_order = list(self.config.seasonal_order)
@@ -206,7 +206,6 @@ class AutoSarima(SeasonalityLayer):
 
         return_dict = dict(
             y=y,
-            X=X,
             p=p,
             d=d,
             q=q,
@@ -279,18 +278,17 @@ class AutoSarima(SeasonalityLayer):
         return iter([{"action": action, "theta": [order, seasonal_order, trend], "val_dict": val_dict}])
 
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
     ) -> Tuple[Any, Optional[Sarima], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
 
         # preprocess
         train_config = copy(train_config) if train_config is not None else {}
-        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
-            train_config[k] = train_config.get(k, v)
+        if exog_data is not None:
+            train_config["exog"] = exog_data.to_pd()
 
         # read from val_dict
         theta_value = next(thetas)
         val_dict = theta_value["val_dict"]
-        X = val_dict["X"]
         y = val_dict["y"]
         method = val_dict["method"]
         maxiter = val_dict["maxiter"]
@@ -346,7 +344,6 @@ class AutoSarima(SeasonalityLayer):
                 seasonal_order = [0, 0, 0, 0]
             best_model_fit, fit_time, ic = autosarima_utils._fit_sarima_model(
                 y=y,
-                X=X,
                 order=order,
                 seasonal_order=seasonal_order,
                 trend=trend,

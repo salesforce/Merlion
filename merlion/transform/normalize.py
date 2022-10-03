@@ -9,7 +9,7 @@ Transforms that rescale the input or otherwise normalize it.
 """
 from collections import OrderedDict
 import logging
-from typing import Iterable
+from typing import Iterable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -31,10 +31,13 @@ class AbsVal(TransformBase):
     @property
     def requires_inversion_state(self):
         """
-        ``False`` because the "pseudo-inverse" is just the identity (i.e. we
-        lose sign information).
+        ``False`` because the "pseudo-inverse" is just the identity (i.e. we lose sign information).
         """
         return False
+
+    @property
+    def identity_inversion(self):
+        return True
 
     def train(self, time_series: TimeSeries):
         pass
@@ -77,20 +80,16 @@ class Rescale(InvertibleTransformBase):
         if not self.is_trained:
             raise RuntimeError(f"Cannot use {type(self).__name__} without training it first!")
 
-        d = time_series.dim
-        bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
-        scale = self.scale if isinstance(self.scale, Iterable) else [self.scale] * d
-        assert len(bias) == d and len(scale) == d, (
-            f"Expected {len(bias)}-dimensional time series to match scale and "
-            f"bias, but got {d}-dimensional time series instead."
-        )
+        bias = self.bias if isinstance(self.bias, Mapping) else {name: self.bias for name in time_series.names}
+        scale = self.scale if isinstance(self.scale, Mapping) else {name: self.scale for name in time_series.names}
+        assert set(time_series.names).issubset(bias.keys()) and set(time_series.names).issubset(scale.keys())
 
         new_vars = OrderedDict()
-        for i, (name, var) in enumerate(time_series.items()):
+        for name, var in time_series.items():
             if self.normalize_bias:
-                var = var - bias[i]
+                var = var - bias[name]
             if self.normalize_scale:
-                var = var / scale[i]
+                var = var / scale[name]
             new_vars[name] = UnivariateTimeSeries.from_pd(var)
 
         ret = TimeSeries(new_vars, check_aligned=False)
@@ -100,20 +99,16 @@ class Rescale(InvertibleTransformBase):
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         if not self.is_trained:
             raise RuntimeError(f"Cannot use {type(self).__name__} without training it first!")
-        d = time_series.dim
-        bias = self.bias if isinstance(self.bias, Iterable) else [self.bias] * d
-        scale = self.scale if isinstance(self.scale, Iterable) else [self.scale] * d
-        assert len(bias) == d and len(scale) == d, (
-            f"Expected {len(bias)}-dimensional time series to match scale and "
-            f"bias, but got {d}-dimensional time series instead."
-        )
+        bias = self.bias if isinstance(self.bias, Mapping) else {name: self.bias for name in time_series.names}
+        scale = self.scale if isinstance(self.scale, Mapping) else {name: self.scale for name in time_series.names}
+        assert set(time_series.names).issubset(bias.keys()) and set(time_series.names).issubset(scale.keys())
 
         new_vars = OrderedDict()
-        for i, (name, var) in enumerate(time_series.items()):
+        for name, var in time_series.items():
             if self.normalize_scale:
-                var = var * scale[i]
+                var = var * scale[name]
             if self.normalize_bias:
-                var = var + bias[i]
+                var = var + bias[name]
             new_vars[name] = UnivariateTimeSeries.from_pd(var)
 
         ret = TimeSeries(new_vars, check_aligned=False)
@@ -131,11 +126,11 @@ class MeanVarNormalize(Rescale):
         super().__init__(bias, scale, normalize_bias, normalize_scale)
 
     def train(self, time_series: TimeSeries):
-        bias, scale = [], []
-        for var in time_series.univariates:
+        bias, scale = {}, {}
+        for name, var in time_series.items():
             scaler = StandardScaler().fit(var.np_values.reshape(-1, 1))
-            bias.append(float(scaler.mean_))
-            scale.append(float(scaler.scale_))
+            bias[name] = float(scaler.mean_)
+            scale[name] = float(scaler.scale_)
         self.bias = bias
         self.scale = scale
 
@@ -150,11 +145,11 @@ class MinMaxNormalize(Rescale):
         super().__init__(bias, scale, normalize_bias, normalize_scale)
 
     def train(self, time_series: TimeSeries):
-        bias, scale = [], []
-        for var in time_series.univariates:
+        bias, scale = {}, {}
+        for name, var in time_series.items():
             minval, maxval = var.min(), var.max()
-            bias.append(minval)
-            scale.append(np.maximum(1e-8, maxval - minval))
+            bias[name] = minval
+            scale[name] = np.maximum(1e-8, maxval - minval)
         self.bias = bias
         self.scale = scale
 
@@ -170,8 +165,8 @@ class BoxCoxTransform(InvertibleTransformBase):
     def __init__(self, lmbda=None, offset=0.0):
         super().__init__()
         if lmbda is not None:
-            if isinstance(lmbda, list):
-                assert all(isinstance(x, (int, float)) for x in lmbda)
+            if isinstance(lmbda, dict):
+                assert all(isinstance(x, (int, float)) for x in lmbda.values())
             else:
                 assert isinstance(lmbda, (int, float))
         self.lmbda = lmbda
@@ -186,24 +181,25 @@ class BoxCoxTransform(InvertibleTransformBase):
 
     def train(self, time_series: TimeSeries):
         if self.lmbda is None:
-            self.lmbda = [scipy.stats.boxcox(var.np_values + self.offset)[1] for var in time_series.univariates]
+            self.lmbda = {name: scipy.stats.boxcox(var.np_values + self.offset)[1] for name, var in time_series.items()}
             logger.info(f"Chose Box-Cox lambda = {self.lmbda}")
-        elif not isinstance(self.lmbda, list):
-            self.lmbda = [self.lmbda] * time_series.dim
+        elif not isinstance(self.lmbda, Mapping):
+            self.lmbda = {name: self.lmbda for name in time_series.names}
         assert len(self.lmbda) == time_series.dim
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
-        new_vars = []
-        for lmbda, var in zip(self.lmbda, time_series.univariates):
-            y = scipy.special.boxcox(var + self.offset, lmbda)
+        new_vars = OrderedDict()
+        for name, var in time_series.items():
+            y = scipy.special.boxcox(var + self.offset, self.lmbda[name])
             var = pd.Series(y, index=var.index, name=var.name)
-            new_vars.append(UnivariateTimeSeries.from_pd(var))
+            new_vars[name] = UnivariateTimeSeries.from_pd(var)
 
         return TimeSeries(new_vars)
 
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = []
-        for lmbda, var in zip(self.lmbda, time_series.univariates):
+        for name, var in time_series.items():
+            lmbda = self.lmbda[name]
             if lmbda > 0:
                 var = (lmbda * var + 1) ** (1 / lmbda)
                 nanvals = var.isna()

@@ -71,14 +71,7 @@ class VectorAR(ForecasterBase):
         # train model
         if self.dim == 1:
             train_data = train_data.iloc[:, 0]
-            self.model = sm_ARIMA(
-                train_data,
-                order=(self.maxlags, 0, 0),
-                enforce_stationarity=False,
-                enforce_invertibility=False,
-                validate_specification=False,
-            )
-            self.model = self.model.fit(method="yule_walker", cov_type="oim")
+            self.model = sm_ARIMA(train_data, order=(self.maxlags, 0, 0)).fit(method="yule_walker", cov_type="oim")
         else:
             self.model = sm_VAR(train_data).fit(self.maxlags)
 

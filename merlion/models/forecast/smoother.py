@@ -7,14 +7,12 @@
 """
 Multi-Scale Exponential Smoother for univariate time series forecasting.
 """
-from copy import deepcopy
 import logging
 from math import floor
 from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
 
 from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, assert_equal_timedeltas
 from merlion.utils.istat import ExponentialMovingAverage, RecencyWeightedVariance
@@ -169,7 +167,6 @@ class MSES(ForecasterBase):
             \end{align*}
     """
     config_class = MSESConfig
-    _default_train_config = MSESTrainConfig()
 
     def __init__(self, config: MSESConfig):
         super().__init__(config)
@@ -187,6 +184,10 @@ class MSES(ForecasterBase):
         return True
 
     @property
+    def _pandas_train(self):
+        return False
+
+    @property
     def rho(self):
         return self.config.rho
 
@@ -198,15 +199,15 @@ class MSES(ForecasterBase):
     def max_horizon(self):
         return self.max_forecast_steps * self.timedelta
 
-    def _train(self, train_data: pd.DataFrame, train_config: MSESTrainConfig = None):
-        if train_config is None:
-            train_config = deepcopy(self._default_train_config)
-            if isinstance(train_config, dict):
-                train_config = MSESTrainConfig(**train_config)
+    @property
+    def _default_train_config(self):
+        return MSESTrainConfig()
 
+    def _train(self, train_data: TimeSeries, train_config: MSESTrainConfig = None):
+        if isinstance(train_config, dict):
+            train_config = MSESTrainConfig(**train_config)
         name = self.target_name
-        train_data = UnivariateTimeSeries.from_pd(train_data[name])
-
+        train_data = train_data.univariates[name]
         if not train_config.incremental:
             self.delta_estimator.train(train_data)
             return None, None

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -22,29 +22,23 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-import scipy
 from scipy.special import gammaln, multigammaln
 from scipy.linalg import pinv, pinvh
-from scipy.stats import bernoulli, beta, invgamma, invwishart, norm, multivariate_normal as mvnorm, t as student_t
+from scipy.stats import (
+    bernoulli,
+    beta,
+    norm,
+    t as student_t,
+    invgamma,
+    multivariate_normal as mvnorm,
+    invwishart,
+    multivariate_t as mvt,
+)
 
 from merlion.utils import TimeSeries, UnivariateTimeSeries, to_timestamp, to_pd_datetime
 
-logger = logging.getLogger(__name__)
-
-try:
-    from scipy.stats import multivariate_t as mvt
-except ImportError:
-    logger.warning("Scipy version <1.6.0 installed. No support for multivariate t density.")
-    mvt = None
-    sp_pinv = pinv
-
-    # Redefine pinv to implement an optimization from more recent scipy
-    # Specifically, if the matrix is tall enough, it's easier to compute pinv with the transpose
-    def pinv(a):
-        return sp_pinv(a.T).T if a.shape[0] / a.shape[1] >= 1.1 else sp_pinv(a)
-
-
 _epsilon = 1e-8
+logger = logging.getLogger(__name__)
 
 
 def _log_pdet(a):
@@ -53,41 +47,6 @@ def _log_pdet(a):
     """
     eigval, eigvec = np.linalg.eigh(a)
     return np.sum(np.log(eigval[eigval > 0]))
-
-
-def _mvt_pdf(x, mu, Sigma, nu, log=True):
-    """
-    (log) PDF of multivariate t distribution. Use as a fallback when scipy >= 1.6.0 isn't available.
-    """
-    # Compute the spectrum of Sigma
-    eigval, eigvec = np.linalg.eigh(Sigma)
-
-    # Determine a lower bound for eigenvalues s.t. lmbda < eps implies that Sigma is singular
-    t = eigval.dtype.char.lower()
-    factor = {"f": 1e3, "d": 1e6}
-    eps = factor[t] * np.finfo(t).eps * np.max(eigval)
-
-    # Compute the log pseudo-determinant of Sigma
-    positive_eigval = eigval[eigval > eps]
-    log_pdet = np.sum(np.log(positive_eigval))
-    dim, rank = len(eigval), len(positive_eigval)
-
-    # Compute the square root of the pseudo-inverse of Sigma
-    inv_eigval = np.array([0 if lmbda < eps else 1 / lmbda for lmbda in eigval])
-    pinv_sqrt = np.multiply(eigvec, np.sqrt(inv_eigval))
-
-    # compute (x - \mu)^T \Sigma^{-1} (x - \mu)
-    # To do this in batch with D = (x - mu) having shape [n, d],
-    # we just need the diagonal of D @ Sigma @ D.T, which can be computed as
-    # below, using the fact that
-    delta = x - mu  # [n, d]
-    quad_form = np.square(delta @ pinv_sqrt).sum(axis=-1)
-
-    # Multivariate-t log PDF
-    a = gammaln(0.5 * (nu + dim)) - gammaln(0.5 * nu)
-    b = -0.5 * (dim * np.log(nu * np.pi) + log_pdet)
-    c = -0.5 * (nu + dim) * np.log1p(quad_form / nu)
-    return a + b + c if log else np.exp(a + b + c)
 
 
 class ConjPrior(ABC):
@@ -469,16 +428,8 @@ class MVNormInvWishart(ConjPrior):
         """
         dof = self.nu - self.dim + 1
         shape = self.Lambda / (self.nu * dof)
-        if mvt is not None:
-            rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
-            return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
-        else:
-            if mu is None or return_rv:
-                raise ValueError(
-                    f"The scipy version you have installed ({scipy.__version__}) does not support a multivariate-t "
-                    f"random variable Please specify a non-``None`` value of ``mu`` and set ``return_rv = False``."
-                )
-            return _mvt_pdf(x=mu, mu=self.mu_0, Sigma=shape, nu=dof, log=log)
+        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
+        return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
 
     def Sigma_posterior(self, sigma2, return_rv=False, log=True):
         r"""
@@ -494,16 +445,8 @@ class MVNormInvWishart(ConjPrior):
         t, x_np = self.process_time_series(x)
         dof = self.nu - self.dim + 1
         shape = self.Lambda * (self.nu + 1) / (self.nu * dof)
-        if mvt is not None:
-            rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
-            ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
-        else:
-            if x is None or return_rv:
-                raise ValueError(
-                    f"The scipy version you have installed ({scipy.__version__}) does not support a multivariate-t "
-                    f"random variable Please specify a non-``None`` value of ``x`` and set ``return_rv = False``."
-                )
-            ret = _mvt_pdf(x=x_np, mu=self.mu_0, Sigma=shape, nu=dof, log=log)
+        rv = mvt(shape=shape, loc=self.mu_0, df=dof, allow_singular=True)
+        ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
 
         if return_updated:
             updated = copy.deepcopy(self)

@@ -152,6 +152,10 @@ class BOCPD(ForecastingDetectorBase):
         self.pw_model: List[Tuple[pd.Timestamp, ConjPrior]] = []
 
     @property
+    def _pandas_train(self):
+        return False
+
+    @property
     def _online_model(self) -> bool:
         return True
 
@@ -263,7 +267,9 @@ class BOCPD(ForecastingDetectorBase):
             _, data = train_data.bisect(t0, t_in_left=False)
             self.pw_model.append((t0, self.change_kind.value(data)))
 
-    def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
+    def train_pre_process(
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=False
+    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         # BOCPD doesn't _require_ target_seq_index to be specified, but train_pre_process() does.
         if self.target_seq_index is None and train_data.dim > 1:
             self.config.target_seq_index = 0
@@ -271,10 +277,10 @@ class BOCPD(ForecastingDetectorBase):
                 f"Received a {train_data.dim}-variate time series, but `target_seq_index` was not "
                 f"specified. Setting `target_seq_index = 0` so the `forecast()` method will work."
             )
-        train_data = super().train_pre_process(train_data)
+        ret = super().train_pre_process(train_data, exog_data=exog_data, return_exog=return_exog)
         # We manually update self.train_data in update(), so do nothing here
         self.train_data = None
-        return train_data
+        return ret
 
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
@@ -407,10 +413,10 @@ class BOCPD(ForecastingDetectorBase):
         # Return the anomaly scores
         return self._get_anom_scores(time_stamps)
 
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+    def _train(self, train_data: TimeSeries, train_config=None) -> TimeSeries:
         # If not automatically detecting the change kind, train as normal
         if self.change_kind is not ChangeKind.Auto:
-            return self.update(time_series=TimeSeries.from_pd(train_data)).to_pd()
+            return self.update(time_series=train_data)
 
         # Otherwise, evaluate all change kinds as options
         candidates = []
@@ -429,7 +435,9 @@ class BOCPD(ForecastingDetectorBase):
         logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
         return train_scores
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+    def get_anomaly_score(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, exog_data: TimeSeries = None
+    ) -> TimeSeries:
         return DetectorBase.get_anomaly_score(self, time_series, time_series_prev)
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
@@ -437,27 +445,7 @@ class BOCPD(ForecastingDetectorBase):
             self.update(TimeSeries.from_pd(time_series_prev))
         return self.update(TimeSeries.from_pd(time_series)).to_pd()
 
-    def get_figure(
-        self,
-        *,
-        time_series: TimeSeries = None,
-        time_stamps: List[int] = None,
-        time_series_prev: TimeSeries = None,
-        plot_anomaly=True,
-        filter_scores=True,
-        plot_forecast=False,
-        plot_forecast_uncertainty=False,
-        plot_time_series_prev=False,
-    ) -> Figure:
+    def get_figure(self, *, time_series: TimeSeries = None, **kwargs) -> Figure:
         if time_series is not None:
             self.update(self.transform(time_series))
-        return super().get_figure(
-            time_series=time_series,
-            time_stamps=time_stamps,
-            time_series_prev=time_series_prev,
-            plot_anomaly=plot_anomaly,
-            filter_scores=filter_scores,
-            plot_forecast=plot_forecast,
-            plot_forecast_uncertainty=plot_forecast_uncertainty,
-            plot_time_series_prev=plot_time_series_prev,
-        )
+        return super().get_figure(time_series=time_series, **kwargs)

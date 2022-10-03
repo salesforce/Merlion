@@ -14,7 +14,7 @@ from functools import wraps
 import importlib
 import inspect
 import re
-from typing import Union
+from typing import Callable, Union
 
 
 class AutodocABCMeta(ABCMeta):
@@ -147,10 +147,8 @@ def dynamic_import(import_path: str, alias: dict = None):
     """
     Dynamically import a member from the specified module.
 
-    :param import_path: syntax 'module_name:member_name',
-        e.g. 'merlion.transform.normalize:BoxCoxTransform'
-    :param alias: dict which maps shortcuts for the registered classes, to their
-        full import paths.
+    :param import_path: syntax 'module_name:member_name', e.g. 'merlion.transform.normalize:BoxCoxTransform'
+    :param alias: dict which maps shortcuts for the registered classes, to their full import paths.
     :return: imported class
     """
     alias = dict() if alias is None else alias
@@ -166,6 +164,17 @@ def dynamic_import(import_path: str, alias: dict = None):
     module_name, objname = import_path.split(":")
     m = importlib.import_module(module_name)
     return getattr(m, objname)
+
+
+def call_with_accepted_kwargs(fn: Callable, **kwargs):
+    """
+    Given a function and a list of keyword arguments, call the function with only the keyword arguments that are
+    accepted by the function.
+    """
+    params = inspect.signature(fn).parameters
+    if not any(v.kind.name == "VAR_KEYWORD" for v in params.values()):
+        kwargs = {k: v for k, v in kwargs.items() if k in params}
+    return fn(**kwargs)
 
 
 def initializer(func):

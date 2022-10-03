@@ -17,6 +17,7 @@ import pandas as pd
 
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
 from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.misc import call_with_accepted_kwargs
 
 
 def scaled_sigmoid(x, scale=2.5):
@@ -391,8 +392,11 @@ class TSADEvaluator(EvaluatorBase):
     def max_delay_sec(self):
         return self.config.max_delay_sec
 
-    def _call_model(self, time_series: TimeSeries, time_series_prev: TimeSeries) -> TimeSeries:
-        return self.model.get_anomaly_score(time_series, time_series_prev)
+    def _call_model(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries, exog_data: TimeSeries = None
+    ) -> TimeSeries:
+        kwargs = dict(time_series=time_series, time_series_prev=time_series_prev, exog_data=exog_data)
+        return call_with_accepted_kwargs(self.model.get_anomaly_score, **kwargs)
 
     def default_retrain_kwargs(self) -> dict:
         from merlion.models.ensemble.anomaly import DetectorEnsemble, DetectorEnsembleTrainConfig
@@ -407,6 +411,7 @@ class TSADEvaluator(EvaluatorBase):
         self,
         train_vals: TimeSeries,
         test_vals: TimeSeries,
+        exog_data: TimeSeries = None,
         train_kwargs: dict = None,
         retrain_kwargs: dict = None,
         post_process=True,
@@ -419,6 +424,7 @@ class TSADEvaluator(EvaluatorBase):
         :param train_vals: initial training data
         :param test_vals: all data where we want to get the model's predictions
             and compare it to the ground truth
+        :param exog_data: any exogenous data (only used for some models)
         :param train_kwargs: dict of keyword arguments we want to use for the
             initial training process. Typically, you will want to provide the
             key "anomaly_labels" here, if you have training data with labeled
@@ -435,11 +441,15 @@ class TSADEvaluator(EvaluatorBase):
             `TimeSeries` of the model's anomaly scores on ``test_vals``.
         """
         train_result, result = super().get_predict(
-            train_vals=train_vals, test_vals=test_vals, train_kwargs=train_kwargs, retrain_kwargs=retrain_kwargs
+            train_vals=train_vals,
+            test_vals=test_vals,
+            exog_data=exog_data,
+            train_kwargs=train_kwargs,
+            retrain_kwargs=retrain_kwargs,
         )
         if post_process:
             train_result = self.model.post_rule(train_result)
-            result = self.model.post_rule(result)
+            result = None if result is None else self.model.post_rule(result)
         return train_result, result
 
     def evaluate(

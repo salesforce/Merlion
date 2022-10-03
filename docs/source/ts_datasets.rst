@@ -23,7 +23,7 @@ The core features of general data loaders (e.g. for forecasting) are outlined in
 are outlined in the API doc for :py:class:`ts_datasets.anomaly.TSADBaseDataset`.
 
 The easiest way to load a custom dataset is to use either the :py:class:`ts_datasets.forecast.CustomDataset` or
-:py:class:`ts_datasets.anomaly.CustomAnomalyDataset` classes. Please review the `tutorial <examples/CustomDataset>`
+:py:class:`ts_datasets.anomaly.CustomAnomalyDataset` classes. Please review the `tutorial <tutorials/CustomDataset>`
 to get started.
 
 .. automodule:: ts_datasets

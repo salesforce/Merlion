@@ -158,7 +158,6 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     filename = "model.pkl"
     config_class = Config
-    _default_train_config = None
 
     train_data: Optional[TimeSeries] = None
     """
@@ -205,6 +204,10 @@ class ModelBase(metaclass=AutodocABCMeta):
         Whether to ensure that all univariates in the training data are aligned.
         """
         return True
+
+    @property
+    def _default_train_config(self):
+        return None
 
     def __getstate__(self):
         return {k: copy.deepcopy(v) for k, v in self.__dict__.items()}
@@ -265,12 +268,18 @@ class ModelBase(metaclass=AutodocABCMeta):
     def last_train_time(self, last_train_time):
         self._last_train_time = to_pd_datetime(last_train_time)
 
+    @property
+    def _pandas_train(self):
+        """
+        Whether the _train() method requires ``pandas.DataFrame``. If False, we assume it accepts `TimeSeries`.
+        """
+        return True
+
     def train_pre_process(self, train_data: TimeSeries) -> TimeSeries:
         """
         Applies pre-processing steps common for training most models.
 
         :param train_data: the original time series of training data
-
         :return: the training data, after any necessary pre-processing has been applied
         """
         self.train_data = train_data
@@ -278,8 +287,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.transform.train(train_data)
         train_data = self.transform(train_data)
 
-        # Make sure the training data is univariate & all timestamps are equally
-        # spaced (this is a key assumption for ARIMA)
+        # Make sure the training data is univariate if needed
         if self.require_univariate and train_data.dim != 1:
             raise RuntimeError(
                 f"Transform {self.transform} transforms data into a {train_data.dim}-"
@@ -287,6 +295,7 @@ class ModelBase(metaclass=AutodocABCMeta):
                 f"only handle uni-variate time series. Change the transform or set target_seq_index."
             )
 
+        # Make sure timestamps are equally spaced if needed (e.g. for ARIMA)
         t = train_data.time_stamps
         if self.require_even_sampling:
             assert_equal_timedeltas(train_data.univariates[train_data.names[0]])
@@ -301,14 +310,11 @@ class ModelBase(metaclass=AutodocABCMeta):
         self, time_series: TimeSeries, time_series_prev: TimeSeries = None
     ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         """
-        Applies the model's pre-processing transform to ``time_series`` and
-        ``time_series_prev``.
+        Applies the model's pre-processing transform to ``time_series`` and ``time_series_prev``.
 
         :param time_series: The time series
-        :param time_series_prev: A time series of context, immediately preceding
-            ``time_series``. Optional.
-
-        :return: The transformed ``time_series``.
+        :param time_series_prev: A time series of context, immediately preceding ``time_series``. Optional.
+        :return: The transformed ``time_series`` and ``time_series_prev``.
         """
         if time_series_prev is not None and not time_series.is_empty():
             t0 = time_series.t0
@@ -320,7 +326,8 @@ class ModelBase(metaclass=AutodocABCMeta):
             time_series = self.transform(time_series)
         return time_series, time_series_prev
 
-    def train(self, train_data: TimeSeries, train_config=None, *args, **kwargs):
+    @abstractmethod
+    def train(self, train_data: TimeSeries, train_config=None):
         """
         Trains the model on the specified time series, optionally with some
         additional implementation-specific config options ``train_config``.
@@ -328,33 +335,27 @@ class ModelBase(metaclass=AutodocABCMeta):
         :param train_data: a `TimeSeries` to use as a training set
         :param train_config: additional configurations (if needed)
         """
-        if train_config is None:
-            train_config = copy.deepcopy(self._default_train_config)
-        train_data = self.train_pre_process(train_data).to_pd()
-        train_result = self._train(train_data=train_data, train_config=train_config)
-        return self.train_post_process(train_result, *args, **kwargs)
+        raise NotImplementedError
 
     @abstractmethod
     def _train(self, train_data: pd.DataFrame, train_config=None):
         raise NotImplementedError
 
     @abstractmethod
-    def train_post_process(self, train_result, *args, **kwargs):
+    def train_post_process(self, train_result):
         raise NotImplementedError
 
     def _save_state(self, state_dict: Dict[str, Any], filename: str = None, **save_config) -> Dict[str, Any]:
         """
-        Saves the model's state to the the specified file. If you override this
-        method, please also override _load_state(). By default, the model's state
-        dict is just serialized using dill.
+        Saves the model's state to the the specified file. If you override this method, please also override
+        ``_load_state()``. By default, the model's state dict is just serialized using dill.
 
         :param state_dict: The state dict to save.
         :param filename: The name of the file to save the model to.
         :param save_config: additional configurations (if needed)
         :return: The state dict to save.
         """
-        if "config" in state_dict:  # don't save the config
-            state_dict.pop("config")
+        state_dict.pop("config", None)  # don't save the model's config in binary
         if filename is not None:
             with open(filename, "wb") as f:
                 dill.dump(state_dict, f)
@@ -381,13 +382,11 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     def _load_state(self, state_dict: Dict[str, Any], **kwargs):
         """
-        Loads the model's state from the specified file. Override this method if
-        you have overridden _save_state(). By default, the model's state dict is
-        loaded from a file (serialized by dill), and the state is set.
+        Loads the model's state from the specified file. Override this method if you have overridden _save_state().
+        By default, the model's state dict is loaded from a file (serialized by dill), and the state is set.
 
         :param filename: serialized file containing the model's state.
-        :param kwargs: any additional keyword arguments to set manually in the
-            state dict (after loading it).
+        :param kwargs: any additional keyword arguments to set manually in the state dict (after loading it).
         """
         if "config" in state_dict:  # don't re-set the config
             state_dict.pop("config")

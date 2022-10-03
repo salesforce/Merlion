@@ -167,7 +167,7 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         model.set_seasonality(theta, train_data.univariates[self.target_name])
 
     def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, **kwargs
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         # If multiple seasonalities are supported, return a list of all detected seasonalities
         return list(thetas) if self.config.multi_seasonality else next(thetas), None, None

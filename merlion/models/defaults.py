@@ -53,8 +53,12 @@ class DefaultDetector(LayeredDetector):
     def granularity(self):
         return self.config.granularity
 
+    def reset(self):
+        if self.model is not None:
+            self.model.reset()
+
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
 
@@ -107,9 +111,6 @@ class DefaultDetector(LayeredDetector):
             post_rule_train_config=post_rule_train_config,
         )
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Default model _train() should not be called")
-
 
 class DefaultForecasterConfig(LayeredModelConfig):
     """
@@ -144,10 +145,13 @@ class DefaultForecaster(LayeredForecaster):
     def granularity(self):
         return self.config.granularity
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        raise NotImplementedError("Default model _train() should not be called")
+    def reset(self):
+        if self.model is not None:
+            self.model.reset()
 
-    def train(self, train_data: TimeSeries, train_config=None) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+    def train(
+        self, train_data: TimeSeries, train_config=None, exog_data=None
+    ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
         kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
 
@@ -168,4 +172,4 @@ class DefaultForecaster(LayeredForecaster):
         else:
             self.model = ModelFactory.create("AutoETS", additive_only=True, **kwargs)
 
-        return super().train(train_data=train_data, train_config=train_config)
+        return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)

@@ -11,6 +11,7 @@ import copy
 import logging
 import os
 from typing import Iterable, List, Tuple, Union
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -18,7 +19,7 @@ import prophet
 import prophet.serialize
 
 from merlion.models.automl.seasonality import SeasonalityModel
-from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.utils import TimeSeries, UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ class _suppress_stdout_stderr(object):
             os.close(fd)
 
 
-class ProphetConfig(ForecasterConfig):
+class ProphetConfig(ForecasterExogConfig):
     """
     Configuration class for Facebook's `Prophet` model, as described by
     `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__.
@@ -111,7 +112,7 @@ class ProphetConfig(ForecasterConfig):
         self.holidays = holidays
 
 
-class Prophet(SeasonalityModel, ForecasterBase):
+class Prophet(ForecasterExogBase, SeasonalityModel):
     """
     Facebook's model for time series forecasting. See docs for `ProphetConfig`
     and `Taylor & Letham, 2017 <https://peerj.com/preprints/3190/>`__ for more details.
@@ -146,7 +147,9 @@ class Prophet(SeasonalityModel, ForecasterBase):
             model = state["model"]
             if isinstance(model, str):
                 state = copy.copy(state)
-                state["model"] = prophet.serialize.model_from_json(model)
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    state["model"] = prophet.serialize.model_from_json(model)
         super().__setstate__(state)
 
     @property
@@ -186,10 +189,28 @@ class Prophet(SeasonalityModel, ForecasterBase):
                 logger.debug(f"Add seasonality {str(p)} ({p * dt})")
                 self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        series = train_data[self.target_name]
-        df = pd.DataFrame({"ds": series.index, "y": series.values})
+    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
+        if isinstance(time_stamps, (int, float)):
+            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps + 1))[1:]
+            time_stamps = to_timestamp(times)
+        return time_stamps
 
+    def _add_exog_data(self, data: pd.DataFrame, exog_data: pd.DataFrame):
+        df = pd.DataFrame(data[self.target_name].rename("y"))
+        if exog_data is not None:
+            df = df.join(exog_data, how="outer")
+        df.index.rename("ds", inplace=True)
+        df.reset_index(inplace=True)
+        return df
+
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        if exog_data is not None:
+            for col in exog_data.columns:
+                self.model.add_regressor(col)
+
+        df = self._add_exog_data(train_data, exog_data)
         with _suppress_stdout_stderr():
             self.model.fit(df)
 
@@ -203,22 +224,20 @@ class Prophet(SeasonalityModel, ForecasterBase):
         err = pd.DataFrame(sigma, index=df.ds, columns=[f"{self.target_name}_err"])
         return yhat, err
 
-    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
-        if isinstance(time_stamps, (int, float)):
-            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps + 1))[1:]
-            time_stamps = to_timestamp(times)
-        return time_stamps
-
-    def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # Construct data frame for prophet
-        df = pd.DataFrame()
         time_stamps = to_pd_datetime(time_stamps)
+        df = self._add_exog_data(data=pd.DataFrame({self.target_name: np.nan}, index=time_stamps), exog_data=exog_data)
         if time_series_prev is not None:
-            series = time_series_prev.iloc[:, self.target_seq_index]
-            df = pd.DataFrame({"ds": series.index, "y": series.values})
-        df = pd.concat((df, pd.DataFrame({"ds": time_stamps})))
+            past = self._add_exog_data(time_series_prev, exog_data_prev)
+            df = pd.concat((past, df))
 
         # Determine the right set of timestamps to use
         if return_prev and time_series_prev is not None:

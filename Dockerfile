@@ -15,3 +15,5 @@ RUN pip install pyarrow "./"
 COPY apps /opt/spark/apps
 RUN chmod g+w /opt/spark/apps
 USER ${spark_uid}
+COPY emissions.csv emissions.csv
+COPY emissions.json emissions.json

@@ -23,6 +23,7 @@ from merlion.post_process.factory import PostRuleFactory
 from merlion.post_process.sequence import PostRuleSequence
 from merlion.post_process.threshold import AggregateAlarms, Threshold
 from merlion.utils import TimeSeries, UnivariateTimeSeries
+from merlion.utils.misc import call_with_accepted_kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -178,24 +179,28 @@ class DetectorBase(ModelBase):
         return self.config.post_rule
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         """
         Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.
 
         :param train_data: a `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param train_config: Additional training configs, if needed. Only required for some models.
+        :param anomaly_labels: a `TimeSeries` indicating which timestamps are anomalous. Optional.
         :param post_rule_train_config: The config to use for training the model's post-rule. The model's default
             post-rule train config is used if none is supplied here.
 
         :return: A `TimeSeries` of the model's anomaly scores on the training data.
         """
-        return super().train(
-            train_data=train_data,
-            anomaly_labels=anomaly_labels,
-            train_config=train_config,
-            post_rule_train_config=post_rule_train_config,
+        if train_config is None:
+            train_config = copy.deepcopy(self._default_train_config)
+        train_data = self.train_pre_process(train_data)
+        train_data = train_data.to_pd() if self._pandas_train else train_data
+        train_result = call_with_accepted_kwargs(  # For ensembles
+            self._train, train_data=train_data, train_config=train_config, anomaly_labels=anomaly_labels
+        )
+        return self.train_post_process(
+            train_result=train_result, anomaly_labels=anomaly_labels, post_rule_train_config=post_rule_train_config
         )
 
     def train_post_process(
@@ -214,10 +219,8 @@ class DetectorBase(ModelBase):
             kwargs = copy.copy(self._default_post_rule_train_config)
             if post_rule_train_config is not None:
                 kwargs.update(post_rule_train_config)
-            params = inspect.signature(self.post_rule.train).parameters
-            if not any(v.kind.name == "VAR_KEYWORD" for v in params.values()):
-                kwargs = {k: v for k, v in kwargs.items() if k in params}
-            self.post_rule.train(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels, **kwargs)
+            kwargs.update(anomaly_scores=anomaly_scores, anomaly_labels=anomaly_labels)
+            call_with_accepted_kwargs(self.post_rule.train, **kwargs)
         return anomaly_scores
 
     @abstractmethod
@@ -291,6 +294,7 @@ class DetectorBase(ModelBase):
         filter_scores=True,
         plot_time_series_prev=False,
         fig: Figure = None,
+        **kwargs,
     ) -> Figure:
         """
         :param time_series: The `TimeSeries` we wish to plot & predict anomaly scores for.
@@ -306,7 +310,7 @@ class DetectorBase(ModelBase):
         :return: a `Figure` of the model's anomaly score predictions.
         """
         f = self.get_anomaly_label if filter_scores else self.get_anomaly_score
-        scores = f(time_series, time_series_prev=time_series_prev)
+        scores = f(time_series, time_series_prev=time_series_prev, **kwargs)
         scores = scores.univariates[scores.names[0]]
 
         # Get the severity level associated with each value & convert things to
@@ -406,8 +410,8 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
     def train_multiple(
         self,
         multiple_train_data: List[TimeSeries],
-        anomaly_labels: List[TimeSeries] = None,
         train_config=None,
+        anomaly_labels: List[TimeSeries] = None,
         post_rule_train_config=None,
     ) -> List[TimeSeries]:
         """
@@ -415,10 +419,8 @@ class MultipleTimeseriesDetectorMixin(MultipleTimeseriesModelMixin):
         (supervised, if labels are given) on the input multiple time series.
 
         :param multiple_train_data: a list of `TimeSeries` of metric values to train the model.
-        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are
-            anomalous. Optional.
-        :param train_config: Additional training configs, if needed. Only
-            required for some models.
+        :param anomaly_labels: a list of `TimeSeries` indicating which timestamps are anomalous. Optional.
+        :param train_config: Additional training configs, if needed. Only required for some models.
         :param post_rule_train_config: The config to use for training the
             model's post-rule. The model's default post-rule train config is
             used if none is supplied here.

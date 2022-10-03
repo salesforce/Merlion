@@ -17,14 +17,14 @@ import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA as sm_Sarima
 
 from merlion.models.automl.seasonality import SeasonalityModel
-from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import TimeSeries, UnivariateTimeSeries, to_pd_datetime, to_timestamp
+from merlion.utils.time_series import UnivariateTimeSeries, to_pd_datetime, to_timestamp
 
 logger = logging.getLogger(__name__)
 
 
-class SarimaConfig(ForecasterConfig):
+class SarimaConfig(ForecasterExogConfig):
     """
     Config class for `Sarima` (Seasonal AutoRegressive Integrated Moving Average).
     """
@@ -46,7 +46,7 @@ class SarimaConfig(ForecasterConfig):
         self.seasonal_order = seasonal_order
 
 
-class Sarima(ForecasterBase, SeasonalityModel):
+class Sarima(ForecasterExogBase, SeasonalityModel):
     """
     Implementation of the classic statistical model SARIMA (Seasonal
     AutoRegressive Integrated Moving Average) for forecasting.
@@ -89,17 +89,19 @@ class Sarima(ForecasterBase, SeasonalityModel):
             return 0
         return 2 * orders["reduced_ar"] + 1
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # train model
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
         train_config = train_config or {}
-        for k, v in {"enforce_stationarity": False, "enforce_invertibility": False}.items():
-            train_config[k] = train_config.get(k, v)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            model = sm_Sarima(train_data, order=self.order, seasonal_order=self.seasonal_order, **train_config)
+            model = sm_Sarima(
+                train_data, exog=exog_data, order=self.order, seasonal_order=self.seasonal_order, **train_config
+            )
             self.model = model.fit(method_kwargs={"disp": 0})
 
         # FORECASTING: forecast for next n steps using Sarima model
@@ -108,8 +110,13 @@ class Sarima(ForecasterBase, SeasonalityModel):
         err = [np.sqrt(self.model.params["sigma2"])] * len(train_data)
         return pd.DataFrame(yhat, index=times, columns=[name]), pd.DataFrame(err, index=times, columns=[f"{name}_err"])
 
-    def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # If there is a time_series_prev, use it to set the SARIMA model's state, and then obtain its forecast
         if time_series_prev is None:
@@ -118,10 +125,13 @@ class Sarima(ForecasterBase, SeasonalityModel):
         else:
             val_prev = time_series_prev.iloc[-self._max_lookback :, self.target_seq_index]
             last_val = val_prev[-1]
-            model = self.model.apply(val_prev, validate_specification=False)
+            exog_data_prev = None if exog_data_prev is None else exog_data_prev.loc[val_prev.index]
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                model = self.model.apply(val_prev, exog=exog_data_prev, validate_specification=False)
 
         try:
-            forecast_result = model.get_forecast(len(time_stamps))
+            forecast_result = model.get_forecast(len(time_stamps), exog=exog_data)
             pred = np.asarray(forecast_result.predicted_mean)
             err = np.asarray(forecast_result.se_mean)
             assert len(pred) == len(

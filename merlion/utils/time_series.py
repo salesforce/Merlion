@@ -10,7 +10,7 @@ Implementation of `TimeSeries` class.
 from bisect import bisect_left, bisect_right
 import itertools
 import logging
-from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, Mapping, Sequence, Tuple, Union
 import warnings
 
 import numpy as np
@@ -34,7 +34,7 @@ _time_col_name = "time"
 
 class UnivariateTimeSeries(pd.Series):
     """
-    Please read the `tutorial <examples/TimeSeries>` before reading this API doc.
+    Please read the `tutorial <tutorials/TimeSeries>` before reading this API doc.
     This class is a time-indexed ``pd.Series`` which represents a univariate
     time series. For the most part, it supports all the same features as
     ``pd.Series``, with the following key differences to iteration and indexing:
@@ -331,7 +331,7 @@ class UnivariateTimeSeries(pd.Series):
 
 class TimeSeries:
     """
-    Please read the `tutorial <examples/TimeSeries>` before reading this API doc.
+    Please read the `tutorial <tutorials/TimeSeries>` before reading this API doc.
     This class represents a general multivariate time series as a wrapper around
     a number of (optionally named) `UnivariateTimeSeries`. A `TimeSeries` object
     is initialized as ``time_series = TimeSeries(univariates)``, where
@@ -429,19 +429,17 @@ class TimeSeries:
     ):
         # Type/length checking of univariates
         if isinstance(univariates, Mapping):
-            if not isinstance(univariates, ValIterOrderedDict):
-                univariates = ValIterOrderedDict(univariates.items())
+            univariates = ValIterOrderedDict((str(k), v) for k, v in univariates.items())
             assert all(isinstance(var, UnivariateTimeSeries) for var in univariates.values())
         elif isinstance(univariates, Iterable):
             univariates = list(univariates)
             assert all(isinstance(var, UnivariateTimeSeries) for var in univariates)
-
-            names = [var.name for var in univariates]
+            names = [str(var.name) for var in univariates]
             if len(set(names)) == len(names):
-                names = [i if name is None else name for i, name in enumerate(names)]
+                names = [str(i) if name is None else name for i, name in enumerate(names)]
                 univariates = ValIterOrderedDict(zip(names, univariates))
             else:
-                univariates = ValIterOrderedDict(enumerate(univariates))
+                univariates = ValIterOrderedDict((str(i), v) for i, v in enumerate(univariates))
         else:
             raise TypeError(
                 "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
@@ -505,11 +503,23 @@ class TimeSeries:
         """
         return len(self.univariates)
 
+    def rename(self, mapper: Union[Iterable[str], Mapping[str, str], Callable[[str], str]]):
+        """
+        :param mapper: Dict-like or function transformations to apply to the univariate names. Can also be an iterable
+             of new univariate names.
+        :return: the time series with renamed univariates.
+        """
+        if isinstance(mapper, Callable):
+            mapper = [mapper(old) for old in self.names]
+        elif isinstance(mapper, Mapping):
+            mapper = [mapper.get(old, old) for old in self.names]
+        univariates = ValIterOrderedDict((new_name, var) for new_name, var in zip(mapper, self.univariates))
+        return self.__class__(univariates)
+
     @property
     def is_aligned(self) -> bool:
         """
-        :return: Whether all individual variable time series are sampled at the
-            same time stamps, i.e. they are aligned.
+        :return: Whether all individual variable time series are sampled at the same time stamps, i.e. they are aligned.
         """
         return self._is_aligned
 
@@ -676,7 +686,7 @@ class TimeSeries:
 
     def bisect(self, t: float, t_in_left: bool = False):
         """
-        Splits the time series at the point where the given timestap ``t`` occurs.
+        Splits the time series at the point where the given timestamp ``t`` occurs.
 
         :param t: a Unix timestamp or datetime object. Everything before time
             ``t`` is in the left split, and everything after time ``t`` is in
@@ -844,28 +854,20 @@ class TimeSeries:
         missing_value_policy: MissingValuePolicy = MissingValuePolicy.Interpolate,
     ):
         """
-        Aligns all the univariate time series comprising this multivariate time
-        series so that they all have the same time stamps.
+        Aligns all the univariates comprising this multivariate time series so that they all have the same time stamps.
 
-        :param reference: A specific set of timestamps we want the resampled
-            time series to contain. Required if ``alignment_policy`` is
-            `AlignPolicy.FixedReference`. Overrides other alignment policies
-            if specified.
-        :param granularity: The granularity (in seconds) of the resampled time
-            time series. Defaults to the GCD time difference between adjacent
-            elements of ``reference`` (when available) or ``time_series``
-            (otherwise). Ignored if ``reference`` is given or ``alignment_policy``
-            is `AlignPolicy.FixedReference`. Overrides other alignment policies
-            if specified.
-        :param origin: The first timestamp of the resampled time series. Only
-            used if the alignment policy is AlignPolicy.FixedGranularity.
-        :param remove_non_overlapping: If ``True``, we will only keep the portions
-            of the univariates that overlap with each other. For example, if we
-            have 3 univariates which span timestamps [0, 3600], [60, 3660], and
-            [30, 3540], we will only keep timestamps in the range [60, 3540]. If
-            ``False``, we will keep all timestamps produced by the resampling.
-        :param alignment_policy: The policy we want to use to align the time
-            time series.
+        :param reference: A specific set of timestamps we want the resampled time series to contain. Required if
+            ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
+        :param granularity: The granularity (in seconds) of the resampled time time series. Defaults to the GCD time
+            difference between adjacent elements of ``time_series`` (otherwise). Ignored if ``reference`` is given or
+            ``alignment_policy`` is `AlignPolicy.FixedReference`. Overrides other alignment policies if specified.
+        :param origin: The first timestamp of the resampled time series. Only used if the alignment policy is
+            `AlignPolicy.FixedGranularity`.
+        :param remove_non_overlapping: If ``True``, we will only keep the portions of the univariates that overlap with
+            each other. For example, if we have 3 univariates which span timestamps [0, 3600], [60, 3660], and
+            [30, 3540], we will only keep timestamps in the range [60, 3540]. If ``False``, we will keep all timestamps
+            produced by the resampling.
+        :param alignment_policy: The policy we want to use to align the time series.
 
             - `AlignPolicy.FixedReference` aligns each single-variable time
               series to ``reference``, a user-specified sequence of timestamps.
@@ -876,10 +878,8 @@ class TimeSeries:
               all timestamps present in any single-variable time series.
             - `AlignPolicy.InnerJoin` returns a time series with the intersection
               of all timestamps present in all single-variable time series.
-        :param aggregation_policy: The policy used to aggregate windows of adjacent
-            observations when downsampling.
-        :param missing_value_policy: The policy used to impute missing values
-            created when upsampling.
+        :param aggregation_policy: The policy used to aggregate windows of adjacent observations when downsampling.
+        :param missing_value_policy: The policy used to impute missing values created when upsampling.
 
         :rtype: TimeSeries
         :return: The resampled multivariate time series.

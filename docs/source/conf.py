@@ -12,6 +12,7 @@
 #
 from git import Repo
 import os
+import packaging.version
 import pkg_resources
 import re
 import sys
@@ -51,11 +52,6 @@ autosummary_generate = True  # Make _autosummary files and include them
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -84,3 +80,14 @@ if "current_version" in os.environ:
     versions = sorted([tag.name for tag in repo.tags if re.match("v[0-9].*", tag.name)], reverse=True)
     versions = ["latest", *versions]
     html_context["versions"] = versions
+
+else:
+    current_version = "latest"
+
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This pattern also affects html_static_path and html_extra_path.
+if current_version == "latest" or packaging.version.parse(current_version) > packaging.version.parse("1.3.0"):
+    exclude_patterns = ["examples"]
+else:
+    exclude_patterns = ["tutorials"]

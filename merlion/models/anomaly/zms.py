@@ -145,11 +145,11 @@ class ZMS(DetectorBase):
         return self.lag_inflation > 0.0 and len(self.lag_scales) > 1
 
     def train(
-        self, train_data: TimeSeries, anomaly_labels: TimeSeries = None, train_config=None, post_rule_train_config=None
+        self, train_data: TimeSeries, train_config=None, anomaly_labels: TimeSeries = None, post_rule_train_config=None
     ) -> TimeSeries:
         if self.n_lags is None:
             self.n_lags = int(log(len(train_data), self.config.base))
-        return super().train(train_data, anomaly_labels, train_config, post_rule_train_config)
+        return super().train(train_data, train_config, anomaly_labels, post_rule_train_config)
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         return self._get_anomaly_score(train_data)

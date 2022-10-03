@@ -39,7 +39,9 @@ class MSESDetector(ForecastingDetectorBase, MSES):
     def _default_train_config(self):
         return MSESTrainConfig(train_cadence=1 if self.online_updates else None)
 
-    def get_anomaly_score(self, time_series: TimeSeries, time_series_prev: TimeSeries = None) -> TimeSeries:
+    def get_anomaly_score(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries = None, exog_data=None
+    ) -> TimeSeries:
         if self.online_updates:
             time_series, time_series_prev = self.transform_time_series(time_series, time_series_prev)
             if time_series_prev is None:

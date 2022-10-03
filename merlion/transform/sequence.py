@@ -33,11 +33,11 @@ class TransformSequence(InvertibleTransformBase):
             ), f"Expected all transforms to be instances of TransformBase, or dict, but got {transforms}"
             if isinstance(t, dict):
                 t = TransformFactory.create(**t)
-            self.transforms.extend(self.extract_nontrivial_transforms(t))
+            self.transforms.extend(self._extract_nontrivial_transforms(t))
 
-    def extract_nontrivial_transforms(self, transform: TransformBase) -> List[TransformBase]:
+    def _extract_nontrivial_transforms(self, transform: TransformBase) -> List[TransformBase]:
         if isinstance(transform, type(self)):
-            transforms = sum([self.extract_nontrivial_transforms(t) for t in transform.transforms], [])
+            transforms = sum([self._extract_nontrivial_transforms(t) for t in transform.transforms], [])
         else:
             transforms = [transform]
         return [t for t in transforms if not isinstance(t, Identity)]
@@ -45,10 +45,13 @@ class TransformSequence(InvertibleTransformBase):
     @property
     def proper_inversion(self):
         """
-        A transform sequence is invertible if and only if all the transforms
-        comprising it are invertible.
+        A transform sequence is invertible if and only if all the transforms comprising it are invertible.
         """
         return all(f.proper_inversion for f in self.transforms)
+
+    @property
+    def identity_inversion(self):
+        return all(f.identity_inversion for f in self.transforms)
 
     @property
     def requires_inversion_state(self):

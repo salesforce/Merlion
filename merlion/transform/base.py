@@ -67,6 +67,13 @@ class TransformBase(metaclass=AutodocABCMeta):
         """
         return True
 
+    @property
+    def identity_inversion(self):
+        """
+        Indicates whether the inverse applied by this transform is just the identity.
+        """
+        return not self.requires_inversion_state
+
     def to_dict(self):
         state = {"name": type(self).__name__}
         for k in inspect.signature(self.__init__).parameters:
@@ -172,6 +179,10 @@ class InvertibleTransformBase(TransformBase):
         """
         return True
 
+    @property
+    def identity_inversion(self):
+        return False
+
     @abstractmethod
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         raise NotImplementedError
@@ -191,6 +202,10 @@ class Identity(InvertibleTransformBase):
         ``False`` because the identity operation is stateless to invert.
         """
         return False
+
+    @property
+    def identity_inversion(self):
+        return True
 
     def train(self, time_series: TimeSeries):
         pass

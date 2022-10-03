@@ -19,6 +19,7 @@ import_alias = dict(
     ExponentialMovingAverage="merlion.transform.moving_average:ExponentialMovingAverage",
     DifferenceTransform="merlion.transform.moving_average:DifferenceTransform",
     LagTransform="merlion.transform.moving_average:LagTransform",
+    LowerUpperClip="merlion.transform.bound:LowerUpperClip",
     Rescale="merlion.transform.normalize:Rescale",
     AbsVal="merlion.transform.normalize:AbsVal",
     MeanVarNormalize="merlion.transform.normalize:MeanVarNormalize",

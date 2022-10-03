@@ -101,7 +101,6 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
     """
 
     config_class = EnsembleConfig
-    _default_train_config = EnsembleTrainConfig(valid_frac=0.0)
 
     def __init__(self, config: EnsembleConfig = None, models: List[ModelBase] = None):
         """
@@ -131,6 +130,10 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         """
         return self.config.combiner
 
+    @property
+    def _default_train_config(self):
+        return EnsembleTrainConfig(valid_frac=0.0)
+
     def reset(self):
         for model in self.models:
             model.reset()
@@ -143,23 +146,34 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
         else:
             return [True] * len(self.models)
 
+    @property
+    def _pandas_train(self):
+        return False
+
     def train_valid_split(
         self, transformed_train_data: TimeSeries, train_config: EnsembleTrainConfig
-    ) -> Tuple[TimeSeries, TimeSeries]:
+    ) -> Tuple[TimeSeries, Union[TimeSeries, None]]:
         valid_frac = train_config.valid_frac
         if valid_frac == 0 or not self.combiner.requires_training:
-            return transformed_train_data, transformed_train_data
+            return transformed_train_data, None
 
         t0 = transformed_train_data.t0
         tf = transformed_train_data.tf
 
         return transformed_train_data.bisect(t0 + (tf - t0) * (1 - valid_frac))
 
-    def get_max_common_horizon(self):
+    def get_max_common_horizon(self, train_data=None):
         horizons = []
         for model in self.models:
             dt = getattr(model, "timedelta", None)
             n = getattr(model, "max_forecast_steps", None)
+            if train_data is not None and n is not None and dt is None:
+                try:
+                    model.train_pre_process(train_data)
+                except:
+                    continue
+                dt = getattr(model, "timedelta", None)
+                n = getattr(model, "max_forecast_steps", None)
             if dt is not None and n is not None:
                 try:
                     h = pd.to_timedelta(dt * n, unit="s")
@@ -170,19 +184,6 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
             return None
         i = np.argmin([pd.to_datetime(0) + h for h in horizons if h is not None])
         return horizons[i]
-
-    def truncate_valid_data(self, transformed_valid_data: TimeSeries):
-        tf = transformed_valid_data.tf
-        max_model_tfs = [tf]
-        for model in self.models:
-            t0 = getattr(model, "last_train_time", None)
-            dt = getattr(model, "timedelta", None)
-            n = getattr(model, "max_forecast_steps", None)
-            if all(x is not None for x in [t0, dt, n]):
-                max_model_tfs.append(t0 + dt * n)
-
-        tf = min(max_model_tfs)
-        return transformed_valid_data.bisect(tf, t_in_left=True)[0]
 
     def train_combiner(self, all_model_outs: List[TimeSeries], target: TimeSeries, **kwargs) -> TimeSeries:
         combined = self.combiner.train(all_model_outs, target, **kwargs)

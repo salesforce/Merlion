@@ -74,7 +74,7 @@ transform used to process the data before giving it to the model, if the `transf
 given when initializing the config.
 
 See our implementation of [SARIMA](merlion/models/forecast/sarima.py) for a fairly simple example of what this looks
-like in practice, and this [notebook](examples/forecast/ForecastNewModel.ipynb) for a step-by-step walkthrough of a
+like in practice, and this [notebook](examples/forecast/4_ForecastNewModel.ipynb) for a step-by-step walkthrough of a
 minimal example.
 
 ### Forecaster-Based Anomaly Detectors
@@ -92,7 +92,7 @@ this class into an `ForecasterDetectorClass`. You need to do the following thing
 
 See our implementation of a [Prophet-based anomaly detector](merlion/models/anomaly/forecast_based/prophet.py) for an
 example of what this looks like in practice, as well as the forecaster tutorial 
-[notebook](examples/forecast/3_ForecastNewModel.ipynb).
+[notebook](examples/forecast/4_ForecastNewModel.ipynb).
 
 ## Data Pre-Processing Transforms
 To implement a new data pre-processing transform, begin by reading the
@@ -127,7 +127,7 @@ You can add support for a new dataset of time series by implementing an appropri
 [`ts_datasets`](ts_datasets), and uploading the raw data (potentially compressed) to the [`data`](data) directory.
 If your dataset has labeled anomalies, it belongs in [`ts_datasets.anomaly`](ts_datasets/ts_datasets/anomaly). If it
 does not have labeled anomalies, it belongs in [`ts_datasets.forecast`](ts_datasets/ts_datasets/forecast). See the
-[API docs](https://opensource.salesforce.com/Merlion/latest/ts_datasets.html) for more details.
+[API docs](https://opensource.salesforce.com/Merlion/ts_datasets.html) for more details.
 
 Once you've implemented your data loader class, add it to the top-level namespace of the module
 ([`ts_datasets/ts_datasets/anomaly/__init__.py`](ts_datasets/ts_datasets/anomaly/__init__.py) or

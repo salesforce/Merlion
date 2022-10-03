@@ -16,6 +16,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from merlion.models.base import ModelBase
+from merlion.models.forecast.base import ForecasterBase
 from merlion.utils.misc import AutodocABCMeta
 from merlion.utils.resample import granularity_str_to_seconds
 from merlion.utils.time_series import TimeSeries
@@ -122,7 +123,9 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         return self.config.horizon
 
     @abstractmethod
-    def _call_model(self, time_series: TimeSeries, time_series_prev: TimeSeries) -> TimeSeries:
+    def _call_model(
+        self, time_series: TimeSeries, time_series_prev: TimeSeries, exog_data: TimeSeries = None
+    ) -> TimeSeries:
         raise NotImplementedError
 
     def _train_model(self, train_vals: TimeSeries, **train_kwargs) -> TimeSeries:
@@ -147,9 +150,9 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
         self,
         train_vals: TimeSeries,
         test_vals: TimeSeries,
+        exog_data: TimeSeries = None,
         train_kwargs: dict = None,
         retrain_kwargs: dict = None,
-        pretrained: bool = False,
     ) -> Tuple[Any, Union[TimeSeries, List[TimeSeries]]]:
         """
         Initialize the model by training it on an initial set of train data.
@@ -158,28 +161,30 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
 
         :param train_vals: initial training data
         :param test_vals: all data where we want to get the model's predictions and compare it to the ground truth
+        :param exog_data: any exogenous data (only used for some models)
         :param train_kwargs: dict of keyword arguments we want to use for the initial training process
         :param retrain_kwargs: dict of keyword arguments we want to use for all subsequent retrainings
-        :param pretrained: whether the model has already been trained
 
         :return: ``(train_result, result)``. ``train_result`` is the output of training the model on ``train_vals``
             (``None`` if ``pretrained`` is ``True``). ``result`` is the model's predictions on ``test_vals``, and is
             specific to each evaluation task.
         """
-        # Initially the model w/ appropriate train kwargs
+        # Determine the appropriate training/retraining kwargs
         train_kwargs = {} if train_kwargs is None else train_kwargs
         full_train_kwargs = self.default_train_kwargs()
         full_train_kwargs.update(train_kwargs)
-        if not pretrained:
-            self.model.reset()
-            train_result = self._train_model(train_vals, **full_train_kwargs)
-        else:
-            train_result = None
-
-        # Determine the appropriate kwargs for re-training
         retrain_kwargs = {} if retrain_kwargs is None else retrain_kwargs
         full_retrain_kwargs = self.default_retrain_kwargs()
         full_retrain_kwargs.update(retrain_kwargs)
+        if isinstance(self.model, ForecasterBase):
+            full_train_kwargs.update(exog_data=exog_data)
+            full_retrain_kwargs.update(exog_data=exog_data)
+
+        # Train the initial model (if not pretrained)
+        self.model.reset()
+        train_result = self._train_model(train_vals, **full_train_kwargs)
+        if test_vals is None:
+            return train_result, None
 
         # We will incrementally build up the final result window-by-window,
         # where each window is a time series. t_next is the next time we will
@@ -217,7 +222,7 @@ class EvaluatorBase(metaclass=AutodocABCMeta):
 
             # Add this result if there is any result to add
             if not cur_test.is_empty():
-                cur_result = self._call_model(cur_test, cur_train)
+                cur_result = self._call_model(time_series=cur_test, time_series_prev=cur_train, exog_data=exog_data)
                 result.append(cur_result)
 
             # Move to the next eval window based on the cadence.

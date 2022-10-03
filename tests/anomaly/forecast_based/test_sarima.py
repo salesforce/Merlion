@@ -36,7 +36,7 @@ class TestSarima(unittest.TestCase):
         self.model = SarimaDetector(
             SarimaDetectorConfig(
                 order=(2, 0, 2),
-                seasonal_order=(2, 0, 2, 24),  # daily seasonality
+                seasonal_order=(2, 0, 0, 24),  # daily seasonality
                 transform=TemporalResample("1h"),
                 max_forecast_steps=self.test_len,
             )

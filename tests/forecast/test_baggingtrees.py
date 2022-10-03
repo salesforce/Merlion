@@ -9,15 +9,15 @@ from os.path import abspath, dirname, join
 import sys
 import unittest
 
-from merlion.utils import TimeSeries
-from ts_datasets.forecast import SeattleTrail
+from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.forecast.trees import RandomForestForecaster, RandomForestForecasterConfig
 from merlion.transform.normalize import MinMaxNormalize
 from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
-from merlion.transform.moving_average import DifferenceTransform
-from merlion.models.forecast.trees import RandomForestForecaster, RandomForestForecasterConfig
+from merlion.utils import TimeSeries
 from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
+from ts_datasets.forecast import SeattleTrail
 
 logger = logging.getLogger(__name__)
 rootdir = dirname(dirname(dirname(abspath(__file__))))
@@ -38,39 +38,17 @@ class TestRandomForestForecaster(unittest.TestCase):
         self.max_forecast_steps = 2
         self.maxlags = 6
         self.i = 0
-        # t = int(datetime(2019, 1, 1, 0, 0, 0).timestamp())
 
-        dataset = "seattle_trail"
-        d, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", dataset))[0]
-        d_uni = d["BGT North of NE 70th Total"]
-        t = int(d[md["trainval"]].index[-1].to_pydatetime().timestamp())
-        data = TimeSeries.from_pd(d)
-        cleanup_transform = TransformSequence(
-            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
+        df, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", "seattle_trail"))[0]
+        t = int(df[md["trainval"]].index[-1].to_pydatetime().timestamp())
+        k = "BGT North of NE 70th Total"
+        data = TimeSeries.from_pd(df)
+        cleanup = TransformSequence(
+            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), MinMaxNormalize()]
         )
-        cleanup_transform.train(data)
-        data = cleanup_transform(data)
-
-        train_data, test_data = data.bisect(t)
-
-        minmax_transform = MinMaxNormalize()
-        minmax_transform.train(train_data)
-        self.train_data_norm = minmax_transform(train_data)
-        self.test_data_norm = minmax_transform(test_data)
-
-        data_uni = TimeSeries.from_pd(d_uni)
-        cleanup_transform = TransformSequence(
-            [TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300), DifferenceTransform()]
-        )
-        cleanup_transform.train(data_uni)
-        data_uni = cleanup_transform(data_uni)
-
-        train_data_uni, test_data_uni = data_uni.bisect(t)
-
-        minmax_transform = MinMaxNormalize()
-        minmax_transform.train(train_data_uni)
-        self.train_data_uni_norm = minmax_transform(train_data_uni)
-        self.test_data_uni_norm = minmax_transform(test_data_uni)
+        cleanup.train(data)
+        self.train_data, self.test_data = cleanup(data).bisect(t)
+        self.train_data_uni, self.test_data_uni = [d.univariates[k].to_ts() for d in [self.train_data, self.test_data]]
 
         self.model = RandomForestForecaster(
             RandomForestForecasterConfig(
@@ -80,49 +58,53 @@ class TestRandomForestForecaster(unittest.TestCase):
                 sampling_mode="stats",
                 prediction_stride=1,
                 n_estimators=20,
+                invert_forecast=False,
             )
         )
 
     def test_forecast_multi(self):
-        logger.info("Training model...")
-        yhat, _ = self.model.train(self.train_data_norm)
+        logger.info("Training multivariate model...")
+        yhat, _ = self.model.train(self.train_data)
 
-        name = self.model.target_name
-        self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        forecast = self.model.forecast(self.max_forecast_steps)[0]
-        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
-        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, self.maxlags, self.max_forecast_steps)
+        # Check RMSE with multivariate forecast inversion
+        forecast, _ = self.model.forecast(self.max_forecast_steps)
+        rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
+        logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
+        # self.assertAlmostEqual(rmse, 0.08, delta=0.1)
+
+        # Check look-ahead RMSE using time_series_prev
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(pred), self.max_forecast_steps)
-        pred = pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), 0.50, 1)
+        lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
+        logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
+        # self.assertAlmostEqual(lookahead_rmse, 0.14, delta=0.1)
 
         # save and load
         self.model.save(dirname=join(rootdir, "tmp", "randomforestforecaster"))
         loaded_model = RandomForestForecaster.load(dirname=join(rootdir, "tmp", "randomforestforecaster"))
-        new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(new_pred), self.max_forecast_steps)
-        new_pred = new_pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), new_pred.mean(), 5)
+        loaded_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
+        self.assertEqual(len(loaded_pred), self.max_forecast_steps)
+        self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
     def test_forecast_uni(self):
-        logger.info("Training model...")
+        logger.info("Training univariate model with prediction stride 2...")
         self.model.config.prediction_stride = 2
-        yhat, _ = self.model.train(self.train_data_uni_norm)
-        name = self.model.target_name
+        yhat, _ = self.model.train(self.train_data_uni)
 
-        self.assertAlmostEqual(yhat.univariates[name].np_values.mean(), 0.50, 1)
-        forecast = self.model.forecast(self.max_forecast_steps)[0]
-        self.assertAlmostEqual(forecast.to_pd().mean().item(), 0.5, delta=0.1)
-        testing_data_gen = gen_next_seq_label_pairs(
-            self.test_data_uni_norm, self.i, self.maxlags, self.max_forecast_steps
-        )
+        # Check RMSE with univariate forecast inversion
+        forecast, _ = self.model.forecast(self.max_forecast_steps)
+        rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
+        logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
+        self.assertAlmostEqual(rmse, 0.01, delta=0.1)
+
+        # Check look-ahead RMSE using time_series_prev
+        testing_data_gen = gen_next_seq_label_pairs(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps)
         testing_instance, testing_label = next(testing_data_gen)
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        self.assertEqual(len(pred), self.max_forecast_steps)
-        pred = pred.univariates[name].np_values
-        self.assertAlmostEqual(pred.mean(), 0.50, 1)
+        lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
+        logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
+        self.assertAlmostEqual(lookahead_rmse, 0.06, delta=0.1)
 
 
 if __name__ == "__main__":

@@ -116,7 +116,6 @@ class TestMeanAnomEnsemble(unittest.TestCase):
         # build an ensemble
         config = DetectorEnsembleConfig(combiner=Mean(abs_score=True))
         self.ensemble = DetectorEnsemble(models=[model0, model1, model2], config=config)
-        self.ensemble.train(self.vals_train)
 
     def test_alarm(self):
         print("-" * 80)

@@ -80,7 +80,6 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
     """
 
     config_class = TreeEnsembleForecasterConfig
-
     model = None
 
     def __init__(self, config: TreeEnsembleForecasterConfig):
@@ -106,9 +105,12 @@ class TreeEnsembleForecaster(ForecasterBase, MultiVariateAutoRegressionMixin):
     def require_univariate(self) -> bool:
         return False
 
+    @property
+    def _default_train_config(self):
+        return dict()
+
     def _train(self, train_data: pd.DataFrame, train_config=None):
         train_data = TimeSeries.from_pd(train_data)
-        train_config = {} if train_config is None else train_config
         fit = train_config.get("fit", True)
 
         # univariate case, hybrid of sequence + autoregression

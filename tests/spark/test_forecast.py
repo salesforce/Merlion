@@ -19,6 +19,7 @@ rootdir = dirname(dirname(dirname(abspath(__file__))))
 def _run_job(
     spark, name: str, data_cols: list, hierarchical: bool, agg_dict: dict, predict_on_train: bool, robust: bool
 ):
+    logger.info(f"test_spark_forecast_{name}\n{'-' * 80}")
     index_cols = ["Store", "Dept"]
     target_col = "Weekly_Sales"
     time_col = "Date"
@@ -54,12 +55,13 @@ def _run_job(
             time_col=time_col,
             target_col=target_col,
             time_stamps=time_stamps,
-            model={"name": "DefaultForecaster", "target_seq_index": target_seq_index},
+            model=dict(name="DefaultForecaster", target_seq_index=target_seq_index),
             predict_on_train=predict_on_train,
             agg_dict=agg_dict,
         ),
         schema=output_schema,
     )
+    df.unpersist()
 
     if hierarchical:
         forecast_df = forecast_df.groupBy(time_col).applyInPandas(
@@ -68,6 +70,7 @@ def _run_job(
 
     output_path = join(rootdir, "tmp", "spark", "forecast", name)
     write_dataset(df=forecast_df, time_col=time_col, path=output_path, file_format="csv")
+    forecast_df.unpersist()
 
 
 def test_univariate(spark_session):
