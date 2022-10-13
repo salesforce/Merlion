@@ -163,7 +163,6 @@ class DefaultForecaster(LayeredForecaster):
                 maxlags=21,
                 n_estimators=100,
                 max_depth=7,
-                sampling_mode="normal",
                 learning_rate=0.1,
                 **kwargs,
             )

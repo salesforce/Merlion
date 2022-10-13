@@ -89,7 +89,6 @@
           "max_forecast_steps": 3,
           "n_estimators": 100,
           "max_depth": 9,
-          "sampling_mode": "normal",
           "prediction_stride": 1
       },
       "dataset": {}
@@ -103,7 +102,6 @@
           "max_forecast_steps": 3,
           "n_estimators": 100,
           "max_depth": 9,
-          "sampling_mode": "normal",
           "prediction_stride": 1
       },
       "dataset": {}
@@ -118,7 +116,6 @@
           "learning_rate": 0.1,
           "n_estimators": 100,
           "max_depth": 7,
-          "sampling_mode": "normal",
           "prediction_stride": 1
       },
       "dataset": {}
