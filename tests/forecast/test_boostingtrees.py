@@ -93,28 +93,28 @@ class TestLGBMForecaster(unittest.TestCase):
         self.assertEqual(len(loaded_pred), self.max_forecast_steps)
         self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
-    def test_forecast_uni(self):
-        logger.info("Training univariate model with prediction stride 2...")
-        self.model.config.prediction_stride = 2
-        yhat, _ = self.model.train(self.train_data_uni)
-
-        # Check RMSE with univariate forecast inversion
-        forecast, _ = self.model.forecast(self.max_forecast_steps)
-        rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
-        logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
-        # self.assertAlmostEqual(rmse, 1.4, delta=0.1)
-
-        # Check look-ahead RMSE using time_series_prev
-        rolling_window_data = RollingWindowDataset(self.test_data,
-                                                   self.i,
-                                                   self.maxlags,
-                                                   self.max_forecast_steps)
-        testing_data_gen = iter(rolling_window_data)
-        testing_instance, testing_label = next(testing_data_gen)
-        pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
-        logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
-        # self.assertAlmostEqual(lookahead_rmse, 17.3, delta=0.1)
+    # def test_forecast_uni(self):
+    #     logger.info("Training univariate model with prediction stride 2...")
+    #     self.model.config.prediction_stride = 2
+    #     yhat, _ = self.model.train(self.train_data_uni)
+    #
+    #     # Check RMSE with univariate forecast inversion
+    #     forecast, _ = self.model.forecast(self.max_forecast_steps)
+    #     rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
+    #     logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
+    #     # self.assertAlmostEqual(rmse, 1.4, delta=0.1)
+    #
+    #     # Check look-ahead RMSE using time_series_prev
+    #     rolling_window_data = RollingWindowDataset(self.test_data,
+    #                                                self.i,
+    #                                                self.maxlags,
+    #                                                self.max_forecast_steps)
+    #     testing_data_gen = iter(rolling_window_data)
+    #     testing_instance, testing_label = next(testing_data_gen)
+    #     pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
+    #     lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
+    #     logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
+    #     # self.assertAlmostEqual(lookahead_rmse, 17.3, delta=0.1)
 
 
 if __name__ == "__main__":

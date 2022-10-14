@@ -5,6 +5,8 @@ from merlion.utils.time_series import TimeSeries
 class RollingWindowDataset:
 
     def __init__(self, data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int,):
+        assert isinstance(data, TimeSeries), \
+            "RollingWindowDataset expects to receive TimeSeries data"
         self.data = data.align()
         self.target_seq_index = target_seq_index
         self.maxlags = maxlags
@@ -80,14 +82,14 @@ class RollingWindowDataset:
         rolling window processor for the seq2seq model to consume data, so it gives out
         train and label on a rolling window basis, in the format of numpy array
         """
-        inputs = np.zeros(self.valid_rolling_steps + 1, self.maxlags * self.data.dim)
+        inputs = np.zeros((self.valid_rolling_steps + 1, self.maxlags * self.data.dim))
         for seq_ind, uni in enumerate(self.data.univariates):
             uni_data = uni.values
             for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
                 inputs[i - self.maxlags, seq_ind * self.maxlags: (seq_ind + 1) * self.maxlags] = \
                     uni_data[i - self.maxlags: i]
 
-        labels = np.zeros(self.valid_rolling_steps + 1, self.forecast_steps)
+        labels = np.zeros((self.valid_rolling_steps + 1, self.forecast_steps))
         target_name = self.data.names[self.target_seq_index]
         target_data = self.data.univariates[target_name].values
         target_timestamp = self.data.univariates[target_name].index
@@ -95,6 +97,31 @@ class RollingWindowDataset:
             labels[i - self.maxlags] = target_data[i: i + self.forecast_steps]
 
         labels_timestamp = target_timestamp[self.maxlags: len(self.data) - self.forecast_steps + 1]
+
+        return inputs, labels, labels_timestamp
+
+    def process_regressive_train_data(self):
+        """
+        regressive window processor for the auto-regression seq2seq model to consume data, so it gives out
+        train and label on a rolling window basis auto-regressively
+        return shape:
+                inputs.shape = [n_samples, n_seq * maxlags]
+                labels.shape = [n_samples, n_seq]
+                labels_timestamp.shape = [n_samples, 1]
+        """
+
+        inputs = np.zeros((len(self.data) - self.maxlags, self.maxlags * self.data.dim))
+        labels = np.zeros((len(self.data) - self.maxlags, self.data.dim))
+
+        for seq_ind, uni in enumerate(self.data.univariates):
+            uni_data = uni.values
+            for i in range(self.maxlags, len(self.data)):
+                inputs[i - self.maxlags, seq_ind * self.maxlags: (seq_ind + 1) * self.maxlags] = \
+                    uni_data[i - self.maxlags: i]
+                labels[i - self.maxlags, seq_ind] = uni_data[i]
+
+        target_timestamp = self.data.univariates[self.data.names[0]].index
+        labels_timestamp = target_timestamp[self.maxlags: len(self.data)]
 
         return inputs, labels, labels_timestamp
 

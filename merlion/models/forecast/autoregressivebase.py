@@ -96,13 +96,19 @@ class AutoRegressiveForecaster(ForecasterBase):
                                                    self.target_seq_index,
                                                    self.maxlags,
                                                    self.prediction_stride)
-        inputs_train, labels_train, labels_train_ts = rolling_window_data.process_rolling_train_data()
+        if self.dim == 1:
+            # hybrid of seq and autoregression for univariate
+            inputs_train, labels_train, labels_train_ts = rolling_window_data.process_rolling_train_data()
+        else:
+            # autoregression for multivariate
+            inputs_train, labels_train, labels_train_ts = rolling_window_data.process_regressive_train_data()
 
+        # fitting
         if fit:
             self.model.fit(inputs_train, labels_train)
 
+        # forecasting
         inputs_train = np.atleast_2d(inputs_train)
-
         if self.dim == 1:
             pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
         else:
