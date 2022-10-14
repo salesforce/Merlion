@@ -68,7 +68,7 @@ class RollingWindowDataset:
 
     def process_one_step_prior(self):
         """
-        rolling window processor for the seq2seq model to consume data, so it gives out
+        rolling window processor for the model to consume data, so it gives out
         data in a rolling window basis for forecasting, in the format of numpy array
         """
         data = self.data[-self.maxlags:]
@@ -79,8 +79,11 @@ class RollingWindowDataset:
 
     def process_rolling_train_data(self):
         """
-        rolling window processor for the seq2seq model to consume data, so it gives out
+        default rolling window processor for the model to consume data, so it gives out
         train and label on a rolling window basis, in the format of numpy array
+        return shape:
+                inputs.shape = [n_samples, n_seq * maxlags]
+                labels.shape = [n_samples, forecast_steps]
         """
         inputs = np.zeros((self.valid_rolling_steps + 1, self.maxlags * self.data.dim))
         for seq_ind, uni in enumerate(self.data.univariates):
@@ -103,11 +106,10 @@ class RollingWindowDataset:
     def process_regressive_train_data(self):
         """
         regressive window processor for the auto-regression seq2seq model to consume data, so it gives out
-        train and label on a rolling window basis auto-regressively
+        train and label on a rolling window basis auto-regressively, in the format of numpy array
         return shape:
                 inputs.shape = [n_samples, n_seq * maxlags]
                 labels.shape = [n_samples, n_seq]
-                labels_timestamp.shape = [n_samples, 1]
         """
 
         inputs = np.zeros((len(self.data) - self.maxlags, self.maxlags * self.data.dim))

@@ -90,6 +90,10 @@ class AutoRegressiveForecaster(ForecasterBase):
         else:
             assert self.prediction_stride == 1, \
                 "AutoRegressive model only handles prediction_stride == 1 for multivariate"
+            logger.info(
+                f"Model is working on a multivariate dataset with prediction_stride = 1, "
+                f"autoregression training strategy will be adopted "
+            )
 
         # process train data to the rolling window dataset
         rolling_window_data = RollingWindowDataset(train_data,

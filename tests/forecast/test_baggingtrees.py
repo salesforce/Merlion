@@ -102,7 +102,7 @@ class TestRandomForestForecaster(unittest.TestCase):
         self.assertAlmostEqual(rmse, 0.01, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        rolling_window_data = RollingWindowDataset(self.test_data,
+        rolling_window_data = RollingWindowDataset(self.test_data_uni,
                                                    self.i,
                                                    self.maxlags,
                                                    self.max_forecast_steps)

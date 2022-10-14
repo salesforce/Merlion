@@ -98,6 +98,12 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
         if self.dim == 1 or self.prediction_stride == 1:
             return super()._train(train_data, train_config)
 
+        logger.info(
+            f"Model is working on a multivariate dataset with prediction_stride > 1, "
+            f"default multi-output regressor training strategy will be adopted "
+            f"with prediction_stride = {self.prediction_stride} "
+        )
+
         train_data = TimeSeries.from_pd(train_data)
         fit = train_config.get("fit", True)
 
