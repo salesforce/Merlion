@@ -77,18 +77,11 @@ class RollingWindowDataset:
             data_df = data.to_pd() if isinstance(data, TimeSeries) else data
             self.data = data_df.values
             self.timestamp = data_df.index
-            self.target = data_df[data_df.columns[target_seq_index]].values if self._label_axis == 0 else None
-            self.target_timestamp = data_df[data_df.columns[target_seq_index]].index if \
-                self._label_axis == 0 else data_df[data_df.columns[0]].index
+            self.target = data_df.iloc[:, target_seq_index].values if self._label_axis == 0 else None
+            self.target_timestamp = data_df.index
 
         self.shuffle = shuffle
-
-        self._valid_rolling_steps = len(data) - self.n_past - self.n_future
         self._data_len = len(data)
-
-    @property
-    def valid_rolling_steps(self):
-        return self._valid_rolling_steps
 
     def __len__(self):
         return self._data_len
@@ -140,8 +133,12 @@ class RollingWindowDataset:
                 )
 
         """
-        order = np.random.permutation(self.valid_rolling_steps + 1) if self.shuffle \
-            else range(self.valid_rolling_steps + 1)
+        if self._label_axis == 0:
+            _valid_rolling_steps = len(self) - self.n_past - self.n_future
+        elif self._label_axis == 1:
+            _valid_rolling_steps = len(self) - self.n_past
+        order = np.random.permutation(_valid_rolling_steps + 1) if self.shuffle \
+            else range(_valid_rolling_steps + 1)
         for i in order:
             j = i + self.n_past
             if self._label_axis == 0:
@@ -167,7 +164,12 @@ class RollingWindowDataset:
 
     def __getitem__(self, idx):
 
-        assert 0 <= idx <= self.valid_rolling_steps
+        if self._label_axis == 0:
+            _valid_rolling_steps = len(self) - self.n_past - self.n_future
+        elif self._label_axis == 1:
+            _valid_rolling_steps = len(self) - self.n_past
+
+        assert 0 <= idx <= _valid_rolling_steps
         idx_end = idx + self.n_past
         if self._label_axis == 0:
             if self.ts_index:
@@ -198,11 +200,12 @@ class RollingWindowDataset:
                 inputs.shape = [n_samples, n_seq * n_past]
                 labels.shape = [n_samples, n_future]
         """
-        inputs = np.zeros((self.valid_rolling_steps + 1, self.n_past * self.dim))
+        _valid_rolling_steps = len(self) - self.n_past - self.n_future
+        inputs = np.zeros((_valid_rolling_steps + 1, self.n_past * self.dim))
         for i in range(self.n_past, len(self.data) - self.n_future + 1):
             inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")
 
-        labels = np.zeros((self.valid_rolling_steps + 1, self.n_future))
+        labels = np.zeros((_valid_rolling_steps + 1, self.n_future))
         for i in range(self.n_past, len(self.data) - self.n_future + 1):
             labels[i - self.n_past] = self.target[i: i + self.n_future]
 
@@ -219,8 +222,8 @@ class RollingWindowDataset:
                 labels.shape = [n_samples, n_seq]
         """
 
-        inputs = np.zeros((len(self.data) - self.n_past, self.n_past * self.dim))
-        labels = np.zeros((len(self.data) - self.n_past, self.dim))
+        inputs = np.zeros((len(self) - self.n_past, self.n_past * self.dim))
+        labels = np.zeros((len(self) - self.n_past, self.dim))
 
         for i in range(self.n_past, len(self.data)):
             inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")

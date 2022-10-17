@@ -30,14 +30,15 @@ class AutoRegressiveForecasterConfig(ForecasterConfig):
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.
-        :param prediction_stride: the prediction step for training and forecasting
+        :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
 
             - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
               be done autoregressively, with the stride unit of prediction_stride
             - If multivariate:
 
-                - if = 1: the autoregression with the stride unit of 1
-                - if > 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps
+                - if = 1: autoregressively forecast all variables in the time series, one step at a time
+                - if > 1: only support directly forecasting the next prediction_stride steps in the future.
+                Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
@@ -45,6 +46,15 @@ class AutoRegressiveForecasterConfig(ForecasterConfig):
 
 
 class AutoRegressiveForecaster(ForecasterBase):
+    """
+    AutoRegressive model for multivariate time series forecasting. This is the base class for TreeEnsembleForecaster
+        - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
+              be done autoregressively, with the stride unit of prediction_stride
+        - If multivariate:
+                - if prediction_stride = 1:
+                    autoregressively forecast all variables in the time series, one step at a time
+                - if > 1: use the default MultiOutput regressor provided by TreeEnsembleForecaster
+    """
 
     config_class = AutoRegressiveForecasterConfig
     model = None
