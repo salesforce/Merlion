@@ -140,27 +140,7 @@ class RollingWindowDataset:
         order = np.random.permutation(_valid_rolling_steps + 1) if self.shuffle \
             else range(_valid_rolling_steps + 1)
         for i in order:
-            j = i + self.n_past
-            if self._label_axis == 0:
-                if self.ts_index:
-                    past_ts = self.data_ts[i: j]
-                    future_ts = self.target_ts[j: j + self.n_future]
-                    yield past_ts, future_ts
-                else:
-                    past = self.data[i: j]
-                    future = self.target[j: j + self.n_future]
-                    future_timestamp = self.target_timestamp[j: j + self.n_future]
-                    yield past, future, future_timestamp
-            elif self._label_axis == 1:
-                if self.ts_index:
-                    past_ts = self.data_ts[i: j]
-                    future_ts = self.data_ts[j]
-                    yield past_ts, future_ts
-                else:
-                    past = self.data[i: j]
-                    future = self.data[j]
-                    future_timestamp = np.atleast_1d(self.target_timestamp[j])
-                    yield past, future, future_timestamp
+            yield self[i]
 
     def __getitem__(self, idx):
 
