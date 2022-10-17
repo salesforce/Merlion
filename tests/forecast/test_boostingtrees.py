@@ -64,7 +64,7 @@ class TestLGBMForecaster(unittest.TestCase):
             )
         )
 
-        self.model_sequence = LGBMForecaster(
+        self.model_seq2seq = LGBMForecaster(
             LGBMForecasterConfig(
                 max_forecast_steps=self.max_forecast_steps,
                 maxlags=self.maxlags,
@@ -107,12 +107,12 @@ class TestLGBMForecaster(unittest.TestCase):
         self.assertEqual(len(loaded_pred), self.max_forecast_steps)
         self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
-    def test_forecast_multi_sequence(self):
+    def test_forecast_multi_seq2seq(self):
         logger.info("Training multivariate model...")
-        yhat, _ = self.model_sequence.train(self.train_data)
+        yhat, _ = self.model_seq2seq.train(self.train_data)
 
         # Check RMSE with multivariate forecast inversion
-        forecast, _ = self.model_sequence.forecast(self.max_forecast_steps)
+        forecast, _ = self.model_seq2seq.forecast(self.max_forecast_steps)
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
         logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
         # self.assertAlmostEqual(rmse, 3.6, delta=0.1)
@@ -124,13 +124,13 @@ class TestLGBMForecaster(unittest.TestCase):
                                        self.max_forecast_steps,
                                        ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
-        pred, _ = self.model_sequence.forecast(testing_label.time_stamps, testing_instance)
+        pred, _ = self.model_seq2seq.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
         # self.assertAlmostEqual(lookahead_rmse, 19.55, delta=0.1)
 
         # save and load
-        self.model_sequence.save(dirname=join(rootdir, "tmp", "lgbmforecaster"))
+        self.model_seq2seq.save(dirname=join(rootdir, "tmp", "lgbmforecaster"))
         loaded_model = LGBMForecaster.load(dirname=join(rootdir, "tmp", "lgbmforecaster"))
         loaded_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
         self.assertEqual(len(loaded_pred), self.max_forecast_steps)

@@ -104,8 +104,12 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
             f"with prediction_stride = {self.prediction_stride} "
         )
 
-        train_data = TimeSeries.from_pd(train_data)
         fit = train_config.get("fit", True)
+
+        if isinstance(train_data, TimeSeries):
+            assert self.dim == train_data.dim
+        else:
+            assert self.dim == train_data.shape[1]
 
         # multivariate case, fixed prediction horizon using the default multioutput tree regressor
         max_forecast_steps = max_feasible_forecast_steps(train_data, self.maxlags)
@@ -128,10 +132,9 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
         # process train data to the rolling window dataset
         dataset = RollingWindowDataset(data=train_data,
                                        target_seq_index=self.target_seq_index,
-                                       maxlags=self.maxlags,
-                                       forecast_steps=self.prediction_stride,
+                                       n_past=self.maxlags,
+                                       n_future=self.prediction_stride,
                                        batch_size=None,
-                                       label_axis=0,
                                        )
         inputs_train, labels_train, labels_train_ts = next(iter(dataset))
 

@@ -73,10 +73,13 @@ class AutoRegressiveForecaster(ForecasterBase):
         return dict()
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
-        train_data = TimeSeries.from_pd(train_data)
+
         fit = train_config.get("fit", True)
 
-        assert self.dim == train_data.dim
+        if isinstance(train_data, TimeSeries):
+            assert self.dim == train_data.dim
+        else:
+            assert self.dim == train_data.shape[1]
 
         if self.dim == 1:
             logger.info(
@@ -85,7 +88,7 @@ class AutoRegressiveForecaster(ForecasterBase):
                 f"with prediction_stride = {self.prediction_stride} "
             )
             # hybrid of seq and autoregression for univariate
-            label_axis = 0
+            rolling_target_seq_index = self.target_seq_index
         else:
             assert self.prediction_stride == 1, \
                 "AutoRegressive model only handles prediction_stride == 1 for multivariate"
@@ -93,16 +96,15 @@ class AutoRegressiveForecaster(ForecasterBase):
                 f"Model is working on a multivariate dataset with prediction_stride = 1, "
                 f"autoregression training strategy will be adopted "
             )
-            # autoregression for multivariate
-            label_axis = 1
+            # autoregression for multivariates, all sequences will be rolled for the targets
+            rolling_target_seq_index = None
 
         # process train data to the rolling window dataset
         dataset = RollingWindowDataset(data=train_data,
-                                       target_seq_index=self.target_seq_index,
-                                       maxlags=self.maxlags,
-                                       forecast_steps=self.prediction_stride,
+                                       target_seq_index=rolling_target_seq_index,
+                                       n_past=self.maxlags,
+                                       n_future=self.prediction_stride,
                                        batch_size=None,
-                                       label_axis=label_axis,
                                        )
         inputs_train, labels_train, labels_train_ts = next(iter(dataset))
 

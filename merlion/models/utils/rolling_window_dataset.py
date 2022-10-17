@@ -1,46 +1,89 @@
+import logging
 import numpy as np
-from typing import Optional
+from typing import Optional, Union
+import pandas as pd
 from merlion.utils.time_series import TimeSeries
+
+logger = logging.getLogger(__name__)
 
 
 class RollingWindowDataset:
 
     def __init__(
             self,
-            data: TimeSeries,
-            target_seq_index: int,
-            maxlags: int,
-            forecast_steps: int,
+            data: Union[TimeSeries, pd.DataFrame],
+            target_seq_index: Optional[int],
+            n_past: int,
+            n_future: int,
             shuffle: bool = False,
             ts_index: bool = False,
             batch_size: Optional[int] = 1,
-            label_axis: int = 0,
     ):
-        assert isinstance(data, TimeSeries), \
-            "RollingWindowDataset expects to receive TimeSeries data"
-        data = data.align()
-        self.dim = data.dim
+        """
+        A rolling window dataset iterable to yield (past, future).
+
+        :param data: time series data in the format of TimeSeries or DatetimeIndex indexed pandas DataFrame
+        :param target_seq_index: The index of the univariate (amongst all
+            univariates in a general multivariate time series) whose value we
+            would like to use for the future labeling. If target_seq_index = None,
+            it implies that all the sequences are required for the future labeling,
+            in this case, future will be rolled along the sequence dimension.
+        :param n_past: number of steps for past
+        :param n_future: number of steps for future. If target_seq_index = None, n_future = 1 by enforcement.
+        :param shuffle: True or False to randomly shuffle the returning window, please note that the
+            time series data itself will never be shuffled
+        :param ts_index: keep original TimeSeries internally for all the slicing, and output TimeSeries.
+            by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
+        :param batch_size: if >= 1: will yield a list of (past, future) with batch_size
+            if None: will give a one-shot dataset for all the rolling windows.
+        """
+        assert isinstance(data, (TimeSeries, pd.DataFrame)), \
+            "RollingWindowDataset expects to receive TimeSeries or pd.DataFrame data "
+        if isinstance(data, TimeSeries):
+            data = data.align()
+            self.dim = data.dim
+        else:
+            assert isinstance(data.index, pd.DatetimeIndex)
+            assert ts_index is False, "Only TimeSeries data support ts_index = True "
+            self.dim = data.shape[1]
+
         self.batch_size = batch_size
         self.ts_index = ts_index
 
+        self.target_seq_index = target_seq_index
+        if self.target_seq_index is None:
+            logger.info(
+                f"target_seq_index is None, therefore, the future data will be rolling along "
+                f"the entire sequence dimension with timestamp increment by 1, i.e, self.n_future = 1."
+                f"This is the rolling strategy for autoregression algorithm where all the future "
+                f"sequences need to be provided as the training prior. "
+                f"If you are not expecting this behavior, please properly set up the target_seq_index "
+                f"as a valid integer. "
+            )
+            # label rolling along the sequence dimension
+            self._label_axis = 1
+            self.n_future = 1
+        else:
+            # label rolling along the time dimension
+            self._label_axis = 0
+            self.n_future = n_future
+
+        self.n_past = n_past
+
         if ts_index:
             self.data_ts = data
-            self.target_ts = data.univariates[data.names[target_seq_index]]
+            self.target_ts = data.univariates[data.names[target_seq_index]] if self._label_axis == 0 else None
         else:
-            data_df = data.to_pd()
+            data_df = data.to_pd() if isinstance(data, TimeSeries) else data
             self.data = data_df.values
             self.timestamp = data_df.index
-            self.target = data.univariates[data.names[target_seq_index]].values
-            self.target_timestamp = data.univariates[data.names[target_seq_index]].index
-
-        self.target_seq_index = target_seq_index
-        self.maxlags = maxlags
-        self.forecast_steps = forecast_steps
+            self.target = data_df[data_df.columns[target_seq_index]].values if self._label_axis == 0 else None
+            self.target_timestamp = data_df[data_df.columns[target_seq_index]].index if \
+                self._label_axis == 0 else data_df[data_df.columns[0]].index
 
         self.shuffle = shuffle
-        self.label_axis = label_axis
 
-        self._valid_rolling_steps = len(data) - self.maxlags - self.forecast_steps
+        self._valid_rolling_steps = len(data) - self.n_past - self.n_future
         self._data_len = len(data)
 
     @property
@@ -53,9 +96,9 @@ class RollingWindowDataset:
     def __iter__(self):
 
         if self.batch_size is None or self.batch_size < 1:
-            if self.label_axis == 0:
+            if self._label_axis == 0:
                 yield self._get_entire_train_data_along_time()
-            elif self.label_axis == 1:
+            elif self._label_axis == 1:
                 yield self._get_entire_train_data_along_sequence()
             return
 
@@ -73,7 +116,7 @@ class RollingWindowDataset:
         """
         For example, if the input is like the following
 
-            for self.label_axis = 0, we roll the window along the time axis
+            for self._label_axis = 0, we roll the window along the time axis
             .. code-block:: python
 
                 data = (t0, (1,2,3)),
@@ -81,8 +124,8 @@ class RollingWindowDataset:
                        (t2, (7,8,9)),
                        (t3, (10,11,12))
                 target_seq_index = 0
-                maxlags = 2
-                forecast_steps = 2
+                n_past = 2
+                n_future = 2
 
         Then we may yield the following for the first time
 
@@ -100,18 +143,18 @@ class RollingWindowDataset:
         order = np.random.permutation(self.valid_rolling_steps + 1) if self.shuffle \
             else range(self.valid_rolling_steps + 1)
         for i in order:
-            j = i + self.maxlags
-            if self.label_axis == 0:
+            j = i + self.n_past
+            if self._label_axis == 0:
                 if self.ts_index:
                     past_ts = self.data_ts[i: j]
-                    future_ts = self.target_ts[j: j + self.forecast_steps]
+                    future_ts = self.target_ts[j: j + self.n_future]
                     yield past_ts, future_ts
                 else:
                     past = self.data[i: j]
-                    future = self.target[j: j + self.forecast_steps]
-                    future_timestamp = self.target_timestamp[j: j + self.forecast_steps]
+                    future = self.target[j: j + self.n_future]
+                    future_timestamp = self.target_timestamp[j: j + self.n_future]
                     yield past, future, future_timestamp
-            elif self.label_axis == 1:
+            elif self._label_axis == 1:
                 if self.ts_index:
                     past_ts = self.data_ts[i: j]
                     future_ts = self.data_ts[j]
@@ -125,18 +168,18 @@ class RollingWindowDataset:
     def __getitem__(self, idx):
 
         assert 0 <= idx <= self.valid_rolling_steps
-        idx_end = idx + self.maxlags
-        if self.label_axis == 0:
+        idx_end = idx + self.n_past
+        if self._label_axis == 0:
             if self.ts_index:
                 past_ts = self.data_ts[idx: idx_end]
-                future_ts = self.target_ts[idx_end: idx_end + self.forecast_steps]
+                future_ts = self.target_ts[idx_end: idx_end + self.n_future]
                 return past_ts, future_ts
             else:
                 past = self.data[idx: idx_end]
-                future = self.target[idx_end: idx_end + self.forecast_steps]
-                future_timestamp = self.target_timestamp[idx_end: idx_end + self.forecast_steps]
+                future = self.target[idx_end: idx_end + self.n_future]
+                future_timestamp = self.target_timestamp[idx_end: idx_end + self.n_future]
                 return past, future, future_timestamp
-        elif self.label_axis == 1:
+        elif self._label_axis == 1:
             if self.ts_index:
                 past_ts = self.data_ts[idx: idx_end]
                 future_ts = self.data_ts[idx_end]
@@ -152,18 +195,18 @@ class RollingWindowDataset:
         default rolling window processor for the model to consume data as the (inputs, labels), so it gives out
         train and label on a rolling window basis, in the format of numpy array
         return shape:
-                inputs.shape = [n_samples, n_seq * maxlags]
-                labels.shape = [n_samples, forecast_steps]
+                inputs.shape = [n_samples, n_seq * n_past]
+                labels.shape = [n_samples, n_future]
         """
-        inputs = np.zeros((self.valid_rolling_steps + 1, self.maxlags * self.dim))
-        for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
-            inputs[i - self.maxlags] = self.data[i - self.maxlags: i].reshape(-1, order="F")
+        inputs = np.zeros((self.valid_rolling_steps + 1, self.n_past * self.dim))
+        for i in range(self.n_past, len(self.data) - self.n_future + 1):
+            inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")
 
-        labels = np.zeros((self.valid_rolling_steps + 1, self.forecast_steps))
-        for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
-            labels[i - self.maxlags] = self.target[i: i + self.forecast_steps]
+        labels = np.zeros((self.valid_rolling_steps + 1, self.n_future))
+        for i in range(self.n_past, len(self.data) - self.n_future + 1):
+            labels[i - self.n_past] = self.target[i: i + self.n_future]
 
-        labels_timestamp = self.target_timestamp[self.maxlags: len(self.data) - self.forecast_steps + 1]
+        labels_timestamp = self.target_timestamp[self.n_past: len(self.data) - self.n_future + 1]
 
         return inputs, labels, labels_timestamp
 
@@ -172,21 +215,21 @@ class RollingWindowDataset:
         regressive window processor for the auto-regression model to consume data as the (inputs, labels),
         so it gives out train and label on a rolling window basis auto-regressively, in the format of numpy array
         return shape:
-                inputs.shape = [n_samples, n_seq * maxlags]
+                inputs.shape = [n_samples, n_seq * n_past]
                 labels.shape = [n_samples, n_seq]
         """
 
-        inputs = np.zeros((len(self.data) - self.maxlags, self.maxlags * self.dim))
-        labels = np.zeros((len(self.data) - self.maxlags, self.dim))
+        inputs = np.zeros((len(self.data) - self.n_past, self.n_past * self.dim))
+        labels = np.zeros((len(self.data) - self.n_past, self.dim))
 
-        for i in range(self.maxlags, len(self.data)):
-            inputs[i - self.maxlags] = self.data[i - self.maxlags: i].reshape(-1, order="F")
-            labels[i - self.maxlags] = self.data[i]
+        for i in range(self.n_past, len(self.data)):
+            inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")
+            labels[i - self.n_past] = self.data[i]
 
-        labels_timestamp = self.target_timestamp[self.maxlags: len(self.data)]
+        labels_timestamp = self.target_timestamp[self.n_past: len(self.data)]
 
         return inputs, labels, labels_timestamp
 
 
-def max_feasible_forecast_steps(data: TimeSeries, maxlags: int):
+def max_feasible_forecast_steps(data: Union[TimeSeries, pd.DataFrame], maxlags: int):
     return len(data) - maxlags
