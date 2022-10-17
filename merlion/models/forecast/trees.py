@@ -126,11 +126,14 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
             self.config.prediction_stride = self.max_forecast_steps
 
         # process train data to the rolling window dataset
-        rolling_window_data = RollingWindowDataset(train_data,
-                                                   self.target_seq_index,
-                                                   self.maxlags,
-                                                   self.prediction_stride)
-        inputs_train, labels_train, labels_train_ts = rolling_window_data.process_rolling_train_data()
+        dataset = RollingWindowDataset(data=train_data,
+                                       target_seq_index=self.target_seq_index,
+                                       maxlags=self.maxlags,
+                                       forecast_steps=self.prediction_stride,
+                                       batch_size=None,
+                                       label_axis=0,
+                                       )
+        inputs_train, labels_train, labels_train_ts = next(iter(dataset))
 
         if fit:
             self.model.fit(inputs_train, labels_train)
@@ -161,14 +164,7 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
         elif time_series_prev is not None and return_prev:
             prev_pred, prev_err = self._train(time_series_prev, train_config=dict(fit=False))
 
-        time_series_prev = TimeSeries.from_pd(time_series_prev)
-
-        rolling_window_data = RollingWindowDataset(time_series_prev,
-                                                   self.target_seq_index,
-                                                   self.maxlags,
-                                                   self.prediction_stride)
-
-        time_series_prev_no_ts = rolling_window_data.process_one_step_prior()
+        time_series_prev_no_ts = self._get_immedidate_forecasting_prior(time_series_prev)
 
         yhat = self.model.predict(np.atleast_2d(time_series_prev_no_ts)).reshape(-1)
         yhat = yhat[:n]

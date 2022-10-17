@@ -89,12 +89,12 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 2.9, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        rolling_window_data = RollingWindowDataset(self.test_data,
-                                                   self.i,
-                                                   self.maxlags,
-                                                   self.max_forecast_steps)
-        testing_data_gen = iter(rolling_window_data)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data,
+                                       self.i,
+                                       self.maxlags,
+                                       self.max_forecast_steps,
+                                       ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_autoregression.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
@@ -118,12 +118,12 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 3.6, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        rolling_window_data = RollingWindowDataset(self.test_data,
-                                                   self.i,
-                                                   self.maxlags,
-                                                   self.max_forecast_steps)
-        testing_data_gen = iter(rolling_window_data)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data,
+                                       self.i,
+                                       self.maxlags,
+                                       self.max_forecast_steps,
+                                       ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_sequence.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
@@ -148,12 +148,12 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 1.4, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        rolling_window_data = RollingWindowDataset(self.test_data_uni,
-                                                   self.i,
-                                                   self.maxlags,
-                                                   self.max_forecast_steps)
-        testing_data_gen = iter(rolling_window_data)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data_uni,
+                                       self.i,
+                                       self.maxlags,
+                                       self.max_forecast_steps,
+                                       ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_autoregression.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")

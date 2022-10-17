@@ -1,11 +1,8 @@
 import logging
 from typing import List, Tuple
 
-from lightgbm import LGBMRegressor
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
-from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils.time_series import to_pd_datetime, TimeSeries
@@ -87,6 +84,8 @@ class AutoRegressiveForecaster(ForecasterBase):
                 f"hybrid of sequence and autoregression training strategy will be adopted "
                 f"with prediction_stride = {self.prediction_stride} "
             )
+            # hybrid of seq and autoregression for univariate
+            label_axis = 0
         else:
             assert self.prediction_stride == 1, \
                 "AutoRegressive model only handles prediction_stride == 1 for multivariate"
@@ -94,18 +93,18 @@ class AutoRegressiveForecaster(ForecasterBase):
                 f"Model is working on a multivariate dataset with prediction_stride = 1, "
                 f"autoregression training strategy will be adopted "
             )
+            # autoregression for multivariate
+            label_axis = 1
 
         # process train data to the rolling window dataset
-        rolling_window_data = RollingWindowDataset(train_data,
-                                                   self.target_seq_index,
-                                                   self.maxlags,
-                                                   self.prediction_stride)
-        if self.dim == 1:
-            # hybrid of seq and autoregression for univariate
-            inputs_train, labels_train, labels_train_ts = rolling_window_data.process_rolling_train_data()
-        else:
-            # autoregression for multivariate
-            inputs_train, labels_train, labels_train_ts = rolling_window_data.process_regressive_train_data()
+        dataset = RollingWindowDataset(data=train_data,
+                                       target_seq_index=self.target_seq_index,
+                                       maxlags=self.maxlags,
+                                       forecast_steps=self.prediction_stride,
+                                       batch_size=None,
+                                       label_axis=label_axis,
+                                       )
+        inputs_train, labels_train, labels_train_ts = next(iter(dataset))
 
         # fitting
         if fit:
@@ -120,11 +119,13 @@ class AutoRegressiveForecaster(ForecasterBase):
             )
         # since the model may predict multiple steps, we concatenate all the first steps together
         pred = pred[:, 0].reshape(-1)
+
         return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
 
     def _forecast(
             self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, None]:
+
         if time_series_prev is not None:
             assert len(time_series_prev) >= self.maxlags, (
                 f"time_series_prev has a data length of "
@@ -142,14 +143,8 @@ class AutoRegressiveForecaster(ForecasterBase):
         elif time_series_prev is not None and return_prev:
             prev_pred, prev_err = self._train(time_series_prev, train_config=dict(fit=False))
 
-        time_series_prev = TimeSeries.from_pd(time_series_prev)
-        assert self.dim == time_series_prev.dim
+        time_series_prev_no_ts = self._get_immedidate_forecasting_prior(time_series_prev)
 
-        rolling_window_data = RollingWindowDataset(time_series_prev,
-                                                   self.target_seq_index,
-                                                   self.maxlags,
-                                                   self.prediction_stride)
-        time_series_prev_no_ts = rolling_window_data.process_one_step_prior()
         if self.dim == 1:
             yhat = self._hybrid_forecast(np.atleast_2d(time_series_prev_no_ts), n).reshape(-1)
         else:
@@ -245,6 +240,12 @@ class AutoRegressiveForecaster(ForecasterBase):
             next_forecast = np.expand_dims(next_forecast, axis=1)
         prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags:]
         return prior.reshape(len(prior), -1)
+
+    def _get_immedidate_forecasting_prior(self, data):
+        if isinstance(data, TimeSeries):
+            data = data.to_pd()
+        data = data.values
+        return data[-self.maxlags:].reshape(-1, order="F")
 
 
 

@@ -1,83 +1,152 @@
 import numpy as np
+from typing import Optional
 from merlion.utils.time_series import TimeSeries
 
 
 class RollingWindowDataset:
 
-    def __init__(self, data: TimeSeries, target_seq_index: int, maxlags: int, forecast_steps: int,):
+    def __init__(
+            self,
+            data: TimeSeries,
+            target_seq_index: int,
+            maxlags: int,
+            forecast_steps: int,
+            shuffle: bool = False,
+            ts_index: bool = False,
+            batch_size: Optional[int] = 1,
+            label_axis: int = 0,
+    ):
         assert isinstance(data, TimeSeries), \
             "RollingWindowDataset expects to receive TimeSeries data"
-        self.data = data.align()
+        data = data.align()
+        self.dim = data.dim
+        self.batch_size = batch_size
+        self.ts_index = ts_index
+
+        if ts_index:
+            self.data_ts = data
+            self.target_ts = data.univariates[data.names[target_seq_index]]
+        else:
+            data_df = data.to_pd()
+            self.data = data_df.values
+            self.timestamp = data_df.index
+            self.target = data.univariates[data.names[target_seq_index]].values
+            self.target_timestamp = data.univariates[data.names[target_seq_index]].index
+
         self.target_seq_index = target_seq_index
         self.maxlags = maxlags
         self.forecast_steps = forecast_steps
 
-        self.data_uni = self.data.univariates[self.data.names[target_seq_index]]
+        self.shuffle = shuffle
+        self.label_axis = label_axis
 
-        self.iter = 0
+        self._valid_rolling_steps = len(data) - self.maxlags - self.forecast_steps
+
+    @property
+    def valid_rolling_steps(self):
+        return self._valid_rolling_steps
 
     def __len__(self):
         return len(self.data)
 
     def __iter__(self):
-        return self
 
-    def __next__(self):
+        if self.batch_size is None or self.batch_size < 1:
+            if self.label_axis == 0:
+                yield self._get_entire_train_data_along_time()
+            elif self.label_axis == 1:
+                yield self._get_entire_train_data_along_sequence()
+            return
+
+        if self.batch_size == 1:
+            yield from self._get_iterator()
+        elif self.batch_size > 1:
+            batch = list()
+            for i in self._get_iterator():
+                batch.append(i)
+                if len(batch) >= self.batch_size:
+                    yield batch
+                    batch = list()
+
+    def _get_iterator(self):
         """
         For example, if the input is like the following
 
-        .. code-block:: python
+            for self.label_axis = 0, we roll the window along the time axis
+            .. code-block:: python
 
-            data = (t0, (1,2,3)),
-                   (t1, (4,5,6)),
-                   (t2, (7,8,9)),
-                   (t3, (10,11,12))
-            target_seq_index = 0
-            maxlags = 2
-            forecast_steps = 2
+                data = (t0, (1,2,3)),
+                       (t1, (4,5,6)),
+                       (t2, (7,8,9)),
+                       (t3, (10,11,12))
+                target_seq_index = 0
+                maxlags = 2
+                forecast_steps = 2
 
         Then we may yield the following for the first time
 
-        .. code-block:: python
-
-            (
-                (t0, (1,2,3)),
-                (t1, (4,5,6))
-            ),
-            (
-                (t2, (7))
-                (t3, (10))
-            )
+            .. code-block:: python
+                (
+                    (t0, (1,2,3)),
+                    (t1, (4,5,6))
+                ),
+                (
+                    (t2, (7))
+                    (t3, (10))
+                )
 
         """
-        if self.iter <= self.valid_rolling_steps:
-            past = self.data[self.iter : self.iter + self.maxlags]
-            future = self.data_uni[self.iter + self.maxlags : self.iter + self.maxlags + self.forecast_steps]
-            self.iter += 1
-            return past, future
-        else:
-            raise StopIteration
+        order = np.random.permutation(self.valid_rolling_steps + 1) if self.shuffle \
+            else range(self.valid_rolling_steps + 1)
+        for i in order:
+            j = i + self.maxlags
+            if self.label_axis == 0:
+                if self.ts_index:
+                    past_ts = self.data_ts[i: j]
+                    future_ts = self.target_ts[j: j + self.forecast_steps]
+                    yield past_ts, future_ts
+                else:
+                    past = self.data[i: j]
+                    future = self.target[j: j + self.forecast_steps]
+                    future_timestamp = self.target_timestamp[j: j + self.forecast_steps]
+                    yield past, future, future_timestamp
+            elif self.label_axis == 1:
+                if self.ts_index:
+                    past_ts = self.data_ts[i: j]
+                    future_ts = self.data_ts[j]
+                    yield past_ts, future_ts
+                else:
+                    past = self.data[i: j]
+                    future = self.data[j]
+                    future_timestamp = np.atleast_1d(self.target_timestamp[j])
+                    yield past, future, future_timestamp
 
     def __getitem__(self, idx):
 
         assert 0 <= idx <= self.valid_rolling_steps
+        idx_end = idx + self.maxlags
+        if self.label_axis == 0:
+            if self.ts_index:
+                past_ts = self.data_ts[idx: idx_end]
+                future_ts = self.target_ts[idx_end: idx_end + self.forecast_steps]
+                return past_ts, future_ts
+            else:
+                past = self.data[idx: idx_end]
+                future = self.target[idx_end: idx_end + self.forecast_steps]
+                future_timestamp = self.target_timestamp[idx_end: idx_end + self.forecast_steps]
+                return past, future, future_timestamp
+        elif self.label_axis == 1:
+            if self.ts_index:
+                past_ts = self.data_ts[idx: idx_end]
+                future_ts = self.data_ts[idx_end]
+                return past_ts, future_ts
+            else:
+                past = self.data[idx: idx_end]
+                future = self.data[idx_end]
+                future_timestamp = np.atleast_1d(self.target_timestamp[idx_end])
+                return past, future, future_timestamp
 
-        past = self.data[idx: idx + self.maxlags]
-        future = self.data_uni[idx + self.maxlags: idx + self.maxlags + self.forecast_steps]
-        return past, future
-
-    def process_one_step_prior(self):
-        """
-        rolling window processor for the model to consume data as the prior, so it gives out
-        data in a rolling window basis for forecasting, in the format of numpy array
-        """
-        data = self.data[-self.maxlags:]
-        inputs = []
-        for uni in data.univariates:
-            inputs.append(uni.values)
-        return np.concatenate(inputs, axis=0)
-
-    def process_rolling_train_data(self):
+    def _get_entire_train_data_along_time(self):
         """
         default rolling window processor for the model to consume data as the (inputs, labels), so it gives out
         train and label on a rolling window basis, in the format of numpy array
@@ -85,25 +154,19 @@ class RollingWindowDataset:
                 inputs.shape = [n_samples, n_seq * maxlags]
                 labels.shape = [n_samples, forecast_steps]
         """
-        inputs = np.zeros((self.valid_rolling_steps + 1, self.maxlags * self.data.dim))
-        for seq_ind, uni in enumerate(self.data.univariates):
-            uni_data = uni.values
-            for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
-                inputs[i - self.maxlags, seq_ind * self.maxlags: (seq_ind + 1) * self.maxlags] = \
-                    uni_data[i - self.maxlags: i]
+        inputs = np.zeros((self.valid_rolling_steps + 1, self.maxlags * self.dim))
+        for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
+            inputs[i - self.maxlags] = self.data[i - self.maxlags: i].reshape(-1, order="F")
 
         labels = np.zeros((self.valid_rolling_steps + 1, self.forecast_steps))
-        target_name = self.data.names[self.target_seq_index]
-        target_data = self.data.univariates[target_name].values
-        target_timestamp = self.data.univariates[target_name].index
         for i in range(self.maxlags, len(self.data) - self.forecast_steps + 1):
-            labels[i - self.maxlags] = target_data[i: i + self.forecast_steps]
+            labels[i - self.maxlags] = self.target[i: i + self.forecast_steps]
 
-        labels_timestamp = target_timestamp[self.maxlags: len(self.data) - self.forecast_steps + 1]
+        labels_timestamp = self.target_timestamp[self.maxlags: len(self.data) - self.forecast_steps + 1]
 
         return inputs, labels, labels_timestamp
 
-    def process_regressive_train_data(self):
+    def _get_entire_train_data_along_sequence(self):
         """
         regressive window processor for the auto-regression model to consume data as the (inputs, labels),
         so it gives out train and label on a rolling window basis auto-regressively, in the format of numpy array
@@ -112,24 +175,16 @@ class RollingWindowDataset:
                 labels.shape = [n_samples, n_seq]
         """
 
-        inputs = np.zeros((len(self.data) - self.maxlags, self.maxlags * self.data.dim))
-        labels = np.zeros((len(self.data) - self.maxlags, self.data.dim))
+        inputs = np.zeros((len(self.data) - self.maxlags, self.maxlags * self.dim))
+        labels = np.zeros((len(self.data) - self.maxlags, self.dim))
 
-        for seq_ind, uni in enumerate(self.data.univariates):
-            uni_data = uni.values
-            for i in range(self.maxlags, len(self.data)):
-                inputs[i - self.maxlags, seq_ind * self.maxlags: (seq_ind + 1) * self.maxlags] = \
-                    uni_data[i - self.maxlags: i]
-                labels[i - self.maxlags, seq_ind] = uni_data[i]
+        for i in range(self.maxlags, len(self.data)):
+            inputs[i - self.maxlags] = self.data[i - self.maxlags: i].reshape(-1, order="F")
+            labels[i - self.maxlags] = self.data[i]
 
-        target_timestamp = self.data.univariates[self.data.names[0]].index
-        labels_timestamp = target_timestamp[self.maxlags: len(self.data)]
+        labels_timestamp = self.target_timestamp[self.maxlags: len(self.data)]
 
         return inputs, labels, labels_timestamp
-
-    @property
-    def valid_rolling_steps(self):
-        return len(self.data) - self.maxlags - self.forecast_steps
 
 
 def max_feasible_forecast_steps(data: TimeSeries, maxlags: int):
