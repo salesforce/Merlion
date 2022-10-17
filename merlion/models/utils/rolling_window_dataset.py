@@ -41,13 +41,14 @@ class RollingWindowDataset:
         self.label_axis = label_axis
 
         self._valid_rolling_steps = len(data) - self.maxlags - self.forecast_steps
+        self._data_len = len(data)
 
     @property
     def valid_rolling_steps(self):
         return self._valid_rolling_steps
 
     def __len__(self):
-        return len(self.data)
+        return self._data_len
 
     def __iter__(self):
 
