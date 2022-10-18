@@ -212,7 +212,3 @@ class RollingWindowDataset:
         labels_timestamp = self.target_timestamp[self.n_past: len(self.data)]
 
         return inputs, labels, labels_timestamp
-
-
-def max_feasible_forecast_steps(data: Union[TimeSeries, pd.DataFrame], maxlags: int):
-    return len(data) - maxlags

@@ -6,7 +6,7 @@ import pandas as pd
 
 from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
 from merlion.utils.time_series import to_pd_datetime, TimeSeries
-from merlion.models.utils.rolling_window_dataset import RollingWindowDataset, max_feasible_forecast_steps
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 logger = logging.getLogger(__name__)
 
@@ -48,12 +48,13 @@ class AutoRegressiveForecasterConfig(ForecasterConfig):
 class AutoRegressiveForecaster(ForecasterBase):
     """
     AutoRegressive model for multivariate time series forecasting. This is the base class for TreeEnsembleForecaster
-        - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
-              be done autoregressively, with the stride unit of prediction_stride
-        - If multivariate:
-                - if prediction_stride = 1:
-                    autoregressively forecast all variables in the time series, one step at a time
-                - if > 1: use the default MultiOutput regressor provided by TreeEnsembleForecaster
+    - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
+        be done autoregressively, with the stride unit of prediction_stride
+    - If multivariate:
+        - if prediction_stride = 1:
+          autoregressively forecast all variables in the time series, one step at a time
+        - if > 1:
+          use the default MultiOutput regressor provided by TreeEnsembleForecaster
     """
 
     config_class = AutoRegressiveForecasterConfig
@@ -187,7 +188,7 @@ class AutoRegressiveForecaster(ForecasterBase):
             start += self.prediction_stride
             if start >= steps:
                 break
-            inputs = self._update_prior_1d(inputs, next_forecast)
+            inputs = self._update_prior(inputs, next_forecast, for_univariate=True)
         return pred[:, :steps]
 
     def _autoregressive_forecast(self, inputs, steps=None):
@@ -209,18 +210,21 @@ class AutoRegressiveForecaster(ForecasterBase):
             pred[:, i] = next_forecast[:, self.target_seq_index]
             if i == steps - 1:
                 break
-            inputs = self._update_prior_nd(inputs, next_forecast)
+            inputs = self._update_prior(inputs, next_forecast, for_univariate=False)
         return pred
 
-    def _update_prior_nd(self, prior: np.ndarray, next_forecast: np.ndarray):
+    def _update_prior(self, prior: np.ndarray, next_forecast: np.ndarray, for_univariate: bool = False):
         """
-        regressively update the prior by concatenate prior with next_forecast on the sequence dimension,
-        :param prior: the prior [n_samples, n_seq * maxlags]
-        :param next_forecast: the next forecasting result [n_samples, n_seq]
+        regressively update the prior by concatenate prior with next_forecast,
+        :param prior:
+            if univariate: shape=[n_samples, maxlags]
+            if multivariate: shape=[n_samples, n_seq * maxlags]
+        :param next_forecast: the next forecasting result
+            if univariate: shape=[n_samples, n_prediction_steps],
+                if n_prediciton_steps ==1, maybe [n_samples,]
+            if multivariate: shape=[n_samples, n_seq]
         :return: updated prior
         """
-        assert isinstance(prior, np.ndarray) and len(prior.shape) == 2
-        assert isinstance(next_forecast, np.ndarray) and len(next_forecast.shape) == 2
 
         # unsqueeze the sequence dimension so prior and next_forecast can be concatenated along sequence dimension
         # for example,
@@ -232,25 +236,18 @@ class AutoRegressiveForecaster(ForecasterBase):
         # next_forecast = [[[0.1],[0.2],[0.3]],
         #                  [[0.4],[0.5],[0.6]]
         #                 ]
-        prior = prior.reshape(len(prior), self.dim, -1)
-        next_forecast = np.expand_dims(next_forecast, axis=2)
-        prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags:]
-        return prior.reshape(len(prior), -1)
 
-    def _update_prior_1d(self, prior: np.ndarray, next_forecast: np.ndarray):
-        """
-        regressively update the prior by concatenate prior with next_forecast for the univariate,
-        :param prior: the prior [n_samples, maxlags]
-        :param next_forecast: the next forecasting result [n_samples, n_prediction_steps],
-            if n_prediciton_steps ==1, maybe [n_samples,]
-        :return: updated prior
-        """
         assert isinstance(prior, np.ndarray) and len(prior.shape) == 2
         assert isinstance(next_forecast, np.ndarray)
-
-        if len(next_forecast.shape) == 1:
-            next_forecast = np.expand_dims(next_forecast, axis=1)
-        prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags:]
+        if for_univariate:
+            if len(next_forecast.shape) == 1:
+                next_forecast = np.expand_dims(next_forecast, axis=1)
+            prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags:]
+        else:
+            assert len(next_forecast.shape) == 2
+            prior = prior.reshape(len(prior), self.dim, -1)
+            next_forecast = np.expand_dims(next_forecast, axis=2)
+            prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags:]
         return prior.reshape(len(prior), -1)
 
     def _get_immedidate_forecasting_prior(self, data):

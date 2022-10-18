@@ -17,7 +17,7 @@ from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.autoregressivebase import AutoRegressiveForecaster, AutoRegressiveForecasterConfig
-from merlion.models.utils.rolling_window_dataset import RollingWindowDataset, max_feasible_forecast_steps
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,6 @@ class TreeEnsembleForecasterConfig(AutoRegressiveForecasterConfig):
             - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
               be done autoregressively, with the stride unit of prediction_stride
             - If multivariate:
-
                 - if = 1: autoregressively forecast all variables in the time series, one step at a time
                 - if > 1: only support directly forecasting the next prediction_stride steps in the future.
                 Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps
@@ -113,7 +112,7 @@ class TreeEnsembleForecaster(AutoRegressiveForecaster):
             assert self.dim == train_data.shape[1]
 
         # multivariate case, fixed prediction horizon using the default multioutput tree regressor
-        max_forecast_steps = max_feasible_forecast_steps(train_data, self.maxlags)
+        max_forecast_steps = len(train_data) - self.maxlags
         if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
             logger.warning(
                 f"With train data of length {len(train_data)} and "
