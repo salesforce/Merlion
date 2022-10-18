@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2022 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 import numpy as np
 from typing import Optional, Union
@@ -8,37 +14,44 @@ logger = logging.getLogger(__name__)
 
 
 class RollingWindowDataset:
-
     def __init__(
-            self,
-            data: Union[TimeSeries, pd.DataFrame],
-            target_seq_index: Optional[int],
-            n_past: int,
-            n_future: int,
-            shuffle: bool = False,
-            ts_index: bool = False,
-            batch_size: Optional[int] = 1,
+        self,
+        data: Union[TimeSeries, pd.DataFrame],
+        target_seq_index: Optional[int],
+        n_past: int,
+        n_future: int,
+        shuffle: bool = False,
+        ts_index: bool = False,
+        batch_size: Optional[int] = 1,
     ):
         """
-        A rolling window dataset iterable to yield (past, future).
+        A rolling window dataset which returns ``(past, future)`` windows for the whole time series.
+        If ``ts_index=True`` is used, a batch size of 1 is employed, and each window returned by the dataset is
+        ``(past, future)``, where ``past`` and ``future`` are both `TimeSeries` objects.
+        If ``ts_index=False`` is used (default option, more efficient), each window returned by the dataset is
+        ``(past_np, past_time, future_np, future_time)``:
 
-        :param data: time series data in the format of TimeSeries or DatetimeIndex indexed pandas DataFrame
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to use for the future labeling. If target_seq_index = None,
-            it implies that all the sequences are required for the future labeling,
-            in this case, future will be rolled along the sequence dimension.
+        - ``past_np`` is a numpy array with shape ``(batch_size, n_past * dim)``
+        -  ``past_time`` is a numpy array of times with shape ``(batch_size, n_past)``
+        - ``future_np`` is a numpy array with shape ``(batch_size, dim)`` if ``target_seq_index`` is ``None``
+          (autoregressive prediction), or shape ``(batch_size, n_future)`` if ``target_seq_index`` is specified.
+        -  ``future_time`` is a numpy array of times with shape ``(batch_size, n_future)``
+
+        :param data: time series data in the format of TimeSeries or pandas DataFrame with DatetimeIndex
+        :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
+            series) whose value we would like to use for the future labeling. If ``target_seq_index = None``, it implies
+            that all the sequences are required for the future labeling. In this case, we set ``n_future = 1`` and
+            use the time series for 1-step autoregressive prediction.
         :param n_past: number of steps for past
-        :param n_future: number of steps for future. If target_seq_index = None, n_future = 1 by enforcement.
-        :param shuffle: True or False to randomly shuffle the returning window, please note that the
-            time series data itself will never be shuffled
+        :param n_future: number of steps for future. If ``target_seq_index = None``, we manually set ``n_future = 1``.
+        :param shuffle: whether the windows of the time series should be shuffled
         :param ts_index: keep original TimeSeries internally for all the slicing, and output TimeSeries.
             by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
-        :param batch_size: if >= 1: will yield a list of (past, future) with batch_size
-            if None: will give a one-shot dataset for all the rolling windows.
+        :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
         """
-        assert isinstance(data, (TimeSeries, pd.DataFrame)), \
-            "RollingWindowDataset expects to receive TimeSeries or pd.DataFrame data "
+        assert isinstance(
+            data, (TimeSeries, pd.DataFrame)
+        ), "RollingWindowDataset expects to receive TimeSeries or pd.DataFrame data "
         if isinstance(data, TimeSeries):
             data = data.align()
             self.dim = data.dim
@@ -47,168 +60,70 @@ class RollingWindowDataset:
             assert ts_index is False, "Only TimeSeries data support ts_index = True "
             self.dim = data.shape[1]
 
+        if ts_index and batch_size != 1:
+            logger.warning("Setting batch_size = 1 because ts_index=True.")
+            batch_size = 1
         self.batch_size = batch_size
-        self.ts_index = ts_index
+        self.n_past = n_past
+        self.shuffle = shuffle
 
         self.target_seq_index = target_seq_index
-        if self.target_seq_index is None:
+        if target_seq_index is None:
             logger.info(
-                f"target_seq_index is None, therefore, the future data will be rolling along "
-                f"the entire sequence dimension with timestamp increment by 1, i.e, self.n_future = 1."
-                f"This is the rolling strategy for autoregression algorithm where all the future "
-                f"sequences need to be provided as the training prior. "
-                f"If you are not expecting this behavior, please properly set up the target_seq_index "
-                f"as a valid integer. "
+                "Since target_seq_index is None, we will be using this time series for autoregressive prediction "
+                "with 1-step lookahead, i.e. we manually set n_future = 1 and predict the value of all univariates at "
+                "only the next step. If you are not expecting this behavior, set target_seq_index appropriately."
             )
-            # label rolling along the sequence dimension
-            self._label_axis = 1
             self.n_future = 1
         else:
-            # label rolling along the time dimension
-            self._label_axis = 0
             self.n_future = n_future
 
-        self.n_past = n_past
-
+        self.ts_index = ts_index
         if ts_index:
-            self.data_ts = data
-            self.target_ts = data.univariates[data.names[target_seq_index]] if self._label_axis == 0 else None
+            self.data = data
+            self.target = self.data if self.autoregressive else data.univariates[data.names[target_seq_index]].to_ts()
+            self.timestamp = data.np_time_stamps
         else:
             data_df = data.to_pd() if isinstance(data, TimeSeries) else data
             self.data = data_df.values
             self.timestamp = data_df.index
-            self.target = data_df.iloc[:, target_seq_index].values if self._label_axis == 0 else None
-            self.target_timestamp = data_df.index
+            self.target = self.data if self.autoregressive else self.data[:, target_seq_index]
 
-        self.shuffle = shuffle
-        self._data_len = len(data)
+    @property
+    def autoregressive(self):
+        return self.target_seq_index is None
 
     def __len__(self):
-        return self._data_len
+        if self.autoregressive:
+            return len(self.data) - self.n_past
+        else:
+            return len(self.data) - self.n_past - self.n_future
 
     def __iter__(self):
-
-        if self.batch_size is None or self.batch_size < 1:
-            if self._label_axis == 0:
-                yield self._get_entire_train_data_along_time()
-            elif self._label_axis == 1:
-                yield self._get_entire_train_data_along_sequence()
-            return
-
-        if self.batch_size == 1:
-            yield from self._get_iterator()
-        elif self.batch_size > 1:
-            batch = list()
-            for i in self._get_iterator():
-                batch.append(i)
-                if len(batch) >= self.batch_size:
-                    yield batch
-                    batch = list()
-
-    def _get_iterator(self):
-        """
-        For example, if the input is like the following
-
-            for self._label_axis = 0, we roll the window along the time axis
-            .. code-block:: python
-
-                data = (t0, (1,2,3)),
-                       (t1, (4,5,6)),
-                       (t2, (7,8,9)),
-                       (t3, (10,11,12))
-                target_seq_index = 0
-                n_past = 2
-                n_future = 2
-
-        Then we may yield the following for the first time
-
-            .. code-block:: python
-                (
-                    (t0, (1,2,3)),
-                    (t1, (4,5,6))
-                ),
-                (
-                    (t2, (7))
-                    (t3, (10))
-                )
-
-        """
-        if self._label_axis == 0:
-            _valid_rolling_steps = len(self) - self.n_past - self.n_future
-        elif self._label_axis == 1:
-            _valid_rolling_steps = len(self) - self.n_past
-        order = np.random.permutation(_valid_rolling_steps + 1) if self.shuffle \
-            else range(_valid_rolling_steps + 1)
+        batch = []
+        order = np.random.permutation(len(self)) if self.shuffle else range(len(self))
         for i in order:
-            yield self[i]
+            batch.append(self[i])
+            if self.batch_size is not None and len(batch) >= self.batch_size:
+                yield self.collate_batch(batch)
+                batch = []
+        if len(batch) > 0:
+            yield self.collate_batch(batch)
+
+    def collate_batch(self, batch):
+        if self.ts_index:
+            return batch[0]
+        # TODO: allow output shape to be specified as class parameter
+        past, past_ts, future, future_ts = zip(*batch)
+        past = np.stack(past).reshape((len(batch), -1), order="F")
+        future = np.stack(future).reshape((len(batch), -1), order="F")
+        return past, np.stack(past_ts), future, np.stack(future_ts)
 
     def __getitem__(self, idx):
-
-        if self._label_axis == 0:
-            _valid_rolling_steps = len(self) - self.n_past - self.n_future
-        elif self._label_axis == 1:
-            _valid_rolling_steps = len(self) - self.n_past
-
-        assert 0 <= idx <= _valid_rolling_steps
+        assert 0 <= idx < len(self)
         idx_end = idx + self.n_past
-        if self._label_axis == 0:
-            if self.ts_index:
-                past_ts = self.data_ts[idx: idx_end]
-                future_ts = self.target_ts[idx_end: idx_end + self.n_future]
-                return past_ts, future_ts
-            else:
-                past = self.data[idx: idx_end]
-                future = self.target[idx_end: idx_end + self.n_future]
-                future_timestamp = self.target_timestamp[idx_end: idx_end + self.n_future]
-                return past, future, future_timestamp
-        elif self._label_axis == 1:
-            if self.ts_index:
-                past_ts = self.data_ts[idx: idx_end]
-                future_ts = self.data_ts[idx_end]
-                return past_ts, future_ts
-            else:
-                past = self.data[idx: idx_end]
-                future = self.data[idx_end]
-                future_timestamp = np.atleast_1d(self.target_timestamp[idx_end])
-                return past, future, future_timestamp
-
-    def _get_entire_train_data_along_time(self):
-        """
-        default rolling window processor for the model to consume data as the (inputs, labels), so it gives out
-        train and label on a rolling window basis, in the format of numpy array
-        return shape:
-                inputs.shape = [n_samples, n_seq * n_past]
-                labels.shape = [n_samples, n_future]
-        """
-        _valid_rolling_steps = len(self) - self.n_past - self.n_future
-        inputs = np.zeros((_valid_rolling_steps + 1, self.n_past * self.dim))
-        for i in range(self.n_past, len(self.data) - self.n_future + 1):
-            inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")
-
-        labels = np.zeros((_valid_rolling_steps + 1, self.n_future))
-        for i in range(self.n_past, len(self.data) - self.n_future + 1):
-            labels[i - self.n_past] = self.target[i: i + self.n_future]
-
-        labels_timestamp = self.target_timestamp[self.n_past: len(self.data) - self.n_future + 1]
-
-        return inputs, labels, labels_timestamp
-
-    def _get_entire_train_data_along_sequence(self):
-        """
-        regressive window processor for the auto-regression model to consume data as the (inputs, labels),
-        so it gives out train and label on a rolling window basis auto-regressively, in the format of numpy array
-        return shape:
-                inputs.shape = [n_samples, n_seq * n_past]
-                labels.shape = [n_samples, n_seq]
-        """
-
-        inputs = np.zeros((len(self) - self.n_past, self.n_past * self.dim))
-        labels = np.zeros((len(self) - self.n_past, self.dim))
-
-        for i in range(self.n_past, len(self.data)):
-            inputs[i - self.n_past] = self.data[i - self.n_past: i].reshape(-1, order="F")
-            labels[i - self.n_past] = self.data[i]
-
-        labels_timestamp = self.target_timestamp[self.n_past: len(self.data)]
-
-        return inputs, labels, labels_timestamp
+        past = self.data[idx:idx_end]
+        past_timestamp = self.timestamp[idx:idx_end]
+        future = self.target[idx_end : idx_end + self.n_future]
+        future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
+        return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)

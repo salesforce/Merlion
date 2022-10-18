@@ -137,8 +137,9 @@ class SKLearnForecaster(ForecasterBase):
             n_past=self.maxlags,
             n_future=self.prediction_stride,
             batch_size=None,
+            ts_index=False,
         )
-        inputs_train, labels_train, labels_train_ts = next(iter(dataset))
+        inputs_train, inputs_train_ts, labels_train, labels_train_ts = next(iter(dataset))
 
         # fitting
         if fit:
@@ -156,7 +157,7 @@ class SKLearnForecaster(ForecasterBase):
         # since the model may predict multiple steps, we concatenate all the first steps together
         pred = pred[:, 0].reshape(-1)
 
-        return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
+        return pd.DataFrame(pred, index=labels_train_ts[:, 0], columns=[self.target_name]), None
 
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
