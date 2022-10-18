@@ -141,6 +141,7 @@ class SKLearnForecaster(ForecasterBase):
         )
         inputs_train, inputs_train_ts, labels_train, labels_train_ts = next(iter(dataset))
 
+        # TODO: allow model to use timestamps
         # fitting
         if fit:
             self.model.fit(inputs_train, labels_train)
@@ -152,12 +153,10 @@ class SKLearnForecaster(ForecasterBase):
         elif self.prediction_stride == 1:
             pred = self._autoregressive_forecast(inputs_train, max(self.max_forecast_steps or 0, 1))
         else:
-            pred = self.model.predict(np.atleast_2d(inputs_train))
+            pred = self.model.predict(inputs_train)
 
         # since the model may predict multiple steps, we concatenate all the first steps together
-        pred = pred[:, 0].reshape(-1)
-
-        return pd.DataFrame(pred, index=labels_train_ts[:, 0], columns=[self.target_name]), None
+        return pd.DataFrame(pred[:, 0], index=labels_train_ts[:, 0], columns=[self.target_name]), None
 
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
@@ -178,6 +177,7 @@ class SKLearnForecaster(ForecasterBase):
 
         time_series_prev_no_ts = self._get_immedidate_forecasting_prior(time_series_prev)
 
+        # TODO: allow model to use timestamps
         if self.dim == 1:
             yhat = self._hybrid_forecast(np.atleast_2d(time_series_prev_no_ts), n).reshape(-1)
         elif self.prediction_stride == 1:
@@ -195,6 +195,7 @@ class SKLearnForecaster(ForecasterBase):
         n-step autoregression method for univairate data, each regression step updates n_prediction_steps data points
         :return: pred of target_seq_index for steps [n_samples, steps]
         """
+        # TODO: allow model to use timestamps
         if steps is None:
             steps = self.max_forecast_steps
 
@@ -218,7 +219,7 @@ class SKLearnForecaster(ForecasterBase):
         1-step auto-regression method for multivariate data, each regression step updates one data point for each sequence
         :return: pred of target_seq_index for steps [n_samples, steps]
         """
-
+        # TODO: allow model to use timestamps
         if steps is None:
             steps = self.max_forecast_steps
 
@@ -247,7 +248,6 @@ class SKLearnForecaster(ForecasterBase):
             if multivariate: shape=[n_samples, n_seq]
         :return: updated prior
         """
-
         # unsqueeze the sequence dimension so prior and next_forecast can be concatenated along sequence dimension
         # for example,
         # prior = [[1,2,3,4,5,6,7,8,9], [10,20,30,40,50,60,70,80,90]], after the sequence dimension is expanded
