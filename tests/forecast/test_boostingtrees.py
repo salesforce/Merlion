@@ -79,7 +79,8 @@ class TestLGBMForecaster(unittest.TestCase):
         )
 
     def test_forecast_multi_autoregression(self):
-        logger.info("Training multivariate model...")
+        print("-" * 80)
+        logger.info("test_forecast_multi_autoregression" + "\n" + "-" * 80)
         yhat, _ = self.model_autoregression.train(self.train_data)
 
         # Check RMSE with multivariate forecast inversion
@@ -89,11 +90,7 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 2.9, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        dataset = RollingWindowDataset(self.test_data,
-                                       self.i,
-                                       self.maxlags,
-                                       self.max_forecast_steps,
-                                       ts_index=True)
+        dataset = RollingWindowDataset(self.test_data, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_autoregression.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
@@ -108,7 +105,8 @@ class TestLGBMForecaster(unittest.TestCase):
         self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
     def test_forecast_multi_seq2seq(self):
-        logger.info("Training multivariate model...")
+        print("-" * 80)
+        logger.info("test_forecast_multi_seq2seq" + "\n" + "-" * 80)
         yhat, _ = self.model_seq2seq.train(self.train_data)
 
         # Check RMSE with multivariate forecast inversion
@@ -118,11 +116,7 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 3.6, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        dataset = RollingWindowDataset(self.test_data,
-                                       self.i,
-                                       self.maxlags,
-                                       self.max_forecast_steps,
-                                       ts_index=True)
+        dataset = RollingWindowDataset(self.test_data, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_seq2seq.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
@@ -137,7 +131,8 @@ class TestLGBMForecaster(unittest.TestCase):
         self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
     def test_forecast_uni(self):
-        logger.info("Training univariate model with prediction stride 2...")
+        print("-" * 80)
+        logger.info("test_forecast_uni" + "\n" + "-" * 80)
         self.model_autoregression.config.prediction_stride = 2
         yhat, _ = self.model_autoregression.train(self.train_data_uni)
 
@@ -148,11 +143,7 @@ class TestLGBMForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 1.4, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        dataset = RollingWindowDataset(self.test_data_uni,
-                                       self.i,
-                                       self.maxlags,
-                                       self.max_forecast_steps,
-                                       ts_index=True)
+        dataset = RollingWindowDataset(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model_autoregression.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)

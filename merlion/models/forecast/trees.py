@@ -16,166 +16,29 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
-from merlion.models.forecast.autoregressivebase import AutoRegressiveForecaster, AutoRegressiveForecasterConfig
+from merlion.models.forecast.sklearn_base import SKLearnForecaster, SKLearnForecasterConfig
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class TreeEnsembleForecasterConfig(AutoRegressiveForecasterConfig):
+class TreeEnsembleForecasterConfig(SKLearnForecasterConfig):
     """
     Configuration class for bagging tree-based forecaster model.
     """
 
-    def __init__(
-        self,
-        maxlags: int,
-        max_forecast_steps: int = None,
-        target_seq_index: int = None,
-        prediction_stride: int = 1,
-        n_estimators: int = 100,
-        random_state=None,
-        max_depth=None,
-        **kwargs,
-    ):
+    def __init__(self, maxlags: int, n_estimators: int = 100, random_state=None, max_depth=None, **kwargs):
         """
         :param maxlags: Max # of lags for forecasting
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
-        :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
-
-            - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
-              be done autoregressively, with the stride unit of prediction_stride
-            - If multivariate:
-                - if = 1: autoregressively forecast all variables in the time series, one step at a time
-                - if > 1: only support directly forecasting the next prediction_stride steps in the future.
-                Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps
         :param n_estimators: number of base estimators for the tree ensemble
         :param random_state: random seed for bagging
         :param max_depth: max depth of base estimators
         """
-        super().__init__(
-            maxlags=maxlags,
-            max_forecast_steps=max_forecast_steps,
-            target_seq_index=target_seq_index,
-            prediction_stride=prediction_stride,
-            **kwargs)
-        self.maxlags = maxlags
-        self.prediction_stride = prediction_stride
+        super().__init__(maxlags=maxlags, **kwargs)
         self.n_estimators = n_estimators
         self.random_state = random_state
         self.max_depth = max_depth
-
-
-class TreeEnsembleForecaster(AutoRegressiveForecaster):
-    """
-    Tree model for multivariate time series forecasting.
-    """
-
-    config_class = TreeEnsembleForecasterConfig
-    model = None
-
-    def __init__(self, config: TreeEnsembleForecasterConfig):
-        super().__init__(config)
-
-    @property
-    def require_even_sampling(self) -> bool:
-        return True
-
-    @property
-    def require_univariate(self) -> bool:
-        return False
-
-    @property
-    def _default_train_config(self):
-        return dict()
-
-    def _train(self, train_data: pd.DataFrame, train_config=None):
-        # if univariate, or prediction_stride is 1 for multivariate, call autoregressive model
-        if self.dim == 1 or self.prediction_stride == 1:
-            return super()._train(train_data, train_config)
-
-        logger.info(
-            f"Model is working on a multivariate dataset with prediction_stride > 1, "
-            f"default multi-output regressor training strategy will be adopted "
-            f"with prediction_stride = {self.prediction_stride} "
-        )
-
-        fit = train_config.get("fit", True)
-
-        if isinstance(train_data, TimeSeries):
-            assert self.dim == train_data.dim
-        else:
-            assert self.dim == train_data.shape[1]
-
-        # multivariate case, fixed prediction horizon using the default multioutput tree regressor
-        max_forecast_steps = len(train_data) - self.maxlags
-        if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
-            logger.warning(
-                f"With train data of length {len(train_data)} and "
-                f"maxlags={self.maxlags}, the maximum supported forecast "
-                f"steps is {max_forecast_steps}, but got "
-                f"max_forecast_steps={self.max_forecast_steps}. Reducing "
-                f"to the maximum permissible value or switch to "
-                f"'training_mode = autogression'."
-            )
-            self.config.max_forecast_steps = max_forecast_steps
-        if self.max_forecast_steps is not None and self.prediction_stride != self.max_forecast_steps:
-            logger.warning(
-                f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps} "
-            )
-            self.config.prediction_stride = self.max_forecast_steps
-
-        # process train data to the rolling window dataset
-        dataset = RollingWindowDataset(data=train_data,
-                                       target_seq_index=self.target_seq_index,
-                                       n_past=self.maxlags,
-                                       n_future=self.prediction_stride,
-                                       batch_size=None,
-                                       )
-        inputs_train, labels_train, labels_train_ts = next(iter(dataset))
-
-        if fit:
-            self.model.fit(inputs_train, labels_train)
-        # since the model may predict multiple steps, we concatenate all the first steps together
-        pred = self.model.predict(np.atleast_2d(inputs_train))[:, 0].reshape(-1)
-
-        return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
-
-    def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
-    ) -> Tuple[pd.DataFrame, None]:
-
-        # if univariate, or prediction_stride is 1 for multivariate, call autoregressive model
-        if self.dim == 1 or self.prediction_stride == 1:
-            return super()._forecast(time_stamps, time_series_prev, return_prev)
-
-        if time_series_prev is not None:
-            assert len(time_series_prev) >= self.maxlags, (
-                f"time_series_prev has a data length of "
-                f"{len(time_series_prev)} that is shorter than the maxlags "
-                f"for the model"
-            )
-
-        n = len(time_stamps)
-        prev_pred, prev_err = None, None
-        if time_series_prev is None:
-            time_series_prev = self.transform(self.train_data)
-        elif time_series_prev is not None and return_prev:
-            prev_pred, prev_err = self._train(time_series_prev, train_config=dict(fit=False))
-
-        time_series_prev_no_ts = self._get_immedidate_forecasting_prior(time_series_prev)
-
-        yhat = self.model.predict(np.atleast_2d(time_series_prev_no_ts)).reshape(-1)
-        yhat = yhat[:n]
-
-        forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
-        if prev_pred is not None:
-            forecast = pd.concat((prev_pred, forecast))
-        return forecast, None
 
 
 class RandomForestForecasterConfig(TreeEnsembleForecasterConfig):
@@ -183,15 +46,15 @@ class RandomForestForecasterConfig(TreeEnsembleForecasterConfig):
     Config class for `RandomForestForecaster`.
     """
 
-    def __init__(self, max_forecast_steps: int, maxlags: int, min_samples_split=2, **kwargs):
+    def __init__(self, maxlags: int, min_samples_split=2, **kwargs):
         """
         :param min_samples_split: min split for tree leaves
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, maxlags=maxlags, **kwargs)
+        super().__init__(maxlags=maxlags, **kwargs)
         self.min_samples_split = min_samples_split
 
 
-class RandomForestForecaster(TreeEnsembleForecaster):
+class RandomForestForecaster(SKLearnForecaster):
     """
     Random Forest Regressor for time series forecasting
 
@@ -225,7 +88,7 @@ class ExtraTreesForecasterConfig(TreeEnsembleForecasterConfig):
         self.min_samples_split = min_samples_split
 
 
-class ExtraTreesForecaster(TreeEnsembleForecaster):
+class ExtraTreesForecaster(SKLearnForecaster):
     """
     Extra Trees Regressor for time series forecasting
 
@@ -262,7 +125,7 @@ class LGBMForecasterConfig(TreeEnsembleForecasterConfig):
         self.n_jobs = n_jobs
 
 
-class LGBMForecaster(TreeEnsembleForecaster):
+class LGBMForecaster(SKLearnForecaster):
     """
     Light gradient boosting (LGBM) regressor for time series forecasting
 

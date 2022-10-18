@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2022 salesforce.com, inc.
+# All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+# For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+#
 import logging
 from typing import List, Tuple
 
@@ -11,9 +17,9 @@ from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 logger = logging.getLogger(__name__)
 
 
-class AutoRegressiveForecasterConfig(ForecasterConfig):
+class SKLearnForecasterConfig(ForecasterConfig):
     """
-    Configuration class for auto-regressive forecaster model.
+    Configuration class for a `SKLearnForecaster`.
     """
 
     def __init__(
@@ -38,29 +44,30 @@ class AutoRegressiveForecasterConfig(ForecasterConfig):
 
                 - if = 1: autoregressively forecast all variables in the time series, one step at a time
                 - if > 1: only support directly forecasting the next prediction_stride steps in the future.
-                Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps
+                  Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.
         """
         super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
         self.prediction_stride = prediction_stride
 
 
-class AutoRegressiveForecaster(ForecasterBase):
+class SKLearnForecaster(ForecasterBase):
     """
-    AutoRegressive model for multivariate time series forecasting. This is the base class for TreeEnsembleForecaster
-    - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
-        be done autoregressively, with the stride unit of prediction_stride
-    - If multivariate:
-        - if prediction_stride = 1:
-          autoregressively forecast all variables in the time series, one step at a time
-        - if > 1:
-          use the default MultiOutput regressor provided by TreeEnsembleForecaster
+    Wrapper around a sklearn-style model for time series forecasting. The underlying model must support
+    ``fit()`` and ``predict()`` methods. The model can be trained to be either an autoregressive model of order
+    ``maxlags``, or to directly predict the next ``prediction_stride`` timestamps from a history of length ``maxlags``.
+
+    If the data is univariate, the model will predict the next ``prediction_stride`` elements of the time series.
+    It can then use these predictions to autoregressively predict the next ``prediction_stride`` elements. If the data
+    is multivariate, the model will either autoregressively predict the next timestamp of all univariates
+    (if ``prediction_stride = 1``), or it will directly predict the next ``prediction_stride`` timestamps of the target
+    univariate (if ``prediction_stride > 1``).
     """
 
-    config_class = AutoRegressiveForecasterConfig
+    config_class = SKLearnForecasterConfig
     model = None
 
-    def __init__(self, config: AutoRegressiveForecasterConfig):
+    def __init__(self, config: SKLearnForecasterConfig):
         super().__init__(config)
 
     @property
@@ -84,39 +91,53 @@ class AutoRegressiveForecaster(ForecasterBase):
         return dict()
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
-
         fit = train_config.get("fit", True)
-
-        if isinstance(train_data, TimeSeries):
-            assert self.dim == train_data.dim
-        else:
-            assert self.dim == train_data.shape[1]
+        max_forecast_steps = len(train_data) - self.maxlags
+        if fit and self.prediction_stride > 1:  # sanity checks for seq2seq prediction
+            if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
+                logger.warning(
+                    f"With train data of length {len(train_data)} and  maxlags={self.maxlags}, the maximum supported "
+                    f"forecast steps is {max_forecast_steps}, but got max_forecast_steps={self.max_forecast_steps}. "
+                    f"Reducing to the maximum permissible value."
+                )
+                self.config.max_forecast_steps = max_forecast_steps
+            if (
+                self.max_forecast_steps is not None
+                and self.dim > 1
+                and self.prediction_stride != self.max_forecast_steps
+            ):
+                logger.warning(
+                    f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps}"
+                )
+                self.config.prediction_stride = self.max_forecast_steps
 
         if self.dim == 1:
             logger.info(
-                f"Model is working on a univariate dataset, "
-                f"hybrid of sequence and autoregression training strategy will be adopted "
-                f"with prediction_stride = {self.prediction_stride} "
+                f"Model is working on a univariate dataset, hybrid of sequence and autoregression training strategy "
+                f"will be adopted with prediction_stride = {self.prediction_stride}."
             )
-            # hybrid of seq and autoregression for univariate
-            rolling_target_seq_index = self.target_seq_index
-        else:
-            assert self.prediction_stride == 1, \
-                "AutoRegressive model only handles prediction_stride == 1 for multivariate"
+            data_target_idx = self.target_seq_index
+        elif self.prediction_stride == 1:
             logger.info(
-                f"Model is working on a multivariate dataset with prediction_stride = 1, "
-                f"autoregression training strategy will be adopted "
+                f"Model is working on a multivariate dataset with prediction_stride = 1, model will be trained to "
+                f"autoregressively predict all univariates."
             )
-            # autoregression for multivariates, all sequences will be rolled for the targets
-            rolling_target_seq_index = None
+            data_target_idx = None
+        else:
+            logger.info(
+                f"Model is working on a multivariate dataset with prediction_stride > 1. Model will directly forecast "
+                f"the target univariate for the next {self.prediction_stride} timestamps."
+            )
+            data_target_idx = self.target_seq_index
 
         # process train data to the rolling window dataset
-        dataset = RollingWindowDataset(data=train_data,
-                                       target_seq_index=rolling_target_seq_index,
-                                       n_past=self.maxlags,
-                                       n_future=self.prediction_stride,
-                                       batch_size=None,
-                                       )
+        dataset = RollingWindowDataset(
+            data=train_data,
+            target_seq_index=data_target_idx,
+            n_past=self.maxlags,
+            n_future=self.prediction_stride,
+            batch_size=None,
+        )
         inputs_train, labels_train, labels_train_ts = next(iter(dataset))
 
         # fitting
@@ -127,27 +148,25 @@ class AutoRegressiveForecaster(ForecasterBase):
         inputs_train = np.atleast_2d(inputs_train)
         if self.dim == 1:
             pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
+        elif self.prediction_stride == 1:
+            pred = self._autoregressive_forecast(inputs_train, max(self.max_forecast_steps or 0, 1))
         else:
-            pred = self._autoregressive_forecast(inputs_train, max(self.max_forecast_steps or 0, 1)
-            )
+            pred = self.model.predict(np.atleast_2d(inputs_train))
+
         # since the model may predict multiple steps, we concatenate all the first steps together
         pred = pred[:, 0].reshape(-1)
 
         return pd.DataFrame(pred, index=labels_train_ts, columns=[self.target_name]), None
 
     def _forecast(
-            self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, None]:
-
         if time_series_prev is not None:
             assert len(time_series_prev) >= self.maxlags, (
                 f"time_series_prev has a data length of "
                 f"{len(time_series_prev)} that is shorter than the maxlags "
                 f"for the model"
             )
-        if self.dim > 1:
-            assert self.prediction_stride == 1, \
-                "AutoRegressive model only handles prediction_stride == 1 for multivariate"
 
         n = len(time_stamps)
         prev_pred, prev_err = None, None
@@ -160,8 +179,10 @@ class AutoRegressiveForecaster(ForecasterBase):
 
         if self.dim == 1:
             yhat = self._hybrid_forecast(np.atleast_2d(time_series_prev_no_ts), n).reshape(-1)
-        else:
+        elif self.prediction_stride == 1:
             yhat = self._autoregressive_forecast(time_series_prev_no_ts, n).reshape(-1)
+        else:
+            yhat = self.model.predict(np.atleast_2d(time_series_prev_no_ts)).reshape(-1)[:n]
 
         forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
         if prev_pred is not None:
@@ -184,7 +205,7 @@ class AutoRegressiveForecaster(ForecasterBase):
             next_forecast = self.model.predict(inputs)
             if len(next_forecast.shape) == 1:
                 next_forecast = np.expand_dims(next_forecast, axis=1)
-            pred[:, start: start + self.prediction_stride] = next_forecast
+            pred[:, start : start + self.prediction_stride] = next_forecast
             start += self.prediction_stride
             if start >= steps:
                 break
@@ -242,19 +263,16 @@ class AutoRegressiveForecaster(ForecasterBase):
         if for_univariate:
             if len(next_forecast.shape) == 1:
                 next_forecast = np.expand_dims(next_forecast, axis=1)
-            prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags:]
+            prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags :]
         else:
             assert len(next_forecast.shape) == 2
             prior = prior.reshape(len(prior), self.dim, -1)
             next_forecast = np.expand_dims(next_forecast, axis=2)
-            prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags:]
+            prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags :]
         return prior.reshape(len(prior), -1)
 
     def _get_immedidate_forecasting_prior(self, data):
         if isinstance(data, TimeSeries):
             data = data.to_pd()
         data = data.values
-        return data[-self.maxlags:].reshape(-1, order="F")
-
-
-
+        return data[-self.maxlags :].reshape(-1, order="F")
