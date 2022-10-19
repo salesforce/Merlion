@@ -171,15 +171,13 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                     ),
                 )
 
-        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
+        return self._get_anomaly_score(train_data)
 
-    def _detect(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         self.dagmm.eval()
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
         data_loader = RollingWindowDataset(
-            X,
+            ts,
             target_seq_index=None,
             shuffle=False,
             flatten=False,
@@ -187,7 +185,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
             n_future=0,
             batch_size=1,
         )
-        test_energy = np.full((self.sequence_length, X.shape[0]), np.nan)
+        test_energy = np.full((self.sequence_length, ts.shape[0]), np.nan)
 
         for i, (sequence, _, _, _) in enumerate(data_loader):
             sequence = torch.FloatTensor(sequence, device=self.device)
@@ -195,12 +193,8 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
             sample_energy, _ = self.dagmm.compute_energy(z, size_average=False)
             idx = (i % self.sequence_length, np.arange(i, i + self.sequence_length))
             test_energy[idx] = sample_energy.cpu().data.numpy()
-
         test_energy = np.nanmean(test_energy, axis=0)
-        return test_energy
-
-    def _get_sequence_len(self):
-        return self.sequence_length
+        return pd.DataFrame(test_energy[-len(time_series) :], index=time_series.index)
 
     def train_multiple(
         self,
@@ -253,10 +247,6 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                     )
                 )
         return train_scores_list
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
 
 
 class AEModule(nn.Module):

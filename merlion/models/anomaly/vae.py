@@ -151,16 +151,19 @@ class VAE(DetectorBase):
                 total_loss += loss
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
+        return self._get_anomaly_score(train_data)
 
-        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
-
-    def _detect(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         self.model.eval()
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
         loader = RollingWindowDataset(
-            X, target_seq_index=None, shuffle=False, flatten=True, n_past=self.k, n_future=0, batch_size=self.batch_size
+            ts,
+            target_seq_index=None,
+            shuffle=False,
+            flatten=True,
+            n_past=self.k,
+            n_future=0,
+            batch_size=self.batch_size,
         )
         ys, rs = [], []
         for y, _, _, _ in loader:
@@ -173,18 +176,11 @@ class VAE(DetectorBase):
             r /= self.num_eval_samples
             rs.append(r)
 
-        scores = np.zeros((X.shape[0],), dtype=float)
+        scores = np.zeros((ts.shape[0],), dtype=float)
         test_scores = np.sum(np.abs(np.concatenate(rs) - np.concatenate(ys)), axis=1)
         scores[self.k - 1 :] = test_scores
         scores[: self.k - 1] = test_scores[0]
-        return scores
-
-    def _get_sequence_len(self):
-        return self.k
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
 
 
 class CVAE(nn.Module):

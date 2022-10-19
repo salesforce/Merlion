@@ -128,15 +128,13 @@ class AutoEncoder(DetectorBase):
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
 
-        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
+        return self._get_anomaly_score(train_data)
 
-    def _detect(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         self.model.eval()
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
         loader = RollingWindowDataset(
-            X,
+            ts,
             target_seq_index=None,
             shuffle=False,
             flatten=False,
@@ -149,14 +147,7 @@ class AutoEncoder(DetectorBase):
             y = torch.FloatTensor(y, device=self.device)
             scores.append(self.model(y).cpu().data.numpy())
         scores = np.concatenate([np.ones(self.k - 1) * scores[0][0], *scores])
-        return scores
-
-    def _get_sequence_len(self):
-        return self.k
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
 
 
 class AEModule(nn.Module):

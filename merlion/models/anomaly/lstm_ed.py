@@ -133,15 +133,13 @@ class LSTMED(DetectorBase):
                 total_loss += loss
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_loader)))
+        return self._get_anomaly_score(train_data)
 
-        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
-
-    def _detect(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
+        self.lstmed.eval()
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
         data_loader = RollingWindowDataset(
-            X,
+            ts,
             target_seq_index=None,
             shuffle=False,
             flatten=False,
@@ -149,28 +147,20 @@ class LSTMED(DetectorBase):
             n_future=0,
             batch_size=self.batch_size,
         )
-        self.lstmed.eval()
         scores, outputs = [], []
         for idx, (batch, _, _, _) in enumerate(data_loader):
             batch = torch.FloatTensor(batch, device=self.device)
             output = self.lstmed(batch)
             error = nn.L1Loss(reduction="none")(output, batch)
-            score = np.mean(error.view(-1, X.shape[1]).data.cpu().numpy(), axis=1)
+            score = np.mean(error.view(-1, ts.shape[1]).data.cpu().numpy(), axis=1)
             scores.append(score.reshape(batch.shape[0], self.sequence_length))
 
         scores = np.concatenate(scores)
-        lattice = np.full((self.sequence_length, X.shape[0]), np.nan)
+        lattice = np.full((self.sequence_length, ts.shape[0]), np.nan)
         for i, score in enumerate(scores):
             lattice[i % self.sequence_length, i : i + self.sequence_length] = score
         scores = np.nanmean(lattice, axis=0)
-        return scores
-
-    def _get_sequence_len(self):
-        return self.sequence_length
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
 
 
 class LSTMEDModule(nn.Module):
