@@ -27,7 +27,7 @@ from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
-from merlion.models.utils.torch_utils import InputData, batch_detect
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 
 class LSTMEDConfig(DetectorConfig, NormalizingConfig):
@@ -105,11 +105,14 @@ class LSTMED(DetectorBase):
         return LSTMEDModule(dim, self.hidden_size, self.n_layers, self.dropout, self.device)
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        index = train_data.index
-        train_data = train_data.values
-        train_x = InputData(train_data, k=self.sequence_length)
-        train_loader = DataLoader(
-            dataset=train_x, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
+        train_loader = RollingWindowDataset(
+            train_data,
+            target_seq_index=None,
+            shuffle=True,
+            flatten=False,
+            n_past=self.sequence_length,
+            n_future=0,
+            batch_size=self.batch_size,
         )
         self.data_dim = train_data.shape[1]
         self.lstmed = self._build_model(train_data.shape[1]).to(self.device)
@@ -120,48 +123,43 @@ class LSTMED(DetectorBase):
         self.lstmed.train()
         for epoch in range(self.num_epochs):
             total_loss = 0
-            for batch in train_loader:
-                batch = batch.to(self.device)
+            for batch, _, _, _ in train_loader:
+                batch = torch.FloatTensor(batch, device=self.device)
                 output = self.lstmed(batch)
-                loss = loss_func(output, batch.float())
+                loss = loss_func(output, batch)
                 self.lstmed.zero_grad()
                 loss.backward()
                 optimizer.step()
                 total_loss += loss
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_loader)))
+        return self._get_anomaly_score(train_data)
 
-        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
-
-    def _detect(self, X):
-        """
-        :param X: The input time series, a numpy array.
-        """
-        data_loader = DataLoader(
-            dataset=InputData(X, k=self.sequence_length), batch_size=self.batch_size, shuffle=False
-        )
+    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         self.lstmed.eval()
+        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
+        data_loader = RollingWindowDataset(
+            ts,
+            target_seq_index=None,
+            shuffle=False,
+            flatten=False,
+            n_past=self.sequence_length,
+            n_future=0,
+            batch_size=self.batch_size,
+        )
         scores, outputs = [], []
-        for idx, batch in enumerate(data_loader):
-            batch = batch.to(self.device)
+        for idx, (batch, _, _, _) in enumerate(data_loader):
+            batch = torch.FloatTensor(batch, device=self.device)
             output = self.lstmed(batch)
-            error = nn.L1Loss(reduction="none")(output, batch.float())
-            score = np.mean(error.view(-1, X.shape[1]).data.cpu().numpy(), axis=1)
+            error = nn.L1Loss(reduction="none")(output, batch)
+            score = np.mean(error.view(-1, ts.shape[1]).data.cpu().numpy(), axis=1)
             scores.append(score.reshape(batch.shape[0], self.sequence_length))
 
         scores = np.concatenate(scores)
-        lattice = np.full((self.sequence_length, X.shape[0]), np.nan)
+        lattice = np.full((self.sequence_length, ts.shape[0]), np.nan)
         for i, score in enumerate(scores):
             lattice[i % self.sequence_length, i : i + self.sequence_length] = score
         scores = np.nanmean(lattice, axis=0)
-        return scores
-
-    def _get_sequence_len(self):
-        return self.sequence_length
-
-    def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
-        ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        scores = batch_detect(self, ts.values)
         return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
 
 

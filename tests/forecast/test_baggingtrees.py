@@ -16,7 +16,7 @@ from merlion.transform.sequence import TransformSequence
 from merlion.transform.resample import TemporalResample
 from merlion.transform.bound import LowerUpperClip
 from merlion.utils import TimeSeries
-from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from ts_datasets.forecast import SeattleTrail
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,6 @@ class TestRandomForestForecaster(unittest.TestCase):
                 max_forecast_steps=self.max_forecast_steps,
                 maxlags=self.maxlags,
                 target_seq_index=self.i,
-                sampling_mode="stats",
                 prediction_stride=1,
                 n_estimators=20,
                 invert_forecast=False,
@@ -73,8 +72,12 @@ class TestRandomForestForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 0.08, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        testing_data_gen = gen_next_seq_label_pairs(self.test_data, self.i, self.maxlags, self.max_forecast_steps)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data,
+                                       self.i,
+                                       self.maxlags,
+                                       self.max_forecast_steps,
+                                       ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
@@ -99,8 +102,12 @@ class TestRandomForestForecaster(unittest.TestCase):
         self.assertAlmostEqual(rmse, 0.01, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        testing_data_gen = gen_next_seq_label_pairs(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data_uni,
+                                       self.i,
+                                       self.maxlags,
+                                       self.max_forecast_steps,
+                                       ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
