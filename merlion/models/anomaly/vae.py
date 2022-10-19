@@ -27,7 +27,7 @@ from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
-from merlion.models.utils.torch_utils import InputData, batch_detect
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 
 class VAEConfig(DetectorConfig, NormalizingConfig):
@@ -120,12 +120,18 @@ class VAE(DetectorBase):
         return model
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        index, train_data = train_data.index, train_data.values
         self.model = self._build_model(train_data.shape[1]).to(self.device)
         self.data_dim = train_data.shape[1]
 
-        input_data = InputData(train_data, self.k)
-        loader = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
+        loader = RollingWindowDataset(
+            train_data,
+            target_seq_index=None,
+            shuffle=True,
+            flatten=True,
+            n_past=self.k,
+            n_future=0,
+            batch_size=self.batch_size,
+        )
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         loss_func = nn.MSELoss()
         bar = ProgressBar(total=self.num_epochs)
@@ -133,9 +139,8 @@ class VAE(DetectorBase):
         self.model.train()
         for epoch in range(self.num_epochs):
             total_loss = 0
-            for i, batch in enumerate(loader):
-                x = batch.to(self.device)
-                x = torch.flatten(x, start_dim=1)
+            for i, (batch, _, _, _) in enumerate(loader):
+                x = torch.FloatTensor(batch, device=self.device)
                 recon_x, mu, log_var, _ = self.model(x, None)
                 recon_loss = loss_func(x, recon_x)
                 kld_loss = -0.5 * torch.mean(torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
@@ -147,25 +152,29 @@ class VAE(DetectorBase):
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
 
-        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
+        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
 
     def _detect(self, X):
         """
         :param X: The input time series, a numpy array.
         """
         self.model.eval()
-        y = np.array([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])])
-        y = torch.FloatTensor(y).to(self.device)
-        y = torch.flatten(y, start_dim=1)
-
-        r = np.zeros(y.shape)
-        for _ in range(self.num_eval_samples):
-            recon_y, _, _, _ = self.model(y, None)
-            r += recon_y.cpu().data.numpy()
-        r /= self.num_eval_samples
+        loader = RollingWindowDataset(
+            X, target_seq_index=None, shuffle=False, flatten=True, n_past=self.k, n_future=0, batch_size=self.batch_size
+        )
+        ys, rs = [], []
+        for y, _, _, _ in loader:
+            ys.append(y)
+            y = torch.FloatTensor(y, device=self.device)
+            r = np.zeros(y.shape)
+            for _ in range(self.num_eval_samples):
+                recon_y, _, _, _ = self.model(y, None)
+                r += recon_y.cpu().data.numpy()
+            r /= self.num_eval_samples
+            rs.append(r)
 
         scores = np.zeros((X.shape[0],), dtype=float)
-        test_scores = np.sum(np.abs(r - y.cpu().data.numpy()), axis=1)
+        test_scores = np.sum(np.abs(np.concatenate(rs) - np.concatenate(ys)), axis=1)
         scores[self.k - 1 :] = test_scores
         scores[: self.k - 1] = test_scores[0]
         return scores
@@ -175,8 +184,7 @@ class VAE(DetectorBase):
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        scores = batch_detect(self, ts.values)
-        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
 
 
 class CVAE(nn.Module):

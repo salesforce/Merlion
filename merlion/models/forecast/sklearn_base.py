@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Base class for forecasters which use arbitrary ``sklearn`` regression models internally.
+"""
 import logging
 from typing import List, Tuple
 
@@ -147,7 +150,6 @@ class SKLearnForecaster(ForecasterBase):
             self.model.fit(inputs_train, labels_train)
 
         # forecasting
-        inputs_train = np.atleast_2d(inputs_train)
         if self.dim == 1:
             pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
         elif self.prediction_stride == 1:

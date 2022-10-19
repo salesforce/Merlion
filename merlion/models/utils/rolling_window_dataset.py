@@ -23,6 +23,7 @@ class RollingWindowDataset:
         shuffle: bool = False,
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
+        flatten: bool = True,
     ):
         """
         A rolling window dataset which returns ``(past, future)`` windows for the whole time series.
@@ -31,7 +32,8 @@ class RollingWindowDataset:
         If ``ts_index=False`` is used (default option, more efficient), each window returned by the dataset is
         ``(past_np, past_time, future_np, future_time)``:
 
-        - ``past_np`` is a numpy array with shape ``(batch_size, n_past * dim)``
+        - ``past_np`` is a numpy array with shape ``(batch_size, n_past * dim)`` if ``flatten`` is ``True``, otherwise
+          ``(batch_size, n_past, dim)``.
         -  ``past_time`` is a numpy array of times with shape ``(batch_size, n_past)``
         - ``future_np`` is a numpy array with shape ``(batch_size, dim)`` if ``target_seq_index`` is ``None``
           (autoregressive prediction), or shape ``(batch_size, n_future)`` if ``target_seq_index`` is specified.
@@ -48,6 +50,7 @@ class RollingWindowDataset:
         :param ts_index: keep original TimeSeries internally for all the slicing, and output TimeSeries.
             by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
         :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
+        :param flatten: whether the output time series arrays should be flattened to 2 dimensions.
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -66,17 +69,18 @@ class RollingWindowDataset:
         self.batch_size = batch_size
         self.n_past = n_past
         self.shuffle = shuffle
+        self.flatten = flatten
 
         self.target_seq_index = target_seq_index
         if target_seq_index is None:
-            logger.info(
-                "Since target_seq_index is None, we will be using this time series for autoregressive prediction "
-                "with 1-step lookahead, i.e. we manually set n_future = 1 and predict the value of all univariates at "
-                "only the next step. If you are not expecting this behavior, set target_seq_index appropriately."
-            )
-            self.n_future = 1
-        else:
-            self.n_future = n_future
+            if n_future not in [0, 1]:
+                logger.warning(
+                    "Since target_seq_index is None, we predict all univariates for this dataset. Currently, this is "
+                    "only valid with 1-step lookahead (autoregressive forecasting) or 0-step lookahead (autoencoding). "
+                    "Setting n_future = 1. If you are not expecting this behavior, set target_seq_index appropriately."
+                )
+                n_future = 1
+        self.n_future = n_future
 
         self.ts_index = ts_index
         if ts_index:
@@ -94,10 +98,7 @@ class RollingWindowDataset:
         return self.target_seq_index is None
 
     def __len__(self):
-        if self.autoregressive:
-            return len(self.data) - self.n_past
-        else:
-            return len(self.data) - self.n_past - self.n_future
+        return len(self.data) - self.n_past + 1 - self.n_future
 
     def __iter__(self):
         batch = []
@@ -115,15 +116,25 @@ class RollingWindowDataset:
             return batch[0]
         # TODO: allow output shape to be specified as class parameter
         past, past_ts, future, future_ts = zip(*batch)
-        past = np.stack(past).reshape((len(batch), -1), order="F")
-        future = np.stack(future).reshape((len(batch), -1), order="F")
-        return past, np.stack(past_ts), future, np.stack(future_ts)
+        past = np.stack(past)
+        if self.flatten:
+            past = past.reshape((len(batch), -1), order="F")
+        past_ts = np.stack(past_ts)
+        if future is not None:
+            future = np.stack(future).reshape((len(batch), -1), order="F")
+            future_ts = np.stack(future_ts)
+        else:
+            future, future_ts = None, None
+        return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
         assert 0 <= idx < len(self)
         idx_end = idx + self.n_past
         past = self.data[idx:idx_end]
         past_timestamp = self.timestamp[idx:idx_end]
-        future = self.target[idx_end : idx_end + self.n_future]
-        future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
+        if self.n_future > 0:
+            future = self.target[idx_end : idx_end + self.n_future]
+            future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
+        else:
+            future, future_timestamp = None, None
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)

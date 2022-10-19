@@ -31,7 +31,7 @@ from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig, MultipleTimeseriesDetectorMixin
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
-from merlion.models.utils.torch_utils import InputData, batch_detect
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 
 class DAGMMConfig(DetectorConfig, NormalizingConfig):
@@ -139,11 +139,14 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         return total_loss, sample_energy, recon_error, cov_diag
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
-        index = train_data.index
-        train_data = train_data.values
-        dataset = InputData(train_data, k=self.sequence_length)
-        data_loader = DataLoader(
-            dataset=dataset, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func
+        data_loader = RollingWindowDataset(
+            train_data,
+            target_seq_index=None,
+            shuffle=True,
+            flatten=False,
+            n_past=self.sequence_length,
+            n_future=0,
+            batch_size=self.batch_size,
         )
         if self.dagmm is None and self.optimizer is None:
             self.dagmm = self._build_model(train_data.shape[1]).to(self.device)
@@ -154,9 +157,9 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
 
         for epoch in range(self.num_epochs):
             total_loss, recon_error = 0, 0
-            for input_data in data_loader:
-                input_data = input_data.to(self.device)
-                loss, _, error, _ = self._step(input_data.float())
+            for input_data, _, _, _ in data_loader:
+                input_data = torch.FloatTensor(input_data, device=self.device)
+                loss, _, error, _ = self._step(input_data)
                 total_loss += loss
                 recon_error += error
             if bar is not None:
@@ -168,19 +171,26 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
                     ),
                 )
 
-        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
+        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
 
     def _detect(self, X):
         """
         :param X: The input time series, a numpy array.
         """
         self.dagmm.eval()
-        dataset = InputData(X, k=self.sequence_length)
-        data_loader = DataLoader(dataset=dataset, batch_size=1, shuffle=False)
+        data_loader = RollingWindowDataset(
+            X,
+            target_seq_index=None,
+            shuffle=False,
+            flatten=False,
+            n_past=self.sequence_length,
+            n_future=0,
+            batch_size=1,
+        )
         test_energy = np.full((self.sequence_length, X.shape[0]), np.nan)
 
-        for i, sequence in enumerate(data_loader):
-            sequence = sequence.to(self.device)
+        for i, (sequence, _, _, _) in enumerate(data_loader):
+            sequence = torch.FloatTensor(sequence, device=self.device)
             enc, dec, z, gamma = self.dagmm(sequence.float())
             sample_energy, _ = self.dagmm.compute_energy(z, size_average=False)
             idx = (i % self.sequence_length, np.arange(i, i + self.sequence_length))
@@ -246,8 +256,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        scores = batch_detect(self, ts.values)
-        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
 
 
 class AEModule(nn.Module):

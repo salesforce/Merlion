@@ -27,7 +27,7 @@ from merlion.models.base import NormalizingConfig
 from merlion.models.anomaly.base import DetectorBase, DetectorConfig
 from merlion.post_process.threshold import AggregateAlarms
 from merlion.utils.misc import ProgressBar, initializer
-from merlion.models.utils.torch_utils import InputData, batch_detect
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 
 class AutoEncoderConfig(DetectorConfig, NormalizingConfig):
@@ -100,21 +100,26 @@ class AutoEncoder(DetectorBase):
         return model
 
     def _train(self, train_data: pd.DataFrame, train_config=None):
-        index = train_data.index
-        train_data = train_data.values
         self.model = self._build_model(train_data.shape[1]).to(self.device)
         self.data_dim = train_data.shape[1]
 
-        input_data = InputData(train_data, self.k)
-        loader = DataLoader(input_data, batch_size=self.batch_size, shuffle=True, collate_fn=InputData.collate_func)
+        loader = RollingWindowDataset(
+            train_data,
+            target_seq_index=None,
+            shuffle=True,
+            flatten=False,
+            n_past=self.k,
+            n_future=0,
+            batch_size=self.batch_size,
+        )
         optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
         bar = ProgressBar(total=self.num_epochs)
 
         self.model.train()
         for epoch in range(self.num_epochs):
             total_loss = 0
-            for i, batch in enumerate(loader):
-                batch = batch.to(self.device)
+            for i, (batch, _, _, _) in enumerate(loader):
+                batch = torch.FloatTensor(batch, device=self.device)
                 loss = self.model.loss(batch)
                 optimizer.zero_grad()
                 loss.backward()
@@ -123,21 +128,27 @@ class AutoEncoder(DetectorBase):
             if bar is not None:
                 bar.print(epoch + 1, prefix="", suffix="Complete, Loss {:.4f}".format(total_loss / len(train_data)))
 
-        return pd.DataFrame(batch_detect(self, train_data), index=index, columns=["anom_score"])
+        return pd.DataFrame(self._detect(train_data), index=train_data.index, columns=["anom_score"])
 
     def _detect(self, X):
         """
         :param X: The input time series, a numpy array.
         """
         self.model.eval()
-        test_data = torch.FloatTensor([X[i + 1 - self.k : i + 1, :] for i in range(self.k - 1, X.shape[0])]).to(
-            self.device
+        loader = RollingWindowDataset(
+            X,
+            target_seq_index=None,
+            shuffle=False,
+            flatten=False,
+            n_past=self.k,
+            n_future=0,
+            batch_size=self.batch_size,
         )
-
-        scores = np.zeros((X.shape[0],), dtype=float)
-        test_scores = self.model(test_data).cpu().data.numpy()
-        scores[self.k - 1 :] = test_scores
-        scores[: self.k - 1] = test_scores[0]
+        scores = []
+        for y, _, _, _ in loader:
+            y = torch.FloatTensor(y, device=self.device)
+            scores.append(self.model(y).cpu().data.numpy())
+        scores = np.concatenate([np.ones(self.k - 1) * scores[0][0], *scores])
         return scores
 
     def _get_sequence_len(self):
@@ -145,8 +156,7 @@ class AutoEncoder(DetectorBase):
 
     def _get_anomaly_score(self, time_series: pd.DataFrame, time_series_prev: pd.DataFrame = None) -> pd.DataFrame:
         ts = pd.concat((time_series_prev, time_series)) if time_series_prev is None else time_series
-        scores = batch_detect(self, ts.values)
-        return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
+        return pd.DataFrame(self._detect(ts)[-len(time_series) :], index=time_series.index)
 
 
 class AEModule(nn.Module):
