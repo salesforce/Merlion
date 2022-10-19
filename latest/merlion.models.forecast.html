@@ -99,6 +99,19 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.sklearn_base">merlion.models.forecast.sklearn_base module</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig"><code class="docutils literal notranslate"><span class="pre">SKLearnForecasterConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.config_class"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.model"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.model</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.maxlags</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.prediction_stride</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate"><code class="docutils literal notranslate"><span class="pre">SKLearnForecaster.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.arima">merlion.models.forecast.arima module</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.arima.ArimaConfig"><code class="docutils literal notranslate"><span class="pre">ArimaConfig</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.arima.ArimaConfig.seasonal_order"><code class="docutils literal notranslate"><span class="pre">ArimaConfig.seasonal_order</span></code></a></li>
@@ -211,16 +224,6 @@
 </li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.forecast.trees">merlion.models.forecast.trees module</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecasterConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.config_class"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.config_class</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.model"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.model</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.maxlags"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.maxlags</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.sampling_mode"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.sampling_mode</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.prediction_stride"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.prediction_stride</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.require_even_sampling</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.require_univariate"><code class="docutils literal notranslate"><span class="pre">TreeEnsembleForecaster.require_univariate</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.trees.RandomForestForecasterConfig"><code class="docutils literal notranslate"><span class="pre">RandomForestForecasterConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.forecast.trees.RandomForestForecaster"><code class="docutils literal notranslate"><span class="pre">RandomForestForecaster</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.forecast.trees.RandomForestForecaster.config_class"><code class="docutils literal notranslate"><span class="pre">RandomForestForecaster.config_class</span></code></a></li>
@@ -252,6 +255,7 @@
 </li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
 <li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.utils.html">merlion.models.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
@@ -376,28 +380,31 @@ on the time stamps of <code class="docutils literal notranslate"><span class="pr
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.base" title="merlion.models.forecast.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
 <td><p>Base class for forecasting models.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.arima" title="merlion.models.forecast.arima"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arima</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.sklearn_base" title="merlion.models.forecast.sklearn_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sklearn_base</span></code></a></p></td>
+<td><p>Base class for forecasters which use arbitrary <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> regression models internally.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.arima" title="merlion.models.forecast.arima"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arima</span></code></a></p></td>
 <td><p>The classic statistical forecasting model ARIMA (AutoRegressive Integrated Moving Average).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.sarima" title="merlion.models.forecast.sarima"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sarima</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.sarima" title="merlion.models.forecast.sarima"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sarima</span></code></a></p></td>
 <td><p>A variant of ARIMA with a user-specified Seasonality.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.ets" title="merlion.models.forecast.ets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ets</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.ets" title="merlion.models.forecast.ets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ets</span></code></a></p></td>
 <td><p>ETS (Error, Trend, Seasonal) forecasting model.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.prophet" title="merlion.models.forecast.prophet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.prophet" title="merlion.models.forecast.prophet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prophet</span></code></a></p></td>
 <td><p>Wrapper around Facebook's popular Prophet model for time series forecasting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.smoother" title="merlion.models.forecast.smoother"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smoother</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.smoother" title="merlion.models.forecast.smoother"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smoother</span></code></a></p></td>
 <td><p>Multi-Scale Exponential Smoother for univariate time series forecasting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.vector_ar" title="merlion.models.forecast.vector_ar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_ar</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.vector_ar" title="merlion.models.forecast.vector_ar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_ar</span></code></a></p></td>
 <td><p>Vector AutoRegressive model for multivariate time series forecasting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.trees" title="merlion.models.forecast.trees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trees</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.trees" title="merlion.models.forecast.trees"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trees</span></code></a></p></td>
 <td><p>Tree-based models for multivariate time series forecasting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.forecast.lstm" title="merlion.models.forecast.lstm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstm</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.forecast.lstm" title="merlion.models.forecast.lstm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstm</span></code></a></p></td>
 <td><p>A forecaster based on a LSTM neural net.</p></td>
 </tr>
 </tbody>
@@ -839,6 +846,114 @@ we want to obtain a forecast)</p></li>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(exog_data,</span> <span class="pre">exog_data_prev)</span></code>, where <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> has been resampled to match the <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>
 and <code class="docutils literal notranslate"><span class="pre">exog_data_prev`</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">resampled</span> <span class="pre">to</span> <span class="pre">match</span> <span class="pre">``time_series_prev.time_stamps</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.forecast.sklearn_base">
+<span id="merlion-models-forecast-sklearn-base-module"></span><h2>merlion.models.forecast.sklearn_base module<a class="headerlink" href="#module-merlion.models.forecast.sklearn_base" title="Permalink to this heading"></a></h2>
+<p>Base class for forecasters which use arbitrary <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> regression models internally.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecasterConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sklearn_base.</span></span><span class="sig-name descname"><span class="pre">SKLearnForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
+<p>Configuration class for a <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxlags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of lags for forecasting</p></li>
+<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all
+univariates in a general multivariate time series) whose value we
+would like to forecast.</p></li>
+<li><p><strong>prediction_stride</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>the number of steps being forecasted in a single call to underlying the model</p>
+<ul>
+<li><p>If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
+be done autoregressively, with the stride unit of prediction_stride</p></li>
+<li><p>If multivariate:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if = 1: autoregressively forecast all variables in the time series, one step at a time</p></li>
+<li><p>if &gt; 1: only support directly forecasting the next prediction_stride steps in the future.
+Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</p></li>
+<li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
+By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
+we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sklearn_base.</span></span><span class="sig-name descname"><span class="pre">SKLearnForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a></p>
+<p>Wrapper around a sklearn-style model for time series forecasting. The underlying model must support
+<code class="docutils literal notranslate"><span class="pre">fit()</span></code> and <code class="docutils literal notranslate"><span class="pre">predict()</span></code> methods. The model can be trained to be either an autoregressive model of order
+<code class="docutils literal notranslate"><span class="pre">maxlags</span></code>, or to directly predict the next <code class="docutils literal notranslate"><span class="pre">prediction_stride</span></code> timestamps from a history of length <code class="docutils literal notranslate"><span class="pre">maxlags</span></code>.</p>
+<p>If the data is univariate, the model will predict the next <code class="docutils literal notranslate"><span class="pre">prediction_stride</span></code> elements of the time series.
+It can then use these predictions to autoregressively predict the next <code class="docutils literal notranslate"><span class="pre">prediction_stride</span></code> elements. If the data
+is multivariate, the model will either autoregressively predict the next timestamp of all univariates
+(if <code class="docutils literal notranslate"><span class="pre">prediction_stride</span> <span class="pre">=</span> <span class="pre">1</span></code>), or it will directly predict the next <code class="docutils literal notranslate"><span class="pre">prediction_stride</span></code> timestamps of the target
+univariate (if <code class="docutils literal notranslate"><span class="pre">prediction_stride</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig" title="merlion.models.forecast.sklearn_base.SKLearnForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SKLearnForecasterConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maxlags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prediction_stride</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1748,40 +1863,35 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <p>Tree-based models for multivariate time series forecasting.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecasterConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">TreeEnsembleForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">TreeEnsembleForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig" title="merlion.models.forecast.sklearn_base.SKLearnForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SKLearnForecasterConfig</span></code></a></p>
 <p>Configuration class for bagging tree-based forecaster model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>maxlags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of lags for forecasting</p></li>
-<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.</p></li>
-<li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all
+<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of base estimators for the tree ensemble</p></li>
+<li><p><strong>random_state</strong> – random seed for bagging</p></li>
+<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
-<li><p><strong>sampling_mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – how to process time series data for the tree model. If “normal”,
-then concatenate all sequences over the window. If “stats”, then give statistics
-measures over the window. Note: “stats” mode is statistical summary for a multivariate dataset,
-mainly to reduce the computation cost for high-dimensional time series. For univariate data, it is
-not necessary to use “stats” instead of the sequence itself as the input. Therefore, for univariate,
-the model will automatically adopt “normal” mode.</p></li>
-<li><p><strong>prediction_stride</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – <p>the prediction step for training and forecasting</p>
+<li><p><strong>prediction_stride</strong> – <p>the number of steps being forecasted in a single call to underlying the model</p>
 <ul>
 <li><p>If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
 be done autoregressively, with the stride unit of prediction_stride</p></li>
 <li><p>If multivariate:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>if = 1: the autoregression with the stride unit of 1</p></li>
-<li><p>if &gt; 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps</p></li>
+<li><p>if = 1: autoregressively forecast all variables in the time series, one step at a time</p></li>
+<li><p>if &gt; 1: only support directly forecasting the next prediction_stride steps in the future.
+Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 </p></li>
-<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of base estimators for the tree ensemble</p></li>
-<li><p><strong>random_state</strong> – random seed for bagging</p></li>
-<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -1792,112 +1902,37 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">TreeEnsembleForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiVariateAutoRegressionMixin</span></code></p>
-<p>Tree model for multivariate time series forecasting.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="merlion.models.forecast.trees.TreeEnsembleForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecasterConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.model">
-<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.model" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.maxlags">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maxlags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.maxlags" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.sampling_mode">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sampling_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.sampling_mode" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.prediction_stride">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prediction_stride</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.prediction_stride" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.require_even_sampling">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.require_even_sampling" title="Permalink to this definition"></a></dt>
-<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.forecast.trees.TreeEnsembleForecaster.require_univariate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.trees.TreeEnsembleForecaster.require_univariate" title="Permalink to this definition"></a></dt>
-<dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.RandomForestForecasterConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.RandomForestForecasterConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.RandomForestForecasterConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="merlion.models.forecast.trees.TreeEnsembleForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecasterConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.RandomForestForecaster" title="merlion.models.forecast.trees.RandomForestForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RandomForestForecaster</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.</p></li>
 <li><p><strong>maxlags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of lags for forecasting</p></li>
 <li><p><strong>min_samples_split</strong> – min split for tree leaves</p></li>
+<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
+<li><p><strong>random_state</strong> – random seed for bagging</p></li>
+<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
-<li><p><strong>sampling_mode</strong> – how to process time series data for the tree model. If “normal”,
-then concatenate all sequences over the window. If “stats”, then give statistics
-measures over the window. Note: “stats” mode is statistical summary for a multivariate dataset,
-mainly to reduce the computation cost for high-dimensional time series. For univariate data, it is
-not necessary to use “stats” instead of the sequence itself as the input. Therefore, for univariate,
-the model will automatically adopt “normal” mode.</p></li>
-<li><p><strong>prediction_stride</strong> – <p>the prediction step for training and forecasting</p>
+<li><p><strong>prediction_stride</strong> – <p>the number of steps being forecasted in a single call to underlying the model</p>
 <ul>
 <li><p>If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
 be done autoregressively, with the stride unit of prediction_stride</p></li>
 <li><p>If multivariate:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>if = 1: the autoregression with the stride unit of 1</p></li>
-<li><p>if &gt; 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps</p></li>
+<li><p>if = 1: autoregressively forecast all variables in the time series, one step at a time</p></li>
+<li><p>if &gt; 1: only support directly forecasting the next prediction_stride steps in the future.
+Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 </p></li>
-<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
-<li><p><strong>random_state</strong> – random seed for bagging</p></li>
-<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -1910,7 +1945,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.RandomForestForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.RandomForestForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster" title="merlion.models.forecast.trees.TreeEnsembleForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a></p>
 <p>Random Forest Regressor for time series forecasting</p>
 <p>Random Forest is a meta estimator that fits a number of classifying decision
 trees on various sub-samples of the dataset, and uses averaging to improve
@@ -1925,7 +1960,7 @@ the predictive accuracy and control over-fitting.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.ExtraTreesForecasterConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.ExtraTreesForecasterConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.ExtraTreesForecasterConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="merlion.models.forecast.trees.TreeEnsembleForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecasterConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.ExtraTreesForecaster" title="merlion.models.forecast.trees.ExtraTreesForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ExtraTreesForecaster</span></code></a>.</p>
 <dl class="field-list simple">
@@ -1933,33 +1968,28 @@ the predictive accuracy and control over-fitting.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>maxlags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of lags for forecasting</p></li>
 <li><p><strong>min_samples_split</strong> – min split for tree leaves</p></li>
+<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
+<li><p><strong>random_state</strong> – random seed for bagging</p></li>
+<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
-<li><p><strong>sampling_mode</strong> – how to process time series data for the tree model. If “normal”,
-then concatenate all sequences over the window. If “stats”, then give statistics
-measures over the window. Note: “stats” mode is statistical summary for a multivariate dataset,
-mainly to reduce the computation cost for high-dimensional time series. For univariate data, it is
-not necessary to use “stats” instead of the sequence itself as the input. Therefore, for univariate,
-the model will automatically adopt “normal” mode.</p></li>
-<li><p><strong>prediction_stride</strong> – <p>the prediction step for training and forecasting</p>
+<li><p><strong>prediction_stride</strong> – <p>the number of steps being forecasted in a single call to underlying the model</p>
 <ul>
 <li><p>If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
 be done autoregressively, with the stride unit of prediction_stride</p></li>
 <li><p>If multivariate:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>if = 1: the autoregression with the stride unit of 1</p></li>
-<li><p>if &gt; 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps</p></li>
+<li><p>if = 1: autoregressively forecast all variables in the time series, one step at a time</p></li>
+<li><p>if &gt; 1: only support directly forecasting the next prediction_stride steps in the future.
+Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 </p></li>
-<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
-<li><p><strong>random_state</strong> – random seed for bagging</p></li>
-<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -1972,7 +2002,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.ExtraTreesForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.ExtraTreesForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster" title="merlion.models.forecast.trees.TreeEnsembleForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a></p>
 <p>Extra Trees Regressor for time series forecasting</p>
 <p>Extra Trees Regressor implements a meta estimator that fits a number of
 randomized decision trees (a.k.a. extra-trees) on various sub-samples of
@@ -1988,7 +2018,7 @@ control over-fitting.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.LGBMForecasterConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.LGBMForecasterConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.LGBMForecasterConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecasterConfig" title="merlion.models.forecast.trees.TreeEnsembleForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecasterConfig</span></code></a></p>
 <p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p>
 <dl class="field-list simple">
@@ -1997,33 +2027,28 @@ control over-fitting.</p>
 <li><p><strong>maxlags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of lags for forecasting</p></li>
 <li><p><strong>learning_rate</strong> – learning rate for boosting</p></li>
 <li><p><strong>n_jobs</strong> – num of threading, -1 or 0 indicates device default, positive int indicates num of threads</p></li>
+<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
+<li><p><strong>random_state</strong> – random seed for bagging</p></li>
+<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all
 univariates in a general multivariate time series) whose value we
 would like to forecast.</p></li>
-<li><p><strong>sampling_mode</strong> – how to process time series data for the tree model. If “normal”,
-then concatenate all sequences over the window. If “stats”, then give statistics
-measures over the window. Note: “stats” mode is statistical summary for a multivariate dataset,
-mainly to reduce the computation cost for high-dimensional time series. For univariate data, it is
-not necessary to use “stats” instead of the sequence itself as the input. Therefore, for univariate,
-the model will automatically adopt “normal” mode.</p></li>
-<li><p><strong>prediction_stride</strong> – <p>the prediction step for training and forecasting</p>
+<li><p><strong>prediction_stride</strong> – <p>the number of steps being forecasted in a single call to underlying the model</p>
 <ul>
 <li><p>If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
 be done autoregressively, with the stride unit of prediction_stride</p></li>
 <li><p>If multivariate:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>if = 1: the autoregression with the stride unit of 1</p></li>
-<li><p>if &gt; 1: only support sequence mode, and the model will set prediction_stride = max_forecast_steps</p></li>
+<li><p>if = 1: autoregressively forecast all variables in the time series, one step at a time</p></li>
+<li><p>if &gt; 1: only support directly forecasting the next prediction_stride steps in the future.
+Autoregression not supported. Note that the model will set prediction_stride = max_forecast_steps.</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 </p></li>
-<li><p><strong>n_estimators</strong> – number of base estimators for the tree ensemble</p></li>
-<li><p><strong>random_state</strong> – random seed for bagging</p></li>
-<li><p><strong>max_depth</strong> – max depth of base estimators</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -2036,7 +2061,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.LGBMForecaster">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecaster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.LGBMForecaster" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.trees.TreeEnsembleForecaster" title="merlion.models.forecast.trees.TreeEnsembleForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeEnsembleForecaster</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a></p>
 <p>Light gradient boosting (LGBM) regressor for time series forecasting</p>
 <p>LightGBM is a light weight and fast gradient boosting framework that uses tree based learning algorithms, for more
 details, please refer to the document <a class="reference external" href="https://lightgbm.readthedocs.io/en/latest/Features.html">https://lightgbm.readthedocs.io/en/latest/Features.html</a></p>

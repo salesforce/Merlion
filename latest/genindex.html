@@ -85,6 +85,7 @@
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -232,6 +233,8 @@
 </li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.autoprophet.AutoProphetConfig">AutoProphetConfig (class in merlion.models.automl.autoprophet)</a>
 </li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.autoregressive">autoregressive (merlion.models.utils.rolling_window_dataset.RollingWindowDataset property)</a>
+</li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.autosarima.AutoSarima">AutoSarima (class in merlion.models.automl.autosarima)</a>
 </li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.autosarima.AutoSarimaConfig">AutoSarimaConfig (class in merlion.models.automl.autosarima)</a>
@@ -328,6 +331,8 @@
         <li><a href="ts_datasets.forecast.html#ts_datasets.forecast.CustomDataset.check_ts_for_metadata">(ts_datasets.forecast.CustomDataset method)</a>
 </li>
       </ul></li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch">collate_batch() (merlion.models.utils.rolling_window_dataset.RollingWindowDataset method)</a>
+</li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.base.EnsembleBase.combiner">combiner (merlion.models.ensemble.base.EnsembleBase property)</a>
 </li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.combine.CombinerBase">CombinerBase (class in merlion.models.ensemble.combine)</a>
@@ -421,6 +426,8 @@
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima.config_class">(merlion.models.forecast.sarima.Sarima attribute)</a>
 </li>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.config_class">(merlion.models.forecast.sklearn_base.SKLearnForecaster attribute)</a>
+</li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES.config_class">(merlion.models.forecast.smoother.MSES attribute)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.ExtraTreesForecaster.config_class">(merlion.models.forecast.trees.ExtraTreesForecaster attribute)</a>
@@ -428,8 +435,6 @@
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster.config_class">(merlion.models.forecast.trees.LGBMForecaster attribute)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.RandomForestForecaster.config_class">(merlion.models.forecast.trees.RandomForestForecaster attribute)</a>
-</li>
-        <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.config_class">(merlion.models.forecast.trees.TreeEnsembleForecaster attribute)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.vector_ar.VectorAR.config_class">(merlion.models.forecast.vector_ar.VectorAR attribute)</a>
 </li>
@@ -528,6 +533,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model">detect_maxiter_sarima_model() (in module merlion.models.utils.autosarima_utils)</a>
+</li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase">DetectorBase (class in merlion.models.anomaly.base)</a>
 </li>
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig">DetectorConfig (class in merlion.models.anomaly.base)</a>
@@ -541,6 +548,8 @@
       <li><a href="merlion.models.anomaly.html#merlion.models.anomaly.dbl.DynamicBaselineConfig.determine_train_window">determine_train_window() (merlion.models.anomaly.dbl.DynamicBaselineConfig method)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.data_io.df_to_time_series">df_to_time_series() (in module merlion.utils.data_io)</a>
+</li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.diff">diff() (in module merlion.models.utils.autosarima_utils)</a>
 </li>
       <li><a href="merlion.transform.html#merlion.transform.moving_average.DifferenceTransform">DifferenceTransform (class in merlion.transform.moving_average)</a>
 </li>
@@ -1077,6 +1086,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.KPSS_stationaritytest">KPSS_stationaritytest() (in module merlion.models.utils.autosarima_utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1212,7 +1229,7 @@
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSESConfig.max_scale">(merlion.models.forecast.smoother.MSESConfig property)</a>
 </li>
       </ul></li>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.maxlags">maxlags (merlion.models.forecast.trees.TreeEnsembleForecaster property)</a>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags">maxlags (merlion.models.forecast.sklearn_base.SKLearnForecaster property)</a>
 
       <ul>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.vector_ar.VectorAR.maxlags">(merlion.models.forecast.vector_ar.VectorAR property)</a>
@@ -1617,6 +1634,13 @@
 </li>
       </ul></li>
       <li>
+    merlion.models.forecast.sklearn_base
+
+      <ul>
+        <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.sklearn_base">module</a>
+</li>
+      </ul></li>
+      <li>
     merlion.models.forecast.smoother
 
       <ul>
@@ -1642,6 +1666,27 @@
 
       <ul>
         <li><a href="merlion.models.html#module-merlion.models.layers">module</a>
+</li>
+      </ul></li>
+      <li>
+    merlion.models.utils
+
+      <ul>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    merlion.models.utils.autosarima_utils
+
+      <ul>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils.autosarima_utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    merlion.models.utils.rolling_window_dataset
+
+      <ul>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils.rolling_window_dataset">module</a>
 </li>
       </ul></li>
       <li>
@@ -1693,6 +1738,8 @@
         <li><a href="merlion.post_process.html#module-merlion.post_process.threshold">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.spark
 
@@ -1700,8 +1747,6 @@
         <li><a href="merlion.spark.html#module-merlion.spark">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     merlion.spark.dataset
 
@@ -1863,7 +1908,7 @@
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy">MissingValuePolicy (class in merlion.utils.resample)</a>
 </li>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.model">model (merlion.models.forecast.trees.TreeEnsembleForecaster attribute)</a>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.model">model (merlion.models.forecast.sklearn_base.SKLearnForecaster attribute)</a>
 
       <ul>
         <li><a href="merlion.models.html#merlion.models.layers.LayeredModel.model">(merlion.models.layers.LayeredModel property)</a>
@@ -1995,6 +2040,8 @@
 </li>
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.sarima">merlion.models.forecast.sarima</a>
 </li>
+        <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.sklearn_base">merlion.models.forecast.sklearn_base</a>
+</li>
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.smoother">merlion.models.forecast.smoother</a>
 </li>
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.trees">merlion.models.forecast.trees</a>
@@ -2002,6 +2049,12 @@
         <li><a href="merlion.models.forecast.html#module-merlion.models.forecast.vector_ar">merlion.models.forecast.vector_ar</a>
 </li>
         <li><a href="merlion.models.html#module-merlion.models.layers">merlion.models.layers</a>
+</li>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils">merlion.models.utils</a>
+</li>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils.autosarima_utils">merlion.models.utils.autosarima_utils</a>
+</li>
+        <li><a href="merlion.models.utils.html#module-merlion.models.utils.rolling_window_dataset">merlion.models.utils.rolling_window_dataset</a>
 </li>
         <li><a href="merlion.html#module-merlion.plot">merlion.plot</a>
 </li>
@@ -2146,17 +2199,19 @@
         <li><a href="merlion.post_process.html#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFN">(merlion.post_process.threshold.Threshold.TSADMetric attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric.NABScoreLowFP">NABScoreLowFP (merlion.evaluate.anomaly.TSADMetric attribute)</a>
 
       <ul>
         <li><a href="merlion.post_process.html#merlion.post_process.threshold.Threshold.TSADMetric.NABScoreLowFP">(merlion.post_process.threshold.Threshold.TSADMetric attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="merlion.utils.html#merlion.utils.time_series.TimeSeries.names">names (merlion.utils.time_series.TimeSeries property)</a>
 </li>
       <li><a href="merlion.transform.html#merlion.transform.anomalize.Anomalize.natural_bounds">natural_bounds (merlion.transform.anomalize.Anomalize property)</a>
+</li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.ndiffs">ndiffs() (in module merlion.models.utils.autosarima_utils)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy.Nearest">Nearest (merlion.utils.resample.MissingValuePolicy attribute)</a>
 </li>
@@ -2175,6 +2230,8 @@
 </li>
       </ul></li>
       <li><a href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries.np_values">np_values (merlion.utils.time_series.UnivariateTimeSeries property)</a>
+</li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.nsdiffs">nsdiffs() (in module merlion.models.utils.autosarima_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2338,7 +2395,7 @@
       </ul></li>
       <li><a href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADScoreAccumulator.precision">precision() (merlion.evaluate.anomaly.TSADScoreAccumulator method)</a>
 </li>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.prediction_stride">prediction_stride (merlion.models.forecast.trees.TreeEnsembleForecaster property)</a>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride">prediction_stride (merlion.models.forecast.sklearn_base.SKLearnForecaster property)</a>
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.DeltaEstimator.process_losses">process_losses() (merlion.models.forecast.smoother.DeltaEstimator method)</a>
 </li>
@@ -2467,9 +2524,9 @@
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima.require_even_sampling">(merlion.models.forecast.sarima.Sarima property)</a>
 </li>
-        <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES.require_even_sampling">(merlion.models.forecast.smoother.MSES property)</a>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling">(merlion.models.forecast.sklearn_base.SKLearnForecaster property)</a>
 </li>
-        <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.require_even_sampling">(merlion.models.forecast.trees.TreeEnsembleForecaster property)</a>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES.require_even_sampling">(merlion.models.forecast.smoother.MSES property)</a>
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.vector_ar.VectorAR.require_even_sampling">(merlion.models.forecast.vector_ar.VectorAR property)</a>
 </li>
@@ -2511,7 +2568,7 @@
 </li>
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase.require_univariate">(merlion.models.forecast.base.ForecasterBase property)</a>
 </li>
-        <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.require_univariate">(merlion.models.forecast.trees.TreeEnsembleForecaster property)</a>
+        <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate">(merlion.models.forecast.sklearn_base.SKLearnForecaster property)</a>
 </li>
         <li><a href="merlion.models.html#merlion.models.layers.LayeredModel.require_univariate">(merlion.models.layers.LayeredModel property)</a>
 </li>
@@ -2586,14 +2643,14 @@
 </li>
       <li><a href="merlion.evaluate.html#merlion.evaluate.forecast.ForecastScoreAccumulator.rmspe">rmspe() (merlion.evaluate.forecast.ForecastScoreAccumulator method)</a>
 </li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.rolling_window_dataset.RollingWindowDataset">RollingWindowDataset (class in merlion.models.utils.rolling_window_dataset)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster.sampling_mode">sampling_mode (merlion.models.forecast.trees.TreeEnsembleForecaster property)</a>
-</li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima">Sarima (class in merlion.models.forecast.sarima)</a>
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.SarimaConfig">SarimaConfig (class in merlion.models.forecast.sarima)</a>
@@ -2626,6 +2683,8 @@
 </li>
       <li><a href="merlion.utils.html#merlion.utils.istat.Variance.se">se (merlion.utils.istat.Variance property)</a>
 </li>
+      <li><a href="merlion.models.utils.html#merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest">seas_seasonalstationaritytest() (in module merlion.models.utils.autosarima_utils)</a>
+</li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS.seasonal">seasonal (merlion.models.forecast.ets.ETS property)</a>
 </li>
       <li><a href="merlion.models.automl.html#merlion.models.automl.autosarima.AutoSarimaConfig.seasonal_order">seasonal_order (merlion.models.automl.autosarima.AutoSarimaConfig property)</a>
@@ -2656,8 +2715,6 @@
 </li>
       <li><a href="merlion.models.ensemble.html#merlion.models.ensemble.combine.CombinerBase.set_model_used">set_model_used() (merlion.models.ensemble.combine.CombinerBase method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityModel.set_seasonality">set_seasonality() (merlion.models.automl.seasonality.SeasonalityModel method)</a>
 
       <ul>
@@ -2668,6 +2725,8 @@
         <li><a href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima.set_seasonality">(merlion.models.forecast.sarima.Sarima method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="merlion.models.automl.html#merlion.models.automl.autoets.AutoETS.set_theta">set_theta() (merlion.models.automl.autoets.AutoETS method)</a>
 
       <ul>
@@ -2689,6 +2748,10 @@
       <li><a href="merlion.utils.html#merlion.utils.conj_priors.NormInvGamma.sigma2_posterior">sigma2_posterior() (merlion.utils.conj_priors.NormInvGamma method)</a>
 </li>
       <li><a href="merlion.utils.html#merlion.utils.conj_priors.MVNormInvWishart.Sigma_posterior">Sigma_posterior() (merlion.utils.conj_priors.MVNormInvWishart method)</a>
+</li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecaster">SKLearnForecaster (class in merlion.models.forecast.sklearn_base)</a>
+</li>
+      <li><a href="merlion.models.forecast.html#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig">SKLearnForecasterConfig (class in merlion.models.forecast.sklearn_base)</a>
 </li>
       <li><a href="ts_datasets.anomaly.html#ts_datasets.anomaly.SMAP">SMAP (class in ts_datasets.anomaly)</a>
 </li>
@@ -3007,8 +3070,6 @@
       <li><a href="merlion.transform.html#merlion.transform.sequence.TransformSequence">TransformSequence (class in merlion.transform.sequence)</a>
 </li>
       <li><a href="merlion.transform.html#merlion.transform.sequence.TransformStack">TransformStack (class in merlion.transform.sequence)</a>
-</li>
-      <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecaster">TreeEnsembleForecaster (class in merlion.models.forecast.trees)</a>
 </li>
       <li><a href="merlion.models.forecast.html#merlion.models.forecast.trees.TreeEnsembleForecasterConfig">TreeEnsembleForecasterConfig (class in merlion.models.forecast.trees)</a>
 </li>
