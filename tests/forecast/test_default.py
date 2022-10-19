@@ -13,7 +13,7 @@ import pandas as pd
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
-from merlion.models.utils.seq_ar_common import gen_next_seq_label_pairs
+from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.transform.bound import LowerUpperClip
 from merlion.transform.normalize import MinMaxNormalize
 from merlion.transform.resample import TemporalResample
@@ -189,11 +189,11 @@ class TestMultivariate(unittest.TestCase):
         yhat, _ = self.model.train(self.train_data_norm)
 
         maxlags = self.model.model.config.maxlags
-        testing_data_gen = gen_next_seq_label_pairs(self.test_data_norm, self.i, maxlags, self.max_forecast_steps)
-        testing_instance, testing_label = next(testing_data_gen)
+        dataset = RollingWindowDataset(self.test_data_norm, self.i, maxlags, self.max_forecast_steps, ts_index=True)
+        testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         self.assertEqual(len(pred), self.max_forecast_steps)
-        smape = ForecastMetric.sMAPE.value(predict=pred, ground_truth=testing_label.to_ts())
+        smape = ForecastMetric.sMAPE.value(predict=pred, ground_truth=testing_label)
         logger.info(f"SMAPE = {smape}")
 
         # save and load
@@ -201,7 +201,7 @@ class TestMultivariate(unittest.TestCase):
         self.model.save(dirname=savedir)
         loaded_model = DefaultForecaster.load(dirname=savedir)
         new_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
-        new_smape = ForecastMetric.sMAPE.value(predict=new_pred, ground_truth=testing_label.to_ts())
+        new_smape = ForecastMetric.sMAPE.value(predict=new_pred, ground_truth=testing_label)
         self.assertAlmostEqual(smape, new_smape, places=4)
 
 
