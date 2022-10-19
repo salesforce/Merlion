@@ -8,6 +8,7 @@ merlion.models.forecast package
 
 .. autosummary::
     base
+    sklearn_base
     arima
     sarima
     ets
@@ -25,6 +26,14 @@ merlion.models.forecast.base module
 -----------------------------------
 
 .. automodule:: merlion.models.forecast.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+merlion.models.forecast.sklearn\_base module
+--------------------------------------------
+
+.. automodule:: merlion.models.forecast.sklearn_base
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,4 +1,3 @@
-
 merlion.models package
 ======================
 Broadly, Merlion contains two types of models: anomaly detection (:py:mod:`merlion.models.anomaly`)
@@ -68,6 +67,7 @@ Finally, we support ensembles of models in :py:mod:`merlion.models.ensemble`.
     forecast
     ensemble
     automl
+    utils
 
 
 Subpackages
@@ -82,6 +82,7 @@ Subpackages
    merlion.models.forecast
    merlion.models.ensemble
    merlion.models.automl
+   merlion.models.utils
 
 
 Submodules
