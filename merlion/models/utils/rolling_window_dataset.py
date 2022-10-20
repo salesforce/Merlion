@@ -8,7 +8,7 @@ import logging
 import numpy as np
 from typing import Optional, Union
 import pandas as pd
-from merlion.utils.time_series import TimeSeries
+from merlion.utils.time_series import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +20,7 @@ class RollingWindowDataset:
         target_seq_index: Optional[int],
         n_past: int,
         n_future: int,
+        exog_data: Union[TimeSeries, pd.DataFrame] = None,
         shuffle: bool = False,
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
@@ -46,7 +47,9 @@ class RollingWindowDataset:
             use the time series for 1-step autoregressive prediction.
         :param n_past: number of steps for past
         :param n_future: number of steps for future. If ``target_seq_index = None``, we manually set ``n_future = 1``.
-        :param shuffle: whether the windows of the time series should be shuffled
+        :param exog_data: exogenous data to as inputs for the model, but not as outputs to predict.
+            We assume the future values of exogenous variables are known a priori at test time.
+        :param shuffle: whether the windows of the time series should be shuffled.
         :param ts_index: keep original TimeSeries internally for all the slicing, and output TimeSeries.
             by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
         :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
@@ -58,8 +61,15 @@ class RollingWindowDataset:
         if isinstance(data, TimeSeries):
             data = data.align()
             self.dim = data.dim
+            if exog_data is not None:
+                assert isinstance(exog_data, TimeSeries), "Expected exog_data to be TimeSeries if data is TimeSeries"
+                exog_data = exog_data.align(reference=data.time_stamps)
         else:
             assert isinstance(data.index, pd.DatetimeIndex)
+            if exog_data is not None:
+                if isinstance(exog_data, TimeSeries):
+                    exog_data = exog_data.align(reference=data.index).to_pd()
+                assert isinstance(exog_data.index, pd.DatetimeIndex) and list(exog_data.index) == list(data.index)
             assert ts_index is False, "Only TimeSeries data support ts_index = True "
             self.dim = data.shape[1]
 
@@ -84,14 +94,15 @@ class RollingWindowDataset:
 
         self.ts_index = ts_index
         if ts_index:
-            self.data = data
-            self.target = self.data if self.autoregressive else data.univariates[data.names[target_seq_index]].to_ts()
-            self.timestamp = data.np_time_stamps
+            self.data = data.concat(exog_data, axis=1) if exog_data is not None else data
+            self.target = data if self.autoregressive else data.univariates[data.names[target_seq_index]].to_ts()
+            self.timestamp = to_pd_datetime(data.np_time_stamps)
         else:
-            data_df = data.to_pd() if isinstance(data, TimeSeries) else data
-            self.data = data_df.values
-            self.timestamp = data_df.index
-            self.target = self.data if self.autoregressive else self.data[:, target_seq_index]
+            df = data.to_pd() if isinstance(data, TimeSeries) else data
+            exog_df = data.to_pd() if isinstance(exog_data, TimeSeries) else exog_data
+            self.data = np.concatenate((df.values, exog_df.values), axis=1) if exog_data is not None else df.values
+            self.timestamp = df.index
+            self.target = df.values if self.autoregressive else df.values[:, target_seq_index]
 
     @property
     def autoregressive(self):
@@ -118,10 +129,10 @@ class RollingWindowDataset:
         past, past_ts, future, future_ts = zip(*batch)
         past = np.stack(past)
         if self.flatten:
-            past = past.reshape((len(batch), -1), order="F")
+            past = past.reshape((len(batch), -1))
         past_ts = np.stack(past_ts)
         if future is not None:
-            future = np.stack(future).reshape((len(batch), -1), order="F")
+            future = np.stack(future).reshape((len(batch), -1))
             future_ts = np.stack(future_ts)
         else:
             future, future_ts = None, None
@@ -132,9 +143,10 @@ class RollingWindowDataset:
         idx_end = idx + self.n_past
         past = self.data[idx:idx_end]
         past_timestamp = self.timestamp[idx:idx_end]
-        if self.n_future > 0:
+        if self.n_future > 0:  # predicting the future
             future = self.target[idx_end : idx_end + self.n_future]
             future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
-        else:
-            future, future_timestamp = None, None
+        else:  # autoencoding
+            future = self.target[idx:idx_end]
+            future_timestamp = self.timestamp[idx:idx_end]
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)
