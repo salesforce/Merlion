@@ -1,0 +1,7 @@
+numpy
+pandas
+plotly
+dash
+dash_bootstrap_components
+salesforce-merlion
+dash[diskcache]
