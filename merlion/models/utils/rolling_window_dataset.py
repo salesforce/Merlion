@@ -25,6 +25,7 @@ class RollingWindowDataset:
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
         flatten: bool = True,
+        seed: int = 0,
     ):
         """
         A rolling window dataset which returns ``(past, future)`` windows for the whole time series.
@@ -104,16 +105,25 @@ class RollingWindowDataset:
             self.timestamp = df.index
             self.target = df.values if self.autoregressive else df.values[:, target_seq_index]
 
+        self.seed = seed
+
     @property
     def autoregressive(self):
         return self.target_seq_index is None
 
-    def __len__(self):
+    @property
+    def n_points(self):
         return len(self.data) - self.n_past + 1 - self.n_future
+
+    def __len__(self):
+        return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
 
     def __iter__(self):
         batch = []
-        order = np.random.permutation(len(self)) if self.shuffle else range(len(self))
+        if self.shuffle and self.batch_size is not None:
+            order = np.random.RandomState(self.seed).permutation(self.n_points)
+        else:
+            order = range(self.n_points)
         for i in order:
             batch.append(self[i])
             if self.batch_size is not None and len(batch) >= self.batch_size:
@@ -139,7 +149,7 @@ class RollingWindowDataset:
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
-        assert 0 <= idx < len(self)
+        assert 0 <= idx < self.n_points
         idx_end = idx + self.n_past
         past = self.data[idx:idx_end]
         past_timestamp = self.timestamp[idx:idx_end]
