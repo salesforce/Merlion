@@ -94,6 +94,7 @@
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_empty"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_empty()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.squeeze"><code class="docutils literal notranslate"><span class="pre">TimeSeries.squeeze()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.shape"><code class="docutils literal notranslate"><span class="pre">TimeSeries.shape</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.concat"><code class="docutils literal notranslate"><span class="pre">TimeSeries.concat()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.bisect"><code class="docutils literal notranslate"><span class="pre">TimeSeries.bisect()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.window"><code class="docutils literal notranslate"><span class="pre">TimeSeries.window()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.to_pd"><code class="docutils literal notranslate"><span class="pre">TimeSeries.to_pd()</span></code></a></li>
@@ -964,6 +965,14 @@ has one univariate, otherwise returns itself, a <a class="reference internal" hr
 <dd class="field-even"><p>the shape of this time series, i.e. <code class="docutils literal notranslate"><span class="pre">(self.dim,</span> <span class="pre">len(self))</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.concat">
+<span class="sig-name descname"><span class="pre">concat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.concat" title="Permalink to this definition"></a></dt>
+<dd><p>Concatenates the <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> <code class="docutils literal notranslate"><span class="pre">other</span></code> on the time axis if <code class="docutils literal notranslate"><span class="pre">axis</span> <span class="pre">=</span> <span class="pre">0</span></code> or the variable axis if <code class="docutils literal notranslate"><span class="pre">axis</span> <span class="pre">=</span> <span class="pre">1</span></code>.
+:rtype: TimeSeries
+:return: concatenated time series</p>
 </dd></dl>
 
 <dl class="py method">
