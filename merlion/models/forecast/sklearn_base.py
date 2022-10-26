@@ -13,14 +13,14 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
-from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.utils.time_series import to_pd_datetime, TimeSeries
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 
 logger = logging.getLogger(__name__)
 
 
-class SKLearnForecasterConfig(ForecasterConfig):
+class SKLearnForecasterConfig(ForecasterExogConfig):
     """
     Configuration class for a `SKLearnForecaster`.
     """
@@ -34,11 +34,11 @@ class SKLearnForecasterConfig(ForecasterConfig):
         **kwargs,
     ):
         """
-        :param maxlags: Max # of lags for forecasting
+        :param maxlags: Size of historical window to base the forecast on.
         :param max_forecast_steps: Max # of steps we would like to forecast for.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
+        :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
+            series) whose value we would like to forecast.
+        :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
         :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
 
             - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
@@ -54,7 +54,7 @@ class SKLearnForecasterConfig(ForecasterConfig):
         self.prediction_stride = prediction_stride
 
 
-class SKLearnForecaster(ForecasterBase):
+class SKLearnForecaster(ForecasterExogBase):
     """
     Wrapper around a sklearn-style model for time series forecasting. The underlying model must support
     ``fit()`` and ``predict()`` methods. The model can be trained to be either an autoregressive model of order
@@ -72,6 +72,7 @@ class SKLearnForecaster(ForecasterBase):
 
     def __init__(self, config: SKLearnForecasterConfig):
         super().__init__(config)
+        self._last_train_window = None
 
     @property
     def maxlags(self) -> int:
@@ -93,7 +94,9 @@ class SKLearnForecaster(ForecasterBase):
     def _default_train_config(self):
         return dict()
 
-    def _train(self, train_data: pd.DataFrame, train_config=None):
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, None]:
         fit = train_config.get("fit", True)
         max_forecast_steps = len(train_data) - self.maxlags
         if fit and self.prediction_stride > 1:  # sanity checks for seq2seq prediction
@@ -136,106 +139,123 @@ class SKLearnForecaster(ForecasterBase):
         # process train data to the rolling window dataset
         dataset = RollingWindowDataset(
             data=train_data,
+            exog_data=exog_data,
             target_seq_index=data_target_idx,
             n_past=self.maxlags,
             n_future=self.prediction_stride,
             batch_size=None,
             ts_index=False,
         )
-        inputs_train, inputs_train_ts, labels_train, labels_train_ts = next(iter(dataset))
+        inputs, inputs_ts, labels, labels_ts = next(iter(dataset))
 
         # TODO: allow model to use timestamps
-        # fitting
+        # fitting. also use train data to set the time_series_prev for calling forecast() without time_series_prev
         if fit:
-            self.model.fit(inputs_train, labels_train)
+            self.model.fit(inputs, labels)
+            if exog_data is not None:
+                self._last_train_window = pd.concat(
+                    (train_data[-self.maxlags :], exog_data.iloc[-self.maxlags :]), axis=1
+                )
+            else:
+                self._last_train_window = train_data.iloc[-self.maxlags :]
 
         # forecasting
         if self.dim == 1:
-            pred = self._hybrid_forecast(inputs_train, self.max_forecast_steps or len(inputs_train) - self.maxlags)
+            pred = self._hybrid_forecast(inputs, steps=self.prediction_stride)
         elif self.prediction_stride == 1:
-            pred = self._autoregressive_forecast(inputs_train, max(self.max_forecast_steps or 0, 1))
+            pred = self._autoregressive_forecast(inputs, steps=1)
         else:
-            pred = self.model.predict(inputs_train)
+            pred = self.model.predict(inputs)
 
         # since the model may predict multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0], index=labels_train_ts[:, 0], columns=[self.target_name]), None
+        return pd.DataFrame(pred[:, 0], index=labels_ts[:, 0], columns=[self.target_name]), None
 
-    def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
     ) -> Tuple[pd.DataFrame, None]:
         if time_series_prev is not None:
-            assert len(time_series_prev) >= self.maxlags, (
-                f"time_series_prev has a data length of "
-                f"{len(time_series_prev)} that is shorter than the maxlags "
-                f"for the model"
-            )
+            assert (
+                len(time_series_prev) >= self.maxlags
+            ), f"time_series_prev (length {len(time_series_prev)}) is shorter than model's maxlags ({self.maxlags})"
 
-        n = len(time_stamps)
         prev_pred, prev_err = None, None
         if time_series_prev is None:
-            time_series_prev = self.transform(self.train_data)
-        elif time_series_prev is not None and return_prev:
-            prev_pred, prev_err = self._train(time_series_prev, train_config=dict(fit=False))
+            time_series_prev = self._last_train_window  # Note: includes exog_data if needed
+        elif return_prev:
+            try:
+                prev_pred, prev_err = self._train_with_exog(
+                    time_series_prev, train_config=dict(fit=False), exog_data=exog_data_prev
+                )
+            except StopIteration:
+                prev_pred, prev_err = None, None
 
-        time_series_prev_no_ts = self._get_immedidate_forecasting_prior(time_series_prev)
+        if exog_data_prev is not None:
+            time_series_prev = pd.concat((time_series_prev, exog_data_prev), axis=1)
+        prev = np.atleast_2d(self._get_immedidate_forecasting_prior(time_series_prev))
 
         # TODO: allow model to use timestamps
+        n = len(time_stamps)
         if self.dim == 1:
-            yhat = self._hybrid_forecast(np.atleast_2d(time_series_prev_no_ts), n).reshape(-1)
+            yhat = self._hybrid_forecast(prev, exog_data=exog_data, steps=n)
         elif self.prediction_stride == 1:
-            yhat = self._autoregressive_forecast(time_series_prev_no_ts, n).reshape(-1)
+            yhat = self._autoregressive_forecast(prev, exog_data=exog_data, steps=n)
         else:
-            yhat = self.model.predict(np.atleast_2d(time_series_prev_no_ts)).reshape(-1)[:n]
+            yhat = self.model.predict(prev)
 
-        forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
+        forecast = pd.DataFrame(yhat.flatten()[:n], index=to_pd_datetime(time_stamps), columns=[self.target_name])
         if prev_pred is not None:
             forecast = pd.concat((prev_pred, forecast))
         return forecast, None
 
-    def _hybrid_forecast(self, inputs, steps=None):
+    def _hybrid_forecast(self, inputs, exog_data=None, steps=None):
         """
-        n-step autoregression method for univairate data, each regression step updates n_prediction_steps data points
-        :return: pred of target_seq_index for steps [n_samples, steps]
+        n-step auto-regression method for univariate data. Each regression step predicts prediction_stride data points.
+        :return: pred of the univariate for steps [n_samples, steps]
         """
         # TODO: allow model to use timestamps
         if steps is None:
             steps = self.max_forecast_steps
-
-        inputs = np.atleast_2d(inputs)
 
         pred = np.empty((len(inputs), (int((steps - 1) / self.prediction_stride) + 1) * self.prediction_stride))
-        start = 0
-        while True:
-            next_forecast = self.model.predict(inputs)
-            if len(next_forecast.shape) == 1:
-                next_forecast = np.expand_dims(next_forecast, axis=1)
-            pred[:, start : start + self.prediction_stride] = next_forecast
-            start += self.prediction_stride
-            if start >= steps:
+        for i in range(0, steps, self.prediction_stride):
+            next_pred = self.model.predict(inputs)
+            if next_pred.ndim == 1:
+                next_pred = np.expand_dims(next_pred, axis=1)
+            pred[:, i : i + self.prediction_stride] = next_pred
+            if i + self.prediction_stride >= steps:
                 break
-            inputs = self._update_prior(inputs, next_forecast, for_univariate=True)
+            if exog_data is not None:
+                assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
+                next_pred = np.concatenate((next_pred.T, exog_data.values[i : i + self.prediction_stride]), axis=1)
+                next_pred = next_pred.reshape((1, -1))
+            inputs = self._update_prior(inputs, next_pred, for_univariate=True)
         return pred[:, :steps]
 
-    def _autoregressive_forecast(self, inputs, steps=None):
+    def _autoregressive_forecast(self, inputs, exog_data=None, steps=None):
         """
-        1-step auto-regression method for multivariate data, each regression step updates one data point for each sequence
+        1-step auto-regression method for multivariate data. Each regression step predicts 1 data point for each variable.
         :return: pred of target_seq_index for steps [n_samples, steps]
         """
         # TODO: allow model to use timestamps
         if steps is None:
             steps = self.max_forecast_steps
 
-        inputs = np.atleast_2d(inputs)
-
         pred = np.empty((len(inputs), steps))
-
         for i in range(steps):
             # next forecast shape: [n_samples, self.dim]
-            next_forecast = self.model.predict(inputs)
-            pred[:, i] = next_forecast[:, self.target_seq_index]
+            next_pred = self.model.predict(inputs)
+            pred[:, i] = next_pred[:, self.target_seq_index]
             if i == steps - 1:
                 break
-            inputs = self._update_prior(inputs, next_forecast, for_univariate=False)
+            if exog_data is not None:
+                assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
+                next_pred = np.concatenate((next_pred, exog_data.values[i : i + 1]), axis=1)
+            inputs = self._update_prior(inputs, next_pred, for_univariate=False)
         return pred
 
     def _update_prior(self, prior: np.ndarray, next_forecast: np.ndarray, for_univariate: bool = False):
@@ -266,10 +286,10 @@ class SKLearnForecaster(ForecasterBase):
         if for_univariate:
             if len(next_forecast.shape) == 1:
                 next_forecast = np.expand_dims(next_forecast, axis=1)
-            prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags :]
+            prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags * (1 + (self.exog_dim or 0)) :]
         else:
             assert len(next_forecast.shape) == 2
-            prior = prior.reshape(len(prior), self.dim, -1)
+            prior = prior.reshape(len(prior), self.dim + (self.exog_dim or 0), -1)
             next_forecast = np.expand_dims(next_forecast, axis=2)
             prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags :]
         return prior.reshape(len(prior), -1)
@@ -278,4 +298,4 @@ class SKLearnForecaster(ForecasterBase):
         if isinstance(data, TimeSeries):
             data = data.to_pd()
         data = data.values
-        return data[-self.maxlags :].reshape(-1, order="F")
+        return data[-self.maxlags :].reshape(-1)

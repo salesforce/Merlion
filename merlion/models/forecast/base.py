@@ -504,11 +504,7 @@ class ForecasterBase(ModelBase):
         if time_series_prev is not None and plot_time_series_prev:
             if not self.invert_transform:
                 time_series_prev = self.transform(time_series_prev)
-            assert time_series_prev.dim == 1, (
-                f"Plotting only supported for univariate time series, but got a"
-                f"time series of dimension {time_series_prev.dim}"
-            )
-            time_series_prev = time_series_prev.univariates[time_series_prev.names[0]]
+            time_series_prev = time_series_prev.univariates[time_series_prev.names[self.target_seq_index]]
 
             n_prev = len(time_series_prev)
             yhat_prev, yhat = yhat[:n_prev], yhat[n_prev:]
