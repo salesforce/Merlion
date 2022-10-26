@@ -659,22 +659,35 @@ class TimeSeries:
         :rtype: TimeSeries
         :return: concatenated time series
         """
-        assert (
-            self.dim == other.dim
-        ), f"Cannot concatenate a {self.dim}-dimensional time series with a {other.dim}-dimensional time series."
-        assert self.names == other.names, (
-            f"Cannot concatenate time series with two different sets of "
-            f"variable names, {self.names} and {other.names}."
-        )
+        return self.concat(other, axis=0)
 
-        # The output time series is aligned if and only if both time series
-        # are aligned, so skip the expensive check
-        univariates = ValIterOrderedDict(
-            [(name, ts0.concat(ts1)) for (name, ts0), ts1 in zip(self.items(), other.univariates)]
-        )
-        ret = TimeSeries(univariates, check_aligned=False)
-        ret._is_aligned = self.is_aligned and other.is_aligned
-        return ret
+    def concat(self, other, axis=0):
+        """
+        Concatenates the `TimeSeries` ``other`` on the time axis if ``axis = 0`` or the variable axis if ``axis = 1``.
+        :rtype: TimeSeries
+        :return: concatenated time series
+        """
+        assert axis in [0, 1]
+        if axis == 0:
+            assert self.dim == other.dim, (
+                f"Cannot concatenate a {self.dim}-dimensional time series with a {other.dim}-dimensional "
+                f"time series on the time axis."
+            )
+            assert self.names == other.names, (
+                f"Cannot concatenate time series on the time axis if they have two different sets of "
+                f"variable names, {self.names} and {other.names}."
+            )
+            univariates = ValIterOrderedDict(
+                [(name, ts0.concat(ts1)) for (name, ts0), ts1 in zip(self.items(), other.univariates)]
+            )
+            ret = TimeSeries(univariates, check_aligned=False)
+            ret._is_aligned = self.is_aligned and other.is_aligned
+            return ret
+        else:
+            univariates = ValIterOrderedDict([(name, var.copy()) for name, var in [*self.items(), other.items()]])
+            ret = TimeSeries(univariates, check_aligned=False)
+            ret._is_aligned = self.is_aligned and other.is_aligned and self.time_stamps == other.time_stamps
+            return ret
 
     def __eq__(self, other):
         if self.dim != other.dim:
