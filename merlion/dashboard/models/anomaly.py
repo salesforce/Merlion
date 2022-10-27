@@ -156,7 +156,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         set_progress(("8", "10"))
 
         self.logger.info("Plotting anomaly scores...")
-        figure = AnomalyModel._plot_anomalies(model, train_ts, scores)
+        figure = AnomalyModel._plot_anomalies(model, train_ts, predictions)
         self.logger.info("Finished.")
         set_progress(("10", "10"))
 
