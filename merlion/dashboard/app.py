@@ -1,4 +1,4 @@
-from dashboard.dashboard import app
+from dashboard.server import app
 
 server = app.server
 
