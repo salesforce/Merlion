@@ -6,7 +6,9 @@
 #
 import dash_bootstrap_components as dbc
 from dash import html, dash_table
+import pandas as pd
 from merlion.dashboard.settings import *
+from merlion.dashboard.utils.plot import plot_timeseries
 
 styles = {
     "json-output": {"overflow-y": "scroll", "height": "calc(90% - 25px)", "border": "thin lightgrey solid"},
@@ -82,13 +84,5 @@ def create_metric_table(metrics=None):
     return table
 
 
-def create_emtpy_figure():
-    import numpy as np
-    import pandas as pd
-    from ..utils.plot import plot_timeseries
-
-    x = np.arange(500) * 0.1
-    df = pd.DataFrame({"x": np.sin(x), "y": np.cos(x + 1.57)})
-    df.index = pd.to_datetime(df.index * 60, unit="s")
-    df.index.rename("timestamp", inplace=True)
-    return plot_timeseries(df)
+def create_empty_figure():
+    return plot_timeseries(pd.DataFrame(index=pd.DatetimeIndex([])))

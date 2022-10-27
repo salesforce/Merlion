@@ -69,7 +69,7 @@ def plot_timeseries(ts, figure_height=500):
         ),
     )
     fig = make_subplots(figure=go.Figure(layout=layout))
-    fig.update_yaxes(title_text="Timeseries")
+    fig.update_yaxes(title_text="Time Series")
     for trace in traces:
         fig.add_trace(trace)
     fig.update_layout(height=figure_height)

@@ -6,7 +6,7 @@
 #
 from dash import dcc
 from dash import html
-from merlion.dashboard.pages.utils import create_modal, create_param_table, create_metric_table, create_emtpy_figure
+from merlion.dashboard.pages.utils import create_modal, create_param_table, create_metric_table, create_empty_figure
 
 
 def create_control_panel() -> html.Div:
@@ -77,7 +77,7 @@ def create_right_column() -> html.Div:
                 children=[
                     html.B("Forecasting Results"),
                     html.Hr(),
-                    html.Div(id="forecasting-plots", children=[create_emtpy_figure()]),
+                    html.Div(id="forecasting-plots", children=[create_empty_figure()]),
                 ],
             ),
             html.Div(

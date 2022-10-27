@@ -9,7 +9,7 @@ import dash
 from dash import Input, Output, State, callback, dcc
 from merlion.dashboard.utils.file_manager import FileManager
 from merlion.dashboard.models.anomaly import AnomalyModel
-from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_emtpy_figure
+from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_empty_figure
 
 file_manager = FileManager()
 
@@ -186,7 +186,7 @@ def click_train(
     modal_content = ""
     train_metric_table = create_metric_table()
     test_metric_table = create_metric_table()
-    figure = create_emtpy_figure()
+    figure = create_empty_figure()
     set_progress((str(0), str(10)))
 
     try:

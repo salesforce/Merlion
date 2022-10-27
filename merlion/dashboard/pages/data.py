@@ -6,7 +6,7 @@
 #
 from dash import dcc
 from dash import html, dash_table
-from merlion.dashboard.pages.utils import create_modal, create_emtpy_figure
+from merlion.dashboard.pages.utils import create_modal, create_empty_figure
 from merlion.dashboard.settings import *
 
 
@@ -130,7 +130,7 @@ def create_right_column() -> html.Div:
                 children=[
                     html.B("Time Series Plots"),
                     html.Hr(),
-                    html.Div(id="data-plots", children=[create_emtpy_figure()]),
+                    html.Div(id="data-plots", children=[create_empty_figure()]),
                 ],
             ),
             html.Div(

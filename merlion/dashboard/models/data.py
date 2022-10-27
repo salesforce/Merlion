@@ -8,7 +8,7 @@ import sys
 import logging
 from collections import OrderedDict
 from merlion.dashboard.models.utils import DataMixin
-from merlion.dashboard.pages.utils import create_emtpy_figure
+from merlion.dashboard.pages.utils import create_empty_figure
 from merlion.dashboard.utils.log import DashLogger
 from merlion.dashboard.utils.plot import data_table, plot_timeseries
 
@@ -46,6 +46,6 @@ class DataAnalyzer(DataMixin):
     @staticmethod
     def get_data_figure(df):
         if df is None:
-            return create_emtpy_figure()
+            return create_empty_figure()
         else:
             return plot_timeseries(df)

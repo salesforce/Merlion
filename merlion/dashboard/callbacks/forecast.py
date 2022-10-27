@@ -9,7 +9,7 @@ import dash
 from dash import Input, Output, State, dcc, callback
 from merlion.dashboard.utils.file_manager import FileManager
 from merlion.dashboard.models.forecast import ForecastModel
-from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_emtpy_figure
+from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_empty_figure
 
 file_manager = FileManager()
 
@@ -102,7 +102,7 @@ def click_train_test(set_progress, n_clicks, modal_close, filename, target_colum
     modal_content = ""
     train_metric_table = create_metric_table()
     test_metric_table = create_metric_table()
-    figure = create_emtpy_figure()
+    figure = create_empty_figure()
     set_progress(("0", "10"))
 
     try:
