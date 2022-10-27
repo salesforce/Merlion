@@ -7,18 +7,14 @@
 import os
 import dash
 from dash import Input, Output, State, dcc, callback
-from ..utils.file_manager import FileManager
-from ..models.forecast import ForecastModel
-from ..pages.utils import create_param_table, create_metric_table, \
-    create_emtpy_figure
+from merlion.dashboard.utils.file_manager import FileManager
+from merlion.dashboard.models.forecast import ForecastModel
+from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_emtpy_figure
 
 file_manager = FileManager()
 
 
-@callback(
-    Output("forecasting-select-file", "options"),
-    Input("forecasting-select-file-parent", "n_clicks")
-)
+@callback(Output("forecasting-select-file", "options"), Input("forecasting-select-file-parent", "n_clicks"))
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -34,7 +30,7 @@ def update_select_file_dropdown(n_clicks):
 @callback(
     Output("forecasting-select-target", "options"),
     Input("forecasting-select-target-parent", "n_clicks"),
-    State("forecasting-select-file", "value")
+    State("forecasting-select-file", "value"),
 )
 def select_target(n_clicks, filename):
     options = []
@@ -52,9 +48,7 @@ def select_target(n_clicks, filename):
 @callback(
     Output("forecasting-select-algorithm", "options"),
     Input("forecasting-select-algorithm-parent", "n_clicks"),
-    [
-        State("forecasting-select-target", "value")
-    ]
+    [State("forecasting-select-target", "value")],
 )
 def select_algorithm_parent(n_clicks, selected_target):
     options = []
@@ -67,10 +61,7 @@ def select_algorithm_parent(n_clicks, selected_target):
     return options
 
 
-@callback(
-    Output("forecasting-param-table", "children"),
-    Input("forecasting-select-algorithm", "value"),
-)
+@callback(Output("forecasting-param-table", "children"), Input("forecasting-select-algorithm", "value"))
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context
@@ -88,39 +79,24 @@ def select_algorithm(algorithm):
     Output("forecasting-plots", "children"),
     Output("forecasting-exception-modal", "is_open"),
     Output("forecasting-exception-modal-content", "children"),
-    [
-        Input("forecasting-train-btn", "n_clicks"),
-        Input("forecasting-exception-modal-close", "n_clicks")
-    ],
+    [Input("forecasting-train-btn", "n_clicks"), Input("forecasting-exception-modal-close", "n_clicks")],
     [
         State("forecasting-select-file", "value"),
         State("forecasting-select-target", "value"),
         State("forecasting-select-algorithm", "value"),
         State("forecasting-param-table", "children"),
-        State("forecasting-training-slider", "value")
+        State("forecasting-training-slider", "value"),
     ],
     running=[
         (Output("forecasting-train-btn", "disabled"), True, False),
-        (Output("forecasting-cancel-btn", "disabled"), False, True)
+        (Output("forecasting-cancel-btn", "disabled"), False, True),
     ],
     cancel=[Input("forecasting-cancel-btn", "n_clicks")],
     background=True,
     manager=file_manager.get_long_callback_manager(),
-    progress=[
-        Output("forecasting-progressbar", "value"),
-        Output("forecasting-progressbar", "max")
-    ],
+    progress=[Output("forecasting-progressbar", "value"), Output("forecasting-progressbar", "max")],
 )
-def click_train_test(
-        set_progress,
-        n_clicks,
-        modal_close,
-        filename,
-        target_column,
-        algorithm,
-        table,
-        train_percentage
-):
+def click_train_test(set_progress, n_clicks, modal_close, filename, target_column, algorithm, table, train_percentage):
     ctx = dash.callback_context
     modal_is_open = False
     modal_content = ""
@@ -144,10 +120,11 @@ def click_train_test(
 
                 params = ForecastModel.parse_parameters(
                     param_info=ForecastModel.get_parameter_info(algorithm),
-                    params={p["Parameter"]: p["Value"] for p in table["props"]["data"] if p["Parameter"]}
+                    params={p["Parameter"]: p["Value"] for p in table["props"]["data"] if p["Parameter"]},
                 )
                 model, train_metrics, test_metrics, figure = ForecastModel().train(
-                    algorithm, train_df, test_df, target_column, params, set_progress)
+                    algorithm, train_df, test_df, target_column, params, set_progress
+                )
                 ForecastModel.save_model(file_manager.model_directory, model, algorithm)
                 train_metric_table = create_metric_table(train_metrics)
                 test_metric_table = create_metric_table(test_metrics)
@@ -157,8 +134,4 @@ def click_train_test(
         modal_is_open = True
         modal_content = str(error)
 
-    return train_metric_table, \
-           test_metric_table, \
-           figure, \
-           modal_is_open, \
-           modal_content
+    return train_metric_table, test_metric_table, figure, modal_is_open, modal_content

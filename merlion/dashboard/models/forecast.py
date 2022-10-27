@@ -12,8 +12,8 @@ from merlion.models.factory import ModelFactory
 from merlion.evaluate.forecast import ForecastEvaluator, ForecastMetric
 from merlion.utils.time_series import TimeSeries
 
-from .utils import ModelMixin, DataMixin
-from ..utils.log import DashLogger
+from merlion.dashboard.models.utils import ModelMixin, DataMixin
+from merlion.dashboard.utils.log import DashLogger
 
 dash_logger = DashLogger(stream=sys.stdout)
 
@@ -31,7 +31,7 @@ class ForecastModel(ModelMixin, DataMixin):
         "VectorAR",
         "RandomForestForecaster",
         "ExtraTreesForecaster",
-        "LGBMForecaster"
+        "LGBMForecaster",
     ]
 
     def __init__(self):
@@ -74,7 +74,7 @@ class ForecastModel(ModelMixin, DataMixin):
             ("MARRE", ForecastMetric.MAE),
             ("RMSE", ForecastMetric.RMSE),
             ("sMAPE", ForecastMetric.sMAPE),
-            ("RMSPE", ForecastMetric.RMSPE)
+            ("RMSPE", ForecastMetric.RMSPE),
         ]:
             m = evaluator.evaluate(ground_truth=ts, predict=predictions, metric=metric)
             metrics[metric_name] = round(m, 5)
@@ -117,9 +117,7 @@ class ForecastModel(ModelMixin, DataMixin):
 
         self.logger.info("Plotting forecasting results...")
         figure = model.plot_forecast_plotly(
-            time_series=test_ts,
-            time_series_prev=train_ts,
-            plot_forecast_uncertainty=True
+            time_series=test_ts, time_series_prev=train_ts, plot_forecast_uncertainty=True
         )
         figure.update_layout(width=None, height=500)
         self.logger.info("Finished.")

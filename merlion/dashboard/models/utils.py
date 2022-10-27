@@ -12,7 +12,6 @@ from merlion.models.factory import ModelFactory
 
 
 class DataMixin:
-
     def load_data(self, file_path, nrows=None):
         if nrows is None:
             self.logger.info("Loading the time series...")
@@ -26,7 +25,6 @@ class DataMixin:
 
 
 class ModelMixin:
-
     @staticmethod
     def parse_parameters(param_info, params):
         for key in params.keys():
@@ -41,8 +39,7 @@ class ModelMixin:
             elif value_type in [int, float, str]:
                 kwargs[name] = value_type(value)
             elif value_type == bool:
-                assert value.lower() in ["true", "false"], \
-                    f"The value of {name} should be either True or False."
+                assert value.lower() in ["true", "false"], f"The value of {name} should be either True or False."
                 kwargs[name] = value.lower() == "true"
             elif info["type"] in [list, tuple, dict]:
                 value = value.replace(" ", "").replace("\t", "")

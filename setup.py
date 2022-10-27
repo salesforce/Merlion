@@ -12,8 +12,22 @@ MERLION_JARS = [
     "resources/randomcutforest-serialization-json-1.0.jar",
 ]
 
+MERLION_DASHBOARD_ASSETS = [
+    "dashboard/assets/Acumin-BdPro.otf",
+    "dashboard/assets/base.css",
+    "dashboard/assets/merlion.css",
+    "dashboard/assets/merlion_small.svg",
+    "dashboard/assets/modal.css",
+    "dashboard/assets/resizing.js",
+    "dashboard/assets/styles.css",
+]
+
 # optional dependencies
-extra_require = {"plot": ["plotly>=4.13"], "deep-learning": ["torch>=1.1.0"], "spark": ["pyspark[sql]>=3"]}
+extra_require = {
+    "dashboard": ["dash[diskcache]>=2.0", "dash_bootstrap_components>=1.0"],
+    "deep-learning": ["torch>=1.1.0"],
+    "spark": ["pyspark[sql]>=3"],
+}
 extra_require["all"] = sum(extra_require.values(), [])
 
 
@@ -36,13 +50,14 @@ setup(
     license="3-Clause BSD",
     packages=find_namespace_packages(include="merlion.*"),
     package_dir={"merlion": "merlion"},
-    package_data={"merlion": MERLION_JARS},
+    package_data={"merlion": MERLION_JARS + MERLION_DASHBOARD_ASSETS},
     install_requires=[
         "cython",
         "dill",
         "GitPython",
         "py4j",
         "matplotlib",
+        "plotly>=4.13",
         "numpy>=1.21",  # 1.21 remediates a security risk
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()

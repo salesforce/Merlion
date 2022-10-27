@@ -6,21 +6,17 @@
 #
 import dash_bootstrap_components as dbc
 from dash import html, dash_table
-from ..settings import *
+from merlion.dashboard.settings import *
 
 styles = {
-    'json-output': {
-        'overflow-y': 'scroll',
-        'height': 'calc(90% - 25px)',
-        'border': 'thin lightgrey solid'
+    "json-output": {"overflow-y": "scroll", "height": "calc(90% - 25px)", "border": "thin lightgrey solid"},
+    "tab": {"height": "calc(98vh - 80px)"},
+    "log-output": {
+        "overflow-y": "scroll",
+        "height": "calc(90% - 25px)",
+        "border": "thin lightgrey solid",
+        "white-space": "pre-wrap",
     },
-    'tab': {'height': 'calc(98vh - 80px)'},
-    'log-output': {
-            'overflow-y': 'scroll',
-            'height': 'calc(90% - 25px)',
-            'border': 'thin lightgrey solid',
-            'white-space': 'pre-wrap'
-        },
 }
 
 
@@ -31,15 +27,11 @@ def create_modal(modal_id, header, content, content_id, button_id):
                 [
                     dbc.ModalHeader(dbc.ModalTitle(header)),
                     dbc.ModalBody(content, id=content_id),
-                    dbc.ModalFooter(
-                        dbc.Button(
-                            "Close", id=button_id, className="ml-auto", n_clicks=0
-                        )
-                    ),
+                    dbc.ModalFooter(dbc.Button("Close", id=button_id, className="ml-auto", n_clicks=0)),
                 ],
                 id=modal_id,
                 is_open=False,
-            ),
+            )
         ]
     )
     return modal
@@ -49,25 +41,17 @@ def create_param_table(params=None, height=100):
     if params is None or len(params) == 0:
         data = [{"Parameter": "", "Value": ""}]
     else:
-        data = [{"Parameter": key, "Value": str(value["default"])}
-                for key, value in params.items()]
+        data = [{"Parameter": key, "Value": str(value["default"])} for key, value in params.items()]
 
     table = dash_table.DataTable(
         data=data,
-        columns=[
-            {"id": "Parameter", "name": "Parameter"},
-            {"id": "Value", "name": "Value"}
-        ],
+        columns=[{"id": "Parameter", "name": "Parameter"}, {"id": "Value", "name": "Value"}],
         editable=True,
         style_header_conditional=[{"textAlign": "center"}],
         style_cell_conditional=[{"textAlign": "center"}],
-        style_table={
-            "overflowX": "scroll",
-            "overflowY": "scroll",
-            "height": height
-        },
+        style_table={"overflowX": "scroll", "overflowY": "scroll", "height": height},
         style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
-        style_data=dict(backgroundColor=TABLE_DATA_COLOR)
+        style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
 
@@ -93,7 +77,7 @@ def create_metric_table(metrics=None):
         style_cell_conditional=[{"textAlign": "center"}],
         style_table={"overflowX": "scroll"},
         style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
-        style_data=dict(backgroundColor=TABLE_DATA_COLOR)
+        style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
 

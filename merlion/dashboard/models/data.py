@@ -7,16 +7,15 @@
 import sys
 import logging
 from collections import OrderedDict
-from .utils import DataMixin
-from ..pages.utils import create_emtpy_figure
-from ..utils.log import DashLogger
-from ..utils.plot import data_table, plot_timeseries
+from merlion.dashboard.models.utils import DataMixin
+from merlion.dashboard.pages.utils import create_emtpy_figure
+from merlion.dashboard.utils.log import DashLogger
+from merlion.dashboard.utils.plot import data_table, plot_timeseries
 
 dash_logger = DashLogger(stream=sys.stdout)
 
 
 class DataAnalyzer(DataMixin):
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
@@ -25,11 +24,14 @@ class DataAnalyzer(DataMixin):
     @staticmethod
     def get_stats(df):
         stats = {
-            "@global": OrderedDict({
-                "NO. of Variables": len(df.columns),
-                "Time Series Length": df.shape[0],
-                "Has NaNs": bool(df.isnull().values.any())}),
-            "@columns": list(df.columns)
+            "@global": OrderedDict(
+                {
+                    "NO. of Variables": len(df.columns),
+                    "Time Series Length": df.shape[0],
+                    "Has NaNs": bool(df.isnull().values.any()),
+                }
+            ),
+            "@columns": list(df.columns),
         }
         for col in df.columns:
             info = df[col].describe()
