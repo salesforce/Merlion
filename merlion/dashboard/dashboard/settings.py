@@ -1,2 +1,0 @@
-TABLE_HEADER_COLOR = "lightskyblue"
-TABLE_DATA_COLOR = "rgb(239, 243, 255)"
