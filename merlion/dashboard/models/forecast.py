@@ -25,7 +25,6 @@ class ForecastModel(ModelMixin, DataMixin):
         "ETS",
         "AutoETS",
         "LSTM",
-        "MSES",
         "Prophet",
         "AutoProphet",
         "Sarima",
