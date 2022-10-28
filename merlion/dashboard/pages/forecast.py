@@ -40,6 +40,12 @@ def create_control_panel() -> html.Div:
                 children=[dcc.Dropdown(id="forecasting-select-target", options=[], style={"width": "100%"})],
             ),
             html.Br(),
+            html.P("Select Exogenous Columns (Known Ahead of Time)"),
+            html.Div(
+                id="forecasting-select-exog-parent",
+                children=[dcc.Dropdown(id="forecasting-select-exog", options=[], multi=True, style={"width": "100%"})],
+            ),
+            html.Br(),
             html.P("Select Forecasting Algorithm"),
             html.Div(
                 id="forecasting-select-algorithm-parent",

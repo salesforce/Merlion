@@ -67,7 +67,7 @@ def select_metric(n_clicks, train_file, test_file):
     Input("anomaly-select-label-parent", "n_clicks"),
     [State("anomaly-select-file", "value"), State("anomaly-select-test-file", "value")],
 )
-def select_metric(n_clicks, train_file, test_file):
+def select_label(n_clicks, train_file, test_file):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:

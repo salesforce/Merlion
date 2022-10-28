@@ -8,17 +8,12 @@
 Tree-based models for multivariate time series forecasting.
 """
 import logging
-from typing import List, Tuple
 
 from lightgbm import LGBMRegressor
-import numpy as np
-import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.sklearn_base import SKLearnForecaster, SKLearnForecasterConfig
-from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
-from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
 

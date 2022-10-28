@@ -14,8 +14,9 @@ import numpy as np
 import pandas as pd
 
 from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
-from merlion.utils.time_series import to_pd_datetime, TimeSeries
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
+from merlion.transform.resample import TemporalResample
+from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,8 @@ class SKLearnForecasterConfig(ForecasterExogConfig):
     """
     Configuration class for a `SKLearnForecaster`.
     """
+
+    _default_transform = TemporalResample()
 
     def __init__(
         self,

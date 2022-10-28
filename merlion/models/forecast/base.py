@@ -18,8 +18,9 @@ from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.transform.base import TransformBase, Identity
+from merlion.transform.base import TransformBase
 from merlion.transform.factory import TransformFactory
+from merlion.transform.normalize import MeanVarNormalize
 from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
@@ -622,7 +623,7 @@ class ForecasterBase(ModelBase):
 
 
 class ForecasterExogConfig(ForecasterConfig):
-    _default_exog_transform = Identity()
+    _default_exog_transform = MeanVarNormalize()
     exog_transform: TransformBase = None
 
     def __init__(
