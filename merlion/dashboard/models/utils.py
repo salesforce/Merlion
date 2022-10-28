@@ -6,22 +6,25 @@
 #
 import os
 import json
+import numpy as np
 import pandas as pd
 from merlion.models.factory import ModelFactory
 
 
 class DataMixin:
-
     def load_data(self, file_path, nrows=None):
         if nrows is None:
             self.logger.info("Loading the time series...")
         df = pd.read_csv(file_path, nrows=nrows)
-        df = df.set_index(df.columns[0])
+        if df.dtypes[df.columns[0]] in [np.int32, np.int64]:
+            df = df.set_index(df.columns[0])
+            df.index = pd.to_datetime(df.index.values, unit="ms")
+        else:
+            df = df.set_index(df.columns[0])
         return df
 
 
 class ModelMixin:
-
     @staticmethod
     def parse_parameters(param_info, params):
         for key in params.keys():
@@ -36,8 +39,7 @@ class ModelMixin:
             elif value_type in [int, float, str]:
                 kwargs[name] = value_type(value)
             elif value_type == bool:
-                assert value.lower() in ["true", "false"], \
-                    f"The value of {name} should be either True or False."
+                assert value.lower() in ["true", "false"], f"The value of {name} should be either True or False."
                 kwargs[name] = value.lower() == "true"
             elif info["type"] in [list, tuple, dict]:
                 value = value.replace(" ", "").replace("\t", "")

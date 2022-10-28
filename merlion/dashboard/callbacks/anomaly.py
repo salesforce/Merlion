@@ -7,18 +7,14 @@
 import os
 import dash
 from dash import Input, Output, State, callback, dcc
-from ..utils.file_manager import FileManager
-from ..models.anomaly import AnomalyModel
-from ..pages.utils import create_param_table, create_metric_table, \
-    create_emtpy_figure
+from merlion.dashboard.utils.file_manager import FileManager
+from merlion.dashboard.models.anomaly import AnomalyModel
+from merlion.dashboard.pages.utils import create_param_table, create_metric_table, create_empty_figure
 
 file_manager = FileManager()
 
 
-@callback(
-    Output("anomaly-select-file", "options"),
-    Input("anomaly-select-file-parent", "n_clicks")
-)
+@callback(Output("anomaly-select-file", "options"), Input("anomaly-select-file-parent", "n_clicks"))
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -31,10 +27,7 @@ def update_select_file_dropdown(n_clicks):
     return options
 
 
-@callback(
-    Output("anomaly-select-test-file", "options"),
-    Input("anomaly-select-test-file-parent", "n_clicks")
-)
+@callback(Output("anomaly-select-test-file", "options"), Input("anomaly-select-test-file-parent", "n_clicks"))
 def update_select_test_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -50,10 +43,7 @@ def update_select_test_file_dropdown(n_clicks):
 @callback(
     Output("anomaly-select-metric", "options"),
     Input("anomaly-select-metric-parent", "n_clicks"),
-    [
-        State("anomaly-select-file", "value"),
-        State("anomaly-select-test-file", "value")
-    ]
+    [State("anomaly-select-file", "value"), State("anomaly-select-test-file", "value")],
 )
 def select_metric(n_clicks, train_file, test_file):
     options = []
@@ -75,12 +65,9 @@ def select_metric(n_clicks, train_file, test_file):
 @callback(
     Output("anomaly-select-label", "options"),
     Input("anomaly-select-label-parent", "n_clicks"),
-    [
-        State("anomaly-select-file", "value"),
-        State("anomaly-select-test-file", "value")
-    ]
+    [State("anomaly-select-file", "value"), State("anomaly-select-test-file", "value")],
 )
-def select_metric(n_clicks, train_file, test_file):
+def select_label(n_clicks, train_file, test_file):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
@@ -100,7 +87,7 @@ def select_metric(n_clicks, train_file, test_file):
 @callback(
     Output("anomaly-select-algorithm", "options"),
     Input("anomaly-select-algorithm-parent", "n_clicks"),
-    State("anomaly-select-metric", "value")
+    State("anomaly-select-metric", "value"),
 )
 def select_algorithm_parent(n_clicks, selected_metrics):
     options = []
@@ -113,10 +100,7 @@ def select_algorithm_parent(n_clicks, selected_metrics):
     return options
 
 
-@callback(
-    Output("anomaly-param-table", "children"),
-    Input("anomaly-select-algorithm", "value"),
-)
+@callback(Output("anomaly-param-table", "children"), Input("anomaly-select-algorithm", "value"))
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context
@@ -128,10 +112,7 @@ def select_algorithm(algorithm):
     return param_table
 
 
-@callback(
-    Output("anomaly-select-threshold", "options"),
-    Input("anomaly-select-threshold-parent", "n_clicks")
-)
+@callback(Output("anomaly-select-threshold", "options"), Input("anomaly-select-threshold-parent", "n_clicks"))
 def select_threshold_parent(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -143,10 +124,7 @@ def select_threshold_parent(n_clicks):
     return options
 
 
-@callback(
-    Output("anomaly-threshold-param-table", "children"),
-    Input("anomaly-select-threshold", "value"),
-)
+@callback(Output("anomaly-threshold-param-table", "children"), Input("anomaly-select-threshold", "value"))
 def select_threshold(threshold):
     param_table = create_param_table(height=80)
     ctx = dash.callback_context
@@ -167,7 +145,7 @@ def select_threshold(threshold):
     [
         Input("anomaly-train-btn", "n_clicks"),
         Input("anomaly-test-btn", "n_clicks"),
-        Input("anomaly-exception-modal-close", "n_clicks")
+        Input("anomaly-exception-modal-close", "n_clicks"),
     ],
     [
         State("anomaly-select-file", "value"),
@@ -177,41 +155,38 @@ def select_threshold(threshold):
         State("anomaly-select-label", "value"),
         State("anomaly-param-table", "children"),
         State("anomaly-select-threshold", "value"),
-        State("anomaly-threshold-param-table", "children")
+        State("anomaly-threshold-param-table", "children"),
     ],
     running=[
         (Output("anomaly-train-btn", "disabled"), True, False),
         (Output("anomaly-test-btn", "disabled"), True, False),
-        (Output("anomaly-cancel-btn", "disabled"), False, True)
+        (Output("anomaly-cancel-btn", "disabled"), False, True),
     ],
     cancel=[Input("anomaly-cancel-btn", "n_clicks")],
     background=True,
     manager=file_manager.get_long_callback_manager(),
-    progress=[
-        Output("anomaly-progressbar", "value"),
-        Output("anomaly-progressbar", "max")
-    ],
+    progress=[Output("anomaly-progressbar", "value"), Output("anomaly-progressbar", "max")],
 )
 def click_train(
-        set_progress,
-        train_clicks,
-        test_clicks,
-        modal_close,
-        train_filename,
-        test_filename,
-        columns,
-        algorithm,
-        label_column,
-        param_table,
-        threshold_class,
-        threshold_table
+    set_progress,
+    train_clicks,
+    test_clicks,
+    modal_close,
+    train_filename,
+    test_filename,
+    columns,
+    algorithm,
+    label_column,
+    param_table,
+    threshold_class,
+    threshold_table,
 ):
     ctx = dash.callback_context
     modal_is_open = False
     modal_content = ""
     train_metric_table = create_metric_table()
     test_metric_table = create_metric_table()
-    figure = create_emtpy_figure()
+    figure = create_empty_figure()
     set_progress((str(0), str(10)))
 
     try:
@@ -225,20 +200,22 @@ def click_train(
                 df = AnomalyModel().load_data(os.path.join(file_manager.data_directory, train_filename))
                 alg_params = AnomalyModel.parse_parameters(
                     param_info=AnomalyModel.get_parameter_info(algorithm),
-                    params={p["Parameter"]: p["Value"] for p in param_table["props"]["data"]}
+                    params={p["Parameter"]: p["Value"] for p in param_table["props"]["data"]},
                 )
                 if threshold_class:
                     threshold_params = (
                         threshold_class,
                         AnomalyModel.parse_parameters(
                             param_info=AnomalyModel.get_threshold_info(threshold_class),
-                            params={p["Parameter"]: p["Value"] for p in threshold_table["props"]["data"]}
-                        ))
+                            params={p["Parameter"]: p["Value"] for p in threshold_table["props"]["data"]},
+                        ),
+                    )
                 else:
                     threshold_params = None
 
                 model, metrics, figure = AnomalyModel().train(
-                    algorithm, df, columns, label_column, alg_params, threshold_params, set_progress)
+                    algorithm, df, columns, label_column, alg_params, threshold_params, set_progress
+                )
                 AnomalyModel.save_model(file_manager.model_directory, model, algorithm)
                 if metrics is not None:
                     train_metric_table = create_metric_table(metrics)
@@ -256,13 +233,13 @@ def click_train(
                         threshold_class,
                         AnomalyModel.parse_parameters(
                             param_info=AnomalyModel.get_threshold_info(threshold_class),
-                            params={p["Parameter"]: p["Value"] for p in threshold_table["props"]["data"]}
-                        ))
+                            params={p["Parameter"]: p["Value"] for p in threshold_table["props"]["data"]},
+                        ),
+                    )
                 else:
                     threshold_params = None
 
-                metrics, figure = AnomalyModel().test(
-                    model, df, columns, label_column, threshold_params, set_progress)
+                metrics, figure = AnomalyModel().test(model, df, columns, label_column, threshold_params, set_progress)
                 if metrics is not None:
                     test_metric_table = create_metric_table(metrics)
                 figure = dcc.Graph(figure=figure)
@@ -271,8 +248,4 @@ def click_train(
         modal_is_open = True
         modal_content = str(error)
 
-    return train_metric_table, \
-           test_metric_table, \
-           figure, \
-           modal_is_open, \
-           modal_content
+    return train_metric_table, test_metric_table, figure, modal_is_open, modal_content

@@ -8,20 +8,14 @@ import os
 import json
 import dash
 from dash import Input, Output, State, callback, dcc
-from ..pages.data import create_stats_table, create_metric_stats_table
-from ..utils.file_manager import FileManager
-from ..models.data import DataAnalyzer
+from merlion.dashboard.pages.data import create_stats_table, create_metric_stats_table
+from merlion.dashboard.utils.file_manager import FileManager
+from merlion.dashboard.models.data import DataAnalyzer
 
 file_manager = FileManager()
 
 
-@callback(
-    Output("select-file", "options"),
-    [
-        Input("upload-data", "filename"),
-        Input("upload-data", "contents")
-    ],
-)
+@callback(Output("select-file", "options"), [Input("upload-data", "filename"), Input("upload-data", "contents")])
 def upload_file(filenames, contents):
     if filenames is not None and contents is not None:
         for name, data in zip(filenames, contents):
@@ -40,21 +34,12 @@ def upload_file(filenames, contents):
     Output("data-plots", "children"),
     Output("data-exception-modal", "is_open"),
     Output("data-exception-modal-content", "children"),
-    [
-        Input("data-btn", "n_clicks"),
-        Input("data-exception-modal-close", "n_clicks")
-    ],
-    [
-        State("select-file", "value"),
-        State("data-state", "data")
-    ],
-    running=[
-        (Output("data-btn", "disabled"), True, False),
-        (Output("data-cancel-btn", "disabled"), False, True)
-    ],
+    [Input("data-btn", "n_clicks"), Input("data-exception-modal-close", "n_clicks")],
+    [State("select-file", "value"), State("data-state", "data")],
+    running=[(Output("data-btn", "disabled"), True, False), (Output("data-cancel-btn", "disabled"), False, True)],
     cancel=[Input("data-cancel-btn", "n_clicks")],
     background=True,
-    manager=file_manager.get_long_callback_manager()
+    manager=file_manager.get_long_callback_manager(),
 )
 def click_run(btn_click, modal_close, filename, data):
     ctx = dash.callback_context
@@ -82,19 +67,10 @@ def click_run(btn_click, modal_close, filename, data):
                 modal_is_open = True
                 modal_content = str(error)
 
-    return stats_table, \
-           json.dumps(stats), \
-           data_table, \
-           data_figure, \
-           modal_is_open, \
-           modal_content
+    return stats_table, json.dumps(stats), data_table, data_figure, modal_is_open, modal_content
 
 
-@callback(
-    Output("select-column", "options"),
-    Input("select-column-parent", "n_clicks"),
-    State("data-state", "data")
-)
+@callback(Output("select-column", "options"), Input("select-column-parent", "n_clicks"), State("data-state", "data"))
 def update_metric_dropdown(n_clicks, data):
     options = []
     ctx = dash.callback_context
@@ -106,11 +82,7 @@ def update_metric_dropdown(n_clicks, data):
     return options
 
 
-@callback(
-    Output("metric-stats-table", "children"),
-    Input("select-column", "value"),
-    State("data-state", "data")
-)
+@callback(Output("metric-stats-table", "children"), Input("select-column", "value"), State("data-state", "data"))
 def update_metric_table(column, data):
     ctx = dash.callback_context
     metric_stats_table = create_metric_stats_table()
@@ -123,10 +95,7 @@ def update_metric_table(column, data):
     return metric_stats_table
 
 
-@callback(
-    Output("data-download", "options"),
-    Input("data-download-parent", "n_clicks"),
-)
+@callback(Output("data-download", "options"), Input("data-download-parent", "n_clicks"))
 def select_download_parent(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -142,14 +111,9 @@ def select_download_parent(n_clicks):
     Output("download-data", "data"),
     Output("data-download-exception-modal", "is_open"),
     Output("data-download-exception-modal-content", "children"),
-    [
-        Input("data-download-btn", "n_clicks"),
-        Input("data-download-exception-modal-close", "n_clicks")
-    ],
+    [Input("data-download-btn", "n_clicks"), Input("data-download-exception-modal-close", "n_clicks")],
     State("data-download", "value"),
-    running=[
-        (Output("data-download-btn", "disabled"), True, False),
-    ],
+    running=[(Output("data-download-btn", "disabled"), True, False)],
     background=True,
     manager=file_manager.get_long_callback_manager(),
     prevent_initial_call=True,
@@ -171,6 +135,4 @@ def click_run(btn_click, modal_close, model):
                 modal_is_open = True
                 modal_content = str(error)
 
-    return data, \
-           modal_is_open, \
-           modal_content
+    return data, modal_is_open, modal_content

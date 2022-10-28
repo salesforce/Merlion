@@ -14,8 +14,8 @@ from merlion.evaluate.anomaly import TSADMetric
 from merlion.utils.time_series import TimeSeries
 from merlion.plot import MTSFigure
 
-from .utils import ModelMixin, DataMixin
-from ..utils.log import DashLogger
+from merlion.dashboard.models.utils import ModelMixin, DataMixin
+from merlion.dashboard.utils.log import DashLogger
 
 dash_logger = DashLogger(stream=sys.stdout)
 
@@ -35,19 +35,10 @@ class AnomalyModel(ModelMixin, DataMixin):
         "WindStats",
         "SpectralResidual",
         "ZMS",
-        "DeepPointAnomalyDetector"
+        "DeepPointAnomalyDetector",
     ]
-    multivariate_algorithms = [
-        "IsolationForest",
-        "AutoEncoder",
-        "VAE",
-        "DAGMM",
-        "LSTMED"
-    ]
-    thresholds = [
-        "Threshold",
-        "AggregateAlarms"
-    ]
+    multivariate_algorithms = ["IsolationForest", "AutoEncoder", "VAE", "DAGMM", "LSTMED"]
+    thresholds = ["Threshold", "AggregateAlarms"]
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -118,8 +109,7 @@ class AnomalyModel(ModelMixin, DataMixin):
             ("MeanTimeToDetect", TSADMetric.MeanTimeToDetect),
         ]:
             m = metric.value(ground_truth=labels, predict=predictions)
-            metrics[metric_name] = round(m, 5) \
-                if metric_name != "MeanTimeToDetect" else str(m)
+            metrics[metric_name] = round(m, 5) if metric_name != "MeanTimeToDetect" else str(m)
         return metrics
 
     @staticmethod
@@ -132,13 +122,11 @@ class AnomalyModel(ModelMixin, DataMixin):
     def _check(df, columns, label_column):
         if label_column and label_column not in df:
             label_column = int(label_column)
-            assert label_column in df, \
-                f"The label column {label_column} is not in the time series."
+            assert label_column in df, f"The label column {label_column} is not in the time series."
         for i in range(len(columns)):
             if columns[i] not in df:
                 columns[i] = int(columns[i])
-            assert columns[i] in df, \
-                f"The variable {columns[i]} is not in the time series."
+            assert columns[i] in df, f"The variable {columns[i]} is not in the time series."
         return columns, label_column
 
     def train(self, algorithm, df, columns, label_column, params, threshold_params, set_progress):
@@ -164,12 +152,11 @@ class AnomalyModel(ModelMixin, DataMixin):
 
         self.logger.info("Computing training performance metrics...")
         predictions = model.post_rule(scores) if model.post_rule is not None else scores
-        metrics = AnomalyModel._compute_metrics(label_ts, predictions) \
-            if label_ts is not None else None
+        metrics = AnomalyModel._compute_metrics(label_ts, predictions) if label_ts is not None else None
         set_progress(("8", "10"))
 
         self.logger.info("Plotting anomaly scores...")
-        figure = AnomalyModel._plot_anomalies(model, train_ts, scores)
+        figure = AnomalyModel._plot_anomalies(model, train_ts, predictions)
         self.logger.info("Finished.")
         set_progress(("10", "10"))
 
@@ -197,8 +184,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         set_progress(("7", "10"))
 
         self.logger.info("Computing test performance metrics...")
-        metrics = AnomalyModel._compute_metrics(label_ts, predictions) \
-            if label_ts is not None else None
+        metrics = AnomalyModel._compute_metrics(label_ts, predictions) if label_ts is not None else None
         set_progress(("8", "10"))
 
         self.logger.info("Plotting anomaly labels...")

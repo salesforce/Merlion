@@ -16,19 +16,13 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
-try:
-    import plotly
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-except ImportError:
-    logger.warning(
-        "plotly not installed, so plotly visualizations will not work. Try installing Merlion with optional "
-        "dependencies using `pip install salesforce-merlion[plot]` or `pip install `salesforce-merlion[all]`."
-    )
 
 
 def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
