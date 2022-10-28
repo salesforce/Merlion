@@ -29,6 +29,8 @@ def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
     """
     Plots anomalies as pink windows on the matplotlib ``Axes`` object ``ax``.
     """
+    if anomaly_labels is None:
+        return ax
     anomaly_labels = anomaly_labels.to_pd()
     t, y = anomaly_labels.index, anomaly_labels.values
     splits = np.where(y[1:] != y[:-1])[0] + 1
@@ -42,6 +44,8 @@ def plot_anoms_plotly(fig, anomaly_labels: TimeSeries):
     """
     Plots anomalies as pink windows on the plotly ``Figure`` object ``fig``.
     """
+    if anomaly_labels is None:
+        return fig
     anomaly_labels = anomaly_labels.to_pd()
     t, y = anomaly_labels.index, anomaly_labels.values
     splits = np.where(y[1:] != y[:-1])[0] + 1

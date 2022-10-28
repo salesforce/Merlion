@@ -12,7 +12,7 @@ from collections import OrderedDict
 from merlion.models.factory import ModelFactory
 from merlion.evaluate.anomaly import TSADMetric
 from merlion.utils.time_series import TimeSeries
-from merlion.plot import MTSFigure
+from merlion.plot import MTSFigure, plot_anoms_plotly
 
 from merlion.dashboard.models.utils import ModelMixin, DataMixin
 from merlion.dashboard.utils.log import DashLogger
@@ -113,10 +113,10 @@ class AnomalyModel(ModelMixin, DataMixin):
         return metrics
 
     @staticmethod
-    def _plot_anomalies(model, ts, scores):
+    def _plot_anomalies(model, ts, scores, labels=None):
         title = f"{type(model).__name__}: Anomalies in Time Series"
         fig = MTSFigure(y=ts, y_prev=None, anom=scores)
-        return fig.plot_plotly(title=title)
+        return plot_anoms_plotly(fig=fig.plot_plotly(title=title), anomaly_labels=labels)
 
     @staticmethod
     def _check(df, columns, label_column):
@@ -156,7 +156,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         set_progress(("8", "10"))
 
         self.logger.info("Plotting anomaly scores...")
-        figure = AnomalyModel._plot_anomalies(model, train_ts, predictions)
+        figure = AnomalyModel._plot_anomalies(model, train_ts, predictions, label_ts)
         self.logger.info("Finished.")
         set_progress(("10", "10"))
 
@@ -188,7 +188,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         set_progress(("8", "10"))
 
         self.logger.info("Plotting anomaly labels...")
-        figure = AnomalyModel._plot_anomalies(model, test_ts, predictions)
+        figure = AnomalyModel._plot_anomalies(model, test_ts, predictions, label_ts)
         self.logger.info("Finished.")
         set_progress(("10", "10"))
 
