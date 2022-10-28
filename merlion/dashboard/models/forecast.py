@@ -59,7 +59,9 @@ class ForecastModel(ModelMixin, DataMixin):
             value = param.default
             if value == param.empty:
                 value = ""
-            if type(param.default) in valid_types:
+            if name in ["max_lag", "maxlags"]:
+                param_info[name] = {"type": int, "default": value if value != "" else 5}
+            elif type(param.default) in valid_types:
                 param_info[name] = {"type": type(param.default), "default": value}
             elif param.annotation in valid_types:
                 param_info[name] = {"type": param.annotation, "default": value}
