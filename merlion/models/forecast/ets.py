@@ -38,15 +38,15 @@ class ETSConfig(ForecasterConfig):
 
     def __init__(
         self,
-        max_forecast_steps=None,
-        target_seq_index=None,
-        error="add",
-        trend="add",
-        damped_trend=True,
-        seasonal="add",
-        seasonal_periods=None,
-        pred_interval_strategy="exact",
-        refit=True,
+        max_forecast_steps: int = None,
+        target_seq_index: int = None,
+        error = "add",
+        trend = "add",
+        damped_trend = True,
+        seasonal = "add",
+        seasonal_periods: int = None,
+        pred_interval_strategy = "exact",
+        refit = True,
         **kwargs,
     ):
         """

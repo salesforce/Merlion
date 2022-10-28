@@ -76,7 +76,7 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag=None, **kwargs):
+    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag: int = None, **kwargs):
         """
         :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
         :param pval: p-value for deciding whether a detected seasonality is statistically significant.
