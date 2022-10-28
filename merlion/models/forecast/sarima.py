@@ -31,7 +31,7 @@ class SarimaConfig(ForecasterExogConfig):
 
     _default_transform = TemporalResample(granularity=None)
 
-    def __init__(self, order: list = (4, 1, 2), seasonal_order: list = (2, 0, 1, 24), **kwargs):
+    def __init__(self, order: List[int] = (4, 1, 2), seasonal_order: List[int] = (2, 0, 1, 24), **kwargs):
         """
         :param order: Order is (p, d, q) for an ARIMA(p, d, q) process. d must
             be an integer indicating the integration order of the process, while
