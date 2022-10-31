@@ -8,8 +8,6 @@
 import logging
 from typing import Optional, Tuple
 
-import pandas as pd
-
 from merlion.models.factory import ModelFactory
 from merlion.models.layers import LayeredDetector, LayeredForecaster, LayeredModelConfig
 from merlion.models.anomaly.base import DetectorBase
@@ -142,6 +140,10 @@ class DefaultForecaster(LayeredForecaster):
     config_class = DefaultForecasterConfig
 
     @property
+    def supports_exog(self):
+        return True
+
+    @property
     def granularity(self):
         return self.config.granularity
 
@@ -156,7 +158,7 @@ class DefaultForecaster(LayeredForecaster):
         kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
 
         # LGBM forecaster for multivariate data
-        if train_data.dim > 1:
+        if train_data.dim > 1 or exog_data is not None:
             self.model = ModelFactory.create(
                 "LGBMForecaster",
                 prediction_stride=1,

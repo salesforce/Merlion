@@ -55,6 +55,10 @@ Subpackages
    :maxdepth: 4
 
    merlion.models
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.spark
    merlion.transform
    merlion.post_process

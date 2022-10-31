@@ -60,6 +60,10 @@ class AutoProphet(ICAutoMLForecaster, SeasonalityLayer):
 
     config_class = AutoProphetConfig
 
+    @property
+    def supports_exog(self):
+        return True
+
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         seas = list(super().generate_theta(train_data))
         modes = ["additive", "multiplicative"]

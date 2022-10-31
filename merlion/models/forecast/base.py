@@ -76,8 +76,6 @@ class ForecasterBase(ModelBase):
     """
 
     def __init__(self, config: ForecasterConfig):
-        if self.supports_exog:
-            assert isinstance(config, ForecasterExogConfig)
         super().__init__(config)
         self.target_name = None
         self.exog_dim = None
@@ -105,13 +103,6 @@ class ForecasterBase(ModelBase):
     def require_univariate(self) -> bool:
         """
         All forecasters can work on multivariate data, since they only forecast a single target univariate.
-        """
-        return False
-
-    @property
-    def supports_exog(self):
-        """
-        Whether this forecaster supports exogenous data.
         """
         return False
 
