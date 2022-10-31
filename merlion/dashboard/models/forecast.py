@@ -67,7 +67,7 @@ class ForecastModel(ModelMixin, DataMixin):
                 param_info[name] = {"type": param.annotation, "default": value}
 
         if "max_forecast_steps" in param_info:
-            if not param_info["max_forecast_steps"]["default"]:
+            if param_info["max_forecast_steps"]["default"] == "":
                 param_info["max_forecast_steps"]["default"] = 100
         return param_info
 
