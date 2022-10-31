@@ -53,6 +53,7 @@ def plot_anoms_plotly(fig, anomaly_labels: TimeSeries):
     for k in range(len(splits) - 1):
         if y[splits[k]]:  # If splits[k] is anomalous
             fig.add_vrect(t[splits[k]], t[splits[k + 1]], line_width=0, fillcolor="#e07070", opacity=0.4)
+    return fig
 
 
 class Figure:
