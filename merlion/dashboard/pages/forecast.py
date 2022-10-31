@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import html
 from merlion.dashboard.pages.utils import create_modal, create_param_table, create_metric_table, create_empty_figure
@@ -14,24 +15,60 @@ def create_control_panel() -> html.Div:
         id="control-card",
         children=[
             html.Br(),
-            html.P("Select Data File"),
+            html.P("Select Training Data File"),
             html.Div(
                 id="forecasting-select-file-parent",
-                children=[dcc.Dropdown(id="forecasting-select-file", options=[], style={"width": "100%"})],
-            ),
-            html.Br(),
-            html.P("Training Data Percentage"),
-            html.Div(
-                [
-                    dcc.Slider(
-                        id="forecasting-training-slider",
-                        min=5,
-                        max=95,
-                        step=1,
-                        marks={t * 10: str(t * 10) for t in range(1, 10)},
-                        value=80,
+                children=[
+                    dbc.RadioItems(
+                        id="forecasting-file-radio",
+                        options=[
+                            {"label": "Single training file", "value": "single"},
+                            {"label": "Training and testing files", "value": "separate"},
+                        ],
+                        value="single",
+                        inline=True
+                    ),
+                    dcc.Dropdown(
+                        id="forecasting-select-file",
+                        options=[],
+                        style={"width": "100%"}
                     )
-                ]
+                ],
+            ),
+            dbc.Collapse(
+                html.Div(
+                    id="control-card",
+                    children=[
+                        html.Br(),
+                        html.P("Training Data Percentage"),
+                        dcc.Slider(
+                            id="forecasting-training-slider",
+                            min=5,
+                            max=95,
+                            step=1,
+                            marks={t * 10: str(t * 10) for t in range(1, 10)},
+                            value=80,
+                        ),
+                    ]),
+                id="forecasting-slider-collapse",
+                is_open=True,
+            ),
+            dbc.Collapse(
+                html.Div(
+                    id="control-card",
+                    children=[
+                        html.Br(),
+                        html.P("Select Test Data File"),
+                        html.Div(
+                            id="forecasting-select-test-file-parent",
+                            children=[
+                                dcc.Dropdown(id="forecasting-select-test-file", options=[], style={"width": "100%"})
+                            ],
+                        ),
+                    ]
+                ),
+                id="forecasting-test-file-collapse",
+                is_open=False,
             ),
             html.Br(),
             html.P("Select Target Column"),

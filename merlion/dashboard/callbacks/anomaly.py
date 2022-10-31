@@ -14,7 +14,10 @@ from merlion.dashboard.pages.utils import create_param_table, create_metric_tabl
 file_manager = FileManager()
 
 
-@callback(Output("anomaly-select-file", "options"), Input("anomaly-select-file-parent", "n_clicks"))
+@callback(
+    Output("anomaly-select-file", "options"),
+    Input("anomaly-select-file-parent", "n_clicks")
+)
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -27,7 +30,10 @@ def update_select_file_dropdown(n_clicks):
     return options
 
 
-@callback(Output("anomaly-select-test-file", "options"), Input("anomaly-select-test-file-parent", "n_clicks"))
+@callback(
+    Output("anomaly-select-test-file", "options"),
+    Input("anomaly-select-test-file-parent", "n_clicks")
+)
 def update_select_test_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -100,7 +106,10 @@ def select_algorithm_parent(n_clicks, selected_metrics):
     return options
 
 
-@callback(Output("anomaly-param-table", "children"), Input("anomaly-select-algorithm", "value"))
+@callback(
+    Output("anomaly-param-table", "children"),
+    Input("anomaly-select-algorithm", "value")
+)
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context
@@ -112,7 +121,10 @@ def select_algorithm(algorithm):
     return param_table
 
 
-@callback(Output("anomaly-select-threshold", "options"), Input("anomaly-select-threshold-parent", "n_clicks"))
+@callback(
+    Output("anomaly-select-threshold", "options"),
+    Input("anomaly-select-threshold-parent", "n_clicks")
+)
 def select_threshold_parent(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -124,7 +136,10 @@ def select_threshold_parent(n_clicks):
     return options
 
 
-@callback(Output("anomaly-threshold-param-table", "children"), Input("anomaly-select-threshold", "value"))
+@callback(
+    Output("anomaly-threshold-param-table", "children"),
+    Input("anomaly-select-threshold", "value")
+)
 def select_threshold(threshold):
     param_table = create_param_table(height=80)
     ctx = dash.callback_context
@@ -156,6 +171,8 @@ def select_threshold(threshold):
         State("anomaly-param-table", "children"),
         State("anomaly-select-threshold", "value"),
         State("anomaly-threshold-param-table", "children"),
+        State("anomaly-training-slider", "value"),
+        State("anomaly-file-radio", "value")
     ],
     running=[
         (Output("anomaly-train-btn", "disabled"), True, False),
@@ -168,18 +185,20 @@ def select_threshold(threshold):
     progress=[Output("anomaly-progressbar", "value"), Output("anomaly-progressbar", "max")],
 )
 def click_train(
-    set_progress,
-    train_clicks,
-    test_clicks,
-    modal_close,
-    train_filename,
-    test_filename,
-    columns,
-    algorithm,
-    label_column,
-    param_table,
-    threshold_class,
-    threshold_table,
+        set_progress,
+        train_clicks,
+        test_clicks,
+        modal_close,
+        train_filename,
+        test_filename,
+        columns,
+        algorithm,
+        label_column,
+        param_table,
+        threshold_class,
+        threshold_table,
+        train_percentage,
+        file_mode
 ):
     ctx = dash.callback_context
     modal_is_open = False
@@ -198,6 +217,10 @@ def click_train(
                 assert algorithm, "Please select a anomaly detector to train."
 
                 df = AnomalyModel().load_data(os.path.join(file_manager.data_directory, train_filename))
+                if file_mode == "single":
+                    n = int(int(train_percentage) * len(df) / 100)
+                    df = df.iloc[:n]
+
                 alg_params = AnomalyModel.parse_parameters(
                     param_info=AnomalyModel.get_parameter_info(algorithm),
                     params={p["Parameter"]: p["Value"] for p in param_table["props"]["data"]},
@@ -222,11 +245,17 @@ def click_train(
                 figure = dcc.Graph(figure=figure)
 
             elif prop_id == "anomaly-test-btn" and test_clicks > 0:
-                assert test_filename, "The test file is empty!"
                 assert columns, "Please select variables/metrics for analysis."
                 assert algorithm, "Please select a trained anomaly detector."
 
-                df = AnomalyModel().load_data(os.path.join(file_manager.data_directory, test_filename))
+                if file_mode == "single":
+                    df = AnomalyModel().load_data(os.path.join(file_manager.data_directory, train_filename))
+                    n = int(int(train_percentage) * len(df) / 100)
+                    df = df.iloc[n:]
+                else:
+                    assert test_filename, "The test file is empty!"
+                    df = AnomalyModel().load_data(os.path.join(file_manager.data_directory, test_filename))
+
                 model = AnomalyModel.load_model(file_manager.model_directory, algorithm)
                 if threshold_class:
                     threshold_params = (
@@ -249,3 +278,14 @@ def click_train(
         modal_content = str(error)
 
     return train_metric_table, test_metric_table, figure, modal_is_open, modal_content
+
+
+@callback(
+    Output("anomaly-slider-collapse", "is_open"),
+    Output("anomaly-test-file-collapse", "is_open"),
+    Input("anomaly-file-radio", "value"))
+def set_file_mode(value):
+    if value == "single":
+        return True, False
+    else:
+        return False, True

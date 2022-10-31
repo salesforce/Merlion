@@ -17,13 +17,32 @@ logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
-@callback(Output("forecasting-select-file", "options"), Input("forecasting-select-file-parent", "n_clicks"))
+@callback(
+    Output("forecasting-select-file", "options"),
+    Input("forecasting-select-file-parent", "n_clicks")
+)
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
         prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
         if prop_id == "forecasting-select-file-parent":
+            files = file_manager.uploaded_files()
+            for filename in files:
+                options.append({"label": filename, "value": filename})
+    return options
+
+
+@callback(
+    Output("forecasting-select-test-file", "options"),
+    Input("forecasting-select-test-file-parent", "n_clicks")
+)
+def update_select_test_file_dropdown(n_clicks):
+    options = []
+    ctx = dash.callback_context
+    if ctx.triggered:
+        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if prop_id == "forecasting-select-test-file-parent":
             files = file_manager.uploaded_files()
             for filename in files:
                 options.append({"label": filename, "value": filename})
@@ -108,6 +127,8 @@ def select_algorithm(algorithm):
         State("forecasting-select-algorithm", "value"),
         State("forecasting-param-table", "children"),
         State("forecasting-training-slider", "value"),
+        State("forecasting-select-test-file", "value"),
+        State("forecasting-file-radio", "value")
     ],
     running=[
         (Output("forecasting-train-btn", "disabled"), True, False),
@@ -119,7 +140,17 @@ def select_algorithm(algorithm):
     progress=[Output("forecasting-progressbar", "value"), Output("forecasting-progressbar", "max")],
 )
 def click_train_test(
-    set_progress, n_clicks, modal_close, filename, target_col, exog_cols, algorithm, table, train_percentage
+        set_progress,
+        n_clicks,
+        modal_close,
+        filename,
+        target_col,
+        exog_cols,
+        algorithm,
+        table,
+        train_percentage,
+        test_filename,
+        file_mode
 ):
     ctx = dash.callback_context
     modal_is_open = False
@@ -133,15 +164,20 @@ def click_train_test(
         if ctx.triggered and n_clicks > 0:
             prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
             if prop_id == "forecasting-train-btn":
-                assert filename, "Data file is empty!"
+                assert filename, "The training data file is empty!"
                 assert target_col, "Please select a target variable/metric for forecasting."
                 assert algorithm, "Please select a forecasting algorithm."
                 exog_cols = exog_cols or []
 
                 df = ForecastModel().load_data(os.path.join(file_manager.data_directory, filename))
                 assert len(df) > 20, f"The input time series length ({len(df)}) is too small."
-                n = int(int(train_percentage) * len(df) / 100)
-                train_df, test_df = df.iloc[:n], df.iloc[n:]
+                if file_mode == "single":
+                    n = int(int(train_percentage) * len(df) / 100)
+                    train_df, test_df = df.iloc[:n], df.iloc[n:]
+                else:
+                    assert test_filename, "The test file is empty!"
+                    test_df = ForecastModel().load_data(os.path.join(file_manager.data_directory, test_filename))
+                    train_df = df
 
                 params = ForecastModel.parse_parameters(
                     param_info=ForecastModel.get_parameter_info(algorithm),
@@ -161,3 +197,14 @@ def click_train_test(
         logger.error(traceback.format_exc())
 
     return train_metric_table, test_metric_table, figure, modal_is_open, modal_content
+
+
+@callback(
+    Output("forecasting-slider-collapse", "is_open"),
+    Output("forecasting-test-file-collapse", "is_open"),
+    Input("forecasting-file-radio", "value"))
+def set_file_mode(value):
+    if value == "single":
+        return True, False
+    else:
+        return False, True

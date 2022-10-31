@@ -67,7 +67,7 @@ class ForecastModel(ModelMixin, DataMixin):
                 param_info[name] = {"type": param.annotation, "default": value}
 
         if "max_forecast_steps" in param_info:
-            if param_info["max_forecast_steps"]["default"] == "":
+            if not param_info["max_forecast_steps"]["default"]:
                 param_info["max_forecast_steps"]["default"] = 100
         return param_info
 
@@ -100,7 +100,8 @@ class ForecastModel(ModelMixin, DataMixin):
 
         # Get the target_seq_index & initialize the model
         params["target_seq_index"] = columns.index(target_column)
-        model = ModelFactory.create(name=algorithm, **params)
+        model_class = ModelFactory.get_model_class(algorithm)
+        model = model_class(model_class.config_class(**params))
 
         # Handle exogenous regressors if they are supported by the model
         if isinstance(model, ForecasterExogBase) and len(exog_columns) > 0:
