@@ -266,8 +266,8 @@ def click_train_test(
                 else:
                     threshold_params = None
 
-                # train_metrics = train_metrics[0] if isinstance(train_metrics, list) else train_metrics
-                train_metric_table = create_metric_table(train_metrics[0]["props"]["data"][0])
+                train_metrics = train_metrics[0] if isinstance(train_metrics, list) else train_metrics
+                train_metric_table = create_metric_table(train_metrics["props"]["data"][0])
                 metrics, figure = AnomalyModel().test(model, df, columns, label_column, threshold_params, set_progress)
                 if metrics is not None:
                     test_metric_table = create_metric_table(metrics)
