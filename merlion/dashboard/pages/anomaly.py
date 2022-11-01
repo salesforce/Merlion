@@ -86,6 +86,7 @@ def create_control_panel() -> html.Div:
             html.Br(),
             html.P("Algorithm Setting"),
             html.Div(id="anomaly-param-table", children=[create_param_table()]),
+            html.Progress(id="anomaly-progressbar", style={"width": "100%"}),
             html.Br(),
             html.Div(
                 children=[
@@ -101,7 +102,6 @@ def create_control_panel() -> html.Div:
                 children=[dcc.Dropdown(id="anomaly-select-threshold", options=[], style={"width": "100%"})],
             ),
             html.Div(id="anomaly-threshold-param-table", children=[create_param_table(height=80)]),
-            html.Progress(id="anomaly-progressbar", style={"width": "100%"}),
             html.Br(),
             html.Div(
                 children=[html.Button(id="anomaly-test-btn", children="Update Threshold", n_clicks=0)],
