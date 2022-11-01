@@ -76,7 +76,9 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag: int = None, **kwargs):
+    def __init__(
+        self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag: int = None, **kwargs
+    ):
         """
         :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
         :param pval: p-value for deciding whether a detected seasonality is statistically significant.
@@ -117,7 +119,7 @@ class SeasonalityConfig(LayeredModelConfig):
         self._periodicity_strategy = p
 
 
-class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
+class SeasonalityLayer(AutoMLMixIn):
     """
     Seasonality Layer that uses automatically determines the seasonality of your data. Can be used directly on
     any model that implements `SeasonalityModel` class. The algorithmic idea is from the

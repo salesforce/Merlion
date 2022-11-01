@@ -12,7 +12,6 @@ import sys
 import pandas as pd
 
 from merlion.models.factory import ModelFactory
-from merlion.models.forecast.base import ForecasterExogBase
 from merlion.evaluate.forecast import ForecastEvaluator, ForecastMetric
 from merlion.utils.time_series import TimeSeries
 from merlion.dashboard.models.utils import ModelMixin, DataMixin
@@ -59,9 +58,7 @@ class ForecastModel(ModelMixin, DataMixin):
             value = param.default
             if value == param.empty:
                 value = ""
-            if name in ["max_lag", "maxlags"]:
-                param_info[name] = {"type": int, "default": value if value != "" else 5}
-            elif type(param.default) in valid_types:
+            if type(param.default) in valid_types:
                 param_info[name] = {"type": type(param.default), "default": value}
             elif param.annotation in valid_types:
                 param_info[name] = {"type": param.annotation, "default": value}

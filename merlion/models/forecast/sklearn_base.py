@@ -30,7 +30,7 @@ class SKLearnForecasterConfig(ForecasterExogConfig):
 
     def __init__(
         self,
-        maxlags: int,
+        maxlags: int = None,
         max_forecast_steps: int = None,
         target_seq_index: int = None,
         prediction_stride: int = 1,
@@ -101,6 +101,9 @@ class SKLearnForecaster(ForecasterExogBase):
         self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
     ) -> Tuple[pd.DataFrame, None]:
         fit = train_config.get("fit", True)
+        if self.maxlags is None:
+            default_maxlags = min(20, len(train_data) // 10)
+            self.config.maxlags = max(default_maxlags, self.max_forecast_steps or 1, self.prediction_stride or 1)
         max_forecast_steps = len(train_data) - self.maxlags
         if fit and self.prediction_stride > 1:  # sanity checks for seq2seq prediction
             if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
@@ -292,7 +295,7 @@ class SKLearnForecaster(ForecasterExogBase):
             prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags * (1 + (self.exog_dim or 0)) :]
         else:
             assert len(next_forecast.shape) == 2
-            prior = prior.reshape(len(prior), self.dim + (self.exog_dim or 0), -1)
+            prior = prior.reshape((len(prior), self.dim + (self.exog_dim or 0), -1))
             next_forecast = np.expand_dims(next_forecast, axis=2)
             prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags :]
         return prior.reshape(len(prior), -1)
