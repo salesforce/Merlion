@@ -22,17 +22,13 @@ def create_control_panel() -> html.Div:
                     dbc.RadioItems(
                         id="forecasting-file-radio",
                         options=[
-                            {"label": "Single training file", "value": "single"},
-                            {"label": "Training and testing files", "value": "separate"},
+                            {"label": "Single data file", "value": "single"},
+                            {"label": "Separate train/test files", "value": "separate"},
                         ],
                         value="single",
-                        inline=True
+                        inline=True,
                     ),
-                    dcc.Dropdown(
-                        id="forecasting-select-file",
-                        options=[],
-                        style={"width": "100%"}
-                    )
+                    dcc.Dropdown(id="forecasting-select-file", options=[], style={"width": "100%"}),
                 ],
             ),
             dbc.Collapse(
@@ -49,7 +45,8 @@ def create_control_panel() -> html.Div:
                             marks={t * 10: str(t * 10) for t in range(1, 10)},
                             value=80,
                         ),
-                    ]),
+                    ],
+                ),
                 id="forecasting-slider-collapse",
                 is_open=True,
             ),
@@ -65,7 +62,7 @@ def create_control_panel() -> html.Div:
                                 dcc.Dropdown(id="forecasting-select-test-file", options=[], style={"width": "100%"})
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 id="forecasting-test-file-collapse",
                 is_open=False,

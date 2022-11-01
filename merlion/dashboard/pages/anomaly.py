@@ -22,8 +22,8 @@ def create_control_panel() -> html.Div:
                     dbc.RadioItems(
                         id="anomaly-file-radio",
                         options=[
-                            {"label": "Single training file", "value": "single"},
-                            {"label": "Training and testing files", "value": "separate"},
+                            {"label": "Single data file", "value": "single"},
+                            {"label": "Separate train/test files", "value": "separate"},
                         ],
                         value="single",
                         inline=True,
