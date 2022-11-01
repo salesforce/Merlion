@@ -119,18 +119,20 @@ class AnomalyModel(ModelMixin, DataMixin):
         return plot_anoms_plotly(fig=fig.plot_plotly(title=title), anomaly_labels=labels)
 
     @staticmethod
-    def _check(df, columns, label_column):
+    def _check(df, columns, label_column, is_train):
+        kind = "train" if is_train else "test"
         if label_column and label_column not in df:
             label_column = int(label_column)
-            assert label_column in df, f"The label column {label_column} is not in the time series."
+            assert label_column in df, f"The label column {label_column} is not in the {kind} time series."
         for i in range(len(columns)):
             if columns[i] not in df:
                 columns[i] = int(columns[i])
-            assert columns[i] in df, f"The variable {columns[i]} is not in the time series."
+            assert columns[i] in df, f"The variable {columns[i]} is not in the time {kind} series."
         return columns, label_column
 
-    def train(self, algorithm, df, columns, label_column, params, threshold_params, set_progress):
-        columns, label_column = AnomalyModel._check(df, columns, label_column)
+    def train(self, algorithm, train_df, test_df, columns, label_column, params, threshold_params, set_progress):
+        columns, label_column = AnomalyModel._check(train_df, columns, label_column, is_train=True)
+        columns, label_column = AnomalyModel._check(test_df, columns, label_column, is_train=False)
 
         if threshold_params is not None:
             thres_class, thres_params = threshold_params
@@ -140,30 +142,37 @@ class AnomalyModel(ModelMixin, DataMixin):
 
         model_class = ModelFactory.get_model_class(algorithm)
         model = model_class(model_class.config_class(**params))
-        train_ts, label_ts = TimeSeries.from_pd(df[columns]), None
+        train_ts, train_labels = TimeSeries.from_pd(train_df[columns]), None
+        test_ts, test_labels = TimeSeries.from_pd(test_df[columns]), None
         if label_column is not None and label_column != "":
-            label_ts = TimeSeries.from_pd(df[[label_column]])
+            train_labels = TimeSeries.from_pd(train_df[label_column])
+            test_labels = TimeSeries.from_pd(test_df[label_column])
 
         self.logger.info(f"Training the anomaly detector: {algorithm}...")
         set_progress(("2", "10"))
 
         scores = model.train(train_data=train_ts)
-        set_progress(("7", "10"))
+        set_progress(("6", "10"))
 
         self.logger.info("Computing training performance metrics...")
-        predictions = model.post_rule(scores) if model.post_rule is not None else scores
-        metrics = AnomalyModel._compute_metrics(label_ts, predictions) if label_ts is not None else None
-        set_progress(("8", "10"))
+        train_pred = model.post_rule(scores) if model.post_rule is not None else scores
+        train_metrics = AnomalyModel._compute_metrics(train_labels, train_pred) if train_labels is not None else None
+        set_progress(("7", "10"))
+
+        self.logger.info("Getting test-time results...")
+        test_pred = model.get_anomaly_label(test_ts)
+        test_metrics = AnomalyModel._compute_metrics(test_labels, test_pred) if test_labels is not None else None
+        set_progress(("9", "10"))
 
         self.logger.info("Plotting anomaly scores...")
-        figure = AnomalyModel._plot_anomalies(model, train_ts, predictions, label_ts)
+        figure = AnomalyModel._plot_anomalies(model, test_ts, test_pred, test_labels)
         self.logger.info("Finished.")
         set_progress(("10", "10"))
 
-        return model, metrics, figure
+        return model, train_metrics, test_metrics, figure
 
     def test(self, model, df, columns, label_column, threshold_params, set_progress):
-        columns, label_column = AnomalyModel._check(df, columns, label_column)
+        columns, label_column = AnomalyModel._check(df, columns, label_column, is_train=False)
 
         threshold = None
         if threshold_params is not None:

@@ -4,14 +4,18 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-import os
 import json
+import logging
+import os
+import traceback
+
 import dash
 from dash import Input, Output, State, callback, dcc
 from merlion.dashboard.pages.data import create_stats_table, create_metric_stats_table
 from merlion.dashboard.utils.file_manager import FileManager
 from merlion.dashboard.models.data import DataAnalyzer
 
+logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
@@ -131,8 +135,10 @@ def click_run(btn_click, modal_close, model):
                 assert model, "Please select the model to download."
                 path = file_manager.get_model_download_path(model)
                 data = dcc.send_file(path)
-            except Exception as error:
+            except Exception:
+                error = traceback.format_exc()
                 modal_is_open = True
-                modal_content = str(error)
+                modal_content = error
+                logger.error(error)
 
     return data, modal_is_open, modal_content

@@ -25,14 +25,10 @@ def create_control_panel() -> html.Div:
                             {"label": "Single training file", "value": "single"},
                             {"label": "Training and testing files", "value": "separate"},
                         ],
-                        value="separate",
-                        inline=True
+                        value="single",
+                        inline=True,
                     ),
-                    dcc.Dropdown(
-                        id="anomaly-select-file",
-                        options=[],
-                        style={"width": "100%"}
-                    )
+                    dcc.Dropdown(id="anomaly-select-file", options=[], style={"width": "100%"}),
                 ],
             ),
             dbc.Collapse(
@@ -47,9 +43,10 @@ def create_control_panel() -> html.Div:
                             max=95,
                             step=1,
                             marks={t * 10: str(t * 10) for t in range(1, 10)},
-                            value=80,
+                            value=50,
                         ),
-                    ]),
+                    ],
+                ),
                 id="anomaly-slider-collapse",
                 is_open=False,
             ),
@@ -61,11 +58,9 @@ def create_control_panel() -> html.Div:
                         html.P("Select Test Data File"),
                         html.Div(
                             id="anomaly-select-test-file-parent",
-                            children=[
-                                dcc.Dropdown(id="anomaly-select-test-file", options=[], style={"width": "100%"})
-                            ],
+                            children=[dcc.Dropdown(id="anomaly-select-test-file", options=[], style={"width": "100%"})],
                         ),
-                    ]
+                    ],
                 ),
                 id="anomaly-test-file-collapse",
                 is_open=True,
@@ -92,6 +87,14 @@ def create_control_panel() -> html.Div:
             html.P("Algorithm Setting"),
             html.Div(id="anomaly-param-table", children=[create_param_table()]),
             html.Br(),
+            html.Div(
+                children=[
+                    html.Button(id="anomaly-train-btn", children="Train", n_clicks=0),
+                    html.Button(id="anomaly-cancel-btn", children="Cancel", style={"margin-left": "15px"}),
+                ],
+                style={"textAlign": "center"},
+            ),
+            html.Br(),
             html.P("Threshold Setting"),
             html.Div(
                 id="anomaly-select-threshold-parent",
@@ -101,11 +104,7 @@ def create_control_panel() -> html.Div:
             html.Progress(id="anomaly-progressbar", style={"width": "100%"}),
             html.Br(),
             html.Div(
-                children=[
-                    html.Button(id="anomaly-train-btn", children="Train", n_clicks=0),
-                    html.Button(id="anomaly-test-btn", children="Test", n_clicks=0, style={"margin-left": "15px"}),
-                    html.Button(id="anomaly-cancel-btn", children="Cancel", style={"margin-left": "15px"}),
-                ],
+                children=[html.Button(id="anomaly-test-btn", children="Update Threshold", n_clicks=0)],
                 style={"textAlign": "center"},
             ),
             create_modal(

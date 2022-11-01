@@ -7,6 +7,7 @@
 import logging
 import os
 import traceback
+
 import dash
 from dash import Input, Output, State, dcc, callback
 from merlion.dashboard.utils.file_manager import FileManager
@@ -17,10 +18,7 @@ logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
-@callback(
-    Output("forecasting-select-file", "options"),
-    Input("forecasting-select-file-parent", "n_clicks")
-)
+@callback(Output("forecasting-select-file", "options"), Input("forecasting-select-file-parent", "n_clicks"))
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -33,10 +31,7 @@ def update_select_file_dropdown(n_clicks):
     return options
 
 
-@callback(
-    Output("forecasting-select-test-file", "options"),
-    Input("forecasting-select-test-file-parent", "n_clicks")
-)
+@callback(Output("forecasting-select-test-file", "options"), Input("forecasting-select-test-file-parent", "n_clicks"))
 def update_select_test_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
@@ -128,7 +123,7 @@ def select_algorithm(algorithm):
         State("forecasting-param-table", "children"),
         State("forecasting-training-slider", "value"),
         State("forecasting-select-test-file", "value"),
-        State("forecasting-file-radio", "value")
+        State("forecasting-file-radio", "value"),
     ],
     running=[
         (Output("forecasting-train-btn", "disabled"), True, False),
@@ -140,17 +135,17 @@ def select_algorithm(algorithm):
     progress=[Output("forecasting-progressbar", "value"), Output("forecasting-progressbar", "max")],
 )
 def click_train_test(
-        set_progress,
-        n_clicks,
-        modal_close,
-        filename,
-        target_col,
-        exog_cols,
-        algorithm,
-        table,
-        train_percentage,
-        test_filename,
-        file_mode
+    set_progress,
+    n_clicks,
+    modal_close,
+    filename,
+    target_col,
+    exog_cols,
+    algorithm,
+    table,
+    train_percentage,
+    test_filename,
+    file_mode,
 ):
     ctx = dash.callback_context
     modal_is_open = False
@@ -191,10 +186,11 @@ def click_train_test(
                 test_metric_table = create_metric_table(test_metrics)
                 figure = dcc.Graph(figure=figure)
 
-    except Exception as error:
+    except Exception:
+        error = traceback.format_exc()
         modal_is_open = True
-        modal_content = str(error)
-        logger.error(traceback.format_exc())
+        modal_content = error
+        logger.error(error)
 
     return train_metric_table, test_metric_table, figure, modal_is_open, modal_content
 
@@ -202,7 +198,8 @@ def click_train_test(
 @callback(
     Output("forecasting-slider-collapse", "is_open"),
     Output("forecasting-test-file-collapse", "is_open"),
-    Input("forecasting-file-radio", "value"))
+    Input("forecasting-file-radio", "value"),
+)
 def set_file_mode(value):
     if value == "single":
         return True, False
