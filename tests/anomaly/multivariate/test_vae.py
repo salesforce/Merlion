@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -44,6 +44,7 @@ class TestVAE(unittest.TestCase):
         self.train_df, self.test_df, self.test_labels = get_train_test_splits(df, metadata, 5000)
 
         logger.info("Training model...\n")
+        print("testing logging")
         train_ts = TimeSeries.from_pd(self.train_df)
         self.model.train(train_ts)
 
