@@ -48,7 +48,7 @@ def create_control_panel() -> html.Div:
                     ],
                 ),
                 id="anomaly-slider-collapse",
-                is_open=False,
+                is_open=True,
             ),
             dbc.Collapse(
                 html.Div(
@@ -63,7 +63,7 @@ def create_control_panel() -> html.Div:
                     ],
                 ),
                 id="anomaly-test-file-collapse",
-                is_open=True,
+                is_open=False,
             ),
             html.Br(),
             html.P("Select Feature Column(s)"),
