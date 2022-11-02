@@ -424,12 +424,17 @@ class BOCPD(ForecastingDetectorBase):
             candidate = copy.deepcopy(self)
             candidate.config.change_kind = change_kind
             train_scores = candidate._train(train_data, train_config=train_config)
-            log_likelihood = logsumexp([p.logp for p in candidate.posterior_beam]).item()
-            candidates.append((log_likelihood, candidate, train_scores))
-            logger.info(f"Change kind {change_kind.name} has log likelihood {log_likelihood:.3f}.")
+            nll = -logsumexp([p.logp for p in candidate.posterior_beam]).item()
+            n_params = sum(model.n_params for t, model in candidate.pw_model)
+            aicc = 2 * n_params + 2 * nll + (2 * n_params * (n_params + 1)) / max(1, len(train_scores) - n_params - 1)
+            logger.info(
+                f"Change kind {change_kind.name} has AICc {aicc:.3f} "
+                f"(NLL={nll:.3f}, n_params={n_params}, n_data={len(train_scores)})."
+            )
+            candidates.append((aicc, candidate, train_scores))
 
         # Choose the model with the best log likelihood
-        i_best = np.argmax([candidate[0] for candidate in candidates])
+        i_best = np.argmin([candidate[0] for candidate in candidates])
         log_likelihood, best, train_scores = candidates[i_best]
         self.__setstate__(best.__getstate__())
         logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
