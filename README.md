@@ -51,22 +51,30 @@ Merlion's key features are
 -  Easy-to-use ensembles that combine the outputs of multiple models to achieve more robust performance. 
 -  Flexible evaluation pipelines that simulate the live deployment & re-training of a model in production,
    and evaluate performance on both forecasting and anomaly detection.
--  Native support for visualizing model predictions.
+-  Native support for visualizing model predictions, including with a clickable visual UI.
 
 The table below provides a visual overview of how Merlion's key features compare to other libraries for time series
 anomaly detection and/or forecasting.
 
-|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
-:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :----: | :---:
-| Univariate Forecasting | ✅      | ✅      | | ✅    | ✅          | ✅       |      |      |✅        | ✅ 
-| Multivariate Forecasting | ✅ | | | ✅ | ✅ | ✅ | | | | |
-| Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | | | ✅ | ✅ | ✅ | ✅ | 
-| Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | | | ✅ | ✅ | | | |
-| Change Point Detection | ✅ | ✅ | ✅ | ✅ | | | | | ✅ | |
-| AutoML | ✅ | | | ✅ | | | | | ✅ | | ✅ 
-| Ensembles | ✅ | | | | | | ✅  | | | | 
-| Benchmarking | ✅ | | | | | ✅ | | | | | 
-| Visualization | ✅ | ✅ | | ✅ | | | | | ✅ | ✅ | | 
+|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
+:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
+| Univariate Forecasting | ✅ | ✅| | ✅ | ✅ | ✅ | ✅ | | |✅| ✅ 
+| Multivariate Forecasting | ✅ | | | ✅ | ✅| ✅ | ✅ | | | | |
+| Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | | | | ✅ | ✅ | ✅ | ✅ | 
+| Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | | | | ✅ | ✅ | | | |
+| AutoML | ✅ | | | ✅ | | | | | | | ✅ | | ✅ 
+| Ensembles | ✅ | | | ✅ | | | | | ✅ | | | | 
+| Benchmarking | ✅ | | | | ✅ | ✅ | | | | | 
+| Visualization | ✅ | ✅ | | ✅ | | | | | | ✅ | ✅ | | 
+
+The following features are new in Merlion 2.0:
+
+|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
+:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
+| Exogenous Regressors   | ✅ | ✅ | | | ✅ |  | | | | ✅ | ✅
+| Change Point Detection | ✅ | ✅ | ✅ | ✅ | | | | | | ✅ |
+| Clickable Visual UI    | ✅ | | | | | | | | | |
+| Distributed Backend    | ✅ | | | | | ✅ | | | | | 
 
 ## Installation
 
