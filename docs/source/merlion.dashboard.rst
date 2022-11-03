@@ -3,11 +3,7 @@ merlion.dashboard package
 
 This package includes a GUI dashboard app for Merlion, providing a convenient way to train
 and test a time series forecasting or anomaly detection model supported in Merlion. To launch
-the dashboard app, type the following command:
-
-.. code-block:: bash
-
-    python -m merlion.dashboard
+the dashboard app, type the following command: `python -m merlion.dashboard`.
 
 It will launch a Dash app on http://localhost:8050/ by default. After opening the link, the app
 will create a folder `merlion` in your home directory. This folder includes the datasets you want to
