@@ -27,16 +27,14 @@ class DataAnalyzer(DataMixin):
             "@global": OrderedDict(
                 {
                     "NO. of Variables": len(df.columns),
-                    "Time Series Length": df.shape[0],
+                    "Time Series Length": len(df),
                     "Has NaNs": bool(df.isnull().values.any()),
                 }
             ),
             "@columns": list(df.columns),
         }
         for col in df.columns:
-            info = df[col].describe()
-            data = OrderedDict(zip(info.index.values, info.values))
-            stats[col] = data
+            stats[col] = df[col].describe().to_dict(into=OrderedDict)
         return stats
 
     @staticmethod

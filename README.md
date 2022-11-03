@@ -226,7 +226,7 @@ msis = ForecastMetric.MSIS.value(ground_truth=test_data, predict=test_pred,
 print(f"sMAPE: {smape:.4f}, MSIS: {msis:.4f}")
 ```
 ```
-sMAPE: 6.2855, MSIS: 19.1584
+sMAPE: 4.1944, MSIS: 18.9331
 ```
 
 ## Evaluation and Benchmarking

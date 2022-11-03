@@ -43,12 +43,12 @@ def data_table(df, n=1000, page_size=10):
 def plot_timeseries(ts, figure_height=500):
     traces = []
     color_list = plotly.colors.qualitative.Dark24
-    for i in range(ts.shape[1]):
-        v = ts[[ts.columns[i]]]
-        color = color_list[i % len(color_list)]
-        traces.append(
-            go.Scatter(name=ts.columns[i], x=v.index, y=v.values.flatten(), mode="lines", line=dict(color=color))
-        )
+    for i, col in enumerate(ts.columns):
+        v = ts[col]
+        if v.dtype in ["int", "float", "bool"]:
+            v = v.astype(float)
+            color = color_list[i % len(color_list)]
+            traces.append(go.Scatter(name=col, x=v.index, y=v.values.flatten(), mode="lines", line=dict(color=color)))
 
     layout = dict(
         showlegend=True,
