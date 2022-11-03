@@ -7,7 +7,7 @@
 """
     Base class for Deep Learning Models
 """
-from absc import abstractmethod
+
 import copy
 import logging
 from typing import List, Optional, Tuple, Union
@@ -15,6 +15,17 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
+from abc import abstractmethod
+
+try:
+    import torch
+    import torch.nn as nn
+except ImportError as e:
+    err = (
+        "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[deep-learning]` or "
+        "`pip install `salesforce-merlion[all]`"
+    )
+    raise ImportError(str(e) + ". " + err)
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
@@ -42,8 +53,9 @@ class DeepConfig(Config):
 
 
 class TorchModel(nn.Module):
-    def __init__(self):
-        pass
+    def __init__(self, config: DeepConfig):
+        super(TorchModel, self).__init__()
+        self.config = config
 
     @abstractmethod
     def forward(self, x):
@@ -59,19 +71,24 @@ class DeepModelBase(ModelBase):
     Base class for a deep learning model
     """
 
-    def __init__(self, config):
-        pass
+    config_class = DeepConfig
+    deep_model = None
 
-    def create_model(self, train_data):
-        pass
+    def __init__(self, config: DeepConfig):
+        super().__init__(config)
+        self.create_model()
 
-    # FIXME: this is a function need to be overwritten
-    def _train(self):
-        pass
+    @abstractmethod
+    def create_model(self):
+        raise NotImplementedError
+
+    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+        return None
 
     """
         training loop given a ts dataset
     """
 
-    def _deep_train_loop(self, ts_dataset):
-        pass
+    @abstractmethod
+    def _deep_train_loop(self, data_loader):
+        raise NotImplementedError
