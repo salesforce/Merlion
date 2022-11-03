@@ -30,8 +30,8 @@ You can install ``merlion`` from PyPI by calling ``pip install salesforce-merlio
 cloning the Merlion `repo <https://github.com/salesforce/Merlion>`__ and calling ``pip install Merlion/``, or
 ``pip install -e Merlion/`` to install in editable mode. You may install additional optional dependencies via
 ``pip install salesforce-merlion[all]``,  or by calling ``pip install "Merlion/[all]"`` if installing from source.
-Individually, the optional dependencies include ``plot`` for interactive plots
-and ``deep-learning`` for all deep learning models.
+Individually, the optional dependencies include ``dashboard`` for a GUI dashboard,
+``spark`` for a distributed computation backend with PySpark, and ``deep-learning`` for all deep learning models.
 
 To install the data loading package ``ts_datasets``, clone the Merlion
 `repo <https://github.com/salesforce/Merlion>`__ and call ``pip install -e Merlion/ts_datasets/``. This package must be
@@ -59,7 +59,12 @@ Note the following external dependencies:
 
 Getting Started
 ---------------
-To get started, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
+The easiest way to get started is to install Merlion with the optional `dashboard` dependency
+(i.e. call ``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from
+the command line to start up the GUI :py:mod:`dashboard <merlion.dashboard>`.
+This dashboard provides a great way to easily experiment with many models on your own custom datasets.
+
+For code resources, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
 and `forecasting <tutorials/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
 main data structure for representing time series `here <tutorials/TimeSeries>`.
 
