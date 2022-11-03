@@ -64,6 +64,7 @@ Subpackages
    merlion.post_process
    merlion.evaluate
    merlion.utils
+   merlion.dashboard
 
 Submodules
 ----------
