@@ -74,7 +74,15 @@ def create_control_panel() -> html.Div:
                 children=[dcc.Dropdown(id="forecasting-select-target", options=[], style={"width": "100%"})],
             ),
             html.Br(),
-            html.P("Select Exogenous Columns (Known Ahead of Time)"),
+            html.P("Select Other Features (Optional)"),
+            html.Div(
+                id="forecasting-select-features-parent",
+                children=[
+                    dcc.Dropdown(id="forecasting-select-features", options=[], multi=True, style={"width": "100%"})
+                ],
+            ),
+            html.Br(),
+            html.P("Select Exogenous Variables (Optional; Known A Priori)"),
             html.Div(
                 id="forecasting-select-exog-parent",
                 children=[dcc.Dropdown(id="forecasting-select-exog", options=[], multi=True, style={"width": "100%"})],

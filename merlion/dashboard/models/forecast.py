@@ -70,28 +70,22 @@ class ForecastModel(ModelMixin, DataMixin):
 
     @staticmethod
     def _compute_metrics(evaluator, ts, predictions):
-        metrics = {}
-        for metric_name, metric in [
-            ("MAE", ForecastMetric.MAE),
-            ("MARRE", ForecastMetric.MAE),
-            ("RMSE", ForecastMetric.RMSE),
-            ("sMAPE", ForecastMetric.sMAPE),
-            ("RMSPE", ForecastMetric.RMSPE),
-        ]:
-            m = evaluator.evaluate(ground_truth=ts, predict=predictions, metric=metric)
-            metrics[metric_name] = round(m, 5)
-        return metrics
+        return {
+            m: round(evaluator.evaluate(ground_truth=ts, predict=predictions, metric=ForecastMetric[m]), 5)
+            for m in ["MAE", "MARRE", "RMSE", "sMAPE", "RMSPE"]
+        }
 
-    def train(self, algorithm, train_df, test_df, target_column, exog_columns, params, set_progress):
+    def train(self, algorithm, train_df, test_df, target_column, feature_columns, exog_columns, params, set_progress):
         if target_column not in train_df:
             target_column = int(target_column)
         assert target_column in train_df, f"The target variable {target_column} is not in the time series."
+        feature_columns = [int(c) if c not in train_df else c for c in feature_columns]
         exog_columns = [int(c) if c not in train_df else c for c in exog_columns]
         for exog_column in exog_columns:
             assert exog_column in train_df, f"Exogenous variable {exog_column} is not in the time series."
 
-        # Re-arrange dataframe so that exogenous columns are last
-        columns = [c for c in train_df.columns if c not in exog_columns] + exog_columns
+        # Re-arrange dataframe so that the target column is first, and exogenous columns are last
+        columns = [target_column] + feature_columns + exog_columns
         train_df = train_df.loc[:, columns]
         test_df = test_df.loc[:, columns]
 
@@ -103,8 +97,8 @@ class ForecastModel(ModelMixin, DataMixin):
         # Handle exogenous regressors if they are supported by the model
         if model.supports_exog and len(exog_columns) > 0:
             exog_ts = TimeSeries.from_pd(pd.concat((train_df.loc[:, exog_columns], test_df.loc[:, exog_columns])))
-            train_df = train_df.loc[:, [c for c in columns if c not in exog_columns]]
-            test_df = test_df.loc[:, [c for c in columns if c not in exog_columns]]
+            train_df = train_df.loc[:, [target_column] + feature_columns]
+            test_df = test_df.loc[:, [target_column] + feature_columns]
         else:
             exog_ts = None
 

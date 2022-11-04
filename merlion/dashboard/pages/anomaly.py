@@ -68,8 +68,8 @@ def create_control_panel() -> html.Div:
             html.Br(),
             html.P("Select Feature Column(s)"),
             html.Div(
-                id="anomaly-select-metric-parent",
-                children=[dcc.Dropdown(id="anomaly-select-metric", options=[], multi=True, style={"width": "100%"})],
+                id="anomaly-select-features-parent",
+                children=[dcc.Dropdown(id="anomaly-select-features", options=[], multi=True, style={"width": "100%"})],
             ),
             html.Br(),
             html.P("Select Label Column for Evaluation (Optional)"),
@@ -102,7 +102,6 @@ def create_control_panel() -> html.Div:
                 children=[dcc.Dropdown(id="anomaly-select-threshold", options=[], style={"width": "100%"})],
             ),
             html.Div(id="anomaly-threshold-param-table", children=[create_param_table(height=80)]),
-            html.Br(),
             html.Div(
                 children=[html.Button(id="anomaly-test-btn", children="Update Threshold", n_clicks=0)],
                 style={"textAlign": "center"},

@@ -102,14 +102,9 @@ class AnomalyModel(ModelMixin, DataMixin):
     @staticmethod
     def _compute_metrics(labels, predictions):
         metrics = {}
-        for metric_name, metric in [
-            ("Precision", TSADMetric.Precision),
-            ("Recall", TSADMetric.Recall),
-            ("F1", TSADMetric.F1),
-            ("MeanTimeToDetect", TSADMetric.MeanTimeToDetect),
-        ]:
+        for metric in [TSADMetric.Precision, TSADMetric.Recall, TSADMetric.F1, TSADMetric.MeanTimeToDetect]:
             m = metric.value(ground_truth=labels, predict=predictions)
-            metrics[metric_name] = round(m, 5) if metric_name != "MeanTimeToDetect" else str(m)
+            metrics[metric.name] = round(m, 5) if metric.name != "MeanTimeToDetect" else str(m)
         return metrics
 
     @staticmethod

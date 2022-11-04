@@ -47,9 +47,13 @@ def update_select_test_file_dropdown(n_clicks):
 @callback(
     Output("forecasting-select-target", "options"),
     Input("forecasting-select-target-parent", "n_clicks"),
-    State("forecasting-select-file", "value"),
+    [
+        State("forecasting-select-file", "value"),
+        State("forecasting-select-features", "value"),
+        State("forecasting-select-exog", "value"),
+    ],
 )
-def select_target(n_clicks, filename):
+def select_target(n_clicks, filename, feat_names, exog_names):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
@@ -58,16 +62,43 @@ def select_target(n_clicks, filename):
             if filename is not None:
                 file_path = os.path.join(file_manager.data_directory, filename)
                 df = ForecastModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns]
+                forbidden = (feat_names or []) + (exog_names or [])
+                options += [{"label": s, "value": s} for s in df.columns if s not in forbidden]
+    return options
+
+
+@callback(
+    Output("forecasting-select-features", "options"),
+    Input("forecasting-select-features-parent", "n_clicks"),
+    [
+        State("forecasting-select-file", "value"),
+        State("forecasting-select-target", "value"),
+        State("forecasting-select-exog", "value"),
+    ],
+)
+def select_features(n_clicks, filename, target_name, exog_names):
+    options = []
+    ctx = dash.callback_context
+    if ctx.triggered:
+        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if prop_id == "forecasting-select-features-parent":
+            if filename is not None and target_name is not None:
+                file_path = os.path.join(file_manager.data_directory, filename)
+                df = ForecastModel().load_data(file_path, nrows=2)
+                options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (exog_names or [])]
     return options
 
 
 @callback(
     Output("forecasting-select-exog", "options"),
     Input("forecasting-select-exog-parent", "n_clicks"),
-    [State("forecasting-select-file", "value"), State("forecasting-select-target", "value")],
+    [
+        State("forecasting-select-file", "value"),
+        State("forecasting-select-target", "value"),
+        State("forecasting-select-features", "value"),
+    ],
 )
-def select_exog(n_clicks, filename, target_name):
+def select_exog(n_clicks, filename, target_name, feat_names):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
@@ -76,7 +107,7 @@ def select_exog(n_clicks, filename, target_name):
             if filename is not None and target_name is not None:
                 file_path = os.path.join(file_manager.data_directory, filename)
                 df = ForecastModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns if s != target_name]
+                options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (feat_names or [])]
     return options
 
 
@@ -118,6 +149,7 @@ def select_algorithm(algorithm):
     [
         State("forecasting-select-file", "value"),
         State("forecasting-select-target", "value"),
+        State("forecasting-select-features", "value"),
         State("forecasting-select-exog", "value"),
         State("forecasting-select-algorithm", "value"),
         State("forecasting-param-table", "children"),
@@ -140,6 +172,7 @@ def click_train_test(
     modal_close,
     filename,
     target_col,
+    feature_cols,
     exog_cols,
     algorithm,
     table,
@@ -162,6 +195,7 @@ def click_train_test(
                 assert filename, "The training data file is empty!"
                 assert target_col, "Please select a target variable/metric for forecasting."
                 assert algorithm, "Please select a forecasting algorithm."
+                feature_cols = feature_cols or []
                 exog_cols = exog_cols or []
 
                 df = ForecastModel().load_data(os.path.join(file_manager.data_directory, filename))
@@ -179,7 +213,7 @@ def click_train_test(
                     params={p["Parameter"]: p["Value"] for p in table["props"]["data"] if p["Parameter"]},
                 )
                 model, train_metrics, test_metrics, figure = ForecastModel().train(
-                    algorithm, train_df, test_df, target_col, exog_cols, params, set_progress
+                    algorithm, train_df, test_df, target_col, feature_cols, exog_cols, params, set_progress
                 )
                 ForecastModel.save_model(file_manager.model_directory, model, algorithm)
                 train_metric_table = create_metric_table(train_metrics)

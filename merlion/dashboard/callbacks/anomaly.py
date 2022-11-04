@@ -45,16 +45,20 @@ def update_select_test_file_dropdown(n_clicks):
 
 
 @callback(
-    Output("anomaly-select-metric", "options"),
-    Input("anomaly-select-metric-parent", "n_clicks"),
-    [State("anomaly-select-file", "value"), State("anomaly-select-test-file", "value")],
+    Output("anomaly-select-features", "options"),
+    Input("anomaly-select-features-parent", "n_clicks"),
+    [
+        State("anomaly-select-file", "value"),
+        State("anomaly-select-test-file", "value"),
+        State("anomaly-select-label", "value"),
+    ],
 )
-def select_metric(n_clicks, train_file, test_file):
+def select_features(n_clicks, train_file, test_file, label_name):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
         prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-metric-parent":
+        if prop_id == "anomaly-select-features-parent":
             file_path = None
             if train_file:
                 file_path = os.path.join(file_manager.data_directory, train_file)
@@ -62,16 +66,20 @@ def select_metric(n_clicks, train_file, test_file):
                 file_path = os.path.join(file_manager.data_directory, test_file)
             if file_path:
                 df = AnomalyModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns]
+                options += [{"label": s, "value": s} for s in df.columns if s != label_name]
     return options
 
 
 @callback(
     Output("anomaly-select-label", "options"),
     Input("anomaly-select-label-parent", "n_clicks"),
-    [State("anomaly-select-file", "value"), State("anomaly-select-test-file", "value")],
+    [
+        State("anomaly-select-file", "value"),
+        State("anomaly-select-test-file", "value"),
+        State("anomaly-select-features", "value"),
+    ],
 )
-def select_label(n_clicks, train_file, test_file):
+def select_label(n_clicks, train_file, test_file, features):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
@@ -84,14 +92,14 @@ def select_label(n_clicks, train_file, test_file):
                 file_path = os.path.join(file_manager.data_directory, test_file)
             if file_path:
                 df = AnomalyModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns]
+                options += [{"label": s, "value": s} for s in df.columns if s not in (features or [])]
     return options
 
 
 @callback(
     Output("anomaly-select-algorithm", "options"),
     Input("anomaly-select-algorithm-parent", "n_clicks"),
-    State("anomaly-select-metric", "value"),
+    State("anomaly-select-features", "value"),
 )
 def select_algorithm_parent(n_clicks, selected_metrics):
     options = []
@@ -154,7 +162,7 @@ def select_threshold(threshold):
     [
         State("anomaly-select-file", "value"),
         State("anomaly-select-test-file", "value"),
-        State("anomaly-select-metric", "value"),
+        State("anomaly-select-features", "value"),
         State("anomaly-select-algorithm", "value"),
         State("anomaly-select-label", "value"),
         State("anomaly-param-table", "children"),
