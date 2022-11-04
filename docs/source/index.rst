@@ -59,7 +59,7 @@ Note the following external dependencies:
 
 Getting Started
 ---------------
-The easiest way to get started is to install Merlion with the optional `dashboard` dependency
+The easiest way to get started is to install Merlion with the optional ``dashboard`` dependency
 (i.e. call ``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from
 the command line to start up the GUI :py:mod:`dashboard <merlion.dashboard>`.
 This dashboard provides a great way to easily experiment with many models on your own custom datasets.
