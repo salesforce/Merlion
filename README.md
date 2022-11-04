@@ -108,10 +108,12 @@ and presents experimental results on time series anomaly detection & forecasting
 time series.
 
 ## Getting Started
-The easiest way to get started is to install Merlion with the optional `dashboard` dependency 
-(i.e. call ``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from
-the command line to start up the GUI [dashboard](https://opensource.salesforce.com/Merlion/merlion.dashboard.html).
-This dashboard provides a great way to easily experiment with many models on your own custom dataset.
+The easiest way to get started is to use the GUI web-based
+[dashboard](https://opensource.salesforce.com/Merlion/merlion.dashboard.html).
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
+``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line.
+You can view the dashboard at http://localhost:8050.
 Below, we show some screenshots of the dashboard for both anomaly detection and forecasting.
 
 ![anomaly dashboard](https://github.com/salesforce/Merlion/raw/main/docs/source/_static/dashboard_anomaly.png)
@@ -122,6 +124,7 @@ To help you get started with using Merlion in your own code, we provide below so
 default models for both anomaly detection and forecasting.
 
 ### Anomaly Detection
+Here, we show the code to replicate the results from the anomaly detection dashboard above.
 We begin by importing Merlion’s `TimeSeries` class and the data loader for the Numenta Anomaly Benchmark `NAB`.
 We can then divide a specific time series from this dataset into training and testing splits.
 
@@ -175,6 +178,7 @@ Precision: 0.6667, Recall: 0.6667, F1: 0.6667
 Mean Time To Detect: 1 days 10:30:00
 ```
 ### Forecasting
+Here, we show the code to replicate the results from the forecasting dashboard above.
 We begin by importing Merlion’s `TimeSeries` class and the data loader for the `M4` dataset. We can then divide a
 specific time series from this dataset into training and testing splits.
 

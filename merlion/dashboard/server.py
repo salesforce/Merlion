@@ -32,8 +32,8 @@ app.layout = html.Div(
         dcc.Location(id="url", refresh=False),
         html.Div(id="page-content"),
         dcc.Store(id="data-state"),
-        dcc.Store(id="forecasting-state"),
         dcc.Store(id="anomaly-state"),
+        dcc.Store(id="forecasting-state"),
     ]
 )
 server = app.server
@@ -47,9 +47,9 @@ def _display_page(pathname):
 @app.callback(
     Output("plots", "children"),
     Input("tabs", "value"),
-    [State("data-state", "data"), State("forecasting-state", "data"), State("anomaly-state", "data")],
+    [State("data-state", "data"), State("anomaly-state", "data"), State("forecasting-state", "data")],
 )
-def _click_tab(tab, data_state, forecasting_state, anomaly_state):
+def _click_tab(tab, data_state, anomaly_state, forecasting_state):
     if tab == "file-manager":
         return create_data_layout()
     elif tab == "forecasting":

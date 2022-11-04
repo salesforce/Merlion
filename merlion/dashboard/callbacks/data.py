@@ -85,8 +85,7 @@ def click_run(btn_click, modal_close, filename, data):
                 modal_is_open = True
                 modal_content = str(error)
 
-    return stats_table, json.dumps(stats, cls=DefaultEncoder), \
-           data_table, data_figure, modal_is_open, modal_content
+    return stats_table, json.dumps(stats, cls=DefaultEncoder), data_table, data_figure, modal_is_open, modal_content
 
 
 @callback(Output("select-column", "options"), Input("select-column-parent", "n_clicks"), State("data-state", "data"))

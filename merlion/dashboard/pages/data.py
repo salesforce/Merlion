@@ -56,7 +56,7 @@ def create_control_panel() -> html.Div:
             html.P("Upload Time Series Data File"),
             dcc.Upload(
                 id="upload-data",
-                children=html.Div(["Drag and Drop or Select a File"]),
+                children=html.Div(["Drag & Drop or Select a File"]),
                 style={
                     "height": "50px",
                     "lineHeight": "50px",
@@ -75,7 +75,7 @@ def create_control_panel() -> html.Div:
             html.P("Overall Stats"),
             html.Div(id="data-stats-table", children=[create_metric_stats_table()]),
             html.Br(),
-            html.P("Metric/Variable Stats"),
+            html.P("Per-Variable Stats"),
             html.Div(
                 id="select-column-parent",
                 children=[dcc.Dropdown(id="select-column", options=[], style={"width": "100%"})],

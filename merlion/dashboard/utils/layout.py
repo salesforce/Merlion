@@ -38,16 +38,16 @@ def create_layout() -> html.Div:
         dcc.Tab(label="File Manager", value="file-manager", style=tab_style, selected_style=tab_selected_style)
     )
     values.append("file-manager")
-    # Forecasting tab
-    children.append(
-        dcc.Tab(label="Forecasting", value="forecasting", style=tab_style, selected_style=tab_selected_style)
-    )
-    values.append("forecasting")
     # Anomaly detection tab
     children.append(
         dcc.Tab(label="Anomaly Detection", value="anomaly", style=tab_style, selected_style=tab_selected_style)
     )
     values.append("anomaly")
+    # Forecasting tab
+    children.append(
+        dcc.Tab(label="Forecasting", value="forecasting", style=tab_style, selected_style=tab_selected_style)
+    )
+    values.append("forecasting")
 
     layout = html.Div(
         id="app-content",

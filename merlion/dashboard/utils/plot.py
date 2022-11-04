@@ -18,7 +18,7 @@ def data_table(df, n=1000, page_size=10):
         data = []
         for i in range(df.shape[0]):
             d = {c: v for c, v in zip(df.columns, df.values[i])}
-            d.update({"Index": df.index.values[i]})
+            d.update({"Index": df.index[i]})
             data.append(d)
 
         table = dash_table.DataTable(

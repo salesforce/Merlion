@@ -59,10 +59,11 @@ Note the following external dependencies:
 
 Getting Started
 ---------------
-The easiest way to get started is to install Merlion with the optional ``dashboard`` dependency
-(i.e. call ``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from
-the command line to start up the GUI :py:mod:`dashboard <merlion.dashboard>`.
-This dashboard provides a great way to easily experiment with many models on your own custom datasets.
+The easiest way to get started is to use the GUI web-based `dashboard <merlion.dashboard>`.
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
+``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line.
+You can view the dashboard at http://localhost:8050.
 
 For code resources, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
 and `forecasting <tutorials/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
