@@ -165,16 +165,9 @@ class SKLearnForecaster(ForecasterExogBase):
             else:
                 self._last_train_window = train_data.iloc[-self.maxlags :]
 
-        # forecasting
-        if self.dim == 1:
-            pred = self._hybrid_forecast(inputs, steps=self.prediction_stride)
-        elif self.prediction_stride == 1:
-            pred = self._autoregressive_forecast(inputs, steps=1)
-        else:
-            pred = self.model.predict(inputs)
-
-        # since the model may predict multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0], index=labels_ts[:, 0], columns=[self.target_name]), None
+        # forecast for just the next step
+        pred = self._predict(prev=inputs, exog_data=exog_data, n_steps=1)[:, 0]
+        return pd.DataFrame(pred, index=labels_ts[:, 0], columns=[self.target_name]), None
 
     def _forecast_with_exog(
         self,
@@ -205,18 +198,18 @@ class SKLearnForecaster(ForecasterExogBase):
         prev = np.atleast_2d(self._get_immedidate_forecasting_prior(time_series_prev))
 
         # TODO: allow model to use timestamps
-        n = len(time_stamps)
-        if self.dim == 1:
-            yhat = self._hybrid_forecast(prev, exog_data=exog_data, steps=n)
-        elif self.prediction_stride == 1:
-            yhat = self._autoregressive_forecast(prev, exog_data=exog_data, steps=n)
-        else:
-            yhat = self.model.predict(prev)
-
-        forecast = pd.DataFrame(yhat.flatten()[:n], index=to_pd_datetime(time_stamps), columns=[self.target_name])
+        yhat = self._predict(prev=prev, exog_data=exog_data, n_steps=len(time_stamps)).flatten()
+        forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
         if prev_pred is not None:
             forecast = pd.concat((prev_pred, forecast))
         return forecast, None
+
+    def _predict(self, prev, exog_data, n_steps):
+        if self.dim == 1:
+            return self._hybrid_forecast(prev, exog_data=exog_data, steps=n_steps)
+        if self.prediction_stride == 1:
+            return self._autoregressive_forecast(prev, exog_data=exog_data, steps=n_steps)
+        return self.model.predict(prev)[:, :n_steps]
 
     def _hybrid_forecast(self, inputs, exog_data=None, steps=None):
         """
