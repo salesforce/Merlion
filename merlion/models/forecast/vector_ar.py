@@ -8,22 +8,21 @@
 Vector AutoRegressive model for multivariate time series forecasting.
 """
 import logging
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
 from statsmodels.tsa.api import VAR as sm_VAR
 from statsmodels.tsa.arima.model import ARIMA as sm_ARIMA
 
-from merlion.models.forecast.base import ForecasterConfig, ForecasterBase
+from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.transform.resample import TemporalResample
-from merlion.utils.time_series import to_pd_datetime, TimeSeries, UnivariateTimeSeries
+from merlion.utils.time_series import to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
 
-class VectorARConfig(ForecasterConfig):
+class VectorARConfig(ForecasterExogConfig):
     """
     Config object for `VectorAR` forecaster.
     """
@@ -47,7 +46,7 @@ class VectorARConfig(ForecasterConfig):
         self.maxlags = maxlags
 
 
-class VectorAR(ForecasterBase):
+class VectorAR(ForecasterExogBase):
     """
     Vector AutoRegressive model for multivariate time series forecasting.
     """
@@ -67,13 +66,16 @@ class VectorAR(ForecasterBase):
     def maxlags(self) -> int:
         return self.config.maxlags
 
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         # train model
         if self.dim == 1:
             train_data = train_data.iloc[:, 0]
-            self.model = sm_ARIMA(train_data, order=(self.maxlags, 0, 0)).fit(method="yule_walker", cov_type="oim")
+            self.model = sm_ARIMA(train_data, exog=exog_data, order=(self.maxlags, 0, 0))
+            self.model = self.model.fit(method="yule_walker", cov_type="oim")
         else:
-            self.model = sm_VAR(train_data).fit(self.maxlags)
+            self.model = sm_VAR(train_data, exog=exog_data).fit(self.maxlags)
 
         i = self.target_seq_index
         resid = self.model.resid
@@ -91,8 +93,13 @@ class VectorAR(ForecasterBase):
         pred_err = pd.DataFrame(pred_err, index=train_data.index, columns=[f"{self.target_name}_err"])
         return pred, pred_err
 
-    def _forecast(
-        self, time_stamps: Union[int, List[int]], time_series_prev: pd.DataFrame = None, return_prev=False
+    def _forecast_with_exog(
+        self,
+        time_stamps: List[int],
+        time_series_prev: pd.DataFrame = None,
+        return_prev=False,
+        exog_data: pd.DataFrame = None,
+        exog_data_prev: pd.DataFrame = None,
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         if time_series_prev is not None:
             assert len(time_series_prev) >= self.maxlags, (
@@ -108,16 +115,17 @@ class VectorAR(ForecasterBase):
             if time_series_prev is None:
                 model = self.model
             else:
-                model = self.model.apply(time_series_prev.values[-self.maxlags :, 0], validate_specification=False)
-            forecast_result = model.get_forecast(steps=n)
+                prev = time_series_prev.values[-self.maxlags :, 0]
+                model = self.model.apply(prev, exog=exog_data_prev, validate_specification=False)
+            forecast_result = model.get_forecast(steps=n, exog=exog_data)
             yhat = forecast_result.predicted_mean
             err = forecast_result.se_mean
         else:
             prev = self._np_train_data if time_series_prev is None else time_series_prev.values[-self.maxlags :]
-            yhat = self.model.forecast(prev, steps=n)[:, i]
+            yhat = self.model.forecast(prev, exog_future=exog_data, steps=n)[:, i]
             err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
 
         name = self.target_name
         forecast = pd.DataFrame(np.asarray(yhat), index=to_pd_datetime(time_stamps), columns=[name])
-        err = pd.DataFrame(np.asarray(err), index=to_pd_datetime(time_stamps), columns=[f"{name}_err"])
+        err = pd.DataFrame(np.asarray(err), index=forecast.index, columns=[f"{name}_err"])
         return forecast, err
