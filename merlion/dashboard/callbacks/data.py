@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import traceback
+import numpy as np
 
 import dash
 from dash import Input, Output, State, callback, dcc
@@ -17,6 +18,19 @@ from merlion.dashboard.models.data import DataAnalyzer
 
 logger = logging.getLogger(__name__)
 file_manager = FileManager()
+
+
+class DefaultEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.bool_):
+            return str(obj)
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super().default(obj)
 
 
 @callback(Output("select-file", "options"), [Input("upload-data", "filename"), Input("upload-data", "contents")])
@@ -71,7 +85,8 @@ def click_run(btn_click, modal_close, filename, data):
                 modal_is_open = True
                 modal_content = str(error)
 
-    return stats_table, json.dumps(stats), data_table, data_figure, modal_is_open, modal_content
+    return stats_table, json.dumps(stats, cls=DefaultEncoder), \
+           data_table, data_figure, modal_is_open, modal_content
 
 
 @callback(Output("select-column", "options"), Input("select-column-parent", "n_clicks"), State("data-state", "data"))
