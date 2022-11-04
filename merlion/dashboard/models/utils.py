@@ -16,11 +16,11 @@ class DataMixin:
         if nrows is None:
             self.logger.info("Loading the time series...")
         df = pd.read_csv(file_path, nrows=nrows)
+        df = df.set_index(df.columns[0])
         if df.dtypes[df.columns[0]] in [np.int32, np.int64]:
-            df = df.set_index(df.columns[0])
             df.index = pd.to_datetime(df.index.values, unit="ms")
         else:
-            df = df.set_index(df.columns[0])
+            df.index = pd.to_datetime(df.index.values)
         return df
 
 
