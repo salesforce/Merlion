@@ -159,9 +159,9 @@ class SKLearnForecaster(ForecasterExogBase):
         if fit:
             self.model.fit(inputs, labels)
             if exog_data is not None:
-                self._last_train_window = pd.concat(
-                    (train_data[-self.maxlags :], exog_data.iloc[-self.maxlags :]), axis=1
-                )
+                train = train_data.iloc[-self.maxlags :]
+                exog = pd.DataFrame(exog_data.values[1:], index=exog_data.index[:-1], columns=exog_data.columns)
+                self._last_train_window = pd.concat((train, exog.loc[train.index[:-1]]), axis=1)
             else:
                 self._last_train_window = train_data.iloc[-self.maxlags :]
 
@@ -185,16 +185,24 @@ class SKLearnForecaster(ForecasterExogBase):
         prev_pred, prev_err = None, None
         if time_series_prev is None:
             time_series_prev = self._last_train_window  # Note: includes exog_data if needed
-        elif return_prev:
-            try:
-                prev_pred, prev_err = self._train_with_exog(
-                    time_series_prev, train_config=dict(fit=False), exog_data=exog_data_prev
-                )
-            except StopIteration:
-                prev_pred, prev_err = None, None
+        else:
+            if return_prev:
+                try:
+                    prev_pred, prev_err = self._train_with_exog(
+                        time_series_prev, train_config=dict(fit=False), exog_data=exog_data_prev
+                    )
+                except StopIteration:
+                    prev_pred, prev_err = None, None
 
-        if exog_data_prev is not None:
-            time_series_prev = pd.concat((time_series_prev, exog_data_prev), axis=1)
+            if exog_data_prev is not None:
+                x = pd.DataFrame(
+                    exog_data_prev.values[1:], index=exog_data_prev.index[:-1], columns=exog_data_prev.columns
+                )
+                time_series_prev = pd.concat((time_series_prev, x), axis=1)
+
+        # The last exog entry in time_series_prev needs to be filled
+        if exog_data is not None:
+            time_series_prev.loc[time_series_prev.index[-1], exog_data.columns] = exog_data.iloc[0]
         prev = np.atleast_2d(self._get_immedidate_forecasting_prior(time_series_prev))
 
         # TODO: allow model to use timestamps
@@ -230,7 +238,9 @@ class SKLearnForecaster(ForecasterExogBase):
                 break
             if exog_data is not None:
                 assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
-                next_pred = np.concatenate((next_pred.T, exog_data.values[i : i + self.prediction_stride]), axis=1)
+                next_pred = np.concatenate(
+                    (next_pred.T, exog_data.values[i + 1 : i + 1 + self.prediction_stride]), axis=1
+                )
                 next_pred = next_pred.reshape((1, -1))
             inputs = self._update_prior(inputs, next_pred, for_univariate=True)
         return pred[:, :steps]
@@ -253,7 +263,7 @@ class SKLearnForecaster(ForecasterExogBase):
                 break
             if exog_data is not None:
                 assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
-                next_pred = np.concatenate((next_pred, exog_data.values[i : i + 1]), axis=1)
+                next_pred = np.concatenate((next_pred, exog_data.values[i + 1 : i + 2]), axis=1)
             inputs = self._update_prior(inputs, next_pred, for_univariate=False)
         return pred
 

@@ -33,16 +33,15 @@ class VectorARConfig(ForecasterExogConfig):
     Configuration class for Vector AutoRegressive model.
     """
 
-    def __init__(self, max_forecast_steps: int, maxlags: int, target_seq_index: int = None, **kwargs):
+    def __init__(self, maxlags: int = None, target_seq_index: int = None, **kwargs):
         """
-        :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param maxlags: Max # of lags for AR
         :param target_seq_index: The index of the univariate (amongst all
             univariates in a general multivariate time series) whose value we
             would like to forecast.
         :param maxlags: Max # of lags for AR
         """
-        super().__init__(max_forecast_steps=max_forecast_steps, target_seq_index=target_seq_index, **kwargs)
+        super().__init__(target_seq_index=target_seq_index, **kwargs)
         self.maxlags = maxlags
 
 
@@ -56,7 +55,7 @@ class VectorAR(ForecasterExogBase):
     def __init__(self, config: VectorARConfig):
         super().__init__(config)
         self.model = None
-        self._np_train_data = None
+        self._pd_train_data = None
 
     @property
     def require_even_sampling(self) -> bool:
@@ -69,6 +68,9 @@ class VectorAR(ForecasterExogBase):
     def _train_with_exog(
         self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        if self.maxlags is None:
+            self.config.maxlags = max(min(20, len(train_data) // 10), self.max_forecast_steps or 1)
+
         # train model
         if self.dim == 1:
             train_data = train_data.iloc[:, 0]
@@ -86,7 +88,7 @@ class VectorAR(ForecasterExogBase):
         if self.dim == 1:
             pred_err = [np.sqrt(self.model.params["sigma2"]).item()] * len(pred)
         else:
-            self._np_train_data = train_data.values[-self.maxlags :]
+            self._pd_train_data = train_data.iloc[-self.maxlags :]
             pred_err = [self.model.cov_ybar()[i, i].item()] * len(pred)
 
         pred = pd.DataFrame(pred, index=train_data.index, columns=[self.target_name])
@@ -102,28 +104,29 @@ class VectorAR(ForecasterExogBase):
         exog_data_prev: pd.DataFrame = None,
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
         if time_series_prev is not None:
-            assert len(time_series_prev) >= self.maxlags, (
-                f"time_series_prev has a data length of "
-                f"{len(time_series_prev)} that is shorter than the maxlags "
-                f"for the model"
-            )
+            assert (
+                len(time_series_prev) >= self.maxlags
+            ), f"time_series_prev has length of {len(time_series_prev)}, which is shorter than the model's maxlags"
             assert not return_prev, "VectorAR.forecast() does not support return_prev=True"
 
         n = len(time_stamps)
-        i = self.target_seq_index
+        prev = self._pd_train_data if time_series_prev is None else time_series_prev.iloc[-self.maxlags :]
+        exog_data_prev = None if exog_data_prev is None else exog_data_prev.loc[prev.index]
         if self.dim == 1:
             if time_series_prev is None:
                 model = self.model
             else:
-                prev = time_series_prev.values[-self.maxlags :, 0]
                 model = self.model.apply(prev, exog=exog_data_prev, validate_specification=False)
             forecast_result = model.get_forecast(steps=n, exog=exog_data)
             yhat = forecast_result.predicted_mean
             err = forecast_result.se_mean
         else:
-            prev = self._np_train_data if time_series_prev is None else time_series_prev.values[-self.maxlags :]
-            yhat = self.model.forecast(prev, exog_future=exog_data, steps=n)[:, i]
-            err = np.sqrt(self.model.forecast_cov(n)[:, i, i])
+            old_exog = self.model.exog
+            exog = None if exog_data is None else exog_data.values
+            self.model.exog = old_exog if exog_data_prev is None else exog_data_prev.values
+            yhat = self.model.forecast(prev.values, exog_future=exog, steps=n)[:, self.target_seq_index]
+            err = np.sqrt(self.model.forecast_cov(n)[:, self.target_seq_index, self.target_seq_index])
+            self.model.exog = old_exog
 
         name = self.target_name
         forecast = pd.DataFrame(np.asarray(yhat), index=to_pd_datetime(time_stamps), columns=[name])
