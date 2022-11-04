@@ -42,8 +42,8 @@ jobs:
         timeout_minutes: 40
         command: |
           # Get a comma-separated list of the directories of all python source files
-          source_files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
-          script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
+          files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
+          script="import os; print(','.join({os.path.dirname(f) for f in '$files'.split(',') if f and 'dashboard' not in f}))"
           source_modules=$(python -c "$script")
 
           # Run tests & obtain code coverage from coverage report.
