@@ -6,9 +6,7 @@
 #
 import sys
 import logging
-import inspect
 import importlib
-from collections import OrderedDict
 from merlion.models.factory import ModelFactory
 from merlion.evaluate.anomaly import TSADMetric
 from merlion.utils.time_series import TimeSeries
@@ -57,38 +55,6 @@ class AnomalyModel(ModelMixin, DataMixin):
     @staticmethod
     def get_available_thresholds():
         return AnomalyModel.thresholds
-
-    @staticmethod
-    def _param_info(function):
-        param_info = OrderedDict()
-        valid_types = [int, float, str, bool, list, tuple, dict]
-
-        signature = inspect.signature(function).parameters
-        for name, param in signature.items():
-            if name in ["self", "target_seq_index"]:
-                continue
-            value = param.default
-            if value == param.empty:
-                value = ""
-            if type(param.default) in valid_types:
-                param_info[name] = {"type": type(param.default), "default": value}
-            elif param.annotation in valid_types:
-                param_info[name] = {"type": param.annotation, "default": value}
-        return param_info
-
-    @staticmethod
-    def get_parameter_info(algorithm):
-        model_class = ModelFactory.get_model_class(algorithm)
-        param_info = AnomalyModel._param_info(model_class.config_class.__init__)
-        if "max_forecast_steps" in param_info:
-            if not param_info["max_forecast_steps"]["default"]:
-                param_info["max_forecast_steps"]["default"] = 5
-        if "max_forecast_steps" in param_info:
-            if algorithm in ["ArimaDetector", "SarimaDetector"]:
-                del param_info["max_forecast_steps"]
-            elif not param_info["max_forecast_steps"]["default"]:
-                param_info["max_forecast_steps"]["default"] = 5
-        return param_info
 
     @staticmethod
     def get_threshold_info(threshold):

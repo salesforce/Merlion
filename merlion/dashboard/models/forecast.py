@@ -4,8 +4,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-from collections import OrderedDict
-import inspect
 import logging
 import sys
 
@@ -44,29 +42,6 @@ class ForecastModel(ModelMixin, DataMixin):
     @staticmethod
     def get_available_algorithms():
         return ForecastModel.algorithms
-
-    @staticmethod
-    def get_parameter_info(algorithm):
-        param_info = OrderedDict()
-        valid_types = [int, float, str, bool, list, tuple, dict]
-
-        model_class = ModelFactory.get_model_class(algorithm)
-        signature = inspect.signature(model_class.config_class.__init__).parameters
-        for name, param in signature.items():
-            if name in ["self", "target_seq_index"]:
-                continue
-            value = param.default
-            if value == param.empty:
-                value = ""
-            if type(param.default) in valid_types:
-                param_info[name] = {"type": type(param.default), "default": value}
-            elif param.annotation in valid_types:
-                param_info[name] = {"type": param.annotation, "default": value}
-
-        if "max_forecast_steps" in param_info:
-            if param_info["max_forecast_steps"]["default"] == "":
-                param_info["max_forecast_steps"]["default"] = 100
-        return param_info
 
     @staticmethod
     def _compute_metrics(evaluator, ts, predictions):
