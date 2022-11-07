@@ -22,16 +22,16 @@ class ForecastModel(ModelMixin, DataMixin):
     algorithms = [
         "DefaultForecaster",
         "Arima",
+        "LGBMForecaster",
         "ETS",
         "AutoETS",
-        "LSTM",
         "Prophet",
         "AutoProphet",
         "Sarima",
+        "LSTM",
         "VectorAR",
         "RandomForestForecaster",
         "ExtraTreesForecaster",
-        "LGBMForecaster",
     ]
 
     def __init__(self):
