@@ -10,7 +10,7 @@ Automatic seasonality detection.
 from abc import abstractmethod
 from enum import Enum, auto
 import logging
-from typing import Any, Iterator, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import numpy as np
 from scipy.signal import argrelmax
@@ -165,22 +165,24 @@ class SeasonalityLayer(AutoMLMixIn):
         """
         return self.config.max_lag
 
-    def set_theta(self, model, theta, train_data: TimeSeries = None):
-        model.set_seasonality(theta, train_data.univariates[self.target_name])
+    @staticmethod
+    def detect_seasonality(
+        x: np.array,
+        max_lag: int = None,
+        pval: float = 0.05,
+        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.ACF,
+    ) -> List[int]:
+        """
+        Helper method to detect the seasonality of a time series.
 
-    def evaluate_theta(
-        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
-    ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
-        # If multiple seasonalities are supported, return a list of all detected seasonalities
-        return list(thetas) if self.config.multi_seasonality else next(thetas), None, None
-
-    def generate_theta(self, train_data: TimeSeries) -> Iterator:
+        :param x: The numpy array of values whose seasonality we want to detect. Must be univariate & flattened.
+        :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
+        :param pval: p-value for deciding whether a detected seasonality is statistically significant.
+        :param max_lag: max lag considered for seasonality detection.
+        """
         # compute max lag & acf function
-        x = train_data.univariates[self.target_name].np_values
-        if self.max_lag is None:
-            max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
-        else:
-            max_lag = self.max_lag
+        # compute max lag & acf function
+        max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40) if max_lag is None else max_lag
         xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
         xacf[np.isnan(xacf)] = 0
 
@@ -203,7 +205,7 @@ class SeasonalityLayer(AutoMLMixIn):
 
             # statistical test if acf is significant w.r.t a normal distribution
             xacf = xacf[1:]
-            tcrit = norm.ppf(1 - self.pval / 2)
+            tcrit = norm.ppf(1 - pval / 2)
             clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
             candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
 
@@ -213,17 +215,32 @@ class SeasonalityLayer(AutoMLMixIn):
             candidates = [1]
 
         # choose the desired candidates based on periodicity strategy
-        if self.periodicity_strategy is PeriodicityStrategy.ACF:
+        if periodicity_strategy is PeriodicityStrategy.ACF:
             candidates = [candidates[0]]
-        elif self.periodicity_strategy is PeriodicityStrategy.Min:
+        elif periodicity_strategy is PeriodicityStrategy.Min:
             candidates = [min(candidates)]
-        elif self.periodicity_strategy is PeriodicityStrategy.Max:
+        elif periodicity_strategy is PeriodicityStrategy.Max:
             candidates = [max(candidates)]
-        elif self.periodicity_strategy is PeriodicityStrategy.All:
+        elif periodicity_strategy is PeriodicityStrategy.All:
             candidates = candidates
         else:
-            raise ValueError(f"Periodicity strategy {self.periodicity_strategy} not supported.")
+            raise ValueError(f"Periodicity strategy {periodicity_strategy} not supported.")
+        return candidates
 
+    def set_theta(self, model, theta, train_data: TimeSeries = None):
+        model.set_seasonality(theta, train_data.univariates[self.target_name])
+
+    def evaluate_theta(
+        self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
+    ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
+        # If multiple seasonalities are supported, return a list of all detected seasonalities
+        return (list(thetas) if self.config.multi_seasonality else next(thetas)), None, None
+
+    def generate_theta(self, train_data: TimeSeries) -> Iterator:
+        x = train_data.univariates[self.target_name].np_values
+        candidates = self.detect_seasonality(
+            x=x, max_lag=self.max_lag, pval=self.pval, periodicity_strategy=self.periodicity_strategy
+        )
         if candidates[: None if self.config.multi_seasonality else 1] != [1]:
             logger.info(f"Automatically detect the periodicity is {candidates}")
         return iter(candidates)
