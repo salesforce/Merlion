@@ -9,6 +9,7 @@ Automatic seasonality detection.
 """
 from abc import abstractmethod
 from enum import Enum, auto
+import itertools
 import logging
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
@@ -16,6 +17,7 @@ import numpy as np
 from scipy.signal import argrelmax
 from scipy.stats import norm
 import statsmodels.api as sm
+from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
@@ -180,9 +182,13 @@ class SeasonalityLayer(AutoMLMixIn):
         :param pval: p-value for deciding whether a detected seasonality is statistically significant.
         :param max_lag: max lag considered for seasonality detection.
         """
-        # compute max lag & acf function
-        # compute max lag & acf function
-        max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40) if max_lag is None else max_lag
+        # Use the residuals of an ETS model fit to the data, to handle any trend. This makes the ACF more robust.
+        if len(x) > 10:
+            fit = ETSModel(x, error="add", trend="add").fit(disp=False).fittedvalues
+            x = x - fit
+
+        # compute max lag & ACF function
+        max_lag = max(min(int(10 * np.log10(len(x))), len(x) - 1), 40) if max_lag is None else max_lag
         xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
         xacf[np.isnan(xacf)] = 0
 
@@ -190,10 +196,10 @@ class SeasonalityLayer(AutoMLMixIn):
         candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
 
         # the periods should be smaller than one half of the length of time series
-        candidates = candidates[candidates < int(x.shape[0] / 2)]
-        if candidates.shape[0] != 0:
+        candidates = candidates[candidates < int(len(x) / 2)]
+        if len(candidates) > 0:
             candidates_idx = []
-            if candidates.shape[0] == 1:
+            if len(candidates) == 1:
                 candidates_idx += [0]
             else:
                 if xacf[candidates[0]] > xacf[candidates[1]]:
@@ -206,15 +212,15 @@ class SeasonalityLayer(AutoMLMixIn):
             # statistical test if acf is significant w.r.t a normal distribution
             xacf = xacf[1:]
             tcrit = norm.ppf(1 - pval / 2)
-            clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
+            clim = tcrit * np.sqrt(np.cumsum(np.concatenate(([1], 2 * xacf[:-1] ** 2)))) / np.sqrt(len(x))
             candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
 
             # sort candidates by ACF value
             candidates = sorted(candidates.tolist(), key=lambda c: xacf[c - 1], reverse=True)
-        if len(candidates) == 0:
-            candidates = [1]
 
         # choose the desired candidates based on periodicity strategy
+        if len(candidates) == 0:
+            candidates = [1]
         if periodicity_strategy is PeriodicityStrategy.ACF:
             candidates = [candidates[0]]
         elif periodicity_strategy is PeriodicityStrategy.Min:

@@ -182,11 +182,9 @@ class ETS(SeasonalityModel, ForecasterBase):
             forecast = np.asarray(forecast_result)
             err = None
 
-        # If return_prev is True, it will return the forecast and error of last train window
-        # instead of time_series_prev
+        # If return_prev is True, return the forecast and error of last train window instead of time_series_prev
         if time_series_prev is not None and return_prev:
             m = len(time_series_prev) - len(val_prev)
-            params = dict(zip(model.param_names, model.params))
             err_prev = np.concatenate((np.zeros(m), model.standardized_forecasts_error.values))
             forecast = np.concatenate((time_series_prev.values[:m], model.fittedvalues.values, forecast))
             err = np.concatenate((err_prev, err))
