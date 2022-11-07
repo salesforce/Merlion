@@ -81,9 +81,11 @@ def click_run(btn_click, modal_close, filename, data):
                 data_table = DataAnalyzer.get_data_table(df)
                 data_figure = DataAnalyzer.get_data_figure(df)
 
-            except Exception as error:
+            except Exception:
+                error = traceback.format_exc()
                 modal_is_open = True
-                modal_content = str(error)
+                modal_content = error
+                logger.error(error)
 
     return stats_table, json.dumps(stats, cls=DefaultEncoder), data_table, data_figure, modal_is_open, modal_content
 
