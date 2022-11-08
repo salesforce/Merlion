@@ -127,7 +127,11 @@ def select_algorithm_parent(n_clicks, selected_target):
     return options
 
 
-@callback(Output("forecasting-param-table", "children"), Input("forecasting-select-algorithm", "value"))
+@callback(
+    Output("forecasting-param-table", "children"),
+    Input("forecasting-select-algorithm", "value"),
+    prevent_initial_call=True
+)
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context

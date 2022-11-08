@@ -100,6 +100,7 @@ def select_label(n_clicks, train_file, test_file, features):
     Output("anomaly-select-algorithm", "options"),
     Input("anomaly-select-algorithm-parent", "n_clicks"),
     State("anomaly-select-features", "value"),
+    prevent_initial_call=True
 )
 def select_algorithm_parent(n_clicks, selected_metrics):
     options = []

@@ -216,8 +216,8 @@ class SeasonalityLayer(AutoMLMixIn):
 
         # sort the candidates by z-score and choose the desired candidates based on periodicity strategy
         candidates = sorted(candidate2score.keys(), key=lambda c: candidate2score[c], reverse=True)
-        for c, s in candidate2score.items():
-            logger.info(f"Detected seas = {c:3d} with z-score = {s:5.2f}.")
+        for c in candidates:
+            logger.info(f"Detected seas = {c:3d} with z-score = {candidate2score[c]:5.2f}.")
         if len(candidates) == 0:
             candidates = [1]
         if periodicity_strategy is PeriodicityStrategy.ACF:
