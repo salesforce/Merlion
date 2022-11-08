@@ -103,7 +103,7 @@ class SKLearnForecaster(ForecasterExogBase):
 
         # Set maxlags
         if self.maxlags is None:
-            k = max(10, len(train_data) // 5)
+            k = min(500, max(10, len(train_data) // 5))
             x = train_data.values[:, self.target_seq_index]
             seas = SeasonalityLayer.detect_seasonality(x, k, pval=0.01, periodicity_strategy=PeriodicityStrategy.Max)[0]
             self.config.maxlags = max(seas, min(20, k), self.max_forecast_steps or 1, self.prediction_stride or 1)
