@@ -40,7 +40,9 @@ jobs:
       with:
         max_attempts: 3
         timeout_minutes: 40
+        retry-on: error
         command: |
+          set -euxo pipefail
           # Get a comma-separated list of the directories of all python source files
           files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
           script="import os; print(','.join({os.path.dirname(f) for f in '$files'.split(',') if f and 'dashboard' not in f}))"
