@@ -101,6 +101,12 @@ class RollingWindowDataset:
         else:
             df = data.to_pd() if isinstance(data, TimeSeries) else data
             exog_df = data.to_pd() if isinstance(exog_data, TimeSeries) else exog_data
+            if exog_data is not None:
+                if n_future > 0:
+                    exog_vals = np.concatenate((exog_df.values[1:], np.full((1, exog_df.shape[1]), np.nan)))
+                else:
+                    exog_vals = exog_df.values
+                self.data = np.concatenate((df.values, exog_vals), axis=1)
             self.data = np.concatenate((df.values, exog_df.values), axis=1) if exog_data is not None else df.values
             self.timestamp = df.index
             self.target = df.values if self.autoregressive else df.values[:, target_seq_index]
@@ -153,10 +159,6 @@ class RollingWindowDataset:
         idx_end = idx + self.n_past
         past = self.data[idx:idx_end]
         past_timestamp = self.timestamp[idx:idx_end]
-        if self.n_future > 0:  # predicting the future
-            future = self.target[idx_end : idx_end + self.n_future]
-            future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
-        else:  # autoencoding
-            future = self.target[idx:idx_end]
-            future_timestamp = self.timestamp[idx:idx_end]
+        future = self.target[idx_end : idx_end + self.n_future]
+        future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)

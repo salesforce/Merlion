@@ -97,6 +97,10 @@ class AutoSarima(SeasonalityLayer):
 
     config_class = AutoSarimaConfig
 
+    @property
+    def supports_exog(self):
+        return True
+
     def _generate_sarima_parameters(self, train_data: TimeSeries) -> dict:
         y = train_data.univariates[self.target_name].np_values
 

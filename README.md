@@ -77,8 +77,9 @@ time series as ``pandas.DataFrame`` s with accompanying metadata.
 You can install `merlion` from PyPI by calling ``pip install salesforce-merlion``. You may install from source by
 cloning this repoand calling ``pip install Merlion/``, or ``pip install -e Merlion/`` to install in editable mode.
 You may install additional dependencies via ``pip install salesforce-merlion[all]``,  or by calling
-``pip install "Merlion/[all]"`` if installing from source. Individually, the optional dependencies include ``plot``
-for interactive plots and ``deep-learning`` for all deep learning models.
+``pip install "Merlion/[all]"`` if installing from source. 
+Individually, the optional dependencies include ``dashboard`` for a GUI dashboard,
+``spark`` for a distributed computation backend with PySpark, and ``deep-learning`` for all deep learning models.
 
 To install the data loading package `ts_datasets`, clone this repo and call ``pip install -e Merlion/ts_datasets/``.
 This package must be installed in editable mode (i.e. with the ``-e`` flag) if you don't want to manually specify the
@@ -107,10 +108,23 @@ and presents experimental results on time series anomaly detection & forecasting
 time series.
 
 ## Getting Started
-Here, we provide some minimal examples using Merlion default models, 
-to help you get started with both anomaly detection and forecasting.
+The easiest way to get started is to use the GUI web-based
+[dashboard](https://opensource.salesforce.com/Merlion/merlion.dashboard.html).
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
+``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line.
+You can view the dashboard at http://localhost:8050.
+Below, we show some screenshots of the dashboard for both anomaly detection and forecasting.
+
+![anomaly dashboard](https://github.com/salesforce/Merlion/raw/main/docs/source/_static/dashboard_anomaly.png)
+
+![forecast dashboard](https://github.com/salesforce/Merlion/raw/main/docs/source/_static/dashboard_forecast.png)
+
+To help you get started with using Merlion in your own code, we provide below some minimal examples using Merlion
+default models for both anomaly detection and forecasting.
 
 ### Anomaly Detection
+Here, we show the code to replicate the results from the anomaly detection dashboard above.
 We begin by importing Merlion’s `TimeSeries` class and the data loader for the Numenta Anomaly Benchmark `NAB`.
 We can then divide a specific time series from this dataset into training and testing splits.
 
@@ -164,6 +178,7 @@ Precision: 0.6667, Recall: 0.6667, F1: 0.6667
 Mean Time To Detect: 1 days 10:30:00
 ```
 ### Forecasting
+Here, we show the code to replicate the results from the forecasting dashboard above.
 We begin by importing Merlion’s `TimeSeries` class and the data loader for the `M4` dataset. We can then divide a
 specific time series from this dataset into training and testing splits.
 
@@ -215,7 +230,7 @@ msis = ForecastMetric.MSIS.value(ground_truth=test_data, predict=test_pred,
 print(f"sMAPE: {smape:.4f}, MSIS: {msis:.4f}")
 ```
 ```
-sMAPE: 6.2855, MSIS: 19.1584
+sMAPE: 4.1944, MSIS: 18.9331
 ```
 
 ## Evaluation and Benchmarking

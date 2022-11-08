@@ -18,8 +18,9 @@ from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.transform.base import TransformBase, Identity
+from merlion.transform.base import TransformBase
 from merlion.transform.factory import TransformFactory
+from merlion.transform.normalize import MeanVarNormalize
 from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
@@ -75,8 +76,6 @@ class ForecasterBase(ModelBase):
     """
 
     def __init__(self, config: ForecasterConfig):
-        if self.supports_exog:
-            assert isinstance(config, ForecasterExogConfig)
         super().__init__(config)
         self.target_name = None
         self.exog_dim = None
@@ -104,13 +103,6 @@ class ForecasterBase(ModelBase):
     def require_univariate(self) -> bool:
         """
         All forecasters can work on multivariate data, since they only forecast a single target univariate.
-        """
-        return False
-
-    @property
-    def supports_exog(self):
-        """
-        Whether this forecaster supports exogenous data.
         """
         return False
 
@@ -622,7 +614,7 @@ class ForecasterBase(ModelBase):
 
 
 class ForecasterExogConfig(ForecasterConfig):
-    _default_exog_transform = Identity()
+    _default_exog_transform = MeanVarNormalize()
     exog_transform: TransformBase = None
 
     def __init__(

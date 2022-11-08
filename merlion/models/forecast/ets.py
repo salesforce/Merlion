@@ -38,15 +38,15 @@ class ETSConfig(ForecasterConfig):
 
     def __init__(
         self,
-        max_forecast_steps=None,
-        target_seq_index=None,
-        error="add",
-        trend="add",
-        damped_trend=True,
-        seasonal="add",
-        seasonal_periods=None,
-        pred_interval_strategy="exact",
-        refit=True,
+        max_forecast_steps: int = None,
+        target_seq_index: int = None,
+        error: str = "add",
+        trend: str = "add",
+        damped_trend: bool = True,
+        seasonal: str = "add",
+        seasonal_periods: int = None,
+        pred_interval_strategy: str = "exact",
+        refit: bool = True,
         **kwargs,
     ):
         """
@@ -182,11 +182,9 @@ class ETS(SeasonalityModel, ForecasterBase):
             forecast = np.asarray(forecast_result)
             err = None
 
-        # If return_prev is True, it will return the forecast and error of last train window
-        # instead of time_series_prev
+        # If return_prev is True, return the forecast and error of last train window instead of time_series_prev
         if time_series_prev is not None and return_prev:
             m = len(time_series_prev) - len(val_prev)
-            params = dict(zip(model.param_names, model.params))
             err_prev = np.concatenate((np.zeros(m), model.standardized_forecasts_error.values))
             forecast = np.concatenate((time_series_prev.values[:m], model.fittedvalues.values, forecast))
             err = np.concatenate((err_prev, err))
