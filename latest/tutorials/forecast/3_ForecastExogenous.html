@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forecasting With Exogenous Regressors &mdash; Merlion 1.3.1 documentation</title>
+  <title>Forecasting With Exogenous Regressors &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -78,9 +78,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
-      <li>Forecasting With Exogenous Regressors</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../tutorials.html">Tutorials &amp; Example Code</a></li>
+      <li class="breadcrumb-item active">Forecasting With Exogenous Regressors</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/tutorials/forecast/3_ForecastExogenous.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
@@ -377,7 +377,7 @@ about the sort of markdowns the store is running.</p>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
 <span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart_mini.csv&quot;</span><span class="p">)</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomDataset</span><span class="p">(</span><span class="n">rootdir</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span> <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Store&quot;</span><span class="p">,</span> <span class="s2">&quot;Dept&quot;</span><span class="p">],</span> <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.10</span><span class="p">)</span>
-<span class="n">ts</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ts</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">display</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -434,72 +434,72 @@ about the sort of markdowns the store is running.</p>
   <tbody>
     <tr>
       <th>2010-02-05</th>
-      <td>24924.50</td>
-      <td>42.31</td>
+      <td>39602.47</td>
+      <td>40.19</td>
       <td>2.572</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>211.096358</td>
-      <td>8.106</td>
+      <td>210.752605</td>
+      <td>8.324</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2010-02-12</th>
-      <td>46039.49</td>
-      <td>38.51</td>
+      <td>37984.44</td>
+      <td>38.49</td>
       <td>2.548</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>211.242170</td>
-      <td>8.106</td>
+      <td>210.897994</td>
+      <td>8.324</td>
       <td>True</td>
     </tr>
     <tr>
       <th>2010-02-19</th>
-      <td>41595.55</td>
-      <td>39.93</td>
+      <td>38889.43</td>
+      <td>39.69</td>
       <td>2.514</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>211.289143</td>
-      <td>8.106</td>
+      <td>210.945160</td>
+      <td>8.324</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2010-02-26</th>
-      <td>19403.54</td>
-      <td>46.63</td>
+      <td>41137.74</td>
+      <td>46.10</td>
       <td>2.561</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>211.319643</td>
-      <td>8.106</td>
+      <td>210.975957</td>
+      <td>8.324</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2010-03-05</th>
-      <td>21827.90</td>
-      <td>46.50</td>
+      <td>39883.50</td>
+      <td>47.17</td>
       <td>2.625</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>211.350143</td>
-      <td>8.106</td>
+      <td>211.006754</td>
+      <td>8.324</td>
       <td>False</td>
     </tr>
     <tr>
@@ -518,72 +518,72 @@ about the sort of markdowns the store is running.</p>
     </tr>
     <tr>
       <th>2012-09-28</th>
-      <td>18947.81</td>
-      <td>76.08</td>
+      <td>37104.67</td>
+      <td>79.45</td>
       <td>3.666</td>
-      <td>3666.27</td>
-      <td>7.64</td>
+      <td>7106.05</td>
+      <td>1.91</td>
       <td>1.65</td>
-      <td>1417.96</td>
-      <td>4744.28</td>
-      <td>222.981658</td>
-      <td>6.908</td>
+      <td>1549.10</td>
+      <td>3946.03</td>
+      <td>222.616433</td>
+      <td>6.565</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2012-10-05</th>
-      <td>21904.47</td>
-      <td>68.55</td>
+      <td>36361.28</td>
+      <td>70.27</td>
       <td>3.617</td>
-      <td>8077.89</td>
+      <td>6037.76</td>
       <td>NaN</td>
-      <td>18.22</td>
-      <td>3617.43</td>
-      <td>3626.14</td>
-      <td>223.181477</td>
-      <td>6.573</td>
+      <td>10.04</td>
+      <td>3027.37</td>
+      <td>3853.40</td>
+      <td>222.815930</td>
+      <td>6.170</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2012-10-12</th>
-      <td>22764.01</td>
-      <td>62.99</td>
+      <td>35332.34</td>
+      <td>60.97</td>
       <td>3.601</td>
-      <td>2086.18</td>
+      <td>2145.50</td>
       <td>NaN</td>
-      <td>8.11</td>
-      <td>602.36</td>
-      <td>5926.45</td>
-      <td>223.381296</td>
-      <td>6.573</td>
+      <td>33.31</td>
+      <td>586.83</td>
+      <td>10421.01</td>
+      <td>223.015426</td>
+      <td>6.170</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2012-10-19</th>
-      <td>24185.27</td>
-      <td>67.97</td>
+      <td>35721.09</td>
+      <td>68.08</td>
       <td>3.594</td>
-      <td>950.33</td>
+      <td>4461.89</td>
       <td>NaN</td>
-      <td>4.93</td>
-      <td>80.25</td>
-      <td>2312.85</td>
-      <td>223.425723</td>
-      <td>6.573</td>
+      <td>1.14</td>
+      <td>1579.67</td>
+      <td>2642.29</td>
+      <td>223.059808</td>
+      <td>6.170</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2012-10-26</th>
-      <td>27390.81</td>
-      <td>69.16</td>
+      <td>34260.76</td>
+      <td>69.79</td>
       <td>3.506</td>
-      <td>2585.85</td>
-      <td>31.75</td>
-      <td>6.00</td>
-      <td>1057.16</td>
-      <td>1305.01</td>
-      <td>223.444251</td>
-      <td>6.573</td>
+      <td>6152.59</td>
+      <td>129.77</td>
+      <td>200.00</td>
+      <td>272.29</td>
+      <td>2924.15</td>
+      <td>223.078337</td>
+      <td>6.170</td>
       <td>False</td>
     </tr>
   </tbody>
@@ -640,10 +640,10 @@ about the sort of markdowns the store is running.</p>
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-12:31:47 - cmdstanpy - INFO - Chain [1] start processing
-12:31:47 - cmdstanpy - INFO - Chain [1] done processing
-12:31:48 - cmdstanpy - INFO - Chain [1] start processing
-12:31:48 - cmdstanpy - INFO - Chain [1] done processing
+13:37:26 - cmdstanpy - INFO - Chain [1] start processing
+13:37:26 - cmdstanpy - INFO - Chain [1] done processing
+13:37:27 - cmdstanpy - INFO - Chain [1] start processing
+13:37:27 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -651,8 +651,8 @@ about the sort of markdowns the store is running.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-sMAPE (w/o exog) = 8.21
-sMAPE (w/ exog)  = 7.67
+sMAPE (w/o exog) = 3.98
+sMAPE (w/ exog)  = 3.18
 </pre></div></div>
 </div>
 <p>Before we wrap up this tutorial, we note that the exogenous variables contain a lot of missing data:</p>
@@ -762,47 +762,47 @@ sMAPE (w/ exog)  = 7.67
     <tr>
       <th>2012-09-28</th>
       <td>0.0</td>
-      <td>3666.27</td>
-      <td>7.64</td>
+      <td>7106.05</td>
+      <td>1.91</td>
       <td>1.65</td>
-      <td>1417.96</td>
-      <td>4744.28</td>
+      <td>1549.10</td>
+      <td>3946.03</td>
     </tr>
     <tr>
       <th>2012-10-05</th>
       <td>0.0</td>
-      <td>8077.89</td>
+      <td>6037.76</td>
       <td>NaN</td>
-      <td>18.22</td>
-      <td>3617.43</td>
-      <td>3626.14</td>
+      <td>10.04</td>
+      <td>3027.37</td>
+      <td>3853.40</td>
     </tr>
     <tr>
       <th>2012-10-12</th>
       <td>0.0</td>
-      <td>2086.18</td>
+      <td>2145.50</td>
       <td>NaN</td>
-      <td>8.11</td>
-      <td>602.36</td>
-      <td>5926.45</td>
+      <td>33.31</td>
+      <td>586.83</td>
+      <td>10421.01</td>
     </tr>
     <tr>
       <th>2012-10-19</th>
       <td>0.0</td>
-      <td>950.33</td>
+      <td>4461.89</td>
       <td>NaN</td>
-      <td>4.93</td>
-      <td>80.25</td>
-      <td>2312.85</td>
+      <td>1.14</td>
+      <td>1579.67</td>
+      <td>2642.29</td>
     </tr>
     <tr>
       <th>2012-10-26</th>
       <td>0.0</td>
-      <td>2585.85</td>
-      <td>31.75</td>
-      <td>6.00</td>
-      <td>1057.16</td>
-      <td>1305.01</td>
+      <td>6152.59</td>
+      <td>129.77</td>
+      <td>200.00</td>
+      <td>272.29</td>
+      <td>2924.15</td>
     </tr>
   </tbody>
 </table>
@@ -815,7 +815,7 @@ sMAPE (w/ exog)  = 7.67
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_transform:            </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_transform</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_transform:            </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_transform</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_missing_value_policy: </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_missing_value_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_aggregation_policy:   </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_aggregation_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -826,12 +826,12 @@ sMAPE (w/ exog)  = 7.67
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Default exog_transform:            Identity()
+Default exog_transform:            MeanVarNormalize
 Default exog_missing_value_policy: MissingValuePolicy.ZFill
 Default exog_aggregation_policy:   AggregationPolicy.Mean
 </pre></div></div>
 </div>
-<p>So in this case, we first apply the identity transform to the exogenous data. Then, we impute missing values by filling them with zeros (<code class="docutils literal notranslate"><span class="pre">ZFill</span></code>), and we downsample the exogenous data by taking the <code class="docutils literal notranslate"><span class="pre">Mean</span></code> of any relevant windows.</p>
+<p>So in this case, we first apply mean-variance normalization to the exogenous data. Then, we impute missing values by filling them with zeros (<code class="docutils literal notranslate"><span class="pre">ZFill</span></code>), and we downsample the exogenous data by taking the <code class="docutils literal notranslate"><span class="pre">Mean</span></code> of any relevant windows.</p>
 </section>
 
 

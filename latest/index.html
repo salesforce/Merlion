@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Merlion’s documentation! &mdash; Merlion 1.3.1 documentation</title>
+  <title>Welcome to Merlion’s documentation! &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -62,8 +62,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to Merlion’s documentation!</li>
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Merlion’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -121,8 +121,8 @@ time series as <code class="docutils literal notranslate"><span class="pre">pand
 cloning the Merlion <a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Merlion/</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/</span></code> to install in editable mode. You may install additional optional dependencies via
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[all]</span></code>,  or by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;Merlion/[all]&quot;</span></code> if installing from source.
-Individually, the optional dependencies include <code class="docutils literal notranslate"><span class="pre">plot</span></code> for interactive plots
-and <code class="docutils literal notranslate"><span class="pre">deep-learning</span></code> for all deep learning models.</p>
+Individually, the optional dependencies include <code class="docutils literal notranslate"><span class="pre">dashboard</span></code> for a GUI dashboard,
+<code class="docutils literal notranslate"><span class="pre">spark</span></code> for a distributed computation backend with PySpark, and <code class="docutils literal notranslate"><span class="pre">deep-learning</span></code> for all deep learning models.</p>
 <p>To install the data loading package <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>, clone the Merlion
 <a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and call <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/ts_datasets/</span></code>. This package must be
 installed in editable mode (i.e. with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag) if you don’t want to manually specify the root directory of
@@ -148,7 +148,12 @@ which is also used as a part of the <a class="reference internal" href="merlion.
 </section>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h2>
-<p>To get started, we recommend the linked tutorials on <a class="reference internal" href="tutorials/anomaly/0_AnomalyIntro.html"><span class="doc">anomaly detection</span></a>
+<p>The easiest way to get started is to use the GUI web-based <a class="reference internal" href="merlion.dashboard.html"><span class="doc">dashboard</span></a>.
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional <code class="docutils literal notranslate"><span class="pre">dashboard</span></code> dependency (i.e.
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[dashboard]</span></code>), and call <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">merlion.dashboard</span></code> from the command line.
+You can view the dashboard at <a class="reference external" href="http://localhost:8050">http://localhost:8050</a>.</p>
+<p>For code resources, we recommend the linked tutorials on <a class="reference internal" href="tutorials/anomaly/0_AnomalyIntro.html"><span class="doc">anomaly detection</span></a>
 and <a class="reference internal" href="tutorials/forecast/0_ForecastIntro.html"><span class="doc">forecasting</span></a>. After that, you should read in more detail about Merlion’s
 main data structure for representing time series <a class="reference internal" href="tutorials/TimeSeries.html"><span class="doc">here</span></a>.</p>
 <div class="toctree-wrapper compound">

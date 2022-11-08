@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.automl package &mdash; Merlion 1.3.1 documentation</title>
+  <title>merlion.models.automl package &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -109,6 +109,7 @@
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.periodicity_strategy"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.periodicity_strategy</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.pval"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.pval</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.max_lag"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.max_lag</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.detect_seasonality"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.detect_seasonality()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.set_theta"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.set_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.evaluate_theta"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.evaluate_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer.generate_theta"><code class="docutils literal notranslate"><span class="pre">SeasonalityLayer.generate_theta()</span></code></a></li>
@@ -138,6 +139,7 @@
 </li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet"><code class="docutils literal notranslate"><span class="pre">AutoProphet</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet.config_class"><code class="docutils literal notranslate"><span class="pre">AutoProphet.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet.supports_exog"><code class="docutils literal notranslate"><span class="pre">AutoProphet.supports_exog</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet.generate_theta"><code class="docutils literal notranslate"><span class="pre">AutoProphet.generate_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet.set_theta"><code class="docutils literal notranslate"><span class="pre">AutoProphet.set_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphet.get_ic"><code class="docutils literal notranslate"><span class="pre">AutoProphet.get_ic()</span></code></a></li>
@@ -153,6 +155,7 @@
 </li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima"><code class="docutils literal notranslate"><span class="pre">AutoSarima</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima.config_class"><code class="docutils literal notranslate"><span class="pre">AutoSarima.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima.supports_exog"><code class="docutils literal notranslate"><span class="pre">AutoSarima.supports_exog</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima.generate_theta"><code class="docutils literal notranslate"><span class="pre">AutoSarima.generate_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima.evaluate_theta"><code class="docutils literal notranslate"><span class="pre">AutoSarima.evaluate_theta()</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima.set_theta"><code class="docutils literal notranslate"><span class="pre">AutoSarima.set_theta()</span></code></a></li>
@@ -172,6 +175,7 @@
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
@@ -200,10 +204,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
-          <li><a href="merlion.models.html">merlion.models package</a> &raquo;</li>
-      <li>merlion.models.automl package</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
+      <li class="breadcrumb-item active">merlion.models.automl package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/merlion.models.automl.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -514,7 +518,7 @@ for any model-specific adjustments you might want to make.</p></li>
 <li><p><strong>model</strong> – The model being wrapped, or a dict representing it.</p></li>
 <li><p><strong>periodicity_strategy</strong> – Strategy to choose the seasonality if multiple candidates are detected.</p></li>
 <li><p><strong>pval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – p-value for deciding whether a detected seasonality is statistically significant.</p></li>
-<li><p><strong>max_lag</strong> – max lag considered for seasonality detection.</p></li>
+<li><p><strong>max_lag</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – max lag considered for seasonality detection.</p></li>
 <li><p><strong>model_kwargs</strong> – Keyword arguments used specifically to initialize the underlying model. Only used if
 <code class="docutils literal notranslate"><span class="pre">model</span></code> is a dict. Will override keys in the <code class="docutils literal notranslate"><span class="pre">model</span></code> dict if specified.</p></li>
 <li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
@@ -616,6 +620,25 @@ multiple candidate seasonalites, and we return the best one(s) based on the <a c
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>max_lag for seasonality detection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.automl.seasonality.SeasonalityLayer.detect_seasonality">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detect_seasonality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PeriodicityStrategy.ACF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityLayer.detect_seasonality" title="Permalink to this definition"></a></dt>
+<dd><p>Helper method to detect the seasonality of a time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">array</span></code>) – The numpy array of values whose seasonality we want to detect. Must be univariate &amp; flattened.</p></li>
+<li><p><strong>periodicity_strategy</strong> (<a class="reference internal" href="#merlion.models.automl.seasonality.PeriodicityStrategy" title="merlion.models.automl.seasonality.PeriodicityStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">PeriodicityStrategy</span></code></a>) – Strategy to choose the seasonality if multiple candidates are detected.</p></li>
+<li><p><strong>pval</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – p-value for deciding whether a detected seasonality is statistically significant.</p></li>
+<li><p><strong>max_lag</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – max lag considered for seasonality detection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -845,6 +868,12 @@ additional seasonalities that the existing Prophet may not detect (e.g. hourly).
 <dd><p>alias of <a class="reference internal" href="#merlion.models.automl.autoprophet.AutoProphetConfig" title="merlion.models.automl.autoprophet.AutoProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoProphetConfig</span></code></a></p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.automl.autoprophet.AutoProphet.supports_exog">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_exog</span></span><a class="headerlink" href="#merlion.models.automl.autoprophet.AutoProphet.supports_exog" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model supports exogenous regressors.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.automl.autoprophet.AutoProphet.generate_theta">
 <span class="sig-name descname"><span class="pre">generate_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autoprophet.AutoProphet.generate_theta" title="Permalink to this definition"></a></dt>
@@ -965,6 +994,12 @@ not override arguments in either the <code class="docutils literal notranslate">
 <dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarima.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarima.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarimaConfig" title="merlion.models.automl.autosarima.AutoSarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoSarimaConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarima.supports_exog">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_exog</span></span><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarima.supports_exog" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model supports exogenous regressors.</p>
 </dd></dl>
 
 <dl class="py method">
