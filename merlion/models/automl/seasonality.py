@@ -9,7 +9,6 @@ Automatic seasonality detection.
 """
 from abc import abstractmethod
 from enum import Enum, auto
-import itertools
 import logging
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
@@ -183,42 +182,42 @@ class SeasonalityLayer(AutoMLMixIn):
         :param max_lag: max lag considered for seasonality detection.
         """
         # Use the residuals of an ETS model fit to the data, to handle any trend. This makes the ACF more robust.
-        if len(x) > 10:
-            fit = ETSModel(x, error="add", trend="add").fit(disp=False).fittedvalues
-            x = x - fit
+        # For each candidate seasonality, the ACF we assign is the higher of the raw ACF and residual ACF.
+        candidate2score = {}
+        y = x if len(x) < 10 else ETSModel(x, error="add", trend="add").fit(disp=False).resid
+        for x in [x] if x is y else [x, y]:
+            # compute max lag & ACF function
+            max_lag = max(min(int(10 * np.log10(len(x))), len(x) - 1), 40) if max_lag is None else max_lag
+            xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
+            xacf[np.isnan(xacf)] = 0
 
-        # compute max lag & ACF function
-        max_lag = max(min(int(10 * np.log10(len(x))), len(x) - 1), 40) if max_lag is None else max_lag
-        xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
-        xacf[np.isnan(xacf)] = 0
+            # select the local maximum points with acf > 0, and smaller than 1/2 the length of the time series
+            xacf = xacf[: np.ceil(len(x) / 2).astype(int)]
+            candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
 
-        # select the local maximum points with acf > 0
-        candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
+            if len(candidates) > 0:
+                # filter out potential harmonics by applying peak-finding on the peaks of the ACF
+                if len(candidates) > 1:
+                    candidates_idx = []
+                    if xacf[candidates[0]] > xacf[candidates[1]]:
+                        candidates_idx += [0]
+                    candidates_idx += argrelmax(xacf[candidates])[0].tolist()
+                    if xacf[candidates[-1]] > xacf[candidates[-2]]:
+                        candidates_idx += [-1]
+                    candidates = candidates[candidates_idx]
 
-        # the periods should be smaller than one half of the length of time series
-        candidates = candidates[candidates < int(len(x) / 2)]
-        if len(candidates) > 0:
-            candidates_idx = []
-            if len(candidates) == 1:
-                candidates_idx += [0]
-            else:
-                if xacf[candidates[0]] > xacf[candidates[1]]:
-                    candidates_idx += [0]
-                if xacf[candidates[-1]] > xacf[candidates[-2]]:
-                    candidates_idx += [-1]
-                candidates_idx += argrelmax(xacf[candidates])[0].tolist()
-            candidates = candidates[candidates_idx]
+                # statistical test if ACF is significant with respect to a normal distribution
+                xacf = xacf[1:]
+                xacf_var = np.cumsum(np.concatenate(([1], 2 * xacf[:-1] ** 2))) / len(x)
+                z_scores = xacf / np.sqrt(xacf_var)
+                candidates = candidates[z_scores[candidates - 1] > norm.ppf(1 - pval / 2)]
+                for c in candidates.tolist():
+                    candidate2score[c] = max(candidate2score.get(c, -np.inf), z_scores[c - 1])
 
-            # statistical test if acf is significant w.r.t a normal distribution
-            xacf = xacf[1:]
-            tcrit = norm.ppf(1 - pval / 2)
-            clim = tcrit * np.sqrt(np.cumsum(np.concatenate(([1], 2 * xacf[:-1] ** 2)))) / np.sqrt(len(x))
-            candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
-
-            # sort candidates by ACF value
-            candidates = sorted(candidates.tolist(), key=lambda c: xacf[c - 1], reverse=True)
-
-        # choose the desired candidates based on periodicity strategy
+        # sort the candidates by z-score and choose the desired candidates based on periodicity strategy
+        candidates = sorted(candidate2score.keys(), key=lambda c: candidate2score[c], reverse=True)
+        for c, s in candidate2score.items():
+            logger.info(f"Detected seas = {c:3d} with z-score = {s:5.2f}.")
         if len(candidates) == 0:
             candidates = [1]
         if periodicity_strategy is PeriodicityStrategy.ACF:

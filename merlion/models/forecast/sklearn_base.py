@@ -13,7 +13,7 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
-from merlion.models.automl.seasonality import SeasonalityLayer
+from merlion.models.automl.seasonality import SeasonalityLayer, PeriodicityStrategy
 from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.transform.resample import TemporalResample
@@ -103,13 +103,10 @@ class SKLearnForecaster(ForecasterExogBase):
 
         # Set maxlags
         if self.maxlags is None:
+            k = max(10, len(train_data) // 5)
             x = train_data.values[:, self.target_seq_index]
-            self.config.maxlags = max(
-                SeasonalityLayer.detect_seasonality(x=x, max_lag=len(train_data) // 3)[0],
-                min(20, len(train_data) // 10),
-                self.max_forecast_steps or 1,
-                self.prediction_stride or 1,
-            )
+            seas = SeasonalityLayer.detect_seasonality(x, k, pval=0.01, periodicity_strategy=PeriodicityStrategy.Max)[0]
+            self.config.maxlags = max(seas, min(20, k), self.max_forecast_steps or 1, self.prediction_stride or 1)
             logger.info(f"Setting maxlags to {self.config.maxlags} based on the training data.")
 
         # Make sure prediction_stride and max_forecast_steps are compatible

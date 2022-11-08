@@ -54,8 +54,14 @@ class ForecastModel(ModelMixin, DataMixin):
         if target_column not in train_df:
             target_column = int(target_column)
         assert target_column in train_df, f"The target variable {target_column} is not in the time series."
-        feature_columns = [int(c) if c not in train_df else c for c in feature_columns]
-        exog_columns = [int(c) if c not in train_df else c for c in exog_columns]
+        try:
+            feature_columns = [int(c) if c not in train_df else c for c in feature_columns]
+        except ValueError:
+            feature_columns = []
+        try:
+            exog_columns = [int(c) if c not in train_df else c for c in exog_columns]
+        except ValueError:
+            exog_columns = []
         for exog_column in exog_columns:
             assert exog_column in train_df, f"Exogenous variable {exog_column} is not in the time series."
 

@@ -86,9 +86,7 @@ class DefaultDetector(LayeredDetector):
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
                 models=[
-                    ModelFactory.create(
-                        "AutoETS", model=dict(name="ETSDetector"), additive_only=True, transform=ets_transform
-                    ),
+                    ModelFactory.create("AutoETS", model=dict(name="ETSDetector"), transform=ets_transform),
                     ModelFactory.create(
                         "RandomCutForest",
                         online_updates=True,
@@ -164,5 +162,5 @@ class DefaultForecaster(LayeredForecaster):
         if train_data.dim > 1 or exog_data is not None:
             self.model = ModelFactory.create("LGBMForecaster", **kwargs)
         else:
-            self.model = ModelFactory.create("AutoETS", additive_only=True, **kwargs)
+            self.model = ModelFactory.create("AutoETS", **kwargs)
         return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)
