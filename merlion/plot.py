@@ -16,25 +16,21 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 from merlion.utils import TimeSeries, UnivariateTimeSeries
 
 logger = logging.getLogger(__name__)
-try:
-    import plotly
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-except ImportError:
-    logger.warning(
-        "plotly not installed, so plotly visualizations will not work. Try installing Merlion with optional "
-        "dependencies using `pip install salesforce-merlion[plot]` or `pip install `salesforce-merlion[all]`."
-    )
 
 
 def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
     """
     Plots anomalies as pink windows on the matplotlib ``Axes`` object ``ax``.
     """
+    if anomaly_labels is None:
+        return ax
     anomaly_labels = anomaly_labels.to_pd()
     t, y = anomaly_labels.index, anomaly_labels.values
     splits = np.where(y[1:] != y[:-1])[0] + 1
@@ -42,12 +38,15 @@ def plot_anoms(ax: plt.Axes, anomaly_labels: TimeSeries):
     for k in range(len(splits) - 1):
         if y[splits[k]]:  # If splits[k] is anomalous
             ax.axvspan(t[splits[k]], t[splits[k + 1]], color="#e07070", alpha=0.5)
+    return ax
 
 
 def plot_anoms_plotly(fig, anomaly_labels: TimeSeries):
     """
     Plots anomalies as pink windows on the plotly ``Figure`` object ``fig``.
     """
+    if anomaly_labels is None:
+        return fig
     anomaly_labels = anomaly_labels.to_pd()
     t, y = anomaly_labels.index, anomaly_labels.values
     splits = np.where(y[1:] != y[:-1])[0] + 1
@@ -55,6 +54,7 @@ def plot_anoms_plotly(fig, anomaly_labels: TimeSeries):
     for k in range(len(splits) - 1):
         if y[splits[k]]:  # If splits[k] is anomalous
             fig.add_vrect(t[splits[k]], t[splits[k + 1]], line_width=0, fillcolor="#e07070", opacity=0.4)
+    return fig
 
 
 class Figure:

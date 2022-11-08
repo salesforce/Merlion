@@ -17,6 +17,9 @@ each associated with its own sub-package:
         detection and forecasting.
     -   :py:mod:`merlion.models.automl`: AutoML layers for various models
 
+-   :py:mod:`merlion.dashboard`: A GUI dashboard app for Merlion, which can be started with
+    ``python -m merlion.dashboard``. This dashboard provides a good way to quickly experiment many models on a new
+    time series.
 -   :py:mod:`merlion.spark`: APIs to integrate Merlion with PySpark for using distributed computing to run training
     and inference on multiple time series in parallel.
 -   :py:mod:`merlion.transform`: Data pre-processing layer which implements many standard data transformations used in
@@ -55,6 +58,11 @@ Subpackages
    :maxdepth: 4
 
    merlion.models
+
+.. toctree::
+   :maxdepth: 2
+
+   merlion.dashboard
    merlion.spark
    merlion.transform
    merlion.post_process

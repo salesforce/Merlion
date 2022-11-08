@@ -13,9 +13,11 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
+from merlion.models.automl.seasonality import SeasonalityLayer, PeriodicityStrategy
 from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
-from merlion.utils.time_series import to_pd_datetime, TimeSeries
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
+from merlion.transform.resample import TemporalResample
+from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
 
@@ -25,9 +27,11 @@ class SKLearnForecasterConfig(ForecasterExogConfig):
     Configuration class for a `SKLearnForecaster`.
     """
 
+    _default_transform = TemporalResample()
+
     def __init__(
         self,
-        maxlags: int,
+        maxlags: int = None,
         max_forecast_steps: int = None,
         target_seq_index: int = None,
         prediction_stride: int = 1,
@@ -38,7 +42,6 @@ class SKLearnForecasterConfig(ForecasterExogConfig):
         :param max_forecast_steps: Max # of steps we would like to forecast for.
         :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
             series) whose value we would like to forecast.
-        :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
         :param prediction_stride: the number of steps being forecasted in a single call to underlying the model
 
             - If univariate: the sequence target of the length of prediction_stride will be utilized, forecasting will
@@ -94,46 +97,59 @@ class SKLearnForecaster(ForecasterExogBase):
     def _default_train_config(self):
         return dict()
 
-    def _train_with_exog(
-        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
-    ) -> Tuple[pd.DataFrame, None]:
-        fit = train_config.get("fit", True)
+    def _set_params(self, train_data: pd.DataFrame, fit: bool = False):
+        if not fit:
+            return
+
+        # Set maxlags
+        if self.maxlags is None:
+            k = max(10, len(train_data) // 5)
+            x = train_data.values[:, self.target_seq_index]
+            seas = SeasonalityLayer.detect_seasonality(x, k, pval=0.01, periodicity_strategy=PeriodicityStrategy.Max)[0]
+            self.config.maxlags = max(seas, min(20, k), self.max_forecast_steps or 1, self.prediction_stride or 1)
+            logger.info(f"Setting maxlags to {self.config.maxlags} based on the training data.")
+
+        # Make sure prediction_stride and max_forecast_steps are compatible
         max_forecast_steps = len(train_data) - self.maxlags
-        if fit and self.prediction_stride > 1:  # sanity checks for seq2seq prediction
-            if self.max_forecast_steps is not None and self.max_forecast_steps > max_forecast_steps:
+        if self.prediction_stride > 1 and self.max_forecast_steps is not None:  # sanity checks for seq2seq prediction
+            if self.max_forecast_steps > max_forecast_steps:
                 logger.warning(
                     f"With train data of length {len(train_data)} and  maxlags={self.maxlags}, the maximum supported "
                     f"forecast steps is {max_forecast_steps}, but got max_forecast_steps={self.max_forecast_steps}. "
                     f"Reducing to the maximum permissible value."
                 )
                 self.config.max_forecast_steps = max_forecast_steps
-            if (
-                self.max_forecast_steps is not None
-                and self.dim > 1
-                and self.prediction_stride != self.max_forecast_steps
-            ):
+            if self.dim > 1 and self.prediction_stride != self.max_forecast_steps:
                 logger.warning(
                     f"For multivariate dataset, reset prediction_stride = max_forecast_steps = {self.max_forecast_steps}"
                 )
                 self.config.prediction_stride = self.max_forecast_steps
 
+    def _train_with_exog(
+        self, train_data: pd.DataFrame, train_config=None, exog_data: pd.DataFrame = None
+    ) -> Tuple[pd.DataFrame, None]:
+        fit = train_config.get("fit", True)
+        self._set_params(train_data=train_data, fit=fit)
         if self.dim == 1:
-            logger.info(
-                f"Model is working on a univariate dataset, hybrid of sequence and autoregression training strategy "
-                f"will be adopted with prediction_stride = {self.prediction_stride}."
-            )
+            if fit:
+                logger.info(
+                    f"Model is working on a univariate dataset, hybrid of sequence and autoregression training "
+                    f"strategy will be adopted with prediction_stride = {self.prediction_stride}."
+                )
             data_target_idx = self.target_seq_index
         elif self.prediction_stride == 1:
-            logger.info(
-                f"Model is working on a multivariate dataset with prediction_stride = 1, model will be trained to "
-                f"autoregressively predict all univariates."
-            )
+            if fit:
+                logger.info(
+                    f"Model is working on a multivariate dataset with prediction_stride = 1. "
+                    f"Model will be trained to autoregressively predict all univariates."
+                )
             data_target_idx = None
         else:
-            logger.info(
-                f"Model is working on a multivariate dataset with prediction_stride > 1. Model will directly forecast "
-                f"the target univariate for the next {self.prediction_stride} timestamps."
-            )
+            if fit:
+                logger.info(
+                    f"Model is working on a multivariate dataset with prediction_stride > 1. Model will directly "
+                    f"forecast the target univariate for the next {self.prediction_stride} timestamps."
+                )
             data_target_idx = self.target_seq_index
 
         # process train data to the rolling window dataset
@@ -153,22 +169,15 @@ class SKLearnForecaster(ForecasterExogBase):
         if fit:
             self.model.fit(inputs, labels)
             if exog_data is not None:
-                self._last_train_window = pd.concat(
-                    (train_data[-self.maxlags :], exog_data.iloc[-self.maxlags :]), axis=1
-                )
+                train = train_data.iloc[-self.maxlags :]
+                exog = pd.DataFrame(exog_data.values[1:], index=exog_data.index[:-1], columns=exog_data.columns)
+                self._last_train_window = pd.concat((train, exog.loc[train.index[:-1]]), axis=1)
             else:
                 self._last_train_window = train_data.iloc[-self.maxlags :]
 
-        # forecasting
-        if self.dim == 1:
-            pred = self._hybrid_forecast(inputs, steps=self.prediction_stride)
-        elif self.prediction_stride == 1:
-            pred = self._autoregressive_forecast(inputs, steps=1)
-        else:
-            pred = self.model.predict(inputs)
-
-        # since the model may predict multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0], index=labels_ts[:, 0], columns=[self.target_name]), None
+        # forecast for just the next step
+        pred = self._predict(prev=inputs, exog_data=exog_data, n_steps=1)[:, 0]
+        return pd.DataFrame(pred, index=labels_ts[:, 0], columns=[self.target_name]), None
 
     def _forecast_with_exog(
         self,
@@ -186,31 +195,39 @@ class SKLearnForecaster(ForecasterExogBase):
         prev_pred, prev_err = None, None
         if time_series_prev is None:
             time_series_prev = self._last_train_window  # Note: includes exog_data if needed
-        elif return_prev:
-            try:
-                prev_pred, prev_err = self._train_with_exog(
-                    time_series_prev, train_config=dict(fit=False), exog_data=exog_data_prev
-                )
-            except StopIteration:
-                prev_pred, prev_err = None, None
+        else:
+            if return_prev:
+                try:
+                    prev_pred, prev_err = self._train_with_exog(
+                        time_series_prev, train_config=dict(fit=False), exog_data=exog_data_prev
+                    )
+                except StopIteration:
+                    prev_pred, prev_err = None, None
 
-        if exog_data_prev is not None:
-            time_series_prev = pd.concat((time_series_prev, exog_data_prev), axis=1)
+            if exog_data_prev is not None:
+                x = pd.DataFrame(
+                    exog_data_prev.values[1:], index=exog_data_prev.index[:-1], columns=exog_data_prev.columns
+                )
+                time_series_prev = pd.concat((time_series_prev, x), axis=1)
+
+        # The last exog entry in time_series_prev needs to be filled
+        if exog_data is not None:
+            time_series_prev.loc[time_series_prev.index[-1], exog_data.columns] = exog_data.iloc[0]
         prev = np.atleast_2d(self._get_immedidate_forecasting_prior(time_series_prev))
 
         # TODO: allow model to use timestamps
-        n = len(time_stamps)
-        if self.dim == 1:
-            yhat = self._hybrid_forecast(prev, exog_data=exog_data, steps=n)
-        elif self.prediction_stride == 1:
-            yhat = self._autoregressive_forecast(prev, exog_data=exog_data, steps=n)
-        else:
-            yhat = self.model.predict(prev)
-
-        forecast = pd.DataFrame(yhat.flatten()[:n], index=to_pd_datetime(time_stamps), columns=[self.target_name])
+        yhat = self._predict(prev=prev, exog_data=exog_data, n_steps=len(time_stamps)).flatten()
+        forecast = pd.DataFrame(yhat, index=to_pd_datetime(time_stamps), columns=[self.target_name])
         if prev_pred is not None:
             forecast = pd.concat((prev_pred, forecast))
         return forecast, None
+
+    def _predict(self, prev, exog_data, n_steps):
+        if self.dim == 1:
+            return self._hybrid_forecast(prev, exog_data=exog_data, steps=n_steps)
+        if self.prediction_stride == 1:
+            return self._autoregressive_forecast(prev, exog_data=exog_data, steps=n_steps)
+        return self.model.predict(prev)[:, :n_steps]
 
     def _hybrid_forecast(self, inputs, exog_data=None, steps=None):
         """
@@ -231,7 +248,9 @@ class SKLearnForecaster(ForecasterExogBase):
                 break
             if exog_data is not None:
                 assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
-                next_pred = np.concatenate((next_pred.T, exog_data.values[i : i + self.prediction_stride]), axis=1)
+                next_pred = np.concatenate(
+                    (next_pred.T, exog_data.values[i + 1 : i + 1 + self.prediction_stride]), axis=1
+                )
                 next_pred = next_pred.reshape((1, -1))
             inputs = self._update_prior(inputs, next_pred, for_univariate=True)
         return pred[:, :steps]
@@ -254,7 +273,7 @@ class SKLearnForecaster(ForecasterExogBase):
                 break
             if exog_data is not None:
                 assert len(inputs) == 1, "If you wish to handle exogenous data in batch, concatenate it to the inputs."
-                next_pred = np.concatenate((next_pred, exog_data.values[i : i + 1]), axis=1)
+                next_pred = np.concatenate((next_pred, exog_data.values[i + 1 : i + 2]), axis=1)
             inputs = self._update_prior(inputs, next_pred, for_univariate=False)
         return pred
 
@@ -289,7 +308,7 @@ class SKLearnForecaster(ForecasterExogBase):
             prior = np.concatenate([prior, next_forecast], axis=1)[:, -self.maxlags * (1 + (self.exog_dim or 0)) :]
         else:
             assert len(next_forecast.shape) == 2
-            prior = prior.reshape(len(prior), self.dim + (self.exog_dim or 0), -1)
+            prior = prior.reshape((len(prior), self.dim + (self.exog_dim or 0), -1))
             next_forecast = np.expand_dims(next_forecast, axis=2)
             prior = np.concatenate([prior, next_forecast], axis=2)[:, :, -self.maxlags :]
         return prior.reshape(len(prior), -1)

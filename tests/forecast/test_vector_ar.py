@@ -34,11 +34,11 @@ class TestVectorAR(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.max_forecast_steps = 3
         self.maxlags = 28
         self.i = 0
 
+    def run_test(self, univariate: bool, exog: bool):
         df, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", "seattle_trail"))[0]
         t = int(df[md["trainval"]].index[-1].to_pydatetime().timestamp())
         data = TimeSeries.from_pd(df)
@@ -46,6 +46,11 @@ class TestVectorAR(unittest.TestCase):
             [TemporalResample(granularity="1d", missing_value_policy="FFill"), LowerUpperClip(upper=300)]
         )
         cleanup.train(data)
+        if exog:
+            self.exog_data = TimeSeries([u for i, u in enumerate(data.univariates) if i > data.dim // 2])
+            data = TimeSeries([u for name, u in data.items() if name not in self.exog_data.names])
+        else:
+            self.exog_data = None
         self.train_data, self.test_data = cleanup(data).bisect(t)
 
         self.model = instantiate_or_copy_model(
@@ -59,7 +64,6 @@ class TestVectorAR(unittest.TestCase):
             )
         )
 
-    def run_test(self, univariate):
         logger.info("Training model...")
         if univariate:
             name = self.train_data.names[self.i]
@@ -67,37 +71,47 @@ class TestVectorAR(unittest.TestCase):
             self.test_data = self.test_data.univariates[name].to_ts()
             self.model.config.maxlags = self.maxlags = 7
 
-        yhat, _ = self.model.train(self.train_data)
+        yhat, _ = self.model.train(self.train_data, exog_data=self.exog_data)
 
         # Check RMSE with multivariate forecast inversion
-        forecast, _ = self.model.forecast(self.max_forecast_steps)
+        forecast, _ = self.model.forecast(self.max_forecast_steps, exog_data=self.exog_data)
         rmse = ForecastMetric.RMSE.value(self.test_data, forecast, target_seq_index=self.i)
         logger.info(f"Immediate forecast RMSE: {rmse:.2f}")
 
         # Check look-ahead sMAPE using time_series_prev
         dataset = RollingWindowDataset(self.test_data, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
-        testing_instance, testing_label = next(iter(dataset))
-        pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
-        lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
+        test_instance, test_label = next(iter(dataset))
+        pred, _ = self.model.forecast(test_label.time_stamps, test_instance, exog_data=self.exog_data)
+        lookahead_rmse = ForecastMetric.RMSE.value(test_label, pred, target_seq_index=self.i)
         logger.info(f"Look-ahead RMSE with time_series_prev: {lookahead_rmse:.2f}")
 
         # save and load
         if not univariate:
             self.model.save(dirname=join(rootdir, "tmp", "vector_ar"))
             loaded_model = ModelFactory.load(name="VectorAR", model_path=join(rootdir, "tmp", "vector_ar"))
-            loaded_pred, _ = loaded_model.forecast(testing_label.time_stamps, testing_instance)
+            loaded_pred, _ = loaded_model.forecast(test_label.time_stamps, test_instance, exog_data=self.exog_data)
             self.assertEqual(len(loaded_pred), self.max_forecast_steps)
             self.assertAlmostEqual((pred.to_pd() - loaded_pred.to_pd()).abs().max().item(), 0, places=5)
 
     def test_forecast_univariate(self):
         print("-" * 80)
         logger.info("test_forecast_univariate\n" + "-" * 80)
-        self.run_test(True)
+        self.run_test(True, False)
 
     def test_forecast_multivariate(self):
         print("-" * 80)
         logger.info("test_forecast_multivariate\n" + "-" * 80)
-        self.run_test(False)
+        self.run_test(False, False)
+
+    def test_forecast_univariate_exog(self):
+        print("-" * 80)
+        logger.info("test_forecast_univariate_exog\n" + "-" * 80)
+        self.run_test(True, True)
+
+    def test_forecast_multivariate_exog(self):
+        print("-" * 80)
+        logger.info("test_forecast_multivariate_exog\n" + "-" * 80)
+        self.run_test(False, True)
 
 
 if __name__ == "__main__":

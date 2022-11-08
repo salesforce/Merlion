@@ -8,8 +8,6 @@
 import logging
 from typing import Optional, Tuple
 
-import pandas as pd
-
 from merlion.models.factory import ModelFactory
 from merlion.models.layers import LayeredDetector, LayeredForecaster, LayeredModelConfig
 from merlion.models.anomaly.base import DetectorBase
@@ -24,7 +22,7 @@ class DefaultDetectorConfig(LayeredModelConfig):
     Config object for default anomaly detection model.
     """
 
-    def __init__(self, model=None, granularity=None, n_threads: int = 1, **kwargs):
+    def __init__(self, model=None, granularity: str = None, n_threads: int = 1, **kwargs):
         """
         :param granularity: the granularity at which the input time series should
             be sampled, e.g. "5min", "1h", "1d", etc.
@@ -88,9 +86,7 @@ class DefaultDetector(LayeredDetector):
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
                 models=[
-                    ModelFactory.create(
-                        "AutoETS", model=dict(name="ETSDetector"), additive_only=True, transform=ets_transform
-                    ),
+                    ModelFactory.create("AutoETS", model=dict(name="ETSDetector"), transform=ets_transform),
                     ModelFactory.create(
                         "RandomCutForest",
                         online_updates=True,
@@ -117,15 +113,19 @@ class DefaultForecasterConfig(LayeredModelConfig):
     Config object for default forecasting model.
     """
 
-    def __init__(self, model=None, max_forecast_steps=None, target_seq_index=None, granularity=None, **kwargs):
+    def __init__(
+        self,
+        model=None,
+        max_forecast_steps: int = None,
+        target_seq_index: int = None,
+        granularity: str = None,
+        **kwargs,
+    ):
         """
         :param max_forecast_steps: Max # of steps we would like to forecast for.
-            Required for some models like `MSES` and `LGBMForecaster`.
-        :param target_seq_index: The index of the univariate (amongst all
-            univariates in a general multivariate time series) whose value we
-            would like to forecast.
-        :param granularity: the granularity at which the input time series should
-            be sampled, e.g. "5min", "1h", "1d", etc.
+        :param target_seq_index: The index of the univariate (amongst all univariates in a general multivariate time
+            series) whose value we would like to forecast.
+        :param granularity: the granularity at which the input time series should be sampled, e.g. "5min", "1d", etc.
         """
         self.granularity = granularity
         super().__init__(
@@ -142,6 +142,10 @@ class DefaultForecaster(LayeredForecaster):
     config_class = DefaultForecasterConfig
 
     @property
+    def supports_exog(self):
+        return True
+
+    @property
     def granularity(self):
         return self.config.granularity
 
@@ -152,23 +156,11 @@ class DefaultForecaster(LayeredForecaster):
     def train(
         self, train_data: TimeSeries, train_config=None, exog_data=None
     ) -> Tuple[TimeSeries, Optional[TimeSeries]]:
+        # LGBM forecaster for multivariate data, AutoETS for univariate data
         transform_dict = dict(name="TemporalResample", granularity=self.granularity)
         kwargs = dict(transform=transform_dict, **self.config.model_kwargs)
-
-        # LGBM forecaster for multivariate data
-        if train_data.dim > 1:
-            self.model = ModelFactory.create(
-                "LGBMForecaster",
-                prediction_stride=1,
-                maxlags=21,
-                n_estimators=100,
-                max_depth=7,
-                learning_rate=0.1,
-                **kwargs,
-            )
-
-        # ETS for univariate data
+        if train_data.dim > 1 or exog_data is not None:
+            self.model = ModelFactory.create("LGBMForecaster", **kwargs)
         else:
-            self.model = ModelFactory.create("AutoETS", additive_only=True, **kwargs)
-
+            self.model = ModelFactory.create("AutoETS", **kwargs)
         return super().train(train_data=train_data, train_config=train_config, exog_data=exog_data)
