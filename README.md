@@ -39,19 +39,23 @@ across multiple time series datasets.
 
 Merlion's key features are
 -  Standardized and easily extensible data loading & benchmarking for a wide range of forecasting and anomaly
-   detection datasets.
--  A library of diverse models for both anomaly detection and forecasting, unified under a shared interface.
-   Models include classic statistical methods, tree ensembles, and deep
+   detection datasets. This includes transparent support for custom datasets.
+-  A library of diverse models for anomaly detection, forecasting, and change point detection, all
+   unified under a shared interface. Models include classic statistical methods, tree ensembles, and deep
    learning approaches. Advanced users may fully configure each model as desired.
 -  Abstract `DefaultDetector` and `DefaultForecaster` models that are efficient, robustly achieve good performance,
    and provide a starting point for new users.
 -  AutoML for automated hyperaparameter tuning and model selection.
+-  Unified API for using a wide range of models to forecast with
+   [exogenous regressors](https://opensource.salesforce.com/Merlion/tutorials/forecast/3_ForecastExogenous.html).
 -  Practical, industry-inspired post-processing rules for anomaly detectors that make anomaly scores more interpretable,
    while also reducing the number of false positives.
 -  Easy-to-use ensembles that combine the outputs of multiple models to achieve more robust performance. 
 -  Flexible evaluation pipelines that simulate the live deployment & re-training of a model in production,
    and evaluate performance on both forecasting and anomaly detection.
 -  Native support for visualizing model predictions, including with a clickable visual UI.
+-  Distributed computation [backend](https://opensource.salesforce.com/Merlion/merlion.spark.html) using PySpark,
+   which can be used to serve time series applications at industrial scale.
 
 The table below provides a visual overview of how Merlion's key features compare to other libraries for time series
 anomaly detection and/or forecasting.

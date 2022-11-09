@@ -1,0 +1,113 @@
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Support for Python is experimental, and requires building SNAPSHOT image of Apache Spark,
+# with `imagePullPolicy` set to Always
+
+# Install the spark operator as follows:
+# helm install spark-operator spark-operator/spark-operator --namespace spark-operator --create-namespace --set sparkJobNamespace=spark-apps
+
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: forecast
+  namespace: spark-apps
+spec:
+  sparkVersion: "3.1.1"
+  sparkConf:
+    spark.sql.execution.arrow.pyspark.enabled: "true"
+
+  restartPolicy:
+    type: Never
+
+  driver:
+    cores: 1
+    memory: "1G"
+    serviceAccount: spark-operator-spark
+    labels:
+      version: 3.1.1
+
+  executor:
+    cores: 1
+    instances: 2
+    memory: "2G"
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 185
+    labels:
+      version: 3.1.1
+
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: "merlion-spark"
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///opt/spark/apps/forecast.py
+  arguments:
+    - "--train_data"
+    - "/opt/spark/work-dir/walmart_mini.csv"
+    - "--output_path"
+    - "results"
+    - "--target_col"
+    - "Weekly_Sales"
+    - "--data_cols"
+    - '[
+        "Weekly_Sales",
+        "Unemployment",
+        "CPI",
+        "Fuel_Price",
+        "Temperature"
+      ]'
+    - "--index_cols"
+    - '["Store", "Dept"]'
+    - "--time_col"
+    - "Date"
+    - "--hierarchical"
+    - "--agg_dict"
+    - '{
+        "Weekly_Sales": "sum",
+      }'
+    - "--model"
+    - '{"name": "DefaultForecaster"}'
+    - "--time_stamps"
+    - '[
+        "2012-11-02",
+        "2012-11-09",
+        "2012-11-16",
+        "2012-11-23",
+        "2012-11-30",
+        "2012-12-07",
+        "2012-12-14",
+        "2012-12-21",
+        "2012-12-28",
+        "2013-01-04",
+        "2013-01-11",
+        "2013-01-18",
+        "2013-01-25",
+        "2013-02-01",
+        "2013-02-08",
+        "2013-02-15",
+        "2013-02-22",
+        "2013-03-01",
+        "2013-03-08",
+        "2013-03-15",
+        "2013-03-22",
+        "2013-03-29",
+        "2013-04-05",
+        "2013-04-12",
+        "2013-04-19",
+        "2013-04-26",
+        "2013-05-03"
+      ]'

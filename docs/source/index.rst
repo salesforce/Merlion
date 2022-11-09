@@ -44,14 +44,14 @@ Note the following external dependencies:
    If using ``conda``, please ``conda install -c conda-forge lightgbm``
    before installing our package. This will ensure that OpenMP is configured to work with the ``lightgbm`` package
    (one of our dependencies) in your ``conda`` environment.
-   If using Mac, please install `Homebrew <https://brew.sh/>`_ and call ``brew install libomp`` so that the
+   If using Mac, please install `Homebrew <https://brew.sh/>`__ and call ``brew install libomp`` so that the
    OpenMP libary is available for the model.
    This is relevant for the
    :py:class:`LGBMForecaster <merlion.models.forecast.trees.LGBMForecaster>`,
    which is also used as a part of the :py:class:`DefaultForecaster <merlion.models.defaults.DefaultForecaster>`.
 
 2. Some of our anomaly detection models depend on having the Java Development Kit (JDK) installed. For Ubuntu, call
-   ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install `Homebrew <https://brew.sh/>`_ and call
+   ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install `Homebrew <https://brew.sh/>`__ and call
    ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``. Also ensure that ``java`` can be found
    on your ``PATH``, and that the ``JAVA_HOME`` environment variable is set.
    This is relevant for the :py:class:`RandomCutForest <merlion.models.anomaly.random_cut_forest.RandomCutForest>`

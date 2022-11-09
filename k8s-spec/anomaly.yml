@@ -1,0 +1,78 @@
+#
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Support for Python is experimental, and requires building SNAPSHOT image of Apache Spark,
+# with `imagePullPolicy` set to Always
+
+# Install the spark operator as follows:
+# helm install spark-operator spark-operator/spark-operator --namespace spark-operator --create-namespace --set sparkJobNamespace=spark-apps
+
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: anomaly
+  namespace: spark-apps
+spec:
+  sparkVersion: "3.1.1"
+  sparkConf:
+    spark.sql.execution.arrow.pyspark.enabled: "true"
+
+  restartPolicy:
+    type: Never
+
+  driver:
+    cores: 1
+    memory: "1G"
+    serviceAccount: spark-operator-spark
+    labels:
+      version: 3.1.1
+
+  executor:
+    cores: 1
+    instances: 2
+    memory: "2G"
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 185
+    labels:
+      version: 3.1.1
+
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: "merlion-spark"
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///opt/spark/apps/anomaly.py
+  arguments:
+    - "--data"
+    - "/opt/spark/work-dir/walmart_mini.csv"
+    - "--output_path"
+    - "results"
+    - "--train_test_split"
+    - "2012-08-01"
+    - "--data_cols"
+    - '[
+        "Weekly_Sales",
+        "Unemployment",
+        "CPI",
+        "Fuel_Price",
+        "Temperature"
+      ]'
+    - "--index_cols"
+    - '["Store", "Dept"]'
+    - "--time_col"
+    - "Date"
+    - "--model"
+    - '{"name": "DefaultDetector"}'
