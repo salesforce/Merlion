@@ -52,14 +52,14 @@ spec:
   type: Python
   pythonVersion: "3"
   mode: cluster
-  image: "merlion-spark"
-  imagePullPolicy: IfNotPresent
+  image: "merlion-spark:latest"
+  imagePullPolicy: Always
   mainApplicationFile: local:///opt/spark/apps/forecast.py
   arguments:
     - "--train_data"
-    - "/opt/spark/work-dir/walmart_mini.csv"
+    - "/opt/spark/work-dir/walmart_mini.csv"  # can be on the cloud if you configure Spark appropriately
     - "--output_path"
-    - "results"
+    - "results"  # can be on the cloud if you configure Spark appropriately
     - "--target_col"
     - "Weekly_Sales"
     - "--data_cols"
