@@ -43,13 +43,22 @@ class DeepConfig(Config):
     """
 
     @initializer
-    def __init__(self, lr: float = 1e-3, batch_size: int = 256, num_epochs: int = 10, **kwargs):
+    def __init__(
+        self,
+        lr: float = 1e-3,
+        batch_size: int = 256,
+        num_epochs: int = 10,
+        optim_name: str = "adam",
+        criterion: str = "mse",
+        **kwargs
+    ):
         """
         :param lr: The learning rate for training
         :param batch_size: The batch size for training
         :param num_epochs: The number of traning epochs
         """
         super().__init__(**kwargs)
+        self.device = None
 
 
 class TorchModel(nn.Module):
@@ -58,8 +67,9 @@ class TorchModel(nn.Module):
         self.config = config
 
     @abstractmethod
-    def forward(self, x):
-        raise NotImplementedError
+    def forward(self, past, *args, **kwargs):
+        print("hello")
+        # raise NotImplementedError
 
     @abstractmethod
     def get_loss(self):
@@ -72,23 +82,20 @@ class DeepModelBase(ModelBase):
     """
 
     config_class = DeepConfig
+    deep_model_class = TorchModel
     deep_model = None
 
     def __init__(self, config: DeepConfig):
         super().__init__(config)
-        self.create_model()
 
     @abstractmethod
     def create_model(self):
         raise NotImplementedError
-
-    def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
-        return None
 
     """
         training loop given a ts dataset
     """
 
     @abstractmethod
-    def _deep_train_loop(self, data_loader):
+    def _deep_train_loop(self, batch, config: DeepConfig):
         raise NotImplementedError

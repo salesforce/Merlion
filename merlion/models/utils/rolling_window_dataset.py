@@ -9,6 +9,7 @@ import numpy as np
 from typing import Optional, Union
 import pandas as pd
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
+from merlion.utils.timefeatures import time_features
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,9 @@ class RollingWindowDataset:
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
         flatten: bool = True,
+        ts_encoding: bool = False,
+        ts_freq: str = "h",
+        start_token_len: int = 0,
         seed: int = 0,
     ):
         """
@@ -55,6 +59,13 @@ class RollingWindowDataset:
             by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
         :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
         :param flatten: whether the output time series arrays should be flattened to 2 dimensions.
+        :param ts_encoding: whether the timestamp should be encoded to a float vector, which can be used
+            for training transformer based deep time series models
+        :param ts_freq: Frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
+            d:daily, b:business days, w:weekly, m:monthly]
+        :param start_token_len: Length of start token for deep transformer encoder-decoder based models; start token,
+            which you can view as the special token for nlp models (e.g., bos, sep, eos tokens). For non-transformer based models,
+            we set the token_length = 0
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -81,35 +92,39 @@ class RollingWindowDataset:
         self.n_past = n_past
         self.shuffle = shuffle
         self.flatten = flatten
+        self.ts_encoding = ts_encoding
+        self.ts_freq = ts_freq
+        self.start_token_len = start_token_len
 
         self.target_seq_index = target_seq_index
-        if target_seq_index is None:
-            if n_future not in [0, 1]:
-                logger.warning(
-                    "Since target_seq_index is None, we predict all univariates for this dataset. Currently, this is "
-                    "only valid with 1-step lookahead (autoregressive forecasting) or 0-step lookahead (autoencoding). "
-                    "Setting n_future = 1. If you are not expecting this behavior, set target_seq_index appropriately."
-                )
-                n_future = 1
         self.n_future = n_future
 
         self.ts_index = ts_index
         if ts_index:
             self.data = data.concat(exog_data, axis=1) if exog_data is not None else data
-            self.target = data if self.autoregressive else data.univariates[data.names[target_seq_index]].to_ts()
+            self.target = (
+                data if self.target_seq_index is None else data.univariates[data.names[target_seq_index]].to_ts()
+            )
             self.timestamp = to_pd_datetime(data.np_time_stamps)
         else:
             df = data.to_pd() if isinstance(data, TimeSeries) else data
             exog_df = data.to_pd() if isinstance(exog_data, TimeSeries) else exog_data
             self.data = np.concatenate((df.values, exog_df.values), axis=1) if exog_data is not None else df.values
             self.timestamp = df.index
-            self.target = df.values if self.autoregressive else df.values[:, target_seq_index]
+            self.target = df.values if self.target_seq_index is None else df.values[:, target_seq_index]
+
+        if self.ts_encoding:
+            self._timestamp_encoding()
 
         self.seed = seed
 
+    def _timestamp_encoding(self):
+        self.timestamp = time_features(self.timestamp, freq=self.ts_freq)
+        self.timestamp = self.timestamp.transpose(1, 0)
+
     @property
     def autoregressive(self):
-        return self.target_seq_index is None
+        return (self.target_seq_index is None) and (self.n_future == 1)
 
     @property
     def n_points(self):
@@ -138,25 +153,33 @@ class RollingWindowDataset:
         # TODO: allow output shape to be specified as class parameter
         past, past_ts, future, future_ts = zip(*batch)
         past = np.stack(past)
+        past_ts = np.stack(past_ts)
+
         if self.flatten:
             past = past.reshape((len(batch), -1))
-        past_ts = np.stack(past_ts)
+            past_ts = past_ts.reshape((len(batch), -1)) if self.ts_encoding else past_ts
+
         if future is not None:
-            future = np.stack(future).reshape((len(batch), -1))
+            future = np.stack(future)
+            future = future.reshape((len(batch), -1)) if self.flatten else future
+
             future_ts = np.stack(future_ts)
+            if self.flatten and self.ts_encoding:
+                future_ts = future_ts.reshape((len(batch), -1))
         else:
             future, future_ts = None, None
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
         assert 0 <= idx < self.n_points
-        idx_end = idx + self.n_past
-        past = self.data[idx:idx_end]
-        past_timestamp = self.timestamp[idx:idx_end]
-        if self.n_future > 0:  # predicting the future
-            future = self.target[idx_end : idx_end + self.n_future]
-            future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
-        else:  # autoencoding
-            future = self.target[idx:idx_end]
-            future_timestamp = self.timestamp[idx:idx_end]
+        past_start = idx
+        past_end = past_start + self.n_past
+        future_start = past_end - self.start_token_len
+        future_end = future_start + self.start_token_len + self.n_future
+
+        past = self.data[past_start:past_end]
+        past_timestamp = self.timestamp[past_start:past_end]
+        future = self.data[future_start:future_end]
+        future_timestamp = self.timestamp[future_start:future_end]
+
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)
