@@ -5,9 +5,8 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of Informer: 
-    Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting: https://arxiv.org/abs/2012.07436
-    Code adapted from https://github.com/thuml/Autoformer. 
+    Implementation of Transformer for time series data 
+    Code adapted from https://github.com/thuml/Autoformer
 """
 import pdb
 import copy
@@ -32,17 +31,13 @@ except ImportError as e:
     )
     raise ImportError(str(e) + ". " + err)
 
+
 from merlion.models.deep_base import TorchModel
 from merlion.models.forecast.deep_models.deep_forecast_base import DeepForecasterConfig, DeepForecaster
-from merlion.models.forecast.deep_models.layers.Transformer_EncDec import (
-    Decoder,
-    DecoderLayer,
-    Encoder,
-    EncoderLayer,
-    ConvLayer,
-)
-from merlion.models.forecast.deep_models.layers.SelfAttention_Family import FullAttention, ProbAttention, AttentionLayer
+from layers.Transformer_EncDec import Decoder, DecoderLayer, Encoder, EncoderLayer, ConvLayer
+from layers.SelfAttention_Family import FullAttention, AttentionLayer
 from merlion.models.forecast.deep_models.layers.Embed import DataEmbedding
+
 
 from merlion.transform.base import TransformBase, Identity
 from merlion.transform.factory import TransformFactory
@@ -52,7 +47,7 @@ from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, 
 logger = logging.getLogger(__name__)
 
 
-class InformerConfig(DeepForecasterConfig):
+class TransformerConfig(DeepForecasterConfig):
     @initializer
     def __init__(
         self,
@@ -91,8 +86,8 @@ class InformerConfig(DeepForecasterConfig):
                 self.dec_in = 1
 
 
-class InformerModel(TorchModel):
-    def __init__(self, config: InformerConfig):
+class TransformerModel(TorchModel):
+    def __init__(self, config: TransformerConfig):
         super().__init__(config)
 
         self.n_past = config.n_past
@@ -111,7 +106,7 @@ class InformerModel(TorchModel):
             [
                 EncoderLayer(
                     AttentionLayer(
-                        ProbAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
+                        FullAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
                         config.d_model,
                         config.n_heads,
                     ),
@@ -122,7 +117,6 @@ class InformerModel(TorchModel):
                 )
                 for l in range(config.e_layers)
             ],
-            [ConvLayer(config.d_model) for l in range(config.e_layers - 1)] if config.distil else None,
             norm_layer=torch.nn.LayerNorm(config.d_model),
         )
 
@@ -131,12 +125,12 @@ class InformerModel(TorchModel):
             [
                 DecoderLayer(
                     AttentionLayer(
-                        ProbAttention(True, config.factor, attention_dropout=config.dropout, output_attention=False),
+                        FullAttention(True, config.factor, attention_dropout=config.dropout, output_attention=False),
                         config.d_model,
                         config.n_heads,
                     ),
                     AttentionLayer(
-                        ProbAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
+                        FullAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
                         config.d_model,
                         config.n_heads,
                     ),
@@ -171,9 +165,9 @@ class InformerModel(TorchModel):
         return dec_out[:, -self.max_forecast_steps :, :]
 
 
-class InformerForecaster(DeepForecaster):
-    config_class = InformerConfig
-    deep_model_class = InformerModel
+class TransformerForecaster(DeepForecaster):
+    config_class = TransformerConfig
+    deep_model_class = TransformerModel
 
-    def __init__(self, config: InFormerConfig):
+    def __init__(self, config: TransformerConfig):
         super().__init__(config)

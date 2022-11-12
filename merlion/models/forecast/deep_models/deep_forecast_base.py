@@ -158,7 +158,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 loss.backward()
                 self.optimizer.step()
 
-                if (i + 1) % 2 == 0:
+                if (i + 1) % 200 == 0:
                     logger.info("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item()))
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((config.num_epochs - epoch) * train_steps - i)
