@@ -14,7 +14,7 @@ import pandas as pd
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
-from merlion.models.forecast.autoformer import AutoFormerConfig, AutoFormerForecaster
+from merlion.models.forecast.autoformer import AutoformerConfig, AutoformerForecaster
 
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.transform.bound import LowerUpperClip
@@ -36,22 +36,28 @@ class TestDeepModels(unittest.TestCase):
         data_path = "weather.csv"
         weather_ds = CustomDataset(data_root_path)
         df, metadata = weather_ds[0]
+        bound = 96 * 2
+        df = df[0:bound]
+
         self.df = df
         self.ts_data = TimeSeries.from_pd(df)
 
-        self.config = AutoFormerConfig(
+        self.config = AutoformerConfig(
             n_past=96,
             max_forecast_steps=96,
             start_token_len=48,
             dim=self.ts_data.dim,
         )
-        self.forecaster = AutoFormerForecaster(self.config)
+        self.forecaster = AutoformerForecaster(self.config)
 
     def test_model(self):
-        print(self.config.__dict__)
-        self.forecaster.train(self.ts_data)
-        pdb.set_trace()
-        print("Hello world")
+        logger.info(self.config.__dict__)
+
+        self.forecaster.evaluate(self.ts_data, "mse")
+        logger.info("Finish Evalaution")
+
+        self.forecaster.train(self.ts_data, self.config)
+        logger.info("Hello world")
 
 
 if __name__ == "__main__":

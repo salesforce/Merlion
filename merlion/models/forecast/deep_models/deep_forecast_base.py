@@ -117,13 +117,51 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         else:
             raise NotImplementedError("%s loss is not supported..." % (self.config.criterion))
 
+    def evaluate(self, evaluate_data: pd.DataFrame, metric: str = "mse"):
+        config = self.config
+        self.deep_model.eval()
+        eval_dataset = RollingWindowDataset(
+            evaluate_data,
+            n_past=config.n_past,
+            n_future=config.max_forecast_steps,
+            batch_size=config.batch_size,
+            target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training
+            ts_encoding=config.ts_encoding,
+            ts_freq=config.ts_freq,
+            start_token_len=config.start_token_len,
+            flatten=False,
+            shuffle=False,
+        )
+
+        all_preds = []
+        all_trues = []
+
+        for i, batch in enumerate(eval_dataset):
+            with torch.no_grad():
+                loss, outputs, y_true = self._deep_batch_iter(batch, self.config)
+                pred = outputs.detach().cpu().numpy()
+                true = y_true.detach().cpu().numpy()
+                all_preds.append(pred)
+                all_trues.append(true)
+
+        all_preds = np.array(all_preds)
+        all_trues = np.array(all_trues)
+        preds = np.concatenate(all_preds, axis=0)
+        trues = np.concatenate(all_trues, axis=0)
+
+        logger.info("test shape:" + str(preds.shape) + str(trues.shape))
+
+        if metric == "mse":
+            pred_err = np.mean(np.sum((preds - trues) ** 2, axis=-1), axis=-1)
+        else:
+            raise NotImplementedError
+
+        return preds, pred_err
+
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         if train_config is not None:
-            config = train_config
-        else:
-            config = self.config
-
-        pdb.set_trace()
+            self.config = copy.deepcopy(train_config)
+        config = self.config
 
         train_dataset = RollingWindowDataset(
             train_data,
@@ -152,7 +190,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 iter_count += 1
                 self.optimizer.zero_grad()
 
-                loss = self._deep_train_loop(batch, config)
+                loss, _, _ = self._deep_batch_iter(batch, config)
                 train_loss.append(loss.item())
 
                 loss.backward()
@@ -173,24 +211,39 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 )
             )
 
-            # add adjusting learnign rate scheduling later.
+        # add adjusting learnign rate scheduling later.
         logger.info("Ending of the train loop")
-        pdb.set_trace()
 
-        return None
+        pred, pred_err = self.evaluate(train_data)
 
-    def _deep_train_loop(self, batch, config):
+        # TODO: need to discuss
+        # since the model predicts multiple steps, we concatenate all the first steps together
+        return pd.DataFrame(pred[:, 0]), None
+
+    def _deep_batch_iter(self, batch, config):
+        """
+        For both loss calculation and data prediction
+        """
         past, past_timestamp, future, future_timestamp = batch
-
         past = torch.FloatTensor(past, device=config.device)
+
         past_timestamp = torch.FloatTensor(past_timestamp, device=config.device)
-        future = torch.FloatTensor(future, device=config.device)
         future_timestamp = torch.FloatTensor(future_timestamp, device=config.device)
 
-        dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float()
-        dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1).float().to(config.device)
+        # if future is None, then we only need to do inference
+        if future is None:
+            start_token = past[:, -config.start_token_len :]
+            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(config.device)
+            dec_inp = torch.cat([start_token, dec_inp], dim=1)
+        else:
+            future = torch.FloatTensor(future, device=config.device)
+            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(config.device)
+            dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1)
 
         model_output = self.deep_model(past, past_timestamp, dec_inp, future_timestamp)
+
+        if future is None:
+            return None, model_output, None
 
         if config.target_seq_index is None:
             target_future = future[:, -config.max_forecast_steps :].to(config.device)
@@ -200,7 +253,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             target_future = future[:, -config.max_forecast_steps :, target_idx : target_idx + 1].to(config.device)
 
         loss = self.loss_fn(model_output, target_future)
-        return loss
+        return loss, model_output, target_future
 
     def train_pre_process(
         self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
@@ -220,19 +273,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         return (train_data, exog_data) if return_exog else train_data
 
-    def train_post_process(
-        self, train_result: Tuple[Union[TimeSeries, pd.DataFrame], Optional[Union[TimeSeries, pd.DataFrame]]]
-    ) -> Tuple[TimeSeries, TimeSeries]:
-        """
-        Converts the train result (forecast & stderr for training data) into TimeSeries objects, and inverts the
-        model's transform if desired.
-        """
-        # TODO & FIXME: Rewrite the following things to make sure there is process_forecast...
-        # this is only temporary for testing.
-        return train_result, None
-        # return self._process_forecast(*train_result)
-
-    # TODO: need to check about this one
+    # TODO: need to check and discuss with this one
     @property
     def require_even_sampling(self) -> bool:
         return False
@@ -240,5 +281,31 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
     def _forecast(
         self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
+        """
+        FIXME: Need to discuss about this part API.
+        Currently the implementation is make sure the batch size = 1
+        """
+
         # TODO:
+        # Let current just assume the batch size = 1 for prediction
+        # 1. convert timestamps tp feature
+        # 2. convert time_series_prev to features
+        # 3. do inference here.
         return None, None
+
+    def batch_forecast(
+        self,
+        time_stamps_list: List[List[int]],
+        time_series_prev_list: List[TimeSeries],
+        return_iqr: bool = False,
+        return_prev: bool = False,
+    ) -> Tuple[
+        Union[
+            Tuple[List[TimeSeries], List[Optional[TimeSeries]]],
+            Tuple[List[TimeSeries], List[TimeSeries], List[TimeSeries]],
+        ]
+    ]:
+        """
+        Need to do re-implementation
+        """
+        raise NotImplementedError

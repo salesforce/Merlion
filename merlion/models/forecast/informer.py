@@ -85,10 +85,12 @@ class InformerConfig(DeepForecasterConfig):
         # TODO: fix this later
         # Setting proper output decoder dimension
         if self.dec_in is None:
-            if self.target_seq_index is None:
-                self.dec_in = self.enc_in
-            else:
-                self.dec_in = 1
+            self.dec_in = self.enc_in
+
+        if self.target_seq_index is None:
+            self.c_out = self.enc_in
+        else:
+            self.c_out = 1
 
 
 class InformerModel(TorchModel):
@@ -98,9 +100,6 @@ class InformerModel(TorchModel):
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
         self.max_forecast_steps = config.max_forecast_steps
-
-        # TODO: FIXME, the best way to get dimenion
-        self.dim = config.dim = config.enc_in
 
         self.enc_embedding = DataEmbedding(config.enc_in, config.d_model, config.embed, config.ts_freq, config.dropout)
 
@@ -148,7 +147,7 @@ class InformerModel(TorchModel):
                 for l in range(config.d_layers)
             ],
             norm_layer=torch.nn.LayerNorm(config.d_model),
-            projection=nn.Linear(config.d_model, config.dim, bias=True),
+            projection=nn.Linear(config.d_model, config.c_out, bias=True),
         )
 
     def forward(

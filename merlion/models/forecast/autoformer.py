@@ -82,13 +82,16 @@ class AutoformerConfig(DeepForecasterConfig):
         super().__init__(
             n_past=n_past, max_forecast_steps=max_forecast_steps, start_token_len=start_token_len, dim=dim, **kwargs
         )
+
         # TODO: fix this later
         # Setting proper output decoder dimension
         if self.dec_in is None:
-            if self.target_seq_index is None:
-                self.dec_in = self.enc_in
-            else:
-                self.dec_in = 1
+            self.dec_in = self.enc_in
+
+        if self.target_seq_index is None:
+            self.c_out = self.enc_in
+        else:
+            self.c_out = 1
 
 
 class AutoformerModel(TorchModel):
@@ -98,10 +101,6 @@ class AutoformerModel(TorchModel):
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
         self.max_forecast_steps = config.max_forecast_steps
-
-        # TODO: FIXME, the best way to get dimenion
-
-        self.dim = config.dim = config.enc_in
 
         kernel_size = config.moving_avg
         self.decomp = series_decomp(kernel_size)
@@ -152,7 +151,7 @@ class AutoformerModel(TorchModel):
                         config.n_heads,
                     ),
                     config.d_model,
-                    config.dim,
+                    config.c_out,
                     config.d_ff,
                     moving_avg=config.moving_avg,
                     dropout=config.dropout,
@@ -161,7 +160,7 @@ class AutoformerModel(TorchModel):
                 for l in range(config.d_layers)
             ],
             norm_layer=my_Layernorm(config.d_model),
-            projection=nn.Linear(config.d_model, config.dim, bias=True),
+            projection=nn.Linear(config.d_model, config.c_out, bias=True),
         )
 
     def forward(

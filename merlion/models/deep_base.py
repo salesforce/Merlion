@@ -68,11 +68,6 @@ class TorchModel(nn.Module):
 
     @abstractmethod
     def forward(self, past, *args, **kwargs):
-        print("hello")
-        # raise NotImplementedError
-
-    @abstractmethod
-    def get_loss(self):
         raise NotImplementedError
 
 
@@ -93,9 +88,41 @@ class DeepModelBase(ModelBase):
         raise NotImplementedError
 
     """
-        training loop given a ts dataset
+        Calculate loss and get prediction given a batch
     """
 
     @abstractmethod
-    def _deep_train_loop(self, batch, config: DeepConfig):
+    def _deep_batch_iter(self, batch, config: DeepConfig):
+        raise NotImplementedError
+
+    """
+        Set device to GPU, and move deep model to GPU
+        Currently we only support single GPU training
+    """
+
+    def to_gpu(self):
+        if torch.cuda.is_available():
+            self.config.device = torch.device("cuda")
+            self.deep_model = self.deep_model.to(self.config.device)
+        else:
+            logger.warning("GPU not available, using CPU instead...")
+            self.to_cpu()
+
+    """
+        Set device to CPU and move deep model to CPU
+    """
+
+    def to_cpu(self):
+        if self.config.device is None:
+            self.config.device = torch.device("cpu")
+
+        if self.deep_model is not None:
+            self.deep_model = self.deep_model.to(self.config.device)
+
+    @abstractmethod
+    def save_model(self, model_path: str = None):
+        raise NotImplementedError
+
+    @abstractmethod
+    def load_model(self, model_path: str = None):
         raise NotImplementedError
