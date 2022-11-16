@@ -1,104 +1,110 @@
-merlion.models.forecast package
-===============================
+forecast
+========
 
 .. automodule:: merlion.models.forecast
    :members:
    :undoc-members:
    :show-inheritance:
 
+Base classes:
+
 .. autosummary::
     base
     sklearn_base
+
+Univariate models:
+
+.. autosummary::
     arima
     sarima
     ets
     prophet
     smoother
-    vector_ar
-    trees
     lstm
 
+Multivariate models:
 
-Submodules
-----------
+.. autosummary::
+    vector_ar
+    trees
 
-merlion.models.forecast.base module
------------------------------------
 
+Base classes
+------------
+
+forecast.base
+^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.sklearn\_base module
---------------------------------------------
-
+forecast.sklearn\_base
+^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.sklearn_base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.arima module
-------------------------------------
+Univariate models
+-----------------
 
+forecast.arima
+^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.arima
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.sarima module
--------------------------------------
-
+forecast.sarima
+^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.sarima
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.ets module
-----------------------------------
+forecast.ets
+^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.ets
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-merlion.models.forecast.prophet module
---------------------------------------
-
+forecast.prophet
+^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.prophet
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.smoother module
----------------------------------------
-
+forecast.smoother
+^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.smoother
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.vector\_ar module
------------------------------------------
+forecast.lstm
+^^^^^^^^^^^^^
+.. automodule:: merlion.models.forecast.lstm
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+Multivariate models
+-------------------
+
+forecast.vector\_ar
+^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.vector_ar
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.forecast.trees module
-------------------------------------
-
+forecast.trees
+^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.trees
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-merlion.models.forecast.lstm module
------------------------------------
-
-.. automodule:: merlion.models.forecast.lstm
    :members:
    :undoc-members:
    :show-inheritance:

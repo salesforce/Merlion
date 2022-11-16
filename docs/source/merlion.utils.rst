@@ -18,60 +18,50 @@ utilities for resampling time series.
     conj_priors
     istat
 
-Submodules
-----------
-
-merlion.utils.time\_series module
----------------------------------
-
+merlion.utils.time\_series
+--------------------------
 .. automodule:: merlion.utils.time_series
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.resample module
------------------------------
-
+merlion.utils.resample
+----------------------
 .. automodule:: merlion.utils.resample
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.data\_io module
------------------------------
-
+merlion.utils.data\_io
+----------------------
 .. automodule:: merlion.utils.data_io
    :members:
    :undoc-members:
    :show-inheritance:
 
-
-merlion.utils.hts module
-------------------------
-
+merlion.utils.hts
+-----------------
 .. automodule:: merlion.utils.hts
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.ts\_generator module
-----------------------------------
-
+merlion.utils.ts\_generator
+---------------------------
 .. automodule:: merlion.utils.ts_generator
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.conj_priors module
---------------------------------
+merlion.utils.conj_priors
+-------------------------
 .. automodule:: merlion.utils.conj_priors
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.utils.istat module
---------------------------
-
+merlion.utils.istat
+-------------------
 .. automodule:: merlion.utils.istat
    :members:
    :undoc-members:

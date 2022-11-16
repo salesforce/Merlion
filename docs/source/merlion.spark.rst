@@ -92,19 +92,16 @@ The API documentation of Merlion's PySpark connectors (``merlion.spark``) is bel
     dataset
     pandas_udf
 
-Submodules
-----------
-
-merlion.spark.dataset module
-----------------------------
+merlion.spark.dataset
+^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: merlion.spark.dataset
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.spark.pandas\_udf module
---------------------------------
+merlion.spark.pandas\_udf
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: merlion.spark.pandas_udf
    :members:

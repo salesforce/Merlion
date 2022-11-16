@@ -46,38 +46,25 @@ The key classes for input and output are `merlion.utils.time_series.TimeSeries` 
 with ``pandas.DataFrame`` and ``pandas.Series``, respectively. Check this `tutorial <tutorials/TimeSeries>`
 for some examples on how to use these classes, or the API docs linked above for a full list of features.
 
+The full API documentation is outlined below:
+
 .. automodule:: merlion
    :members:
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
 
    merlion.models
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    merlion.dashboard
    merlion.spark
    merlion.transform
    merlion.post_process
    merlion.evaluate
+   merlion.plot
    merlion.utils
-
-Submodules
-----------
-
-.. _merlion.plot:
-
-merlion.plot module
--------------------
-
-.. automodule:: merlion.plot
-   :members:
-   :undoc-members:
-   :show-inheritance:
