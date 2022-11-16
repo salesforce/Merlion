@@ -22,11 +22,25 @@ Univariate models:
     smoother
     lstm
 
-Multivariate models:
+`Multivariate <tutorials/forecast/2_ForecastMultivariate>` models:
 
 .. autosummary::
     vector_ar
     trees
+
+`Exogenous regressor <tutorials/forecast/3_ForecastExogenous>` models:
+
+.. autosummary::
+    trees
+    prophet
+    sarima
+    vector_ar
+    arima
+
+Note that the AutoML variants
+:py:mod:`AutoSarima <merlion.models.automl.autosarima>` and
+:py:mod:`AutoProphet <merlion.models.automl.autoprophet>`
+also support exogenous regressors.
 
 
 Base classes

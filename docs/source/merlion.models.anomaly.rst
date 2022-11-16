@@ -20,7 +20,7 @@ Univariate models:
     stat_threshold
     zms
 
-Multivariate models:
+`Multivariate <tutorials/anomaly/2_AnomalyMultivariate>` models:
 
 .. autosummary::
     isolation_forest

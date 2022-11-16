@@ -11,7 +11,7 @@ Merlion is a Python library for time series intelligence. It features a unified 
 point detection on both univariate and multivariate time series, along with standard
 :doc:`pre-processing <merlion.transform>` and :doc:`post-processing <merlion.post_process>` layers.
 It has several modules to improve ease-of-use,
-including :ref:`visualization <merlion.plot>`,
+including :doc:`visualization <merlion.plot>`,
 anomaly score :ref:`calibration <merlion.post_process.calibrate>` to improve interpetability,
 :doc:`AutoML <merlion.models.automl>` for hyperparameter tuning and model selection,
 and :doc:`model ensembling <merlion.models.ensemble>`.

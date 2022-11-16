@@ -63,7 +63,7 @@ Normalization:
     bound
     normalize
 
-Miscellaneous
+Miscellaneous:
 
 .. autosummary::
     anomalize

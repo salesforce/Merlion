@@ -1,5 +1,3 @@
-.. _merlion.plot:
-
 merlion.plot package
 ====================
 .. automodule:: merlion.plot

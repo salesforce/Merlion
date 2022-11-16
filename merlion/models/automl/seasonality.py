@@ -6,6 +6,8 @@
 #
 """
 Automatic seasonality detection.
+Note that the static method :py:meth:`merlion.models.automl.seasonality.SeasonalityLayer.detect_seasonality`
+can be used to find the seasonality of an arbitrary ``numpy.array``, without needing to initialize a model.
 """
 from abc import abstractmethod
 from enum import Enum, auto
