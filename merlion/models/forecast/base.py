@@ -97,7 +97,7 @@ class ForecasterBase(ModelBase):
         """
         :return: Whether to automatically invert the ``transform`` before returning a forecast.
         """
-        return self.config.invert_transform
+        return self.config.invert_transform and not self.transform.identity_inversion
 
     @property
     def require_univariate(self) -> bool:
@@ -346,11 +346,10 @@ class ForecasterBase(ModelBase):
 
         # Compute upper/lower bounds for the (potentially inverted) forecast.
         # Only do this if returning the IQR or inverting the transform.
-        invert_transform = self.invert_transform and not self.transform.identity_inversion
-        if (return_iqr or invert_transform) and e_neg is not None and e_pos is not None:
+        if (return_iqr or self.invert_transform) and e_neg is not None and e_pos is not None:
             lb = TimeSeries.from_pd((forecast + e_neg.values * (norm.ppf(0.25) if return_iqr else -1)))
             ub = TimeSeries.from_pd((forecast + e_pos.values * (norm.ppf(0.75) if return_iqr else 1)))
-            if invert_transform:
+            if self.invert_transform:
                 lb = self.transform.invert(lb, retain_inversion_state=True)
                 ub = self.transform.invert(ub, retain_inversion_state=True)
         else:
@@ -358,7 +357,7 @@ class ForecasterBase(ModelBase):
 
         # Convert the forecast to TimeSeries and invert the transform on it if desired
         forecast = TimeSeries.from_pd(forecast)
-        if invert_transform:
+        if self.invert_transform:
             forecast = self.transform.invert(forecast, retain_inversion_state=True)
 
         # Return the IQR if desired

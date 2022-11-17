@@ -7,7 +7,6 @@
 """
 Transforms that compute moving averages and k-step differences.
 """
-
 from collections import OrderedDict
 import logging
 from typing import Sequence
@@ -22,7 +21,7 @@ from merlion.utils import UnivariateTimeSeries, TimeSeries
 logger = logging.getLogger(__name__)
 
 
-class MovingAverage(TransformBase):
+class MovingAverage(InvertibleTransformBase):
     """
     Computes the n_steps-step moving average of the time series, with
     the given relative weights assigned to each time in the moving average
@@ -30,37 +29,39 @@ class MovingAverage(TransformBase):
     series to the left before taking the moving average.
     """
 
-    def __init__(self, n_steps: int = None, weights: Sequence[float] = None, pad: bool = False):
+    def __init__(self, n_steps: int = None, weights: Sequence[float] = None):
         super().__init__()
         assert (
-            n_steps is not None or weights is not None
-        ), "Must specify at least one of n_steps or weights for MovingAverage"
+            n_steps is not None and n_steps > 0
+        ) or weights is not None, "Must specify at least one of n_steps or weights for MovingAverage"
         if weights is None:
             weights = np.ones(n_steps) / n_steps
         elif n_steps is None:
             n_steps = len(weights)
         else:
             assert len(weights) == n_steps
+        assert len(weights) >= 2, "Must compute a moving average with a window size of at least 2"
         self.n_steps = n_steps
         self.weights = weights
-        self.pad = pad
+
+    @property
+    def requires_inversion_state(self):
+        return False
+
+    @property
+    def _n_pad(self):
+        return len(self.weights) - 1
 
     def train(self, time_series: TimeSeries):
         pass
 
     def __call__(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
-        conv_remainders = {}
         for name, var in time_series.items():
-            t, x = var.index, var.np_values
-            ma = scipy.signal.correlate(x, self.weights, mode="full")
-            y0, y1 = ma[: self.n_steps - 1], ma[self.n_steps - 1 :]
-            conv_remainders[name] = y0
-            if not self.pad:
-                t = t[self.n_steps - 1 :]
-            new_vars[name] = UnivariateTimeSeries(t, y1[: len(t)])
+            x = np.concatenate((np.full(self._n_pad, var.np_values[0]), var.np_values))
+            y = scipy.signal.correlate(x, self.weights, mode="full")[self._n_pad : -self._n_pad]
+            new_vars[name] = UnivariateTimeSeries(var.index, y)
 
-        self.inversion_state = conv_remainders
         ret = TimeSeries(new_vars, check_aligned=False)
         ret._is_aligned = time_series.is_aligned
         return ret
@@ -68,11 +69,11 @@ class MovingAverage(TransformBase):
     def _invert(self, time_series: TimeSeries) -> TimeSeries:
         new_vars = OrderedDict()
         for name, var in time_series.items():
-            y0 = self.inversion_state[name]
-            t, y1 = var.index, var.np_values
-            y = np.concatenate((y0, y1))
-            x = scipy.signal.deconvolve(y, self.weights[-1::-1])[0]
-            new_vars[name] = UnivariateTimeSeries(t, x)
+            left_pad = np.cumsum(self.weights[-1:0:-1]) * var.np_values[0]
+            right_pad = np.full(self._n_pad, var.np_values[-1])
+            y = np.concatenate((left_pad, var.np_values, right_pad))
+            x = scipy.signal.deconvolve(y, self.weights[-1::-1])[0][self._n_pad :]
+            new_vars[name] = UnivariateTimeSeries(var.index, x)
 
         ret = TimeSeries(new_vars, check_aligned=False)
         ret._is_aligned = time_series.is_aligned
