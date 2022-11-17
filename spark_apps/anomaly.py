@@ -44,6 +44,9 @@ def parse_args():
         default="[]",
         help="JSON list of columns to use when modeling the data. If not given, use all non-index, non-time columns.",
     )
+    parser.add_argument(
+        "--predict_on_train", action="store_true", help="Whether to return the model's prediction on the training data."
+    )
     args = parser.parse_args()
 
     # Parse index_cols JSON string
@@ -113,6 +116,7 @@ def main():
             time_col=args.time_col,
             train_test_split=args.train_test_split,
             model=args.model,
+            predict_on_train=args.predict_on_train,
         ),
         schema=output_schema,
     )

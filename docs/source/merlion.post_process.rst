@@ -18,27 +18,25 @@ together sequences of post-processing rules (:py:mod:`merlion.post_process.seque
     calibrate
     threshold
 
-Submodules
-----------
 
-merlion.post\_process.base module
----------------------------------
+merlion.post\_process.base
+--------------------------
 
 .. automodule:: merlion.post_process.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.post\_process.factory module
-------------------------------------
+merlion.post\_process.factory
+-----------------------------
 
 .. automodule:: merlion.post_process.factory
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.post\_process.sequence module
--------------------------------------
+merlion.post\_process.sequence
+------------------------------
 
 .. automodule:: merlion.post_process.sequence
    :members:
@@ -47,16 +45,16 @@ merlion.post\_process.sequence module
 
 .. _merlion.post_process.calibrate:
 
-merlion.post\_process.calibrate module
---------------------------------------
+merlion.post\_process.calibrate
+-------------------------------
 
 .. automodule:: merlion.post_process.calibrate
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.post\_process.threshold module
---------------------------------------
+merlion.post\_process.threshold
+-------------------------------
 
 .. automodule:: merlion.post_process.threshold
    :members:

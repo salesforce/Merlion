@@ -81,12 +81,10 @@ class DefaultDetector(LayeredDetector):
 
         # Univariate model is ETS/RRCF/ZMS ensemble
         else:
-            dt = "1h" if self.granularity is None else self.granularity
-            ets_transform = dict(name="TemporalResample", granularity=dt)
             self.model = ModelFactory.create(
                 "DetectorEnsemble",
                 models=[
-                    ModelFactory.create("AutoETS", model=dict(name="ETSDetector"), transform=ets_transform),
+                    ModelFactory.create("AutoETS", model=dict(name="ETSDetector"), transform=transform_dict),
                     ModelFactory.create(
                         "RandomCutForest",
                         online_updates=True,

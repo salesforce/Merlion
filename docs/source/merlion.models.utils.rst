@@ -1,5 +1,5 @@
-merlion.models.utils package
-============================
+utils
+=====
 
 .. automodule:: merlion.models.utils
    :members:
@@ -11,11 +11,8 @@ merlion.models.utils package
     autosarima_utils
 
 
-Submodules
-----------
-
-merlion.models.utils.rolling\_window\_dataset module
-----------------------------------------------------
+utils.rolling\_window\_dataset
+------------------------------
 
 .. automodule:: merlion.models.utils.rolling_window_dataset
    :members:
@@ -23,8 +20,8 @@ merlion.models.utils.rolling\_window\_dataset module
    :show-inheritance:
 
 
-merlion.models.utils.autosarima\_utils module
----------------------------------------------
+utils.autosarima\_utils
+-----------------------
 
 .. automodule:: merlion.models.utils.autosarima_utils
    :members:

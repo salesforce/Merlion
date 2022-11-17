@@ -13,27 +13,24 @@ of time series models on different tasks.
     anomaly
     forecast
 
-Submodules
-----------
-
-merlion.evaluate.base module
-----------------------------
+merlion.evaluate.base
+---------------------
 
 .. automodule:: merlion.evaluate.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.evaluate.anomaly module
--------------------------------
+merlion.evaluate.anomaly
+------------------------
 
 .. automodule:: merlion.evaluate.anomaly
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.evaluate.forecast module
---------------------------------
+merlion.evaluate.forecast
+-------------------------
 
 .. automodule:: merlion.evaluate.forecast
    :members:

@@ -40,9 +40,6 @@ Subpackages
    ts_datasets.anomaly
    ts_datasets.forecast
 
-Submodules
-----------
-
 datasets.base module
 --------------------
 

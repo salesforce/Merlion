@@ -12,6 +12,7 @@ COPY merlion merlion
 RUN pip install pyarrow "./"
 
 # Copy Merlion pyspark apps
-COPY apps /opt/spark/apps
+COPY spark_apps /opt/spark/apps
+COPY data/walmart/walmart_mini.csv .
 RUN chmod g+w /opt/spark/apps
 USER ${spark_uid}
