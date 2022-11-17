@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.utils package &mdash; Merlion 2.0.0 documentation</title>
+  <title>utils &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="merlion.dashboard package" href="merlion.dashboard.html" />
-    <link rel="prev" title="merlion.models.automl package" href="merlion.models.automl.html" /> 
+    <link rel="prev" title="automl" href="merlion.models.automl.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,56 +46,50 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
-<li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.utils package</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.utils.rolling_window_dataset">merlion.models.utils.rolling_window_dataset module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.autoregressive"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.autoregressive</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_points"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_points</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.collate_batch()</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">utils</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.rolling_window_dataset">utils.rolling_window_dataset</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.autoregressive"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.autoregressive</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_points"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_points</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.collate_batch()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.utils.autosarima_utils">merlion.models.utils.autosarima_utils module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model"><code class="docutils literal notranslate"><span class="pre">detect_maxiter_sarima_model()</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest"><code class="docutils literal notranslate"><span class="pre">seas_seasonalstationaritytest()</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.nsdiffs"><code class="docutils literal notranslate"><span class="pre">nsdiffs()</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.KPSS_stationaritytest"><code class="docutils literal notranslate"><span class="pre">KPSS_stationaritytest()</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.ndiffs"><code class="docutils literal notranslate"><span class="pre">ndiffs()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.autosarima_utils">utils.autosarima_utils</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model"><code class="docutils literal notranslate"><span class="pre">detect_maxiter_sarima_model()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest"><code class="docutils literal notranslate"><span class="pre">seas_seasonalstationaritytest()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.nsdiffs"><code class="docutils literal notranslate"><span class="pre">nsdiffs()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.KPSS_stationaritytest"><code class="docutils literal notranslate"><span class="pre">KPSS_stationaritytest()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.ndiffs"><code class="docutils literal notranslate"><span class="pre">ndiffs()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -118,7 +112,7 @@
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
           <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
-      <li class="breadcrumb-item active">merlion.models.utils package</li>
+      <li class="breadcrumb-item active">utils</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/merlion.models.utils.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -153,7 +147,7 @@
 }
 </style>
 <section id="module-merlion.models.utils">
-<span id="merlion-models-utils-package"></span><h1>merlion.models.utils package<a class="headerlink" href="#module-merlion.models.utils" title="Permalink to this heading"></a></h1>
+<span id="utils"></span><h1>utils<a class="headerlink" href="#module-merlion.models.utils" title="Permalink to this heading"></a></h1>
 <p>Contains various utility files &amp; functions useful for different models.</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -169,11 +163,8 @@
 </tr>
 </tbody>
 </table>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
 <section id="module-merlion.models.utils.rolling_window_dataset">
-<span id="merlion-models-utils-rolling-window-dataset-module"></span><h2>merlion.models.utils.rolling_window_dataset module<a class="headerlink" href="#module-merlion.models.utils.rolling_window_dataset" title="Permalink to this heading"></a></h2>
+<span id="utils-rolling-window-dataset"></span><h2>utils.rolling_window_dataset<a class="headerlink" href="#module-merlion.models.utils.rolling_window_dataset" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.rolling_window_dataset.</span></span><span class="sig-name descname"><span class="pre">RollingWindowDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_future</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset" title="Permalink to this definition"></a></dt>
@@ -230,7 +221,7 @@ by default, Numpy array will handle the internal data workflow and Numpy array w
 
 </section>
 <section id="module-merlion.models.utils.autosarima_utils">
-<span id="merlion-models-utils-autosarima-utils-module"></span><h2>merlion.models.utils.autosarima_utils module<a class="headerlink" href="#module-merlion.models.utils.autosarima_utils" title="Permalink to this heading"></a></h2>
+<span id="utils-autosarima-utils"></span><h2>utils.autosarima_utils<a class="headerlink" href="#module-merlion.models.utils.autosarima_utils" title="Permalink to this heading"></a></h2>
 <p>Low-level utils for AutoML models.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.diff">
@@ -292,7 +283,7 @@ test: the type of test of seasonality to use to detect seasonal periodicity</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="merlion.models.automl.html" class="btn btn-neutral float-left" title="merlion.models.automl package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.automl.html" class="btn btn-neutral float-left" title="automl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="merlion.dashboard.html" class="btn btn-neutral float-right" title="merlion.dashboard package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

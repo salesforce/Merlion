@@ -384,7 +384,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 739.15it/s]
+100%|██████████| 414/414 [00:00&lt;00:00, 861.84it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -404,7 +404,16 @@ div.rendered_html tbody tr:hover {
 
 <span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
 <span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterBase</span>
+<span class="kn">from</span> <span class="nn">merlion.models.forecast.prophet</span> <span class="kn">import</span> <span class="n">Prophet</span><span class="p">,</span> <span class="n">ProphetConfig</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.resample</span> <span class="kn">import</span> <span class="n">TemporalResample</span>
+<span class="kn">from</span> <span class="nn">merlion.transform.sequence</span> <span class="kn">import</span> <span class="n">TransformSequence</span>
 <span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+
+<span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">TransformSequence</span><span class="p">([</span><span class="n">TemporalResample</span><span class="p">(),</span> <span class="n">transform</span><span class="p">])</span>
+    <span class="n">prophet</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">add_seasonality</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">prophet</span>
 
 <span class="k">def</span> <span class="nf">eval_model</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">ForecasterBase</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">test_data</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span>
                <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -432,25 +441,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.models.forecast.prophet</span> <span class="kn">import</span> <span class="n">Prophet</span><span class="p">,</span> <span class="n">ProphetConfig</span>
-<span class="kn">from</span> <span class="nn">merlion.transform.resample</span> <span class="kn">import</span> <span class="n">TemporalResample</span>
-<span class="kn">from</span> <span class="nn">merlion.transform.sequence</span> <span class="kn">import</span> <span class="n">TransformSequence</span>
-
-<span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">transform</span> <span class="o">=</span> <span class="n">TransformSequence</span><span class="p">([</span><span class="n">TemporalResample</span><span class="p">(),</span> <span class="n">transform</span><span class="p">])</span>
-    <span class="n">prophet</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">add_seasonality</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">prophet</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -462,37 +454,31 @@ div.rendered_html tbody tr:hover {
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+21:14:26 - cmdstanpy - INFO - Chain [1] start processing
+21:14:26 - cmdstanpy - INFO - Chain [1] done processing
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 No transform...
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
 Train sMAPE: 4.88
-Test  sMAPE: 17.83
+Test  sMAPE: 17.58
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_3.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_3_2.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_3_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -509,26 +495,34 @@ Test  sMAPE: 17.83
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Normalize...
-Train sMAPE: 54.41
-Test  sMAPE: 118.24
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+21:14:26 - cmdstanpy - INFO - Chain [1] start processing
+21:14:26 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_2.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_2.png" />
+<div class="highlight"><pre>
+Train sMAPE: 54.41
+Test  sMAPE: 118.27
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -544,7 +538,8 @@ Normalize + invert...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:27 - cmdstanpy - INFO - Chain [1] start processing
+21:14:27 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -560,21 +555,21 @@ Test  sMAPE: 17.55
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_6.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_6.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_4_7.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">PowerTransform</span>
+<span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">BoxCoxTransform</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log transform...&quot;</span><span class="p">)</span>
-<span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">PowerTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Box-Cox transform...&quot;</span><span class="p">)</span>
+<span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">BoxCoxTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log transform + invert...&quot;</span><span class="p">)</span>
-<span class="n">log</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">PowerTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Box-Cox transform + invert...&quot;</span><span class="p">)</span>
+<span class="n">boxcox</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">BoxCoxTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -583,7 +578,7 @@ Test  sMAPE: 17.55
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Log transform...
+Box-Cox transform...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -591,7 +586,8 @@ Log transform...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:27 - cmdstanpy - INFO - Chain [1] start processing
+21:14:27 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -599,15 +595,15 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 0.46
-Test  sMAPE: 1.19
+Train sMAPE: 0.99
+Test  sMAPE: 3.36
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_3.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -615,7 +611,7 @@ Test  sMAPE: 1.19
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Log transform + invert...
+Box-Cox transform + invert...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -623,7 +619,8 @@ Log transform + invert...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:28 - cmdstanpy - INFO - Chain [1] start processing
+21:14:28 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -631,19 +628,19 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 3.30
-Test  sMAPE: 8.61
+Train sMAPE: 3.61
+Test  sMAPE: 12.30
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_7.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_5_7.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -670,7 +667,8 @@ Moving Average...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:29 - cmdstanpy - INFO - Chain [1] start processing
+21:14:29 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -678,15 +676,15 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 4.39
-Test  sMAPE: 16.20
+Train sMAPE: 4.46
+Test  sMAPE: 17.09
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_3.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -702,13 +700,8 @@ Moving Average + invert...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
-WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, weights=[0.2 0.2 0.2 0.2 0.2]) is not strictly invertible. Calling invert() is not guaranteed to recover the original time series exactly!
+21:14:29 - cmdstanpy - INFO - Chain [1] start processing
+21:14:29 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -716,19 +709,19 @@ WARNING:merlion.transform.base:Transform MovingAverage(n_steps=5, pad=False, wei
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Train sMAPE: 21.90
-Test  sMAPE: 32.75
+Train sMAPE: 5.49
+Test  sMAPE: 17.88
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_7.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_6_7.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -745,9 +738,18 @@ Test  sMAPE: 32.75
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Difference transform...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:30 - cmdstanpy - INFO - Chain [1] start processing
+21:14:30 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -755,7 +757,7 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Difference transform...
+
 Train sMAPE: 53.17
 Test  sMAPE: 48.12
 </pre></div></div>
@@ -764,7 +766,7 @@ Test  sMAPE: 48.12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_2.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_2.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_3.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -780,7 +782,8 @@ Difference transform + invert...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+21:14:30 - cmdstanpy - INFO - Chain [1] start processing
+21:14:30 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -789,25 +792,25 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Train sMAPE: 6.47
-Test  sMAPE: 5.71
+Test  sMAPE: 19.18
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_6.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_6.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_7.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_7_7.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
-<span class="n">series</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;norm&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">log</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">ma</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
+<span class="n">series</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;norm&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;box-cox&quot;</span><span class="p">,</span> <span class="n">boxcox</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">ma</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
 <span class="n">smapes</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">series</span><span class="p">}</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ns</span><span class="p">:</span> <span class="n">smapes</span><span class="p">[</span><span class="n">ns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
@@ -823,7 +826,7 @@ Test  sMAPE: 5.71
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_9_0.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_9_0.png" />
+<img alt="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_0.png" src="../../_images/tutorials_advanced_2_ForecastInvertPOC_8_0.png" />
 </div>
 </div>
 </section>

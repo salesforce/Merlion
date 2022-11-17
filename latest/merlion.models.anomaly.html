@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly package &mdash; Merlion 2.0.0 documentation</title>
+  <title>anomaly &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -23,7 +23,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="merlion.models.anomaly.forecast_based package" href="merlion.models.anomaly.forecast_based.html" />
+    <link rel="next" title="anomaly.forecast_based" href="merlion.models.anomaly.forecast_based.html" />
     <link rel="prev" title="merlion.models package" href="merlion.models.html" /> 
 </head>
 
@@ -48,17 +48,16 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.anomaly package</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
-<li class="toctree-l7"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">anomaly</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#base-classes">Base classes</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.base">anomaly.base</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig"><code class="docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.enable_threshold"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.enable_threshold</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig.enable_calibrator"><code class="docutils literal notranslate"><span class="pre">DetectorConfig.enable_calibrator</span></code></a></li>
@@ -93,7 +92,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a><ul>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#univariate-models">Univariate models</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dbl">anomaly.dbl</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.fixed_period"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.fixed_period</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dbl.DynamicBaselineConfig.trends"><code class="docutils literal notranslate"><span class="pre">DynamicBaselineConfig.trends</span></code></a></li>
@@ -148,7 +150,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.windstats">anomaly.windstats</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStatsConfig"><code class="docutils literal notranslate"><span class="pre">WindStatsConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats"><code class="docutils literal notranslate"><span class="pre">WindStats</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.windstats.WindStats.config_class"><code class="docutils literal notranslate"><span class="pre">WindStats.config_class</span></code></a></li>
@@ -158,35 +160,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest"><code class="docutils literal notranslate"><span class="pre">IsolationForest</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.config_class"><code class="docutils literal notranslate"><span class="pre">IsolationForest.config_class</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_even_sampling</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_univariate</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton"><code class="docutils literal notranslate"><span class="pre">JVMSingleton</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway"><code class="docutils literal notranslate"><span class="pre">JVMSingleton.gateway()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig.java_params</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.config_class</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_even_sampling</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_univariate</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.online_updates</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual">anomaly.spectral_residual</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidualConfig"><code class="docutils literal notranslate"><span class="pre">SpectralResidualConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual"><code class="docutils literal notranslate"><span class="pre">SpectralResidual</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.spectral_residual.SpectralResidual.config_class"><code class="docutils literal notranslate"><span class="pre">SpectralResidual.config_class</span></code></a></li>
@@ -197,7 +171,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold">anomaly.stat_threshold</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThresholdConfig"><code class="docutils literal notranslate"><span class="pre">StatThresholdConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold"><code class="docutils literal notranslate"><span class="pre">StatThreshold</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.stat_threshold.StatThreshold.config_class"><code class="docutils literal notranslate"><span class="pre">StatThreshold.config_class</span></code></a></li>
@@ -207,7 +181,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.zms">anomaly.zms</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig"><code class="docutils literal notranslate"><span class="pre">ZMSConfig</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.full_transform"><code class="docutils literal notranslate"><span class="pre">ZMSConfig.full_transform</span></code></a></li>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.zms.ZMSConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">ZMSConfig.to_dict()</span></code></a></li>
@@ -227,7 +201,38 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a><ul>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#multivariate-models">Multivariate models</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest">anomaly.isolation_forest</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest"><code class="docutils literal notranslate"><span class="pre">IsolationForest</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.config_class"><code class="docutils literal notranslate"><span class="pre">IsolationForest.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">IsolationForest.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest">anomaly.random_cut_forest</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton"><code class="docutils literal notranslate"><span class="pre">JVMSingleton</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway"><code class="docutils literal notranslate"><span class="pre">JVMSingleton.gateway()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params"><code class="docutils literal notranslate"><span class="pre">RandomCutForestConfig.java_params</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.require_univariate</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates"><code class="docutils literal notranslate"><span class="pre">RandomCutForest.online_updates</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.autoencoder">anomaly.autoencoder</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoderConfig"><code class="docutils literal notranslate"><span class="pre">AutoEncoderConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder"><code class="docutils literal notranslate"><span class="pre">AutoEncoder</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.autoencoder.AutoEncoder.config_class"><code class="docutils literal notranslate"><span class="pre">AutoEncoder.config_class</span></code></a></li>
@@ -237,7 +242,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.vae">anomaly.vae</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.vae.VAEConfig"><code class="docutils literal notranslate"><span class="pre">VAEConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE"><code class="docutils literal notranslate"><span class="pre">VAE</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.vae.VAE.config_class"><code class="docutils literal notranslate"><span class="pre">VAE.config_class</span></code></a></li>
@@ -247,7 +252,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.dagmm">anomaly.dagmm</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMMConfig"><code class="docutils literal notranslate"><span class="pre">DAGMMConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM"><code class="docutils literal notranslate"><span class="pre">DAGMM</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.dagmm.DAGMM.config_class"><code class="docutils literal notranslate"><span class="pre">DAGMM.config_class</span></code></a></li>
@@ -258,7 +263,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.lstm_ed">anomaly.lstm_ed</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMEDConfig"><code class="docutils literal notranslate"><span class="pre">LSTMEDConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED"><code class="docutils literal notranslate"><span class="pre">LSTMED</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lstm_ed.LSTMED.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMED.config_class</span></code></a></li>
@@ -268,7 +273,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.deep_point_anomaly_detector">anomaly.deep_point_anomaly_detector</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetectorConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector</span></code></a><ul>
 <li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector.config_class"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector.config_class</span></code></a></li>
@@ -280,31 +285,29 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.utils.html">merlion.models.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.utils.html">utils</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -327,7 +330,7 @@
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
           <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
-      <li class="breadcrumb-item active">merlion.models.anomaly package</li>
+      <li class="breadcrumb-item active">anomaly</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/merlion.models.anomaly.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -362,7 +365,7 @@
 }
 </style>
 <section id="module-merlion.models.anomaly">
-<span id="merlion-models-anomaly-package"></span><h1>merlion.models.anomaly package<a class="headerlink" href="#module-merlion.models.anomaly" title="Permalink to this heading"></a></h1>
+<span id="anomaly"></span><h1>anomaly<a class="headerlink" href="#module-merlion.models.anomaly" title="Permalink to this heading"></a></h1>
 <p>Contains all anomaly detection models. Forecaster-based anomaly detection models
 may be found in <a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>. Change-point detection models may be
 found in <a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point</span></code></a>.</p>
@@ -419,6 +422,7 @@ default is provided for all models.</p></li>
 </ul>
 </li>
 </ol>
+<p>Base classes</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -428,26 +432,44 @@ default is provided for all models.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.base" title="merlion.models.anomaly.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
 <td><p>Base class for anomaly detectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.dbl" title="merlion.models.anomaly.dbl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dbl</span></code></a></p></td>
+</tbody>
+</table>
+<p>Univariate models:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.dbl" title="merlion.models.anomaly.dbl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dbl</span></code></a></p></td>
 <td><p>Dynamic Baseline anomaly detection model for time series with daily, weekly or monthly trends.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.windstats" title="merlion.models.anomaly.windstats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">windstats</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.windstats" title="merlion.models.anomaly.windstats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">windstats</span></code></a></p></td>
 <td><p>Window Statistics anomaly detection model for data with weekly seasonality.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest" title="merlion.models.anomaly.isolation_forest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isolation_forest</span></code></a></p></td>
-<td><p>The classic isolation forest model for anomaly detection.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest" title="merlion.models.anomaly.random_cut_forest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_cut_forest</span></code></a></p></td>
-<td><p>Wrapper around AWS's Random Cut Forest anomaly detection model.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual" title="merlion.models.anomaly.spectral_residual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectral_residual</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.spectral_residual" title="merlion.models.anomaly.spectral_residual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectral_residual</span></code></a></p></td>
 <td><p>Spectral Residual algorithm for anomaly detection</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold" title="merlion.models.anomaly.stat_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stat_threshold</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.stat_threshold" title="merlion.models.anomaly.stat_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stat_threshold</span></code></a></p></td>
 <td><p>Simple static thresholding model for anomaly detection.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.zms" title="merlion.models.anomaly.zms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zms</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.zms" title="merlion.models.anomaly.zms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zms</span></code></a></p></td>
 <td><p>Multiple z-score model (static thresholding at multiple time scales).</p></td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="tutorials/anomaly/2_AnomalyMultivariate.html"><span class="doc">Multivariate</span></a> models:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.isolation_forest" title="merlion.models.anomaly.isolation_forest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isolation_forest</span></code></a></p></td>
+<td><p>The classic isolation forest model for anomaly detection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.random_cut_forest" title="merlion.models.anomaly.random_cut_forest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_cut_forest</span></code></a></p></td>
+<td><p>Wrapper around AWS's Random Cut Forest anomaly detection model.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.autoencoder" title="merlion.models.anomaly.autoencoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoencoder</span></code></a></p></td>
 <td><p>The autoencoder-based anomaly detector for multivariate time series</p></td>
@@ -470,9 +492,8 @@ default is provided for all models.</p></li>
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">anomaly.forecast_based.base</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
@@ -488,7 +509,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">anomaly.forecast_based.arima</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
@@ -496,7 +517,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">anomaly.forecast_based.sarima</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
@@ -504,7 +525,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">anomaly.forecast_based.ets</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
@@ -512,7 +533,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">anomaly.forecast_based.prophet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
@@ -520,7 +541,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.lstm">anomaly.forecast_based.lstm</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
@@ -528,7 +549,7 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">anomaly.forecast_based.mses</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
@@ -540,9 +561,8 @@ default is provided for all models.</p></li>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">merlion.models.anomaly.change_point.bocpd module</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">anomaly.change_point.bocpd</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="docutils literal notranslate"><span class="pre">ChangeKind</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto"><code class="docutils literal notranslate"><span class="pre">ChangeKind.Auto</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html#merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift"><code class="docutils literal notranslate"><span class="pre">ChangeKind.LevelShift</span></code></a></li>
@@ -576,11 +596,10 @@ default is provided for all models.</p></li>
 </ul>
 </div>
 </section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
+<section id="base-classes">
+<h2>Base classes<a class="headerlink" href="#base-classes" title="Permalink to this heading"></a></h2>
 <section id="module-merlion.models.anomaly.base">
-<span id="merlion-models-anomaly-base-module"></span><h2>merlion.models.anomaly.base module<a class="headerlink" href="#module-merlion.models.anomaly.base" title="Permalink to this heading"></a></h2>
+<span id="anomaly-base"></span><h3>anomaly.base<a class="headerlink" href="#module-merlion.models.anomaly.base" title="Permalink to this heading"></a></h3>
 <p>Base class for anomaly detectors.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.base.DetectorConfig">
@@ -834,14 +853,14 @@ the training data.</p></li>
 post-rule before plotting them.</p></li>
 <li><p><strong>plot_time_series_prev</strong> – whether to plot <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and
 the model’s fit for it). Only used if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given.</p></li>
-<li><p><strong>fig</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>]) – a <a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> we might want to add anomaly scores onto.</p></li>
+<li><p><strong>fig</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>]) – a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> we might want to add anomaly scores onto.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a <a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions.</p>
+<dd class="field-odd"><p>a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -933,8 +952,11 @@ data with each element corresponds to time series from <code class="docutils lit
 </dd></dl>
 
 </section>
+</section>
+<section id="univariate-models">
+<h2>Univariate models<a class="headerlink" href="#univariate-models" title="Permalink to this heading"></a></h2>
 <section id="module-merlion.models.anomaly.dbl">
-<span id="merlion-models-anomaly-dbl-module"></span><h2>merlion.models.anomaly.dbl module<a class="headerlink" href="#module-merlion.models.anomaly.dbl" title="Permalink to this heading"></a></h2>
+<span id="anomaly-dbl"></span><h3>anomaly.dbl<a class="headerlink" href="#module-merlion.models.anomaly.dbl" title="Permalink to this heading"></a></h3>
 <p>Dynamic Baseline anomaly detection model for time series with daily, weekly or monthly trends.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dbl.DynamicBaselineConfig">
@@ -1091,7 +1113,7 @@ or updating.</p>
 <span class="sig-name descname"><span class="pre">get_baseline_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter_time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.dbl.DynamicBaseline.get_baseline_figure" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1246,7 +1268,7 @@ Only used if a daily trend is one of the trends used.</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.windstats">
-<span id="merlion-models-anomaly-windstats-module"></span><h2>merlion.models.anomaly.windstats module<a class="headerlink" href="#module-merlion.models.anomaly.windstats" title="Permalink to this heading"></a></h2>
+<span id="anomaly-windstats"></span><h3>anomaly.windstats<a class="headerlink" href="#module-merlion.models.anomaly.windstats" title="Permalink to this heading"></a></h3>
 <p>Window Statistics anomaly detection model for data with weekly seasonality.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.windstats.WindStatsConfig">
@@ -1321,188 +1343,8 @@ here the days are first bucketized by weekday and then bucketized by window id.<
 </dd></dl>
 
 </section>
-<section id="module-merlion.models.anomaly.isolation_forest">
-<span id="merlion-models-anomaly-isolation-forest-module"></span><h2>merlion.models.anomaly.isolation_forest module<a class="headerlink" href="#module-merlion.models.anomaly.isolation_forest" title="Permalink to this heading"></a></h2>
-<p>The classic isolation forest model for anomaly detection.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForestConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest" title="merlion.models.anomaly.isolation_forest.IsolationForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">IsolationForest</span></code></a>.</p>
-<p>Base class of the object used to configure an anomaly detection model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>max_n_samples</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Maximum number of samples to allow the isolation
-forest to train on. Specify <code class="docutils literal notranslate"><span class="pre">None</span></code> to use all samples in the
-training data.</p></li>
-<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of trees in the isolation forest.</p></li>
-<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
-<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
-<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
-automatically transforms all raw anomaly scores to be z-scores
-(i.e. distributed as N(0, 1)).</p></li>
-<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
-when post-processing anomaly scores</p></li>
-<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
-<p>The classic isolation forest algorithm, proposed in
-<a class="reference external" href="https://ieeexplore.ieee.org/document/4781136">Liu et al. 2008</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a>) – model configuration</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling" title="Permalink to this definition"></a></dt>
-<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate" title="Permalink to this definition"></a></dt>
-<dd><p>Whether the model only works with univariate time series.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-merlion.models.anomaly.random_cut_forest">
-<span id="merlion-models-anomaly-random-cut-forest-module"></span><h2>merlion.models.anomaly.random_cut_forest module<a class="headerlink" href="#module-merlion.models.anomaly.random_cut_forest" title="Permalink to this heading"></a></h2>
-<p>Wrapper around AWS’s Random Cut Forest anomaly detection model.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.JVMSingleton">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">JVMSingleton</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gateway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a>. Refer to
-<a class="reference external" href="https://github.com/aws/random-cut-forest-by-aws/tree/main/Java">https://github.com/aws/random-cut-forest-by-aws/tree/main/Java</a> for
-further documentation and defaults of the Java class.</p>
-<p>Base class of the object used to configure an anomaly detection model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of trees in this forest.</p></li>
-<li><p><strong>parallel</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, then the forest will create an internal thread
-pool. Forest updates and traversals will be submitted to this thread
-pool, and individual trees will be updated or traversed in parallel.
-For larger shingle sizes, dimensions, and number of trees,
-parallelization may improve throughput.
-We recommend users benchmark against their target use case.</p></li>
-<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the random seed</p></li>
-<li><p><strong>max_n_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of samples retained by by stream
-samplers in this forest.</p></li>
-<li><p><strong>thread_pool_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of threads to use in the internal
-thread pool.</p></li>
-<li><p><strong>online_updates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to update the model while running
-using it to evaluate new data.</p></li>
-<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
-<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
-<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
-automatically transforms all raw anomaly scores to be z-scores
-(i.e. distributed as N(0, 1)).</p></li>
-<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
-when post-processing anomaly scores</p></li>
-<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">java_params</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
-<p>The random cut forest is a refinement of the classic isolation forest
-algorithm. It was proposed in <a class="reference external" href="https://proceedings.mlr.press/v48/guha16.pdf">Guha et al. 2016</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a>) – model configuration</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a></p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling" title="Permalink to this definition"></a></dt>
-<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate" title="Permalink to this definition"></a></dt>
-<dd><p>Whether the model only works with univariate time series.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">online_updates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-merlion.models.anomaly.spectral_residual">
-<span id="merlion-models-anomaly-spectral-residual-module"></span><h2>merlion.models.anomaly.spectral_residual module<a class="headerlink" href="#module-merlion.models.anomaly.spectral_residual" title="Permalink to this heading"></a></h2>
+<span id="anomaly-spectral-residual"></span><h3>anomaly.spectral_residual<a class="headerlink" href="#module-merlion.models.anomaly.spectral_residual" title="Permalink to this heading"></a></h3>
 <p>Spectral Residual algorithm for anomaly detection</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.spectral_residual.SpectralResidualConfig">
@@ -1601,7 +1443,7 @@ average of the previous points.</p>
 
 </section>
 <section id="module-merlion.models.anomaly.stat_threshold">
-<span id="merlion-models-anomaly-stat-threshold-module"></span><h2>merlion.models.anomaly.stat_threshold module<a class="headerlink" href="#module-merlion.models.anomaly.stat_threshold" title="Permalink to this heading"></a></h2>
+<span id="anomaly-stat-threshold"></span><h3>anomaly.stat_threshold<a class="headerlink" href="#module-merlion.models.anomaly.stat_threshold" title="Permalink to this heading"></a></h3>
 <p>Simple static thresholding model for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.stat_threshold.StatThresholdConfig">
@@ -1669,7 +1511,7 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.zms">
-<span id="merlion-models-anomaly-zms-module"></span><h2>merlion.models.anomaly.zms module<a class="headerlink" href="#module-merlion.models.anomaly.zms" title="Permalink to this heading"></a></h2>
+<span id="anomaly-zms"></span><h3>anomaly.zms<a class="headerlink" href="#module-merlion.models.anomaly.zms" title="Permalink to this heading"></a></h3>
 <p>Multiple z-score model (static thresholding at multiple time scales).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.zms.ZMSConfig">
@@ -1848,8 +1690,191 @@ post-rule train config is used if none is supplied here.</p></li>
 </dd></dl>
 
 </section>
+</section>
+<section id="multivariate-models">
+<h2>Multivariate models<a class="headerlink" href="#multivariate-models" title="Permalink to this heading"></a></h2>
+<section id="module-merlion.models.anomaly.isolation_forest">
+<span id="anomaly-isolation-forest"></span><h3>anomaly.isolation_forest<a class="headerlink" href="#module-merlion.models.anomaly.isolation_forest" title="Permalink to this heading"></a></h3>
+<p>The classic isolation forest model for anomaly detection.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForestConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
+<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForest" title="merlion.models.anomaly.isolation_forest.IsolationForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">IsolationForest</span></code></a>.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_n_samples</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Maximum number of samples to allow the isolation
+forest to train on. Specify <code class="docutils literal notranslate"><span class="pre">None</span></code> to use all samples in the
+training data.</p></li>
+<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of trees in the isolation forest.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.isolation_forest.</span></span><span class="sig-name descname"><span class="pre">IsolationForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
+<p>The classic isolation forest algorithm, proposed in
+<a class="reference external" href="https://ieeexplore.ieee.org/document/4781136">Liu et al. 2008</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a>) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.isolation_forest.IsolationForestConfig" title="merlion.models.anomaly.isolation_forest.IsolationForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsolationForestConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.isolation_forest.IsolationForest.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model only works with univariate time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-merlion.models.anomaly.random_cut_forest">
+<span id="anomaly-random-cut-forest"></span><h3>anomaly.random_cut_forest<a class="headerlink" href="#module-merlion.models.anomaly.random_cut_forest" title="Permalink to this heading"></a></h3>
+<p>Wrapper around AWS’s Random Cut Forest anomaly detection model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.JVMSingleton">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">JVMSingleton</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gateway</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.JVMSingleton.gateway" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForestConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_pool_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
+<p>Configuration class for <a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a>. Refer to
+<a class="reference external" href="https://github.com/aws/random-cut-forest-by-aws/tree/main/Java">https://github.com/aws/random-cut-forest-by-aws/tree/main/Java</a> for
+further documentation and defaults of the Java class.</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_estimators</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of trees in this forest.</p></li>
+<li><p><strong>parallel</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If true, then the forest will create an internal thread
+pool. Forest updates and traversals will be submitted to this thread
+pool, and individual trees will be updated or traversed in parallel.
+For larger shingle sizes, dimensions, and number of trees,
+parallelization may improve throughput.
+We recommend users benchmark against their target use case.</p></li>
+<li><p><strong>seed</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the random seed</p></li>
+<li><p><strong>max_n_samples</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of samples retained by by stream
+samplers in this forest.</p></li>
+<li><p><strong>thread_pool_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The number of threads to use in the internal
+thread pool.</p></li>
+<li><p><strong>online_updates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to update the model while running
+using it to evaluate new data.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">java_params</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig.java_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.random_cut_forest.</span></span><span class="sig-name descname"><span class="pre">RandomCutForest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
+<p>The random cut forest is a refinement of the classic isolation forest
+algorithm. It was proposed in <a class="reference external" href="https://proceedings.mlr.press/v48/guha16.pdf">Guha et al. 2016</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a>) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.random_cut_forest.RandomCutForestConfig" title="merlion.models.anomaly.random_cut_forest.RandomCutForestConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomCutForestConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model only works with univariate time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">online_updates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.random_cut_forest.RandomCutForest.online_updates" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-merlion.models.anomaly.autoencoder">
-<span id="merlion-models-anomaly-autoencoder-module"></span><h2>merlion.models.anomaly.autoencoder module<a class="headerlink" href="#module-merlion.models.anomaly.autoencoder" title="Permalink to this heading"></a></h2>
+<span id="anomaly-autoencoder"></span><h3>anomaly.autoencoder<a class="headerlink" href="#module-merlion.models.anomaly.autoencoder" title="Permalink to this heading"></a></h3>
 <p>The autoencoder-based anomaly detector for multivariate time series</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.autoencoder.AutoEncoderConfig">
@@ -1930,7 +1955,7 @@ for anomaly detection.</p>
 
 </section>
 <section id="module-merlion.models.anomaly.vae">
-<span id="merlion-models-anomaly-vae-module"></span><h2>merlion.models.anomaly.vae module<a class="headerlink" href="#module-merlion.models.anomaly.vae" title="Permalink to this heading"></a></h2>
+<span id="anomaly-vae"></span><h3>anomaly.vae<a class="headerlink" href="#module-merlion.models.anomaly.vae" title="Permalink to this heading"></a></h3>
 <p>The VAE-based anomaly detector for multivariate time series</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.vae.VAEConfig">
@@ -2014,7 +2039,7 @@ for anomaly detection.</p>
 
 </section>
 <section id="module-merlion.models.anomaly.dagmm">
-<span id="merlion-models-anomaly-dagmm-module"></span><h2>merlion.models.anomaly.dagmm module<a class="headerlink" href="#module-merlion.models.anomaly.dagmm" title="Permalink to this heading"></a></h2>
+<span id="anomaly-dagmm"></span><h3>anomaly.dagmm<a class="headerlink" href="#module-merlion.models.anomaly.dagmm" title="Permalink to this heading"></a></h3>
 <p>Deep autoencoding Gaussian mixture model for anomaly detection (DAGMM)</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.dagmm.DAGMMConfig">
@@ -2131,7 +2156,7 @@ data with each element corresponds to time series from <code class="docutils lit
 
 </section>
 <section id="module-merlion.models.anomaly.lstm_ed">
-<span id="merlion-models-anomaly-lstm-ed-module"></span><h2>merlion.models.anomaly.lstm_ed module<a class="headerlink" href="#module-merlion.models.anomaly.lstm_ed" title="Permalink to this heading"></a></h2>
+<span id="anomaly-lstm-ed"></span><h3>anomaly.lstm_ed<a class="headerlink" href="#module-merlion.models.anomaly.lstm_ed" title="Permalink to this heading"></a></h3>
 <p>The LSTM-encoder-decoder-based anomaly detector for multivariate time series</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.lstm_ed.LSTMEDConfig">
@@ -2211,7 +2236,7 @@ is estimated for anomaly detection.</p>
 
 </section>
 <section id="module-merlion.models.anomaly.deep_point_anomaly_detector">
-<span id="merlion-models-anomaly-deep-point-anomaly-detector-module"></span><h2>merlion.models.anomaly.deep_point_anomaly_detector module<a class="headerlink" href="#module-merlion.models.anomaly.deep_point_anomaly_detector" title="Permalink to this heading"></a></h2>
+<span id="anomaly-deep-point-anomaly-detector"></span><h3>anomaly.deep_point_anomaly_detector<a class="headerlink" href="#module-merlion.models.anomaly.deep_point_anomaly_detector" title="Permalink to this heading"></a></h3>
 <p>Deep Point Anomaly Detector algorithm.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig">
@@ -2285,13 +2310,14 @@ Rahaman, Nasim, et al. “On the spectral bias of neural networks.” ICML 2019<
 
 </section>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="merlion.models.html" class="btn btn-neutral float-left" title="merlion.models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="merlion.models.anomaly.forecast_based.html" class="btn btn-neutral float-right" title="merlion.models.anomaly.forecast_based package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="merlion.models.anomaly.forecast_based.html" class="btn btn-neutral float-right" title="anomaly.forecast_based" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -46,12 +46,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.spark package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.dataset">merlion.spark.dataset module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">merlion.spark package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-spark-on-k8s-operator">Setting up the spark-on-k8s-operator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specifying-a-spark-app">Specifying a Spark App</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-documentation">API Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.dataset">merlion.spark.dataset</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.dataset.TSID_COL_NAME"><code class="docutils literal notranslate"><span class="pre">TSID_COL_NAME</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.dataset.read_dataset"><code class="docutils literal notranslate"><span class="pre">read_dataset()</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.dataset.write_dataset"><code class="docutils literal notranslate"><span class="pre">write_dataset()</span></code></a></li>
@@ -59,7 +60,7 @@
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.dataset.add_tsid_column"><code class="docutils literal notranslate"><span class="pre">add_tsid_column()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.pandas_udf.forecast"><code class="docutils literal notranslate"><span class="pre">forecast()</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.pandas_udf.anomaly"><code class="docutils literal notranslate"><span class="pre">anomaly()</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.spark.pandas_udf.reconciliation"><code class="docutils literal notranslate"><span class="pre">reconciliation()</span></code></a></li>
@@ -67,14 +68,13 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -134,6 +134,74 @@
 <h1>merlion.spark package<a class="headerlink" href="#merlion-spark-package" title="Permalink to this heading"></a></h1>
 <p>This module implements APIs to integrate Merlion with PySpark. The expected use case is to
 use distributed computing to train and run inference on multiple time series in parallel.</p>
+<p>There are two ways to use the PySpark API: directly invoking the Spark apps <code class="docutils literal notranslate"><span class="pre">spark_apps/anomaly.py</span></code> and
+<code class="docutils literal notranslate"><span class="pre">spark_apps/forecast.py</span></code> from the command line with either <code class="docutils literal notranslate"><span class="pre">python</span></code> or <code class="docutils literal notranslate"><span class="pre">spark-submit</span></code>,
+or using the Dockerfile to serve a Spark application on a Kubernetes cluster with <code class="docutils literal notranslate"><span class="pre">spark-on-k8s</span></code>.
+To understand the expected arguments for these apps, call <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">spark_apps/anomaly.py</span> <span class="pre">-h</span></code> or
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">spark_apps/forecast.py</span> <span class="pre">-h</span></code>.</p>
+<section id="setting-up-the-spark-on-k8s-operator">
+<h2>Setting up the spark-on-k8s-operator<a class="headerlink" href="#setting-up-the-spark-on-k8s-operator" title="Permalink to this heading"></a></h2>
+<p>We will now cover how to serve these Spark apps using the
+<a class="reference external" href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/">spark-on-k8s-operator</a>.
+For all methods, we expect that you have installed Merlion from source by cloning our
+<a class="reference external" href="https://github.com/salesforce/Merlion">git repo</a>.</p>
+<p>Next, you need to create a Kubernetes cluster.
+For local development, we recommend <a class="reference external" href="https://minikube.sigs.k8s.io/docs/start/">Minikube</a>.
+However, you can also use Kubernetes clusters managed by major cloud providers, e.g.
+<a class="reference external" href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/gcp.md">Google’s GKE</a> or
+<a class="reference external" href="https://github.com/aws-samples/amazon-eks-apache-spark-etl-sample">Amazon’s EKS</a>. Setting up these clusters
+is beyond the scope of this document, so we defer to the linked resources.</p>
+<p>Once your Kubernetes cluster is set up, you need to use <a class="reference external" href="https://helm.sh/docs/intro/install/">Helm</a> to install
+the <code class="docutils literal notranslate"><span class="pre">spark-on-k8s-operator</span></code>. A full quick start guide for the operator can be found
+<a class="reference external" href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md">here</a>,
+but the key steps are to call</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$ helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+$ kubectl create namespace spark-apps
+$ helm install spark-operator spark-operator/spark-operator <span class="se">\</span>
+  --namespace spark-operator --create-namespace --set <span class="nv">sparkJobNamespace</span><span class="o">=</span>spark-apps
+</pre></div>
+</div>
+<p>This will create a Kubernetes namespace <code class="docutils literal notranslate"><span class="pre">spark-apps</span></code> from which all your Spark applications will run, and it will
+use Helm to install the <code class="docutils literal notranslate"><span class="pre">spark-on-k8s-operator</span></code> (which manages all running PySpark apps as Kubernetes custom
+resources) in the namespace <code class="docutils literal notranslate"><span class="pre">spark-operator</span></code>.</p>
+<p>Then, you can build the provided Dockerfile with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span> <span class="pre">-t</span> <span class="pre">merlion-spark</span> <span class="pre">-f</span> <span class="pre">docker/spark-on-k8s/Dockerfile</span> <span class="pre">.</span></code>
+from the root directory of Merlion.
+If you are using Minikube, make sure to point your shell to Minikube’s Docker daemon with
+<code class="docutils literal notranslate"><span class="pre">eval</span> <span class="pre">$(minikube</span> <span class="pre">-p</span> <span class="pre">minikube</span> <span class="pre">docker-env)</span></code> before building the image.
+If you are working on the cloud, you will need to publish the built Docker image to the appropriate registry, e.g.
+<a class="reference external" href="https://cloud.google.com/container-registry/">Google’s gcr.io</a> or <a class="reference external" href="https://aws.amazon.com/ecr/">Amazon’s ECR</a>.</p>
+<p>If you require any additional Java dependencies (e.g. to communicate with a Google GCS bucket or AWS S3 bucket),
+we recommend you obtain the jars locally with a package manager like Maven,
+and add a line to the Dockerfile which copies those jars to a specific path, e.g. <code class="docutils literal notranslate"><span class="pre">/opt/spark/extra-jars</span></code>.
+Then, you can update the <code class="docutils literal notranslate"><span class="pre">spec.SparkConf</span></code> block of your Spark app configuration (see below) as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">sparkConf</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spark.driver.extraClassPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;local:///opt/spark/extra-jars/*&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spark.executor.extraClassPath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;local:///opt/spark/extra-jars/*&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="specifying-a-spark-app">
+<h2>Specifying a Spark App<a class="headerlink" href="#specifying-a-spark-app" title="Permalink to this heading"></a></h2>
+<p>Once your cluster is set up, you can submit a YAML file specifying your spark application as a Kubernetes custom
+resource. We provide templates for both forecasting and anomaly detection in <code class="docutils literal notranslate"><span class="pre">k8s-spec/forecast.yml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">k8s-spec/anomaly.yml</span></code> respectively. Both of these use the <code class="docutils literal notranslate"><span class="pre">walmart_mini.csv</span></code> dataset,
+which contains the weekly sales of 10 different products at 2 different stores.</p>
+<p>You can change the Docker image used by changing the <code class="docutils literal notranslate"><span class="pre">spec.image</span></code> in the YAML file. You can modify the amount of
+computational resources allocated to the Spark driver and executor by modifying <code class="docutils literal notranslate"><span class="pre">spec.driver</span></code> and <code class="docutils literal notranslate"><span class="pre">spec.executor</span></code>
+respectively. The arguments to the main application file (<code class="docutils literal notranslate"><span class="pre">spark_apps/anomaly.py</span></code> or <code class="docutils literal notranslate"><span class="pre">spark_apps/forecast.py</span></code>)
+are specified as a YAML list under <code class="docutils literal notranslate"><span class="pre">spec.arguments</span></code>. These should be modified according to your use case.
+By adding the appropriate Java dependencies and modifying the <code class="docutils literal notranslate"><span class="pre">spec.sparkConf</span></code>, you can directly read and write files
+on cloud storage buckets. While this topic is beyond the scope of this document, we refer an interested reader to
+<a class="reference external" href="https://spark.apache.org/docs/latest/configuration.html#custom-hadoophive-configuration">Spark’s Hadoop config</a>,
+<a class="reference external" href="https://hadoop.apache.org/docs/stable/hadoop-aws/tools/hadoop-aws/index.html">Hadoop’s AWS S3 connector</a>, and the
+<a class="reference external" href="https://cloud.google.com/dataproc/docs/tutorials/gcs-connector-spark-tutorial">GCS connector</a> for more information.</p>
+<p>More detailed information about specifying a Spark application can be found in the <code class="docutils literal notranslate"><span class="pre">spark-on-k8s-operator</span></code>’s detailed
+<a class="reference external" href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/api-docs.md">API documentation</a>.</p>
+</section>
+<section id="api-documentation">
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading"></a></h2>
+<p>The API documentation of Merlion’s PySpark connectors (<code class="docutils literal notranslate"><span class="pre">merlion.spark</span></code>) is below.</p>
 <span class="target" id="module-merlion.spark"></span><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -148,11 +216,8 @@ use distributed computing to train and run inference on multiple time series in 
 </tr>
 </tbody>
 </table>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
 <section id="module-merlion.spark.dataset">
-<span id="merlion-spark-dataset-module"></span><h2>merlion.spark.dataset module<a class="headerlink" href="#module-merlion.spark.dataset" title="Permalink to this heading"></a></h2>
+<span id="merlion-spark-dataset"></span><h3>merlion.spark.dataset<a class="headerlink" href="#module-merlion.spark.dataset" title="Permalink to this heading"></a></h3>
 <p>Utils for reading &amp; writing pyspark datasets.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="merlion.spark.dataset.TSID_COL_NAME">
@@ -259,7 +324,7 @@ matrix specifying how the hierarchy is constructed.</p>
 
 </section>
 <section id="module-merlion.spark.pandas_udf">
-<span id="merlion-spark-pandas-udf-module"></span><h2>merlion.spark.pandas_udf module<a class="headerlink" href="#module-merlion.spark.pandas_udf" title="Permalink to this heading"></a></h2>
+<span id="merlion-spark-pandas-udf"></span><h3>merlion.spark.pandas_udf<a class="headerlink" href="#module-merlion.spark.pandas_udf" title="Permalink to this heading"></a></h3>
 <p>Pyspark pandas UDFs for Merlion functions.
 This module contains pandas UDFs that can be called via <code class="docutils literal notranslate"><span class="pre">pyspark.sql.DataFrame.applyInPandas</span></code> to run Merlion
 forecasting, anomaly detection, and time series reconciliation in parallel.</p>
@@ -294,7 +359,7 @@ Columns are <code class="docutils literal notranslate"><span class="pre">[*index
 
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.spark.pandas_udf.anomaly">
-<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_test_split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.anomaly" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">merlion.spark.pandas_udf.</span></span><span class="sig-name descname"><span class="pre">anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_cols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_test_split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_on_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.spark.pandas_udf.anomaly" title="Permalink to this definition"></a></dt>
 <dd><p>Pyspark pandas UDF for performing anomaly detection.
 Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code class="docutils literal notranslate"><span class="pre">index_cols</span></code>.</p>
 <dl class="field-list simple">
@@ -305,6 +370,7 @@ Should be called on a pyspark dataframe grouped by time series ID, i.e. by <code
 <li><p><strong>time_col</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the column containing the timestamps.</p></li>
 <li><p><strong>train_test_split</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The time at which the testing data starts.</p></li>
 <li><p><strong>model</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – The model (or model <code class="docutils literal notranslate"><span class="pre">dict</span></code>) we are using to predict anomaly scores.</p></li>
+<li><p><strong>predict_on_train</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to return the model’s prediction on the training data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -351,6 +417,7 @@ time series. This can happen for training timestamps if the training time series
 </div>
 </dd></dl>
 
+</section>
 </section>
 </section>
 

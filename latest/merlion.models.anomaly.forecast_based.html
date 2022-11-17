@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.anomaly.forecast_based package &mdash; Merlion 2.0.0 documentation</title>
+  <title>anomaly.forecast_based &mdash; Merlion 2.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -23,8 +23,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="merlion.models.anomaly.change_point package" href="merlion.models.anomaly.change_point.html" />
-    <link rel="prev" title="merlion.models.anomaly package" href="merlion.models.anomaly.html" /> 
+    <link rel="next" title="anomaly.change_point" href="merlion.models.anomaly.change_point.html" />
+    <link rel="prev" title="anomaly" href="merlion.models.anomaly.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,194 +48,176 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l5 current"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly package</a><ul class="current">
-<li class="toctree-l6 current"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l7 current"><a class="current reference internal" href="#">merlion.models.anomaly.forecast_based package</a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train_post_process()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_score()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_label()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_figure()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly_plotly()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast()</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast_plotly()</span></code></a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l6 current"><a class="current reference internal" href="#">anomaly.forecast_based</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base">anomaly.forecast_based.base</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train_post_process()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_label()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_figure()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly_plotly()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast_plotly()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">anomaly.forecast_based.arima</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">anomaly.forecast_based.sarima</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">anomaly.forecast_based.ets</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">anomaly.forecast_based.prophet</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">anomaly.forecast_based.lstm</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l8"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a><ul>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
-<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates"><code class="docutils literal notranslate"><span class="pre">MSESDetector.online_updates</span></code></a></li>
-<li class="toctree-l10"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">MSESDetector.get_anomaly_score()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l7"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.base">merlion.models.anomaly.base module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dbl">merlion.models.anomaly.dbl module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.windstats">merlion.models.anomaly.windstats module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.isolation_forest">merlion.models.anomaly.isolation_forest module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.random_cut_forest">merlion.models.anomaly.random_cut_forest module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.spectral_residual">merlion.models.anomaly.spectral_residual module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.stat_threshold">merlion.models.anomaly.stat_threshold module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.zms">merlion.models.anomaly.zms module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.autoencoder">merlion.models.anomaly.autoencoder module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.vae">merlion.models.anomaly.vae module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">merlion.models.anomaly.dagmm module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">merlion.models.anomaly.lstm_ed module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">merlion.models.anomaly.deep_point_anomaly_detector module</a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point package</a></li>
-<li class="toctree-l5 current"><a class="current reference internal" href="#">merlion.models.anomaly.forecast_based package</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base">merlion.models.anomaly.forecast_based.base module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train_post_process()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_score()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_label()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_figure()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly_plotly()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast()</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast_plotly()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">merlion.models.anomaly.forecast_based.arima module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">merlion.models.anomaly.forecast_based.sarima module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">merlion.models.anomaly.forecast_based.ets module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">merlion.models.anomaly.forecast_based.prophet module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">merlion.models.anomaly.forecast_based.lstm module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">merlion.models.anomaly.forecast_based.mses module</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
-<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates"><code class="docutils literal notranslate"><span class="pre">MSESDetector.online_updates</span></code></a></li>
-<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">MSESDetector.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">anomaly.forecast_based.mses</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates"><code class="docutils literal notranslate"><span class="pre">MSESDetector.online_updates</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">MSESDetector.get_anomaly_score()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl package</a></li>
-<li class="toctree-l5"><a class="reference internal" href="merlion.models.utils.html">merlion.models.utils package</a></li>
+<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">merlion.models.defaults module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">merlion.models.factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">merlion.models.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">merlion.models.layers module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#base-classes">Base classes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#univariate-models">Univariate models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#multivariate-models">Multivariate models</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">anomaly.forecast_based</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base">anomaly.forecast_based.base</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.forecast_to_anom_score()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.train_post_process()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_anomaly_label()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.get_figure()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_anomaly_plotly()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly"><code class="docutils literal notranslate"><span class="pre">ForecastingDetectorBase.plot_forecast_plotly()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.arima">anomaly.forecast_based.arima</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector"><code class="docutils literal notranslate"><span class="pre">ArimaDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ArimaDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.sarima">anomaly.forecast_based.sarima</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector"><code class="docutils literal notranslate"><span class="pre">SarimaDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class"><code class="docutils literal notranslate"><span class="pre">SarimaDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.ets">anomaly.forecast_based.ets</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector"><code class="docutils literal notranslate"><span class="pre">ETSDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ETSDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.prophet">anomaly.forecast_based.prophet</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector"><code class="docutils literal notranslate"><span class="pre">ProphetDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class"><code class="docutils literal notranslate"><span class="pre">ProphetDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.lstm">anomaly.forecast_based.lstm</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig"><code class="docutils literal notranslate"><span class="pre">LSTMDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector"><code class="docutils literal notranslate"><span class="pre">LSTMDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.lstm.LSTMDetector.config_class"><code class="docutils literal notranslate"><span class="pre">LSTMDetector.config_class</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.mses">anomaly.forecast_based.mses</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector"><code class="docutils literal notranslate"><span class="pre">MSESDetector</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class"><code class="docutils literal notranslate"><span class="pre">MSESDetector.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates"><code class="docutils literal notranslate"><span class="pre">MSESDetector.online_updates</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">MSESDetector.get_anomaly_score()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.utils.html">utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -258,8 +240,8 @@
       <li><a href="index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
           <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
-          <li class="breadcrumb-item"><a href="merlion.models.anomaly.html">merlion.models.anomaly package</a></li>
-      <li class="breadcrumb-item active">merlion.models.anomaly.forecast_based package</li>
+          <li class="breadcrumb-item"><a href="merlion.models.anomaly.html">anomaly</a></li>
+      <li class="breadcrumb-item active">anomaly.forecast_based</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/merlion.models.anomaly.forecast_based.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -294,7 +276,7 @@
 }
 </style>
 <section id="module-merlion.models.anomaly.forecast_based">
-<span id="merlion-models-anomaly-forecast-based-package"></span><h1>merlion.models.anomaly.forecast_based package<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based" title="Permalink to this heading"></a></h1>
+<span id="anomaly-forecast-based"></span><h1>anomaly.forecast_based<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based" title="Permalink to this heading"></a></h1>
 <p>Contains all forecaster-based anomaly detectors. These models support all functionality
 of both anomaly detectors (<a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>) and forecasters
 (<a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>).</p>
@@ -302,6 +284,8 @@ of both anomaly detectors (<a class="reference internal" href="merlion.models.an
 class. Many forecasting models support anomaly detection variants, where the anomaly score
 is based on the difference between the predicted and true time series value, and optionally
 the model’s uncertainty in its own prediction.</p>
+<p>Note that the model will detect anomalies in only one target univariate, though the underlying
+forecaster may model the full multivariate time series to predict said univariate.</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -331,11 +315,8 @@ the model’s uncertainty in its own prediction.</p>
 </tr>
 </tbody>
 </table>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
 <section id="module-merlion.models.anomaly.forecast_based.base">
-<span id="merlion-models-anomaly-forecast-based-base-module"></span><h2>merlion.models.anomaly.forecast_based.base module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.base" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-base"></span><h2>anomaly.forecast_based.base<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.base" title="Permalink to this heading"></a></h2>
 <p>Base class for anomaly detectors based on forecasting models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase">
@@ -487,10 +468,10 @@ values. Not supported for all models.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a <a class="reference internal" href="merlion.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions and/or forecast.</p>
+<dd class="field-odd"><p>a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions and/or forecast.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -629,7 +610,7 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.arima">
-<span id="merlion-models-anomaly-forecast-based-arima-module"></span><h2>merlion.models.anomaly.forecast_based.arima module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.arima" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-arima"></span><h2>anomaly.forecast_based.arima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.arima" title="Permalink to this heading"></a></h2>
 <p>Classic ARIMA (AutoRegressive Integrated Moving Average) forecasting model,
 adapted for anomaly detection.</p>
 <dl class="py class">
@@ -684,7 +665,7 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.sarima">
-<span id="merlion-models-anomaly-forecast-based-sarima-module"></span><h2>merlion.models.anomaly.forecast_based.sarima module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.sarima" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-sarima"></span><h2>anomaly.forecast_based.sarima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.sarima" title="Permalink to this heading"></a></h2>
 <p>Seasonal ARIMA (SARIMA) forecasting model, adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig">
@@ -740,11 +721,11 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.ets">
-<span id="merlion-models-anomaly-forecast-based-ets-module"></span><h2>merlion.models.anomaly.forecast_based.ets module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.ets" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-ets"></span><h2>anomaly.forecast_based.ets<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.ets" title="Permalink to this heading"></a></h2>
 <p>ETS (error, trend, seasonal) forecasting model, adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_interval_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'exact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETSConfig" title="merlion.models.forecast.ets.ETSConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig</span></code></a></p>
 <p>Configuration class for <code class="xref py py-class docutils literal notranslate"><span class="pre">ETS</span></code> model. ETS model is an underlying state space
 model consisting of an error term (E), a trend component (T), a seasonal
@@ -765,8 +746,8 @@ would like to forecast.</p></li>
 <li><p><strong>damped_trend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not an included trend component is damped.</p></li>
 <li><p><strong>seasonal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The seasonal component. “add”, “mul” or None.</p></li>
 <li><p><strong>seasonal_periods</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The length of the seasonality cycle. <code class="docutils literal notranslate"><span class="pre">None</span></code> by default.</p></li>
-<li><p><strong>pred_interval_strategy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Strategy to compute prediction intervals. “exact” or “simulated”.</p></li>
-<li><p><strong>refit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, refit the full ETS model when <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given to the forecast method</p></li>
+<li><p><strong>refit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, refit the full ETS model when <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given to the forecast method
+(slower). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, simply perform exponential smoothing (faster).</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -777,10 +758,6 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
 when post-processing anomaly scores</p></li>
 </ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Note that “simulated” setting supports more variants of ETS model.</dt><dd><p>(slower). If <code class="docutils literal notranslate"><span class="pre">False</span></code>, simply perform exponential smoothing (faster).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -799,7 +776,7 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.prophet">
-<span id="merlion-models-anomaly-forecast-based-prophet-module"></span><h2>merlion.models.anomaly.forecast_based.prophet module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.prophet" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-prophet"></span><h2>anomaly.forecast_based.prophet<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.prophet" title="Permalink to this heading"></a></h2>
 <p>Adaptation of Facebook’s Prophet forecasting model to anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig">
@@ -871,7 +848,7 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.lstm">
-<span id="merlion-models-anomaly-forecast-based-lstm-module"></span><h2>merlion.models.anomaly.forecast_based.lstm module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.lstm" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-lstm"></span><h2>anomaly.forecast_based.lstm<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.lstm" title="Permalink to this heading"></a></h2>
 <p>Adaptation of a LSTM neural net forecaster, to the task of anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.lstm.LSTMDetectorConfig">
@@ -923,7 +900,7 @@ when post-processing anomaly scores</p></li>
 
 </section>
 <section id="module-merlion.models.anomaly.forecast_based.mses">
-<span id="merlion-models-anomaly-forecast-based-mses-module"></span><h2>merlion.models.anomaly.forecast_based.mses module<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.mses" title="Permalink to this heading"></a></h2>
+<span id="anomaly-forecast-based-mses"></span><h2>anomaly.forecast_based.mses<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.mses" title="Permalink to this heading"></a></h2>
 <p>MSES (Multi-Scale Exponential Smoother) forecasting model adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig">
@@ -1035,8 +1012,8 @@ immediately follows the training data.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="merlion.models.anomaly.html" class="btn btn-neutral float-left" title="merlion.models.anomaly package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="merlion.models.anomaly.change_point.html" class="btn btn-neutral float-right" title="merlion.models.anomaly.change_point package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="merlion.models.anomaly.html" class="btn btn-neutral float-left" title="anomaly" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.anomaly.change_point.html" class="btn btn-neutral float-right" title="anomaly.change_point" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

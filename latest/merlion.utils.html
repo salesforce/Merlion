@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ts_datasets: Easy Data Loading" href="ts_datasets.html" />
-    <link rel="prev" title="merlion.evaluate package" href="merlion.evaluate.html" /> 
+    <link rel="prev" title="merlion.plot package" href="merlion.plot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,234 +48,235 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">merlion.utils package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.time_series">merlion.utils.time_series module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.__getitem__"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.__getitem__()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.__iter__"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.__iter__()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.np_time_stamps"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.np_time_stamps</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.np_values"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.np_values</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.time_stamps"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.time_stamps</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.values"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.values</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.t0"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.t0</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.tf"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.tf</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.is_empty"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.is_empty()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.copy"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.copy()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.concat"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.concat()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.bisect"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.bisect()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.window"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.window()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_dict"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_dict()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.from_dict"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.from_dict()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_pd"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_pd()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.from_pd"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.from_pd()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_ts"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_ts()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.empty"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.empty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">merlion.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.time_series">merlion.utils.time_series</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.__getitem__"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.__getitem__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.__iter__"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.__iter__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.np_time_stamps"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.np_time_stamps</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.np_values"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.np_values</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.time_stamps"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.time_stamps</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.values"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.values</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.t0"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.t0</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.tf"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.tf</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.is_empty"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.is_empty()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.copy"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.copy()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.concat"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.concat()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.bisect"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.bisect()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.window"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.window()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_dict"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_dict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.from_dict"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.from_dict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_pd"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_pd()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.from_pd"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.from_pd()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.to_ts"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.to_ts()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries.empty"><code class="docutils literal notranslate"><span class="pre">UnivariateTimeSeries.empty()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries"><code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.__getitem__"><code class="docutils literal notranslate"><span class="pre">TimeSeries.__getitem__()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.__iter__"><code class="docutils literal notranslate"><span class="pre">TimeSeries.__iter__()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.names"><code class="docutils literal notranslate"><span class="pre">TimeSeries.names</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.items"><code class="docutils literal notranslate"><span class="pre">TimeSeries.items()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.dim"><code class="docutils literal notranslate"><span class="pre">TimeSeries.dim</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.rename"><code class="docutils literal notranslate"><span class="pre">TimeSeries.rename()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_aligned"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_aligned</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.np_time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.np_time_stamps</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.time_stamps</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.t0"><code class="docutils literal notranslate"><span class="pre">TimeSeries.t0</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.tf"><code class="docutils literal notranslate"><span class="pre">TimeSeries.tf</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_empty"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_empty()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.squeeze"><code class="docutils literal notranslate"><span class="pre">TimeSeries.squeeze()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.shape"><code class="docutils literal notranslate"><span class="pre">TimeSeries.shape</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.concat"><code class="docutils literal notranslate"><span class="pre">TimeSeries.concat()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.bisect"><code class="docutils literal notranslate"><span class="pre">TimeSeries.bisect()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.window"><code class="docutils literal notranslate"><span class="pre">TimeSeries.window()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.to_pd"><code class="docutils literal notranslate"><span class="pre">TimeSeries.to_pd()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.to_csv"><code class="docutils literal notranslate"><span class="pre">TimeSeries.to_csv()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.from_pd"><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_pd()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.from_ts_list"><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_ts_list()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.align"><code class="docutils literal notranslate"><span class="pre">TimeSeries.align()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries"><code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.__getitem__"><code class="docutils literal notranslate"><span class="pre">TimeSeries.__getitem__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.__iter__"><code class="docutils literal notranslate"><span class="pre">TimeSeries.__iter__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.names"><code class="docutils literal notranslate"><span class="pre">TimeSeries.names</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.items"><code class="docutils literal notranslate"><span class="pre">TimeSeries.items()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.dim"><code class="docutils literal notranslate"><span class="pre">TimeSeries.dim</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.rename"><code class="docutils literal notranslate"><span class="pre">TimeSeries.rename()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_aligned"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_aligned</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.np_time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.np_time_stamps</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.time_stamps</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.t0"><code class="docutils literal notranslate"><span class="pre">TimeSeries.t0</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.tf"><code class="docutils literal notranslate"><span class="pre">TimeSeries.tf</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_empty"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_empty()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.squeeze"><code class="docutils literal notranslate"><span class="pre">TimeSeries.squeeze()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.shape"><code class="docutils literal notranslate"><span class="pre">TimeSeries.shape</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.concat"><code class="docutils literal notranslate"><span class="pre">TimeSeries.concat()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.bisect"><code class="docutils literal notranslate"><span class="pre">TimeSeries.bisect()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.window"><code class="docutils literal notranslate"><span class="pre">TimeSeries.window()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.to_pd"><code class="docutils literal notranslate"><span class="pre">TimeSeries.to_pd()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.to_csv"><code class="docutils literal notranslate"><span class="pre">TimeSeries.to_csv()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.from_pd"><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_pd()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.from_ts_list"><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_ts_list()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.align"><code class="docutils literal notranslate"><span class="pre">TimeSeries.align()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.assert_equal_timedeltas"><code class="docutils literal notranslate"><span class="pre">assert_equal_timedeltas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.time_series.assert_equal_timedeltas"><code class="docutils literal notranslate"><span class="pre">assert_equal_timedeltas()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.resample">merlion.utils.resample module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy"><code class="docutils literal notranslate"><span class="pre">AlignPolicy</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.OuterJoin"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.OuterJoin</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.InnerJoin"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.InnerJoin</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.FixedReference"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.FixedReference</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.FixedGranularity"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.FixedGranularity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.resample">merlion.utils.resample</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy"><code class="docutils literal notranslate"><span class="pre">AlignPolicy</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.OuterJoin"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.OuterJoin</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.InnerJoin"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.InnerJoin</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.FixedReference"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.FixedReference</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AlignPolicy.FixedGranularity"><code class="docutils literal notranslate"><span class="pre">AlignPolicy.FixedGranularity</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Mean"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Mean</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Sum"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Sum</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Median"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Median</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.First"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.First</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Last"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Last</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Min"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Min</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Max"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Max</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Mean"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Mean</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Sum"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Sum</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Median"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Median</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.First"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.First</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Last"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Last</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Min"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Min</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.AggregationPolicy.Max"><code class="docutils literal notranslate"><span class="pre">AggregationPolicy.Max</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.FFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.FFill</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.BFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.BFill</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.Nearest"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.Nearest</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.Interpolate"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.Interpolate</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.ZFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.ZFill</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.FFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.FFill</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.BFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.BFill</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.Nearest"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.Nearest</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.Interpolate"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.Interpolate</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy.ZFill"><code class="docutils literal notranslate"><span class="pre">MissingValuePolicy.ZFill</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.to_pd_datetime"><code class="docutils literal notranslate"><span class="pre">to_pd_datetime()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.to_timestamp"><code class="docutils literal notranslate"><span class="pre">to_timestamp()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.granularity_str_to_seconds"><code class="docutils literal notranslate"><span class="pre">granularity_str_to_seconds()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.get_gcd_timedelta"><code class="docutils literal notranslate"><span class="pre">get_gcd_timedelta()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.infer_granularity"><code class="docutils literal notranslate"><span class="pre">infer_granularity()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.resample.reindex_df"><code class="docutils literal notranslate"><span class="pre">reindex_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_pd_datetime"><code class="docutils literal notranslate"><span class="pre">to_pd_datetime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_timestamp"><code class="docutils literal notranslate"><span class="pre">to_timestamp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.granularity_str_to_seconds"><code class="docutils literal notranslate"><span class="pre">granularity_str_to_seconds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.get_gcd_timedelta"><code class="docutils literal notranslate"><span class="pre">get_gcd_timedelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.infer_granularity"><code class="docutils literal notranslate"><span class="pre">infer_granularity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.reindex_df"><code class="docutils literal notranslate"><span class="pre">reindex_df()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.data_io">merlion.utils.data_io module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.data_io.df_to_time_series"><code class="docutils literal notranslate"><span class="pre">df_to_time_series()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.data_io.data_io_decorator"><code class="docutils literal notranslate"><span class="pre">data_io_decorator()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.data_io.csv_to_time_series"><code class="docutils literal notranslate"><span class="pre">csv_to_time_series()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.data_io">merlion.utils.data_io</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.data_io.df_to_time_series"><code class="docutils literal notranslate"><span class="pre">df_to_time_series()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.data_io.data_io_decorator"><code class="docutils literal notranslate"><span class="pre">data_io_decorator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.data_io.csv_to_time_series"><code class="docutils literal notranslate"><span class="pre">csv_to_time_series()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.hts">merlion.utils.hts module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.hts.minT_reconciliation"><code class="docutils literal notranslate"><span class="pre">minT_reconciliation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.hts">merlion.utils.hts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.hts.minT_reconciliation"><code class="docutils literal notranslate"><span class="pre">minT_reconciliation()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.ts_generator">merlion.utils.ts_generator module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.n"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.n</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.x0"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.x0</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.step"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.step</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.y"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.y()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.generate"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.generate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.ts_generator">merlion.utils.ts_generator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.n"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.n</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.x0"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.x0</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.step"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.step</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.y"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.y()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.TimeSeriesGenerator.generate"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGenerator.generate()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorComposer"><code class="docutils literal notranslate"><span class="pre">GeneratorComposer</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorComposer.generators"><code class="docutils literal notranslate"><span class="pre">GeneratorComposer.generators</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorComposer"><code class="docutils literal notranslate"><span class="pre">GeneratorComposer</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorComposer.generators"><code class="docutils literal notranslate"><span class="pre">GeneratorComposer.generators</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator.generators"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator.generators</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator.y"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator.y()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.conj_priors">merlion.utils.conj_priors module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior"><code class="docutils literal notranslate"><span class="pre">ConjPrior</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.to_dict"><code class="docutils literal notranslate"><span class="pre">ConjPrior.to_dict()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.from_dict"><code class="docutils literal notranslate"><span class="pre">ConjPrior.from_dict()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.get_time_series_values"><code class="docutils literal notranslate"><span class="pre">ConjPrior.get_time_series_values()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.process_time_series"><code class="docutils literal notranslate"><span class="pre">ConjPrior.process_time_series()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.posterior"><code class="docutils literal notranslate"><span class="pre">ConjPrior.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.update"><code class="docutils literal notranslate"><span class="pre">ConjPrior.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.forecast"><code class="docutils literal notranslate"><span class="pre">ConjPrior.forecast()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior.process_time_series"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior.process_time_series()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior.get_time_series_values"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior.get_time_series_values()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.posterior"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.theta_posterior"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.theta_posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.update"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.forecast"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.forecast()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma"><code class="docutils literal notranslate"><span class="pre">NormInvGamma</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.update"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.mu_posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.mu_posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.sigma2_posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.sigma2_posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.forecast"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.forecast()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.process_time_series"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.process_time_series()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.update"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.mu_posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.mu_posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.Sigma_posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.Sigma_posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.forecast"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.forecast()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.update"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.posterior_explicit"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.posterior_explicit()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.posterior"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.forecast"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.forecast()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.process_time_series"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.process_time_series()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.update"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.update()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior_explicit"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.posterior_explicit()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.posterior()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.forecast"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.forecast()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator.generators"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator.generators</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator.y"><code class="docutils literal notranslate"><span class="pre">GeneratorConcatenator.y()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="#module-merlion.utils.istat">merlion.utils.istat module</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat"><code class="docutils literal notranslate"><span class="pre">IStat</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.n"><code class="docutils literal notranslate"><span class="pre">IStat.n</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.value"><code class="docutils literal notranslate"><span class="pre">IStat.value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.add"><code class="docutils literal notranslate"><span class="pre">IStat.add()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.drop"><code class="docutils literal notranslate"><span class="pre">IStat.drop()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.add_batch"><code class="docutils literal notranslate"><span class="pre">IStat.add_batch()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.IStat.drop_batch"><code class="docutils literal notranslate"><span class="pre">IStat.drop_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.conj_priors">merlion.utils.conj_priors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior"><code class="docutils literal notranslate"><span class="pre">ConjPrior</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.to_dict"><code class="docutils literal notranslate"><span class="pre">ConjPrior.to_dict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.n_params"><code class="docutils literal notranslate"><span class="pre">ConjPrior.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.from_dict"><code class="docutils literal notranslate"><span class="pre">ConjPrior.from_dict()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.get_time_series_values"><code class="docutils literal notranslate"><span class="pre">ConjPrior.get_time_series_values()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.process_time_series"><code class="docutils literal notranslate"><span class="pre">ConjPrior.process_time_series()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.posterior"><code class="docutils literal notranslate"><span class="pre">ConjPrior.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.update"><code class="docutils literal notranslate"><span class="pre">ConjPrior.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ConjPrior.forecast"><code class="docutils literal notranslate"><span class="pre">ConjPrior.forecast()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Mean"><code class="docutils literal notranslate"><span class="pre">Mean</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Mean.value"><code class="docutils literal notranslate"><span class="pre">Mean.value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Mean.add"><code class="docutils literal notranslate"><span class="pre">Mean.add()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Mean.drop"><code class="docutils literal notranslate"><span class="pre">Mean.drop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior.process_time_series"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior.process_time_series()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.ScalarConjPrior.get_time_series_values"><code class="docutils literal notranslate"><span class="pre">ScalarConjPrior.get_time_series_values()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance"><code class="docutils literal notranslate"><span class="pre">Variance</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.mean_class"><code class="docutils literal notranslate"><span class="pre">Variance.mean_class</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.add"><code class="docutils literal notranslate"><span class="pre">Variance.add()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.drop"><code class="docutils literal notranslate"><span class="pre">Variance.drop()</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.true_value"><code class="docutils literal notranslate"><span class="pre">Variance.true_value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.corrected_value"><code class="docutils literal notranslate"><span class="pre">Variance.corrected_value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.value"><code class="docutils literal notranslate"><span class="pre">Variance.value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.sd"><code class="docutils literal notranslate"><span class="pre">Variance.sd</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.Variance.se"><code class="docutils literal notranslate"><span class="pre">Variance.se</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.n_params"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.posterior"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.theta_posterior"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.theta_posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.update"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BetaBernoulli.forecast"><code class="docutils literal notranslate"><span class="pre">BetaBernoulli.forecast()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.recency_weight"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.recency_weight</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.value"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.value</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.drop"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.drop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma"><code class="docutils literal notranslate"><span class="pre">NormInvGamma</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.n_params"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.update"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.mu_posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.mu_posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.sigma2_posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.sigma2_posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.posterior"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.NormInvGamma.forecast"><code class="docutils literal notranslate"><span class="pre">NormInvGamma.forecast()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance</span></code></a><ul>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.mean_class"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.mean_class</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.recency_weight"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.recency_weight</span></code></a></li>
-<li class="toctree-l6"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.drop"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.drop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.n_params"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.process_time_series"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.process_time_series()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.update"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.mu_posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.mu_posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.Sigma_posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.Sigma_posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.posterior"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.MVNormInvWishart.forecast"><code class="docutils literal notranslate"><span class="pre">MVNormInvWishart.forecast()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.n_params"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.update"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.posterior_explicit"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.posterior_explicit()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.posterior"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianLinReg.forecast"><code class="docutils literal notranslate"><span class="pre">BayesianLinReg.forecast()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.n_params"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.n_params</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.process_time_series"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.process_time_series()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.update"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.update()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior_explicit"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.posterior_explicit()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.posterior"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.posterior()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.conj_priors.BayesianMVLinReg.forecast"><code class="docutils literal notranslate"><span class="pre">BayesianMVLinReg.forecast()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-merlion.utils.istat">merlion.utils.istat</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.istat.IStat"><code class="docutils literal notranslate"><span class="pre">IStat</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.n"><code class="docutils literal notranslate"><span class="pre">IStat.n</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.value"><code class="docutils literal notranslate"><span class="pre">IStat.value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.add"><code class="docutils literal notranslate"><span class="pre">IStat.add()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.drop"><code class="docutils literal notranslate"><span class="pre">IStat.drop()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.add_batch"><code class="docutils literal notranslate"><span class="pre">IStat.add_batch()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.IStat.drop_batch"><code class="docutils literal notranslate"><span class="pre">IStat.drop_batch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.istat.Mean"><code class="docutils literal notranslate"><span class="pre">Mean</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Mean.value"><code class="docutils literal notranslate"><span class="pre">Mean.value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Mean.add"><code class="docutils literal notranslate"><span class="pre">Mean.add()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Mean.drop"><code class="docutils literal notranslate"><span class="pre">Mean.drop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.istat.Variance"><code class="docutils literal notranslate"><span class="pre">Variance</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.mean_class"><code class="docutils literal notranslate"><span class="pre">Variance.mean_class</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.add"><code class="docutils literal notranslate"><span class="pre">Variance.add()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.drop"><code class="docutils literal notranslate"><span class="pre">Variance.drop()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.true_value"><code class="docutils literal notranslate"><span class="pre">Variance.true_value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.corrected_value"><code class="docutils literal notranslate"><span class="pre">Variance.corrected_value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.value"><code class="docutils literal notranslate"><span class="pre">Variance.value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.sd"><code class="docutils literal notranslate"><span class="pre">Variance.sd</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.Variance.se"><code class="docutils literal notranslate"><span class="pre">Variance.se</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.recency_weight"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.recency_weight</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.value"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.value</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.ExponentialMovingAverage.drop"><code class="docutils literal notranslate"><span class="pre">ExponentialMovingAverage.drop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.mean_class"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.mean_class</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.recency_weight"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.recency_weight</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.istat.RecencyWeightedVariance.drop"><code class="docutils literal notranslate"><span class="pre">RecencyWeightedVariance.drop()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.html#module-merlion.plot">merlion.plot module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -364,11 +365,8 @@ utilities for resampling time series.</p>
 </tr>
 </tbody>
 </table>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
 <section id="module-merlion.utils.time_series">
-<span id="merlion-utils-time-series-module"></span><h2>merlion.utils.time_series module<a class="headerlink" href="#module-merlion.utils.time_series" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-time-series"></span><h2>merlion.utils.time_series<a class="headerlink" href="#module-merlion.utils.time_series" title="Permalink to this heading"></a></h2>
 <p>Implementation of <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.time_series.UnivariateTimeSeries">
@@ -1145,7 +1143,7 @@ other, or a pre-specified timedelta (in seconds).</p>
 
 </section>
 <section id="module-merlion.utils.resample">
-<span id="merlion-utils-resample-module"></span><h2>merlion.utils.resample module<a class="headerlink" href="#module-merlion.utils.resample" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-resample"></span><h2>merlion.utils.resample<a class="headerlink" href="#module-merlion.utils.resample" title="Permalink to this heading"></a></h2>
 <p>Code for resampling time series.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.resample.AlignPolicy">
@@ -1301,7 +1299,7 @@ as a reference sequence of timestamps. Imputes missing values with the given
 
 </section>
 <section id="module-merlion.utils.data_io">
-<span id="merlion-utils-data-io-module"></span><h2>merlion.utils.data_io module<a class="headerlink" href="#module-merlion.utils.data_io" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-data-io"></span><h2>merlion.utils.data_io<a class="headerlink" href="#module-merlion.utils.data_io" title="Permalink to this heading"></a></h2>
 <p>Utils for data I/O.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.data_io.df_to_time_series">
@@ -1347,7 +1345,7 @@ is used if it is a <code class="docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="module-merlion.utils.hts">
-<span id="merlion-utils-hts-module"></span><h2>merlion.utils.hts module<a class="headerlink" href="#module-merlion.utils.hts" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-hts"></span><h2>merlion.utils.hts<a class="headerlink" href="#module-merlion.utils.hts" title="Permalink to this heading"></a></h2>
 <p>Aggregation for hierarchical time series.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.hts.minT_reconciliation">
@@ -1380,7 +1378,7 @@ and that <code class="docutils literal notranslate"><span class="pre">sum_matrix
 
 </section>
 <section id="module-merlion.utils.ts_generator">
-<span id="merlion-utils-ts-generator-module"></span><h2>merlion.utils.ts_generator module<a class="headerlink" href="#module-merlion.utils.ts_generator" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-ts-generator"></span><h2>merlion.utils.ts_generator<a class="headerlink" href="#module-merlion.utils.ts_generator" title="Permalink to this heading"></a></h2>
 <p>Generators for synthetic time series.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.ts_generator.TimeSeriesGenerator">
@@ -1510,7 +1508,7 @@ that f uses to generate its series.</p>
 
 </section>
 <section id="module-merlion.utils.conj_priors">
-<span id="merlion-utils-conj-priors-module"></span><h2>merlion.utils.conj_priors module<a class="headerlink" href="#module-merlion.utils.conj_priors" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-conj-priors"></span><h2>merlion.utils.conj_priors<a class="headerlink" href="#module-merlion.utils.conj_priors" title="Permalink to this heading"></a></h2>
 <p>Implementations of Bayesian conjugate priors &amp; their online update rules.</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -1553,6 +1551,16 @@ Can be used with either <a class="reference internal" href="#merlion.utils.time_
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.to_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.n_params">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.n_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.from_dict">
@@ -1685,6 +1693,16 @@ X &amp;\sim \mathrm{Bernoulli}(\theta) \\
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.n_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.n_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.posterior">
 <span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_updated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.posterior" title="Permalink to this definition"></a></dt>
@@ -1750,6 +1768,16 @@ n_0 &amp;= n_0 + n
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.n_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.n_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.update" title="Permalink to this definition"></a></dt>
@@ -1821,6 +1849,11 @@ n_0 &amp;= n_0 + n
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.n_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.n_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.MVNormInvWishart.process_time_series">
 <span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.MVNormInvWishart.process_time_series" title="Permalink to this definition"></a></dt>
@@ -1905,6 +1938,16 @@ w_n &amp;= (\Lambda_0 + T^T T)^{-1} (\Lambda_0 w_0 + T^T T w_{OLS}) \\
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.n_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.n_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.update" title="Permalink to this definition"></a></dt>
@@ -1987,6 +2030,16 @@ V_n &amp;= V_0 + (X - TW_n)^T (X - TW_n) + (W_n - W_0)^T \Lambda_0 (W_n - W_0) \
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.n_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.n_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.process_time_series">
 <span class="sig-name descname"><span class="pre">process_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.process_time_series" title="Permalink to this definition"></a></dt>
@@ -2051,7 +2104,7 @@ standard error of that forecast.</p>
 
 </section>
 <section id="module-merlion.utils.istat">
-<span id="merlion-utils-istat-module"></span><h2>merlion.utils.istat module<a class="headerlink" href="#module-merlion.utils.istat" title="Permalink to this heading"></a></h2>
+<span id="merlion-utils-istat"></span><h2>merlion.utils.istat<a class="headerlink" href="#module-merlion.utils.istat" title="Permalink to this heading"></a></h2>
 <p>Incremental computation of time series statistics.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.istat.IStat">
@@ -2283,7 +2336,7 @@ recency weighted variance.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="merlion.evaluate.html" class="btn btn-neutral float-left" title="merlion.evaluate package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.plot.html" class="btn btn-neutral float-left" title="merlion.plot package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="ts_datasets.html" class="btn btn-neutral float-right" title="ts_datasets: Easy Data Loading" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
