@@ -117,6 +117,11 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         else:
             raise NotImplementedError("%s loss is not supported..." % (self.config.criterion))
 
+        self._post_model_creation()
+
+    def _post_model_creation(self):
+        pass
+
     def evaluate(self, evaluate_data: pd.DataFrame, metric: str = "mse"):
         config = self.config
         self.deep_model.eval()
@@ -155,6 +160,25 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             raise NotImplementedError
 
         return preds, pred_err
+
+    def train_pre_process(
+        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
+    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
+        train_data = super(ForecasterBase, self).train_pre_process(train_data)
+
+        if self.dim == 1:
+            self.config.target_seq_index = 0
+        if self.config.target_seq_index is None:
+            self.target_name = "Multi dimensional forecasting"
+        else:
+            assert 0 <= self.config.target_seq_index < train_data.dim, (
+                f"Expected `target_seq_index` to be between 0 and {train_data.dim} "
+                f"(the dimension of the transformed data), but got {self.config.target_seq_index}"
+            )
+
+            self.target_name = train_data.names[self.target_seq_index]
+
+        return (train_data, exog_data) if return_exog else train_data
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
 
@@ -197,6 +221,9 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 train_loss.append(loss.item())
 
                 loss.backward()
+                if config.clip_gradient:
+                    torch.nn.utils.clip_grad_norm(self.model.parameters(), config.grad_norm_threshold)
+
                 self.optimizer.step()
 
                 if (i + 1) % 200 == 0:
@@ -258,26 +285,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         loss = self.loss_fn(model_output, target_future)
         return loss, model_output, target_future
 
-    def train_pre_process(
-        self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
-    ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
-        train_data = super(ForecasterBase, self).train_pre_process(train_data)
-
-        if self.dim == 1:
-            self.config.target_seq_index = 0
-        if self.config.target_seq_index is None:
-            self.target_name = "Multi dimensional forecasting"
-        else:
-            assert 0 <= self.config.target_seq_index < train_data.dim, (
-                f"Expected `target_seq_index` to be between 0 and {train_data.dim} "
-                f"(the dimension of the transformed data), but got {self.config.target_seq_index}"
-            )
-
-            self.target_name = train_data.names[self.target_seq_index]
-
-        return (train_data, exog_data) if return_exog else train_data
-
-    # TODO: need to check and discuss with this one
     @property
     def require_even_sampling(self) -> bool:
         return False

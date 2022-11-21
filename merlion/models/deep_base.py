@@ -50,6 +50,8 @@ class DeepConfig(Config):
         num_epochs: int = 10,
         optim_name: str = "adam",
         criterion: str = "mse",
+        clip_gradient: bool = False,
+        grad_norm_threshold: float = 1.0,
         **kwargs
     ):
         """

@@ -13,7 +13,11 @@ MERLION_JARS = [
 ]
 
 # optional dependencies
-extra_require = {"plot": ["plotly>=4.13"], "deep-learning": ["torch>=1.1.0"], "spark": ["pyspark[sql]>=3"]}
+extra_require = {
+    "plot": ["plotly>=4.13"],
+    "deep-learning": ["torch>=1.1.0", "einops >= 0.4.0"],
+    "spark": ["pyspark[sql]>=3"],
+}
 extra_require["all"] = sum(extra_require.values(), [])
 
 

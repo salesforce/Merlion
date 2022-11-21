@@ -61,7 +61,6 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
         n_past,
         max_forecast_steps: int = None,
         start_token_len: int = 0,
-        moving_avg: int = 25,
         enc_in: int = None,
         dec_in: int = None,
         e_layers: int = 2,

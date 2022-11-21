@@ -17,6 +17,8 @@ from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
 from merlion.models.forecast.autoformer import AutoformerConfig, AutoformerForecaster
 from merlion.models.forecast.transformer import TransformerConfig, TransformerForecaster
 from merlion.models.forecast.informer import InformerConfig, InformerForecaster
+from merlion.models.forecast.etsformer import ETSformerConfig, ETSformerForecaster
+
 
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
 from merlion.transform.bound import LowerUpperClip
@@ -87,6 +89,20 @@ class TestDeepModels(unittest.TestCase):
         )
 
         forecaster = InformerForecaster(config)
+
+        self._test_model(forecaster, self.train_data, self.test_data)
+
+    def test_ETSformer(self):
+        logger.info("Testing ETSformer forecasting")
+        start_token_len = 48
+
+        config = ETSformerConfig(
+            n_past=self.n_past,
+            max_forecast_steps=self.max_forecast_steps,
+            start_token_len=start_token_len,
+        )
+
+        forecaster = ETSformerForecaster(config)
 
         self._test_model(forecaster, self.train_data, self.test_data)
 

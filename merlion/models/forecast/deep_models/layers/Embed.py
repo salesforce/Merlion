@@ -151,3 +151,18 @@ class DataEmbedding_wo_pos(nn.Module):
     def forward(self, x, x_mark):
         x = self.value_embedding(x) + self.temporal_embedding(x_mark)
         return self.dropout(x)
+
+
+class ETSEmbedding(nn.Module):
+    def __init__(self, c_in, d_model, dropout=0.1):
+        super().__init__()
+        self.conv = nn.Conv1d(in_channels=c_in, out_channels=d_model, kernel_size=3, padding=2, bias=False)
+        self.dropout = nn.Dropout(p=dropout)
+        nn.init.kaiming_normal_(self.conv.weight)
+
+    def forward(
+        self,
+        x,
+    ):
+        x = self.conv(x.permute(0, 2, 1))[..., :-2]
+        return self.dropout(x.transpose(1, 2))
