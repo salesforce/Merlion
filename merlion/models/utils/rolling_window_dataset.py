@@ -179,7 +179,7 @@ class RollingWindowDataset:
 
         past = self.data[past_start:past_end]
         past_timestamp = self.timestamp[past_start:past_end]
-        future = self.data[future_start:future_end]
+        future = self.target[future_start:future_end]
         future_timestamp = self.timestamp[future_start:future_end]
 
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)

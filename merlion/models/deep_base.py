@@ -84,23 +84,21 @@ class DeepModelBase(ModelBase):
         super().__init__(config)
 
     @abstractmethod
-    def create_model(self):
+    def _create_model(self):
         raise NotImplementedError
-
-    """
-        Calculate loss and get prediction given a batch
-    """
 
     @abstractmethod
     def _deep_batch_iter(self, batch, config: DeepConfig):
+        """
+        Calculate loss and get prediction given a batch
+        """
         raise NotImplementedError
 
-    """
+    def to_gpu(self):
+        """
         Set device to GPU, and move deep model to GPU
         Currently we only support single GPU training
-    """
-
-    def to_gpu(self):
+        """
         if torch.cuda.is_available():
             self.config.device = torch.device("cuda")
             self.deep_model = self.deep_model.to(self.config.device)
@@ -108,21 +106,18 @@ class DeepModelBase(ModelBase):
             logger.warning("GPU not available, using CPU instead...")
             self.to_cpu()
 
-    """
-        Set device to CPU and move deep model to CPU
-    """
-
     def to_cpu(self):
+        """
+        Set device to CPU and move deep model to CPU
+        """
         if self.config.device is None:
             self.config.device = torch.device("cpu")
 
         if self.deep_model is not None:
             self.deep_model = self.deep_model.to(self.config.device)
 
-    @abstractmethod
     def save_model(self, model_path: str = None):
         raise NotImplementedError
 
-    @abstractmethod
     def load_model(self, model_path: str = None):
         raise NotImplementedError

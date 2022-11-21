@@ -33,6 +33,7 @@ except ImportError as e:
 from merlion.models.deep_base import DeepConfig, DeepModelBase
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
+from merlion.utils.timefeatures import time_features
 
 from merlion.transform.base import TransformBase, Identity
 from merlion.transform.factory import TransformFactory
@@ -86,10 +87,9 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
     def __init__(self, config: DeepForecasterConfig):
         super().__init__(config)
-        self.create_model()
 
-    def create_model(self):
-        # device
+    def _create_model(self):
+
         self.config.device = torch.device("cpu")
 
         self.deep_model = self.deep_model_class(self.config)
@@ -144,8 +144,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 all_preds.append(pred)
                 all_trues.append(true)
 
-        all_preds = np.array(all_preds)
-        all_trues = np.array(all_trues)
         preds = np.concatenate(all_preds, axis=0)
         trues = np.concatenate(all_trues, axis=0)
 
@@ -159,16 +157,20 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         return preds, pred_err
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
+
         if train_config is not None:
             self.config = copy.deepcopy(train_config)
         config = self.config
+
+        # creating model before the training
+        self._create_model()
 
         train_dataset = RollingWindowDataset(
             train_data,
             n_past=config.n_past,
             n_future=config.max_forecast_steps,
             batch_size=config.batch_size,
-            target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training
+            target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training, if not this is a bug
             ts_encoding=config.ts_encoding,
             ts_freq=config.ts_freq,
             start_token_len=config.start_token_len,
@@ -178,6 +180,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         time_now = time.time()
         train_steps = len(train_dataset)
+        logger.info("Training steps each epoch: %d" % (train_steps))
         # start training
         for epoch in range(config.num_epochs):
             iter_count = 0
@@ -216,9 +219,8 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         pred, pred_err = self.evaluate(train_data)
 
-        # TODO: need to discuss
         # since the model predicts multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0]), None
+        return pd.DataFrame(pred[:, 0], columns=train_data.columns), None
 
     def _deep_batch_iter(self, batch, config):
         """
@@ -235,6 +237,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             start_token = past[:, -config.start_token_len :]
             dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(config.device)
             dec_inp = torch.cat([start_token, dec_inp], dim=1)
+
         else:
             future = torch.FloatTensor(future, device=config.device)
             dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(config.device)
@@ -259,6 +262,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
     ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         train_data = super(ForecasterBase, self).train_pre_process(train_data)
+
         if self.dim == 1:
             self.config.target_seq_index = 0
         if self.config.target_seq_index is None:
@@ -279,19 +283,37 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         return False
 
     def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame, return_prev=False
     ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
         """
         FIXME: Need to discuss about this part API.
         Currently the implementation is make sure the batch size = 1
+        Not sure about the meaning of the arguments
         """
 
-        # TODO:
-        # Let current just assume the batch size = 1 for prediction
-        # 1. convert timestamps tp feature
-        # 2. convert time_series_prev to features
-        # 3. do inference here.
-        return None, None
+        pred_datetime = to_pd_datetime(time_stamps)
+        prev_datetime = to_pd_datetime(time_series_prev.index)
+
+        # convert to vector feature
+        prev_timestamp = time_features(prev_datetime).transpose(1, 0)
+
+        if self.config.start_token_len != 0:
+            pred_datetime = prev_datetime[self.config.start_token_len :].append(pred_datetime)
+        future_timestamp = time_features(pred_datetime).transpose(1, 0)
+
+        # preparing data
+        past = np.expand_dims(time_series_prev.values, 0)
+        past_timestamp = np.expand_dims(prev_timestamp, 0)
+        future_timestamp = np.expand_dims(future_timestamp, 0)
+
+        self.deep_model.eval()
+        batch = (past, past_timestamp, None, future_timestamp)
+        _, model_output, _ = self._deep_batch_iter(batch, self.config)
+
+        preds = model_output.detach().cpu().numpy().squeeze()
+        pd_pred = pd.DataFrame(preds, index=to_pd_datetime(time_stamps), columns=time_series_prev.columns)
+
+        return pd_pred, None
 
     def batch_forecast(
         self,

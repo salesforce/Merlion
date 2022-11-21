@@ -32,6 +32,8 @@ except ImportError as e:
     )
     raise ImportError(str(e) + ". " + err)
 
+
+from merlion.models.base import NormalizingConfig
 from merlion.models.deep_base import TorchModel
 from merlion.models.forecast.deep_models.deep_forecast_base import DeepForecasterConfig, DeepForecaster
 from merlion.models.forecast.deep_models.layers.Embed import DataEmbedding, DataEmbedding_wo_pos
@@ -46,21 +48,18 @@ from merlion.models.forecast.deep_models.layers.Autoformer_EncDec import (
 )
 
 
-from merlion.transform.base import TransformBase, Identity
-from merlion.transform.factory import TransformFactory
 from merlion.utils.misc import initializer
 from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
 
 
-class AutoformerConfig(DeepForecasterConfig):
+class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
     @initializer
     def __init__(
         self,
         n_past,
         max_forecast_steps: int = None,
-        dim: int = None,
         start_token_len: int = 0,
         moving_avg: int = 25,
         enc_in: int = None,
@@ -76,27 +75,23 @@ class AutoformerConfig(DeepForecasterConfig):
         d_ff: int = 2048,
         **kwargs
     ):
-        if enc_in is None:
-            self.enc_in = dim
-
         super().__init__(
-            n_past=n_past, max_forecast_steps=max_forecast_steps, start_token_len=start_token_len, dim=dim, **kwargs
+            n_past=n_past, max_forecast_steps=max_forecast_steps, start_token_len=start_token_len, **kwargs
         )
-
-        # TODO: fix this later
-        # Setting proper output decoder dimension
-        if self.dec_in is None:
-            self.dec_in = self.enc_in
-
-        if self.target_seq_index is None:
-            self.c_out = self.enc_in
-        else:
-            self.c_out = 1
 
 
 class AutoformerModel(TorchModel):
     def __init__(self, config: AutoformerConfig):
         super().__init__(config)
+
+        if config.dim is not None:
+            config.enc_in = config.dim if config.enc_in is None else config.enc_in
+            config.dec_in = config.enc_in if config.dec_in is None else config.dec_in
+
+        if config.target_seq_index is None:
+            config.c_out = config.enc_in
+        else:
+            copnfig.c_out = 1
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len

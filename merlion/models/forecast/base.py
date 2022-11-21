@@ -324,7 +324,7 @@ class ForecasterBase(ModelBase):
         # Format the return values and reset the transform's inversion state
         if self.invert_transform and time_series_prev is None:
             time_series_prev = self.transform(self.train_data)
-        if time_series_prev is not None:
+        if time_series_prev is not None and self.target_seq_index is not None:
             time_series_prev = pd.DataFrame(time_series_prev.univariates[time_series_prev.names[self.target_seq_index]])
         ret = self._process_forecast(forecast, err, time_series_prev, return_prev=return_prev, return_iqr=return_iqr)
         self.transform.inversion_state = old_inversion_state
