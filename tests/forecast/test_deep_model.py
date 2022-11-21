@@ -100,6 +100,7 @@ class TestDeepModels(unittest.TestCase):
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
             start_token_len=start_token_len,
+            top_K=3,  # top fourier basis
         )
 
         forecaster = ETSformerForecaster(config)
