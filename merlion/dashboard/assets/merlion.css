@@ -1,0 +1,167 @@
+@font-face {
+    font-family: Acumin;
+    font-weight: bold;
+    src: url("Acumin-BdPro.otf") format("opentype");
+}
+
+#app-container {
+    width: 100%;
+    max-width: none;
+}
+
+body {
+    background-color: #f9f9f9;
+    color: #333333;
+    font-size: 15px;
+    margin: 0px;
+}
+
+hr {
+    margin: 0.3rem 0rem;
+}
+
+.banner {
+    height: 5.5rem;
+    padding: 0rem 2rem 0rem;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.banner Img {
+    position: relative;
+    height: 4.5rem;
+    width: auto;
+    margin-left: 2%;
+}
+
+H5 {
+    color: #2c8cff;
+    font-weight: 300;
+}
+
+H5, H3 {
+    font-family: Acumin, "Helvetica Neue", sans-serif;
+}
+
+#left-column {
+    margin-top: 20px;
+    padding: 0rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - 5.5rem);
+}
+
+#right-column {
+    padding: 0rem 2rem;
+    min-height: calc(100vh - 5.5rem);
+}
+
+.table-row {
+    height: 63px;
+    vertical-align: middle;
+    font-size: 13px;
+}
+
+.draglayer {
+    cursor: pointer !important;
+}
+
+#intro {
+    margin: 20px 0px;
+    font-family: "Helvetica Neue", sans-serif;
+    text-align: justify;
+}
+
+#control-card > p {
+    font-weight: bold;
+}
+
+#info_card, #result_table_card, #explanation_card {
+    background-color: #FFFFFF;
+    padding: 1rem;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#info_card > b, #result_table_card > b, #explanation_card > b {
+    line-height: 2.5;
+}
+
+#result_table_card {
+    margin: 20px 0px;
+}
+
+.table-row:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+/*
+  ##Device = Most of the Smartphones Mobiles / ipad (Portrait)
+  */
+
+@media only screen and (max-width: 750px), screen and (min-width: 768px) and (max-width: 1024px) {
+
+    body {
+        font-size: 13px;
+        margin: 0px;
+    }
+
+    .banner {
+        height: 6rem;
+    }
+
+    h5 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 2.5rem;
+    }
+
+    #intro {
+        margin: 10px 0px;
+    }
+
+    #left-column, #right-column {
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    #right-column {
+        padding: 0rem 0.5rem;
+    }
+
+    #reset-btn-outer {
+        text-align: center;
+    }
+
+    .table-row > div {
+        width: 100% !important;
+        text-align: center;
+        margin: auto;
+    }
+
+    .table-row:nth-child(even), .table-row:nth-child(odd) {
+        background-color: #FFFFFF;
+    }
+
+    #header {
+        display: none;
+    }
+
+    #info_card > b, #result_table_card > b, #explanation_card > b {
+        line-height: 2.5;
+        font-size: 13px;
+        display: block;
+        text-align: center;
+    }
+
+    .annotation-text {
+        font-size: 0.8rem !important;
+    }
+
+}

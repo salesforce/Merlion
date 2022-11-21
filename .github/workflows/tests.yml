@@ -39,18 +39,20 @@ jobs:
         PYTHON_VERSION: ${{ matrix.python-version }}
       with:
         max_attempts: 3
-        timeout_minutes: 40
+        timeout_minutes: 60
+        retry-on: error
         command: |
+          set -euxo pipefail
           # Get a comma-separated list of the directories of all python source files
-          source_files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
-          script="import os; print(','.join({os.path.dirname(f) for f in '$source_files'.split(',') if f}))"
+          files=$(for f in $(find merlion -iname "*.py"); do echo -n ",$f"; done)
+          script="import os; print(','.join({os.path.dirname(f) for f in '$files'.split(',') if f}))"
           source_modules=$(python -c "$script")
 
           # Run tests & obtain code coverage from coverage report.
-          coverage run --source=${source_modules} -L -m pytest -v -s
+          coverage run --source=${source_modules} --omit=merlion/dashboard/* -L -m pytest -v -s
           coverage report && coverage xml -o .github/badges/coverage.xml
           COVERAGE=`coverage report | grep "TOTAL" | grep -Eo "[0-9\.]+%"`
-          echo "##[set-output name=coverage;]${COVERAGE}"
+          echo "coverage=${COVERAGE}" >> $GITHUB_OUTPUT
 
           # Choose a color based on code coverage
           COVERAGE=${COVERAGE/\%/}
@@ -65,7 +67,7 @@ jobs:
           else
             COLOR=red
           fi
-          echo "##[set-output name=color;]${COLOR}"
+          echo "color=${COLOR}" >> $GITHUB_OUTPUT
 
     - name: Create coverage badge
       if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.10' }}

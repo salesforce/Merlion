@@ -38,15 +38,14 @@ class ETSConfig(ForecasterConfig):
 
     def __init__(
         self,
-        max_forecast_steps=None,
-        target_seq_index=None,
-        error="add",
-        trend="add",
-        damped_trend=True,
-        seasonal="add",
-        seasonal_periods=None,
-        pred_interval_strategy="exact",
-        refit=True,
+        max_forecast_steps: int = None,
+        target_seq_index: int = None,
+        error: str = "add",
+        trend: str = "add",
+        damped_trend: bool = True,
+        seasonal: str = "add",
+        seasonal_periods: int = None,
+        refit: bool = True,
         **kwargs,
     ):
         """
@@ -59,8 +58,6 @@ class ETSConfig(ForecasterConfig):
         :param damped_trend: Whether or not an included trend component is damped.
         :param seasonal: The seasonal component. "add", "mul" or None.
         :param seasonal_periods: The length of the seasonality cycle. ``None`` by default.
-        :param pred_interval_strategy: Strategy to compute prediction intervals. "exact" or "simulated".
-        Note that "simulated" setting supports more variants of ETS model.
         :param refit: if ``True``, refit the full ETS model when ``time_series_prev`` is given to the forecast method
             (slower). If ``False``, simply perform exponential smoothing (faster).
         """
@@ -70,7 +67,6 @@ class ETSConfig(ForecasterConfig):
         self.damped_trend = damped_trend
         self.seasonal = seasonal
         self.seasonal_periods = seasonal_periods
-        self.pred_interval_strategy = pred_interval_strategy
         self.refit = refit
 
 
@@ -169,12 +165,10 @@ class ETS(SeasonalityModel, ForecasterBase):
             else:
                 model = model.smooth(params=self.model.params)
 
-        # Run forecasting. Some variants of ETS model does not support prediction interval when
-        # pred_interval_strategy="exact". In this case we use point forecasting and set prediction_interval as None.
+        # Run forecasting. Some variants of ETS model does not support prediction interval.
+        # In this case we use point forecasting and set prediction_interval as None.
         try:
-            forecast_result = model.get_prediction(
-                start=time_stamps[0], end=time_stamps[-1], method=self.config.pred_interval_strategy
-            )
+            forecast_result = model.get_prediction(start=time_stamps[0], end=time_stamps[-1])
             forecast = np.asarray(forecast_result.predicted_mean)
             err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
         except (NotImplementedError, AttributeError):
@@ -182,11 +176,9 @@ class ETS(SeasonalityModel, ForecasterBase):
             forecast = np.asarray(forecast_result)
             err = None
 
-        # If return_prev is True, it will return the forecast and error of last train window
-        # instead of time_series_prev
+        # If return_prev is True, return the forecast and error of last train window instead of time_series_prev
         if time_series_prev is not None and return_prev:
             m = len(time_series_prev) - len(val_prev)
-            params = dict(zip(model.param_names, model.params))
             err_prev = np.concatenate((np.zeros(m), model.standardized_forecasts_error.values))
             forecast = np.concatenate((time_series_prev.values[:m], model.fittedvalues.values, forecast))
             err = np.concatenate((err_prev, err))

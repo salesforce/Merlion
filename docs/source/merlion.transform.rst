@@ -44,79 +44,94 @@ the same as the dict expected by the class method ``TransformCls.from_dict()``.
    :undoc-members:
    :show-inheritance:
 
+Base primitives:
+
 .. autosummary::
     factory
     base
-    bound
-    moving_average
-    normalize
-    resample
     sequence
+
+Resampling:
+
+.. autosummary::
+    resample
+    moving_average
+
+Normalization:
+
+.. autosummary::
+    bound
+    normalize
+
+Miscellaneous:
+
+.. autosummary::
     anomalize
 
-Submodules
-----------
+Base primitives
+---------------
 
-merlion.transform.base module
------------------------------
-
-.. automodule:: merlion.transform.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.transform.bound module
-------------------------------
-
-.. automodule:: merlion.transform.bound
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.transform.factory module
---------------------------------
-
+transform.factory
+^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.transform.factory
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.transform.moving\_average module
-----------------------------------------
-
-.. automodule:: merlion.transform.moving_average
+transform.base
+^^^^^^^^^^^^^^
+.. automodule:: merlion.transform.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.transform.normalize module
-----------------------------------
-
-.. automodule:: merlion.transform.normalize
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.transform.resample module
----------------------------------
-
-.. automodule:: merlion.transform.resample
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-merlion.transform.sequence module
----------------------------------
-
+transform.sequence
+^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.transform.sequence
    :members:
    :undoc-members:
    :show-inheritance:
 
+Resampling
+----------
 
-merlion.transform.anomalize module
-----------------------------------
+transform.resample
+^^^^^^^^^^^^^^^^^^
+.. automodule:: merlion.transform.resample
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+transform.moving\_average
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: merlion.transform.moving_average
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Normalization
+-------------
+
+transform.normalize
+^^^^^^^^^^^^^^^^^^^
+.. automodule:: merlion.transform.normalize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+transform.bound
+^^^^^^^^^^^^^^^
+.. automodule:: merlion.transform.bound
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Miscellaneous
+-------------
+
+transform.anomalize
+^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.transform.anomalize
    :members:
    :undoc-members:

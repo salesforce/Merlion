@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class AutoETSConfig(SeasonalityConfig, ICConfig):
     """
     Configuration class for `AutoETS`. Act as a wrapper around a `ETS` model, which automatically detects
-    the seasonal_periods, error, trend, damped_trend and seasonal.
+    the hyperparameters ``seasonal_periods``, ``error``, ``trend``, ``damped_trend`` and ``seasonal``.
     """
 
     # This is adapted from ets.R from forecast package
@@ -75,7 +75,8 @@ class AutoETSConfig(SeasonalityConfig, ICConfig):
 
 class AutoETS(ICAutoMLForecaster, SeasonalityLayer):
     """
-    ETS with automatic seasonality detection.
+    Wrapper around a `ETS` model, which automatically detects
+    the hyperparameters ``seasonal_periods``, ``error``, ``trend``, ``damped_trend`` and ``seasonal``.
     """
 
     config_class = AutoETSConfig

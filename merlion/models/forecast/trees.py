@@ -8,49 +8,43 @@
 Tree-based models for multivariate time series forecasting.
 """
 import logging
-from typing import List, Tuple
 
 from lightgbm import LGBMRegressor
-import numpy as np
-import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.multioutput import MultiOutputRegressor
 
 from merlion.models.forecast.sklearn_base import SKLearnForecaster, SKLearnForecasterConfig
-from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
-from merlion.utils.time_series import to_pd_datetime, TimeSeries
 
 logger = logging.getLogger(__name__)
 
 
-class TreeEnsembleForecasterConfig(SKLearnForecasterConfig):
+class _TreeEnsembleForecasterConfig(SKLearnForecasterConfig):
     """
     Configuration class for bagging tree-based forecaster model.
     """
 
-    def __init__(self, maxlags: int, n_estimators: int = 100, random_state=None, max_depth=None, **kwargs):
+    def __init__(self, n_estimators: int = 100, max_depth: int = None, random_state: int = None, **kwargs):
         """
-        :param maxlags: Max # of lags for forecasting
         :param n_estimators: number of base estimators for the tree ensemble
-        :param random_state: random seed for bagging
         :param max_depth: max depth of base estimators
+        :param random_state: random seed for bagging
         """
-        super().__init__(maxlags=maxlags, **kwargs)
+        super().__init__(**kwargs)
         self.n_estimators = n_estimators
         self.random_state = random_state
         self.max_depth = max_depth
 
 
-class RandomForestForecasterConfig(TreeEnsembleForecasterConfig):
+class RandomForestForecasterConfig(_TreeEnsembleForecasterConfig):
     """
     Config class for `RandomForestForecaster`.
     """
 
-    def __init__(self, maxlags: int, min_samples_split=2, **kwargs):
+    def __init__(self, min_samples_split: int = 2, **kwargs):
         """
         :param min_samples_split: min split for tree leaves
         """
-        super().__init__(maxlags=maxlags, **kwargs)
+        super().__init__(**kwargs)
         self.min_samples_split = min_samples_split
 
 
@@ -75,16 +69,16 @@ class RandomForestForecaster(SKLearnForecaster):
         )
 
 
-class ExtraTreesForecasterConfig(TreeEnsembleForecasterConfig):
+class ExtraTreesForecasterConfig(_TreeEnsembleForecasterConfig):
     """
     Config class for `ExtraTreesForecaster`.
     """
 
-    def __init__(self, maxlags: int, min_samples_split=2, **kwargs):
+    def __init__(self, min_samples_split: int = 2, **kwargs):
         """
         :param min_samples_split: min split for tree leaves
         """
-        super().__init__(maxlags=maxlags, **kwargs)
+        super().__init__(**kwargs)
         self.min_samples_split = min_samples_split
 
 
@@ -110,17 +104,17 @@ class ExtraTreesForecaster(SKLearnForecaster):
         )
 
 
-class LGBMForecasterConfig(TreeEnsembleForecasterConfig):
+class LGBMForecasterConfig(_TreeEnsembleForecasterConfig):
     """
     Config class for `LGBMForecaster`.
     """
 
-    def __init__(self, maxlags: int, learning_rate=0.1, n_jobs=-1, **kwargs):
+    def __init__(self, learning_rate: float = 0.1, n_jobs: int = -1, **kwargs):
         """
         :param learning_rate: learning rate for boosting
         :param n_jobs: num of threading, -1 or 0 indicates device default, positive int indicates num of threads
         """
-        super().__init__(maxlags=maxlags, **kwargs)
+        super().__init__(**kwargs)
         self.learning_rate = learning_rate
         self.n_jobs = n_jobs
 

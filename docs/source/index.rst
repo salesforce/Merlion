@@ -11,7 +11,7 @@ Merlion is a Python library for time series intelligence. It features a unified 
 point detection on both univariate and multivariate time series, along with standard
 :doc:`pre-processing <merlion.transform>` and :doc:`post-processing <merlion.post_process>` layers.
 It has several modules to improve ease-of-use,
-including :ref:`visualization <merlion.plot>`,
+including :doc:`visualization <merlion.plot>`,
 anomaly score :ref:`calibration <merlion.post_process.calibrate>` to improve interpetability,
 :doc:`AutoML <merlion.models.automl>` for hyperparameter tuning and model selection,
 and :doc:`model ensembling <merlion.models.ensemble>`.
@@ -30,8 +30,8 @@ You can install ``merlion`` from PyPI by calling ``pip install salesforce-merlio
 cloning the Merlion `repo <https://github.com/salesforce/Merlion>`__ and calling ``pip install Merlion/``, or
 ``pip install -e Merlion/`` to install in editable mode. You may install additional optional dependencies via
 ``pip install salesforce-merlion[all]``,  or by calling ``pip install "Merlion/[all]"`` if installing from source.
-Individually, the optional dependencies include ``plot`` for interactive plots
-and ``deep-learning`` for all deep learning models.
+Individually, the optional dependencies include ``dashboard`` for a GUI dashboard,
+``spark`` for a distributed computation backend with PySpark, and ``deep-learning`` for all deep learning models.
 
 To install the data loading package ``ts_datasets``, clone the Merlion
 `repo <https://github.com/salesforce/Merlion>`__ and call ``pip install -e Merlion/ts_datasets/``. This package must be
@@ -44,14 +44,14 @@ Note the following external dependencies:
    If using ``conda``, please ``conda install -c conda-forge lightgbm``
    before installing our package. This will ensure that OpenMP is configured to work with the ``lightgbm`` package
    (one of our dependencies) in your ``conda`` environment.
-   If using Mac, please install `Homebrew <https://brew.sh/>`_ and call ``brew install libomp`` so that the
+   If using Mac, please install `Homebrew <https://brew.sh/>`__ and call ``brew install libomp`` so that the
    OpenMP libary is available for the model.
    This is relevant for the
    :py:class:`LGBMForecaster <merlion.models.forecast.trees.LGBMForecaster>`,
    which is also used as a part of the :py:class:`DefaultForecaster <merlion.models.defaults.DefaultForecaster>`.
 
 2. Some of our anomaly detection models depend on having the Java Development Kit (JDK) installed. For Ubuntu, call
-   ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install `Homebrew <https://brew.sh/>`_ and call
+   ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install `Homebrew <https://brew.sh/>`__ and call
    ``brew tap adoptopenjdk/openjdk && brew install --cask adoptopenjdk11``. Also ensure that ``java`` can be found
    on your ``PATH``, and that the ``JAVA_HOME`` environment variable is set.
    This is relevant for the :py:class:`RandomCutForest <merlion.models.anomaly.random_cut_forest.RandomCutForest>`
@@ -59,7 +59,13 @@ Note the following external dependencies:
 
 Getting Started
 ---------------
-To get started, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
+The easiest way to get started is to use the GUI web-based `dashboard <merlion.dashboard>`.
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
+``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line.
+You can view the dashboard at http://localhost:8050.
+
+For code resources, we recommend the linked tutorials on `anomaly detection <tutorials/anomaly/0_AnomalyIntro>`
 and `forecasting <tutorials/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
 main data structure for representing time series `here <tutorials/TimeSeries>`.
 

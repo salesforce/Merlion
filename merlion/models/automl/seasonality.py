@@ -6,16 +6,19 @@
 #
 """
 Automatic seasonality detection.
+Note that the static method :py:meth:`merlion.models.automl.seasonality.SeasonalityLayer.detect_seasonality`
+can be used to find the seasonality of an arbitrary ``numpy.array``, without needing to initialize a model.
 """
 from abc import abstractmethod
 from enum import Enum, auto
 import logging
-from typing import Any, Iterator, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import numpy as np
 from scipy.signal import argrelmax
 from scipy.stats import norm
 import statsmodels.api as sm
+from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
 from merlion.models.automl.base import AutoMLMixIn
 from merlion.models.base import ModelBase
@@ -76,7 +79,9 @@ class SeasonalityConfig(LayeredModelConfig):
 
     _default_transform = TemporalResample()
 
-    def __init__(self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag=None, **kwargs):
+    def __init__(
+        self, model, periodicity_strategy=PeriodicityStrategy.ACF, pval: float = 0.05, max_lag: int = None, **kwargs
+    ):
         """
         :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
         :param pval: p-value for deciding whether a detected seasonality is statistically significant.
@@ -117,7 +122,7 @@ class SeasonalityConfig(LayeredModelConfig):
         self._periodicity_strategy = p
 
 
-class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
+class SeasonalityLayer(AutoMLMixIn):
     """
     Seasonality Layer that uses automatically determines the seasonality of your data. Can be used directly on
     any model that implements `SeasonalityModel` class. The algorithmic idea is from the
@@ -163,6 +168,72 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         """
         return self.config.max_lag
 
+    @staticmethod
+    def detect_seasonality(
+        x: np.array,
+        max_lag: int = None,
+        pval: float = 0.05,
+        periodicity_strategy: PeriodicityStrategy = PeriodicityStrategy.ACF,
+    ) -> List[int]:
+        """
+        Helper method to detect the seasonality of a time series.
+
+        :param x: The numpy array of values whose seasonality we want to detect. Must be univariate & flattened.
+        :param periodicity_strategy: Strategy to choose the seasonality if multiple candidates are detected.
+        :param pval: p-value for deciding whether a detected seasonality is statistically significant.
+        :param max_lag: max lag considered for seasonality detection.
+        """
+        # Use the residuals of an ETS model fit to the data, to handle any trend. This makes the ACF more robust.
+        # For each candidate seasonality, the ACF we assign is the higher of the raw ACF and residual ACF.
+        candidate2score = {}
+        y = x if len(x) < 10 else ETSModel(x, error="add", trend="add").fit(disp=False).resid
+        for x in [x] if x is y else [x, y]:
+            # compute max lag & ACF function
+            max_lag = max(min(int(10 * np.log10(len(x))), len(x) - 1), 40) if max_lag is None else max_lag
+            xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
+            xacf[np.isnan(xacf)] = 0
+
+            # select the local maximum points with acf > 0, and smaller than 1/2 the length of the time series
+            xacf = xacf[: np.ceil(len(x) / 2).astype(int)]
+            candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
+
+            if len(candidates) > 0:
+                # filter out potential harmonics by applying peak-finding on the peaks of the ACF
+                if len(candidates) > 1:
+                    candidates_idx = []
+                    if xacf[candidates[0]] > xacf[candidates[1]]:
+                        candidates_idx += [0]
+                    candidates_idx += argrelmax(xacf[candidates])[0].tolist()
+                    if xacf[candidates[-1]] > xacf[candidates[-2]]:
+                        candidates_idx += [-1]
+                    candidates = candidates[candidates_idx]
+
+                # statistical test if ACF is significant with respect to a normal distribution
+                xacf = xacf[1:]
+                xacf_var = np.cumsum(np.concatenate(([1], 2 * xacf[:-1] ** 2))) / len(x)
+                z_scores = xacf / np.sqrt(xacf_var)
+                candidates = candidates[z_scores[candidates - 1] > norm.ppf(1 - pval / 2)]
+                for c in candidates.tolist():
+                    candidate2score[c] = max(candidate2score.get(c, -np.inf), z_scores[c - 1])
+
+        # sort the candidates by z-score and choose the desired candidates based on periodicity strategy
+        candidates = sorted(candidate2score.keys(), key=lambda c: candidate2score[c], reverse=True)
+        for c in candidates:
+            logger.info(f"Detected seas = {c:3d} with z-score = {candidate2score[c]:5.2f}.")
+        if len(candidates) == 0:
+            candidates = [1]
+        if periodicity_strategy is PeriodicityStrategy.ACF:
+            candidates = [candidates[0]]
+        elif periodicity_strategy is PeriodicityStrategy.Min:
+            candidates = [min(candidates)]
+        elif periodicity_strategy is PeriodicityStrategy.Max:
+            candidates = [max(candidates)]
+        elif periodicity_strategy is PeriodicityStrategy.All:
+            candidates = candidates
+        else:
+            raise ValueError(f"Periodicity strategy {periodicity_strategy} not supported.")
+        return candidates
+
     def set_theta(self, model, theta, train_data: TimeSeries = None):
         model.set_seasonality(theta, train_data.univariates[self.target_name])
 
@@ -170,58 +241,13 @@ class SeasonalityLayer(AutoMLMixIn, metaclass=AutodocABCMeta):
         self, thetas: Iterator, train_data: TimeSeries, train_config=None, exog_data: TimeSeries = None
     ) -> Tuple[Any, Optional[ModelBase], Optional[Tuple[TimeSeries, Optional[TimeSeries]]]]:
         # If multiple seasonalities are supported, return a list of all detected seasonalities
-        return list(thetas) if self.config.multi_seasonality else next(thetas), None, None
+        return (list(thetas) if self.config.multi_seasonality else next(thetas)), None, None
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
-        # compute max lag & acf function
         x = train_data.univariates[self.target_name].np_values
-        if self.max_lag is None:
-            max_lag = max(min(int(10 * np.log10(x.shape[0])), x.shape[0] - 1), 40)
-        else:
-            max_lag = self.max_lag
-        xacf = sm.tsa.acf(x, nlags=max_lag, fft=False)
-        xacf[np.isnan(xacf)] = 0
-
-        # select the local maximum points with acf > 0
-        candidates = np.intersect1d(np.where(xacf > 0), argrelmax(xacf)[0])
-
-        # the periods should be smaller than one half of the length of time series
-        candidates = candidates[candidates < int(x.shape[0] / 2)]
-        if candidates.shape[0] != 0:
-            candidates_idx = []
-            if candidates.shape[0] == 1:
-                candidates_idx += [0]
-            else:
-                if xacf[candidates[0]] > xacf[candidates[1]]:
-                    candidates_idx += [0]
-                if xacf[candidates[-1]] > xacf[candidates[-2]]:
-                    candidates_idx += [-1]
-                candidates_idx += argrelmax(xacf[candidates])[0].tolist()
-            candidates = candidates[candidates_idx]
-
-            # statistical test if acf is significant w.r.t a normal distribution
-            xacf = xacf[1:]
-            tcrit = norm.ppf(1 - self.pval / 2)
-            clim = tcrit / np.sqrt(x.shape[0]) * np.sqrt(np.cumsum(np.insert(np.square(xacf) * 2, 0, 1)))
-            candidates = candidates[xacf[candidates - 1] > clim[candidates - 1]]
-
-            # sort candidates by ACF value
-            candidates = sorted(candidates.tolist(), key=lambda c: xacf[c - 1], reverse=True)
-        if len(candidates) == 0:
-            candidates = [1]
-
-        # choose the desired candidates based on periodicity strategy
-        if self.periodicity_strategy is PeriodicityStrategy.ACF:
-            candidates = [candidates[0]]
-        elif self.periodicity_strategy is PeriodicityStrategy.Min:
-            candidates = [min(candidates)]
-        elif self.periodicity_strategy is PeriodicityStrategy.Max:
-            candidates = [max(candidates)]
-        elif self.periodicity_strategy is PeriodicityStrategy.All:
-            candidates = candidates
-        else:
-            raise ValueError(f"Periodicity strategy {self.periodicity_strategy} not supported.")
-
+        candidates = self.detect_seasonality(
+            x=x, max_lag=self.max_lag, pval=self.pval, periodicity_strategy=self.periodicity_strategy
+        )
         if candidates[: None if self.config.multi_seasonality else 1] != [1]:
             logger.info(f"Automatically detect the periodicity is {candidates}")
         return iter(candidates)

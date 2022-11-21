@@ -17,6 +17,9 @@ each associated with its own sub-package:
         detection and forecasting.
     -   :py:mod:`merlion.models.automl`: AutoML layers for various models
 
+-   :py:mod:`merlion.dashboard`: A GUI dashboard app for Merlion, which can be started with
+    ``python -m merlion.dashboard``. This dashboard provides a good way to quickly experiment many models on a new
+    time series.
 -   :py:mod:`merlion.spark`: APIs to integrate Merlion with PySpark for using distributed computing to run training
     and inference on multiple time series in parallel.
 -   :py:mod:`merlion.transform`: Data pre-processing layer which implements many standard data transformations used in
@@ -43,33 +46,25 @@ The key classes for input and output are `merlion.utils.time_series.TimeSeries` 
 with ``pandas.DataFrame`` and ``pandas.Series``, respectively. Check this `tutorial <tutorials/TimeSeries>`
 for some examples on how to use these classes, or the API docs linked above for a full list of features.
 
+The full API documentation is outlined below:
+
 .. automodule:: merlion
    :members:
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
 
    merlion.models
+
+.. toctree::
+   :maxdepth: 3
+
+   merlion.dashboard
    merlion.spark
    merlion.transform
    merlion.post_process
    merlion.evaluate
+   merlion.plot
    merlion.utils
-
-Submodules
-----------
-
-.. _merlion.plot:
-
-merlion.plot module
--------------------
-
-.. automodule:: merlion.plot
-   :members:
-   :undoc-members:
-   :show-inheritance:

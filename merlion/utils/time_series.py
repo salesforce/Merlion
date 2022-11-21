@@ -749,6 +749,8 @@ class TimeSeries:
             t = t.union(var.index)
         t = t.sort_values()
         t.name = _time_col_name
+        if len(t) >= 3:
+            t.freq = pd.infer_freq(t)
         df = pd.DataFrame(np.full((len(t), len(univariates)), np.nan), index=t, columns=self.names)
         for name, var in univariates:
             df.loc[var.index, name] = var[~var.index.duplicated()]

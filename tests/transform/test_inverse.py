@@ -36,7 +36,7 @@ class TestInverse(unittest.TestCase):
                 LowerUpperClip(0, 1),
                 TemporalResample(),
                 DifferenceTransform(),
-                MovingAverage(weights=[0.1, 0.2, 0.3, 0.4], pad=True),
+                MovingAverage(weights=[0.1, 0.2, 0.3, 0.4]),
                 LagTransform(k=20, pad=True),
                 LagTransform(k=3, pad=False),
                 TransformStack(

@@ -1,7 +1,6 @@
 # package
 __pycache__
 *.egg-info
-data
 docs
 tmp
 ts_datasets
