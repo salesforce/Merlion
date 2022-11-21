@@ -56,6 +56,7 @@ setup(
         "statsmodels>=0.12.2",
         "lightgbm",  # if running at MacOS, need OpenMP: "brew install libomp"
         "tqdm",
+        "gdown",
     ],
     extras_require=extra_require,
     python_requires=">=3.7.0",

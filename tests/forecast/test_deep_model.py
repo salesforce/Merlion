@@ -5,12 +5,14 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
-from os.path import abspath, dirname, join
+
 import sys
-import pdb
+import shutil
 import unittest
 
+import gdown
 import pandas as pd
+from os.path import abspath, dirname, join, exists
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
@@ -107,10 +109,28 @@ class TestDeepModels(unittest.TestCase):
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def _obtain_df(self, data_name="weather"):
-        data_root_path = "/Users/yihaofeng/workspace/ts_projects/Autoformer/dataset/weather/"
-        data_path = "weather.csv"
-        weather_ds = CustomDataset(data_root_path)
+    def _obtain_df(self, dataset_name="weather"):
+        data_dir = join(rootdir, "data")
+        if dataset_name == "weather":
+            data_url = "https://drive.google.com/drive/folders/1Xz84ci5YKWL6O2I-58ZsVe42lYIfqui1"
+            data_folder = join(data_dir, "weather")
+            data_file_path = join(data_folder, "weather.csv")
+        else:
+            raise NotImplementedError
+
+        if not exists(data_file_path):
+            while True:
+                try:
+                    gdown.download_folder(data_url, quiet=False, use_cookies=False)
+                except TimeoutError:
+                    logger.error("Timeout Error, try downloading again...")
+                else:
+                    logger.info("Successfully downloaded %s!" % (dataset_name))
+                    break
+
+            shutil.move("./%s" % (dataset_name), data_folder)
+
+        weather_ds = CustomDataset(data_folder)
         df, metadata = weather_ds[0]
 
         return df
@@ -140,6 +160,9 @@ class TestDeepModels(unittest.TestCase):
         pass
 
     def _test_univariate(self):
+        pass
+
+    def _test_load_and_save(self):
         pass
 
 
