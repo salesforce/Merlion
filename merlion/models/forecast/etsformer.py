@@ -69,6 +69,7 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         )
 
         self.top_K = top_K
+        assert self.start_token_len == 0, "No need for start token for ETSformer"
 
 
 class ETSformerModel(TorchModel):

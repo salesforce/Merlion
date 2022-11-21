@@ -94,7 +94,7 @@ class TestDeepModels(unittest.TestCase):
 
     def test_ETSformer(self):
         logger.info("Testing ETSformer forecasting")
-        start_token_len = 48
+        start_token_len = 0
 
         config = ETSformerConfig(
             n_past=self.n_past,
