@@ -8,7 +8,6 @@ import logging
 from os.path import abspath, dirname, join
 import sys
 import unittest
-import matplotlib.pyplot as plt
 
 from merlion.evaluate.forecast import ForecastMetric
 from merlion.models.forecast.trees import LGBMForecaster, LGBMForecasterConfig
@@ -41,7 +40,7 @@ class TestLGBMForecaster(unittest.TestCase):
         df, md = SeattleTrail(rootdir=join(rootdir, "data", "multivariate", "seattle_trail"))[0]
         t = int(df[md["trainval"]].index[-1].to_pydatetime().timestamp())
         target = "BGT North of NE 70th Total"
-        data = TimeSeries.from_pd(df)
+        data = TimeSeries.from_pd(df.iloc[:, [1, 0, 2, 3, 4]])
         cleanup = TransformSequence([TemporalResample(missing_value_policy="FFill"), LowerUpperClip(upper=300)])
         cleanup.train(data)
         data = cleanup(data)
@@ -85,7 +84,7 @@ class TestLGBMForecaster(unittest.TestCase):
         dataset = RollingWindowDataset(test_data, target_seq_idx, maxlags, max_forecast_steps, ts_index=True)
         test_prev, test = dataset[0]
         pred, _ = model.forecast(test.time_stamps, time_series_prev=test_prev, exog_data=exog_data)
-        lookahead_rmse = ForecastMetric.RMSE.value(test, pred, target_seq_index=target_seq_idx)
+        lookahead_rmse = ForecastMetric.RMSE.value(test, pred)
         logger.info(f"Look-ahead RMSE with time_series_prev:  {lookahead_rmse:.2f}")
 
         # save and load

@@ -209,6 +209,13 @@ class ModelBase(metaclass=AutodocABCMeta):
     def _default_train_config(self):
         return None
 
+    @property
+    def supports_exog(self):
+        """
+        Whether the model supports exogenous regressors.
+        """
+        return False
+
     def __getstate__(self):
         return {k: copy.deepcopy(v) for k, v in self.__dict__.items()}
 

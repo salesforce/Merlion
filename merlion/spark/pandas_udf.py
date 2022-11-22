@@ -20,7 +20,7 @@ from merlion.models.factory import instantiate_or_copy_model, ModelFactory
 from merlion.models.anomaly.base import DetectorBase
 from merlion.models.forecast.base import ForecasterBase
 from merlion.spark.dataset import TSID_COL_NAME
-from merlion.utils.data_io import TimeSeries
+from merlion.utils import TimeSeries, to_pd_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ def forecast(
         meanval = pdf.loc[:, target_col].mean().item()
         train_err, err = None, None
         train_pred = TimeSeries.from_pd(pd.DataFrame(meanval, index=pdf[time_col], columns=[target_col]))
-        pred = TimeSeries.from_pd(pd.DataFrame(meanval, index=pd.to_datetime(time_stamps), columns=[target_col]))
+        pred = TimeSeries.from_pd(pd.DataFrame(meanval, index=to_pd_datetime(time_stamps), columns=[target_col]))
 
     # Concatenate train & test results if predict_on_train is True
     if predict_on_train:
@@ -112,6 +112,7 @@ def anomaly(
     time_col: str,
     train_test_split: Union[int, str],
     model: Union[DetectorBase, dict],
+    predict_on_train: bool = False,
 ) -> pd.DataFrame:
     """
     Pyspark pandas UDF for performing anomaly detection.
@@ -122,6 +123,7 @@ def anomaly(
     :param time_col: The name of the column containing the timestamps.
     :param train_test_split: The time at which the testing data starts.
     :param model: The model (or model ``dict``) we are using to predict anomaly scores.
+    :param predict_on_train: Whether to return the model's prediction on the training data.
 
     :return: A ``pandas.DataFrame`` with the anomaly scores on the test data.
         Columns are ``[*index_cols, time_col, \"anom_score\"]``.
@@ -141,8 +143,9 @@ def anomaly(
     exception = False
     train, test = ts.bisect(train_test_split, t_in_left=False)
     try:
-        model.train(train)
-        pred_pdf = model.get_anomaly_label(test).to_pd()
+        train_pred = model.train(train)
+        train_pred = model.post_rule(train_pred).to_pd()
+        pred = model.get_anomaly_label(test).to_pd()
     except Exception:
         exception = True
         row0 = pdf.iloc[0]
@@ -154,20 +157,25 @@ def anomaly(
     if exception:
         try:
             model = ModelFactory.create(name="StatThreshold", target_seq_index=0, threshold=model.threshold)
-            model.train(train)
-            pred_pdf = model.get_anomaly_label(test).to_pd()
+            train_pred = model.train(train)
+            train_pred = model.post_rule(train_pred).to_pd()
+            pred = model.get_anomaly_label(test).to_pd()
         except Exception:
             logger.warning(
                 f"Model StatThreshold threw an exception on ({idx}).{traceback.format_exc()}"
-                f"Returning anomaly score = 0 for all test data.\n"
+                f"Returning anomaly score = 0 as a placeholder.\n"
             )
-            pred_pdf = pd.DataFrame(0, index=pd.to_datetime(test.time_stamps), columns=["anom_score"])
+            train_pred = pd.DataFrame(0, index=to_pd_datetime(train.time_stamps), columns=["anom_score"])
+            pred = pd.DataFrame(0, index=to_pd_datetime(test.time_stamps), columns=["anom_score"])
+
+    if predict_on_train and train_pred is not None:
+        pred = pd.concat((train_pred, pred))
 
     # Turn the time index into a regular column, and add the index columns back to the prediction
-    pred_pdf.index.name = time_col
-    pred_pdf.reset_index(inplace=True)
-    index_pdf = pd.concat([pdf[index_cols].iloc[:1]] * len(pred_pdf), ignore_index=True)
-    return pd.concat((index_pdf, pred_pdf), axis=1)
+    pred.index.name = time_col
+    pred.reset_index(inplace=True)
+    index_pdf = pd.concat([pdf[index_cols].iloc[:1]] * len(pred), ignore_index=True)
+    return pd.concat((index_pdf, pred), axis=1)
 
 
 def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):

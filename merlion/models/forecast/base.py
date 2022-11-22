@@ -18,8 +18,9 @@ from scipy.stats import norm
 
 from merlion.models.base import Config, ModelBase
 from merlion.plot import Figure
-from merlion.transform.base import TransformBase, Identity
+from merlion.transform.base import TransformBase
 from merlion.transform.factory import TransformFactory
+from merlion.transform.normalize import MeanVarNormalize
 from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
@@ -75,8 +76,6 @@ class ForecasterBase(ModelBase):
     """
 
     def __init__(self, config: ForecasterConfig):
-        if self.supports_exog:
-            assert isinstance(config, ForecasterExogConfig)
         super().__init__(config)
         self.target_name = None
         self.exog_dim = None
@@ -98,19 +97,12 @@ class ForecasterBase(ModelBase):
         """
         :return: Whether to automatically invert the ``transform`` before returning a forecast.
         """
-        return self.config.invert_transform
+        return self.config.invert_transform and not self.transform.identity_inversion
 
     @property
     def require_univariate(self) -> bool:
         """
         All forecasters can work on multivariate data, since they only forecast a single target univariate.
-        """
-        return False
-
-    @property
-    def supports_exog(self):
-        """
-        Whether this forecaster supports exogenous data.
         """
         return False
 
@@ -354,11 +346,10 @@ class ForecasterBase(ModelBase):
 
         # Compute upper/lower bounds for the (potentially inverted) forecast.
         # Only do this if returning the IQR or inverting the transform.
-        invert_transform = self.invert_transform and not self.transform.identity_inversion
-        if (return_iqr or invert_transform) and e_neg is not None and e_pos is not None:
+        if (return_iqr or self.invert_transform) and e_neg is not None and e_pos is not None:
             lb = TimeSeries.from_pd((forecast + e_neg.values * (norm.ppf(0.25) if return_iqr else -1)))
             ub = TimeSeries.from_pd((forecast + e_pos.values * (norm.ppf(0.75) if return_iqr else 1)))
-            if invert_transform:
+            if self.invert_transform:
                 lb = self.transform.invert(lb, retain_inversion_state=True)
                 ub = self.transform.invert(ub, retain_inversion_state=True)
         else:
@@ -366,7 +357,7 @@ class ForecasterBase(ModelBase):
 
         # Convert the forecast to TimeSeries and invert the transform on it if desired
         forecast = TimeSeries.from_pd(forecast)
-        if invert_transform:
+        if self.invert_transform:
             forecast = self.transform.invert(forecast, retain_inversion_state=True)
 
         # Return the IQR if desired
@@ -622,7 +613,7 @@ class ForecasterBase(ModelBase):
 
 
 class ForecasterExogConfig(ForecasterConfig):
-    _default_exog_transform = Identity()
+    _default_exog_transform = MeanVarNormalize()
     exog_transform: TransformBase = None
 
     def __init__(

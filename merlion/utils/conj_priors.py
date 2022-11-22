@@ -70,6 +70,11 @@ class ConjPrior(ABC):
     def to_dict(self):
         return {k: v.tolist() if hasattr(v, "tolist") else copy.deepcopy(v) for k, v in self.__dict__.items()}
 
+    @property
+    @abstractmethod
+    def n_params(self) -> int:
+        pass
+
     @classmethod
     def from_dict(cls, state_dict):
         ret = cls()
@@ -245,6 +250,10 @@ class BetaBernoulli(ScalarConjPrior):
         self.beta = 1
         super().__init__(sample=sample)
 
+    @property
+    def n_params(self) -> int:
+        return 2
+
     def posterior(self, x, return_rv=False, log=True, return_updated=False):
         r"""
         The posterior distribution of x is :math:`\mathrm{Bernoulli}(\alpha / (\alpha + \beta))`.
@@ -312,6 +321,10 @@ class NormInvGamma(ScalarConjPrior):
         self.alpha = 1 / 2 + _epsilon
         self.beta = _epsilon
         super().__init__(sample=sample)
+
+    @property
+    def n_params(self) -> int:
+        return 3
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -394,6 +407,11 @@ class MVNormInvWishart(ConjPrior):
         self.mu_0 = None
         self.Lambda = None
         super().__init__(sample=sample)
+
+    @property
+    def n_params(self):
+        d = 0 if self.mu_0 is None and self.Lambda is None else len(self.mu_0)
+        return 1 + d + d * d
 
     def process_time_series(self, x):
         if x is None:
@@ -506,6 +524,10 @@ class BayesianLinReg(ConjPrior):
         self.alpha = 1 + _epsilon
         self.beta = _epsilon
         super().__init__(sample=sample)
+
+    @property
+    def n_params(self) -> int:
+        return 8  # 2 for w_0, 4 for Lambda_0, 1 for alpha, 1 for beta
 
     def update(self, x):
         t, x = self.process_time_series(x)
@@ -663,6 +685,11 @@ class BayesianMVLinReg(ConjPrior):
         self.Lambda_0 = np.array([[0, 0], [0, 1]]) + _epsilon
         self.V_0 = None
         super().__init__(sample=sample)
+
+    @property
+    def n_params(self) -> int:
+        d = 0 if self.w_0 is None else self.w_0.shape[1]
+        return 1 + 2 * d + 4 + d * d  # 1 for nu, 2d for w_0, 4 for Lambda_0, d^2 for V_0
 
     def process_time_series(self, x):
         t, x = super().process_time_series(x)

@@ -74,7 +74,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    merlion.models.anomaly
    merlion.models.anomaly.change_point
@@ -85,11 +85,8 @@ Subpackages
    merlion.models.utils
 
 
-Submodules
-----------
-
-merlion.models.defaults module
-------------------------------
+defaults
+--------
 
 .. automodule:: merlion.models.defaults
    :members:
@@ -97,8 +94,8 @@ merlion.models.defaults module
    :show-inheritance:
 
 
-merlion.models.factory module
------------------------------
+factory
+-------
 
 .. automodule:: merlion.models.factory
    :members:
@@ -106,16 +103,16 @@ merlion.models.factory module
    :show-inheritance:
 
 
-merlion.models.base module
---------------------------
+base
+----
 
 .. automodule:: merlion.models.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.layers module
-----------------------------
+layers
+------
 
 .. automodule:: merlion.models.layers
    :members:

@@ -36,7 +36,12 @@ def _run_job(spark, name: str, data_cols: list, model: dict, robust: bool = Fals
     output_schema = StructType(index_fields + pred_fields)
     anomaly_df = df.groupBy(index_cols).applyInPandas(
         lambda pdf: anomaly(
-            pdf, index_cols=index_cols, time_col=time_col, train_test_split=train_test_split, model=model
+            pdf,
+            index_cols=index_cols,
+            time_col=time_col,
+            train_test_split=train_test_split,
+            model=model,
+            predict_on_train=robust,
         ),
         schema=output_schema,
     )

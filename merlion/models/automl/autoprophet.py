@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class AutoProphetConfig(SeasonalityConfig, ICConfig):
     """
-    Config class for `Prophet` with automatic seasonality detection.
+    Config class for `Prophet` with automatic seasonality detection & other hyperparameter selection.
     """
 
     def __init__(
@@ -56,9 +56,14 @@ class AutoProphet(ICAutoMLForecaster, SeasonalityLayer):
     """
     `Prophet` with automatic seasonality detection. Automatically detects and adds
     additional seasonalities that the existing Prophet may not detect (e.g. hourly).
+    Also automatically chooses other hyperparameters.
     """
 
     config_class = AutoProphetConfig
+
+    @property
+    def supports_exog(self):
+        return True
 
     def generate_theta(self, train_data: TimeSeries) -> Iterator:
         seas = list(super().generate_theta(train_data))

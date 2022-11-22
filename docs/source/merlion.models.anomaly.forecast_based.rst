@@ -1,5 +1,5 @@
-merlion.models.anomaly.forecast\_based package
-==============================================
+anomaly.forecast\_based
+=======================
 
 .. automodule:: merlion.models.anomaly.forecast_based
    :members:
@@ -15,59 +15,56 @@ merlion.models.anomaly.forecast\_based package
     lstm
     mses
 
-Submodules
-----------
-
-merlion.models.anomaly.forecast\_based.base module
---------------------------------------------------
+anomaly.forecast\_based.base
+----------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.arima module
----------------------------------------------------
+anomaly.forecast\_based.arima
+-----------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.arima
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.sarima module
-----------------------------------------------------
+anomaly.forecast\_based.sarima
+------------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.sarima
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.ets module
--------------------------------------------------
+anomaly.forecast\_based.ets
+---------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.ets
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.prophet module
------------------------------------------------------
+anomaly.forecast\_based.prophet
+-------------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.prophet
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.lstm module
---------------------------------------------------
+anomaly.forecast\_based.lstm
+----------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.lstm
    :members:
    :undoc-members:
    :show-inheritance:
 
-merlion.models.anomaly.forecast\_based.mses module
---------------------------------------------------
+anomaly.forecast\_based.mses
+----------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.mses
    :members:

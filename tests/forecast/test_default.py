@@ -117,7 +117,7 @@ class TestUnivariate(unittest.TestCase):
             ground_truth=self.test_data, predict=forecast, insample=self.train_data, periodicity=4, ub=ub, lb=lb
         )
         logger.info(f"MSIS = {msis:.4f}")
-        self.assertAlmostEqual(msis, 34, delta=10)
+        self.assertAlmostEqual(msis, 14, delta=5)
 
         # make sure save/load model gets same predictions
         logger.info("Test save/load...")
@@ -125,10 +125,8 @@ class TestUnivariate(unittest.TestCase):
         self.model.save(dirname=savedir)
         loaded = DefaultForecaster.load(dirname=savedir)
 
-        loaded_pred, loaded_lb, loaded_ub = loaded.forecast(self.max_forecast_steps, return_iqr=True)
+        loaded_pred, _ = loaded.forecast(self.max_forecast_steps)
         self.assertSequenceEqual(list(loaded_pred), list(forecast))
-        self.assertSequenceEqual(list(loaded_lb), list(lb))
-        self.assertSequenceEqual(list(loaded_ub), list(ub))
 
         # streaming forecasting RMSE = 2.4689
         test_t = self.test_data.np_time_stamps

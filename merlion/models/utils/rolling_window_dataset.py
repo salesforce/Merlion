@@ -109,6 +109,12 @@ class RollingWindowDataset:
         else:
             df = data.to_pd() if isinstance(data, TimeSeries) else data
             exog_df = data.to_pd() if isinstance(exog_data, TimeSeries) else exog_data
+            if exog_data is not None:
+                if n_future > 0:
+                    exog_vals = np.concatenate((exog_df.values[1:], np.full((1, exog_df.shape[1]), np.nan)))
+                else:
+                    exog_vals = exog_df.values
+                self.data = np.concatenate((df.values, exog_vals), axis=1)
             self.data = np.concatenate((df.values, exog_df.values), axis=1) if exog_data is not None else df.values
             self.timestamp = df.index
             self.target = df.values if self.target_seq_index is None else df.values[:, target_seq_index]
