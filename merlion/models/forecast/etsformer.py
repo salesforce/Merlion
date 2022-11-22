@@ -182,5 +182,5 @@ class ETSformerForecaster(DeepForecaster):
     config_class = ETSformerConfig
     deep_model_class = ETSformerModel
 
-    def __init__(self, config: ETSformerModel):
+    def __init__(self, config: ETSformerConfig):
         super().__init__(config)
