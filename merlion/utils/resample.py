@@ -14,7 +14,8 @@ from typing import Iterable, Sequence, Union
 
 import numpy as np
 import pandas as pd
-import pandas.tseries.frequencies
+from pandas.tseries.frequencies import to_offset
+import scipy.stats
 
 logger = logging.getLogger(__name__)
 
@@ -96,38 +97,58 @@ def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Uni
     if isinstance(granularity, (float, int)):
         ms = np.floor(granularity * 1000)
     else:
-        try:
-            granularity = pd.Timedelta(granularity)
-        except:
-            pass
         ms = np.floor(pd.tseries.frequencies.to_offset(granularity).nanos / 1e6)
-    return ms / 1000
+    return (ms / 1000).item()
 
 
-def get_gcd_timedelta(*time_stamp_lists):
+def get_date_offset(time_stamps, reference):
     """
-    Calculates all timedeltas present in any of the lists of time stamps given,
-    and returns the GCD of all these timedeltas (up to units of milliseconds).
+    Returns the date offset one must add to ``time_stamps`` so its last timestamp aligns with that of ``reference``.
     """
-    all_dt = np.concatenate([np.diff(t) for t in time_stamp_lists])
-    all_dt = np.unique((all_dt * 1000).astype(np.int64))
-    gcd_dt = all_dt[0]
-    for dt in all_dt[1:]:
-        gcd_dt = np.gcd(gcd_dt, dt)
-    return gcd_dt.astype(float) / 1000
+    df, tf = time_stamps[-1], reference[-1]
+    if tf < df:
+        return -pd.DateOffset(
+            months=(df.month - tf.month) + 12 * int(df.year > tf.year),
+            days=df.day - tf.day,
+            hours=df.hour - tf.day,
+            minutes=df.minute - tf.minute,
+            seconds=df.second - tf.second,
+        )
+    else:
+        return pd.DateOffset(
+            months=(tf.month - df.month) + 12 * int(tf.year > df.year),
+            days=tf.day - df.day,
+            hours=tf.hour - df.hour,
+            minutes=tf.minute - df.minute,
+            seconds=tf.second - df.second,
+        )
 
 
 def infer_granularity(time_stamps):
     """
-    Infers the granularity of a list of time stamps
+    Infers the granularity of a list of time stamps.
     """
-    freq = pd.infer_freq(to_pd_datetime(time_stamps))
+    # See if pandas can infer the granularity on its own
+    orig_t = to_pd_datetime(time_stamps)
+    freq = pd.infer_freq(orig_t)
     if freq is not None:
-        granularity = pd.tseries.frequencies.to_offset(freq)
-    else:
-        granularity = pd.to_timedelta(get_gcd_timedelta(time_stamps), unit="s")
-        logger.warning(f"Inferred granularity {granularity}")
-    return granularity
+        return to_offset(freq)
+
+    # Find the most commonly occurring timedelta
+    freq = dt = pd.to_timedelta(min(scipy.stats.mode(orig_t[1:] - orig_t[:-1], axis=None)[0]))
+
+    # Check if the data could be sampled at a k-monthly granularity
+    t0, tf = orig_t[0], orig_t[-1]
+    for k in range(12):
+        if k * pd.Timedelta(days=28) <= dt <= k * pd.Timedelta(days=31):
+            freq2idx = {}
+            for f in [dt, to_offset(f"{k}MS"), to_offset(f"{k}M")]:
+                t = pd.date_range(start=t0, end=tf, freq=f)
+                freq2idx[f] = t + get_date_offset(time_stamps=t, reference=orig_t)
+            freq = sorted(freq2idx.keys(), key=lambda f: len(freq2idx[f].intersection(orig_t)), reverse=True)[0]
+
+    logger.warning(f"Inferred granularity {freq}")
+    return freq
 
 
 def reindex_df(

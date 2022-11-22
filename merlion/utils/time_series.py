@@ -22,6 +22,7 @@ from merlion.utils.resample import (
     AggregationPolicy,
     AlignPolicy,
     MissingValuePolicy,
+    get_date_offset,
     infer_granularity,
     reindex_df,
     to_pd_datetime,
@@ -964,12 +965,12 @@ class TimeSeries:
             if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
-            origin = to_pd_datetime(origin)
-            new_df = df.resample(granularity, origin=origin, label="right", closed="right")
+            new_df = df.resample(granularity, origin=to_pd_datetime(origin), closed="right")
 
             # Apply aggregation & missing value imputation policies, and make sure we don't hallucinate new data
             new_df = aggregation_policy.value(new_df)
             new_df = missing_value_policy.value(new_df)
+            new_df.index += get_date_offset(time_stamps=new_df.index, reference=df.index)
             new_df = new_df[df.index[0] : df.index[-1]]
             return TimeSeries.from_pd(new_df.ffill().bfill(), check_times=False)
 
