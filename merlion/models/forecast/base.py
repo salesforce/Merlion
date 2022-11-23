@@ -114,7 +114,7 @@ class ForecasterBase(ModelBase):
         )
 
         # Determine timedelta & initial time of forecast
-        dt = self.timedelta
+        dt, offset = self.timedelta, self.timedelta_offset
         if time_series_prev is not None and not time_series_prev.is_empty():
             t0 = to_pd_datetime(time_series_prev.tf)
         else:
@@ -124,7 +124,7 @@ class ForecasterBase(ModelBase):
         if isinstance(time_stamps, (int, float)):
             n = int(time_stamps)
             assert self.max_forecast_steps is None or n <= self.max_forecast_steps
-            resampled = pd.date_range(start=t0, periods=n + 1, freq=dt)[1:]
+            resampled = pd.date_range(start=t0, periods=n + 1, freq=dt)[1:] + offset
             tf = resampled[-1]
             time_stamps = to_timestamp(resampled)
 
@@ -139,10 +139,11 @@ class ForecasterBase(ModelBase):
             if resampled[-1] < tf:
                 extra = pd.date_range(start=resampled[-1], periods=2, freq=dt)[1:]
                 resampled = resampled.union(extra)
+            resampled = resampled + offset
 
         # Handle the case where we do have a max_forecast_steps
         else:
-            resampled = pd.date_range(start=t0, periods=self.max_forecast_steps + 1, freq=dt)[1:]
+            resampled = pd.date_range(start=t0, periods=self.max_forecast_steps + 1, freq=dt)[1:] + offset
             tf = resampled[-1]
             n = sum(t < to_pd_datetime(time_stamps[-1]) for t in resampled)
             resampled = resampled[: n + 1]

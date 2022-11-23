@@ -293,7 +293,7 @@ class MSES(ForecasterBase):
             )
 
         new_data = TimeSeries.from_pd(new_data).univariates[name]
-        assert_equal_timedeltas(new_data, self.timedelta)
+        assert_equal_timedeltas(new_data, self.timedelta, self.timedelta_offset)
         next_train_time = self.last_train_time + self.timedelta
         if to_pd_datetime(new_data.t0) > next_train_time:
             logger.warning(

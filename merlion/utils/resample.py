@@ -102,7 +102,7 @@ def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Uni
     return (ms / 1000).item()
 
 
-def get_date_offset(time_stamps, reference):
+def get_date_offset(time_stamps: pd.DatetimeIndex, reference: pd.DatetimeIndex) -> pd.DateOffset:
     """
     Returns the date offset one must add to ``time_stamps`` so its last timestamp aligns with that of ``reference``.
     """
