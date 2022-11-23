@@ -11,10 +11,8 @@ into vectors.
 
 from collections import OrderedDict
 import logging
-from typing import List, Tuple, Union
-
+from typing import Union
 import numpy as np
-import pandas as pd
 
 from merlion.transform.base import TransformBase, InvertibleTransformBase
 from merlion.utils import UnivariateTimeSeries, TimeSeries

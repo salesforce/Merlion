@@ -944,15 +944,19 @@ class TimeSeries:
                     f"so we are using alignment policy FixedGranularity."
                 )
 
-            # Get the granularity in seconds, if one is specified. Otherwise,
-            # find the GCD granularity of  all the timedeltas that appear in any
-            # of the univariate series.
+            # Get the granularity in seconds, if one is specified and the granularity is a fixed number of seconds.
+            # Otherwise, infer the granularity. If we have a non-fixed granularity, record that fact.
+            fixed_granularity = True
             if granularity is None:
                 granularity = infer_granularity(self.time_stamps)
             try:
                 granularity = pd.to_timedelta(granularity, unit="s")
-            except:
+            except ValueError:
                 granularity = to_offset(granularity)
+                try:
+                    granularity.nanos
+                except ValueError:
+                    fixed_granularity = False
 
             # Remove non-overlapping portions of univariates if desired
             df = self.to_pd()
@@ -965,19 +969,19 @@ class TimeSeries:
             if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
-            new_df = df.resample(granularity, origin=to_pd_datetime(origin), label="right", closed="right")
+            direction = None if not fixed_granularity else "right"
+            new_df = df.resample(granularity, origin=to_pd_datetime(origin), label=direction, closed=direction)
 
             # Apply aggregation & missing value imputation policies
             new_df = aggregation_policy.value(new_df)
-            new_df = missing_value_policy.value(new_df)
+            if missing_value_policy is MissingValuePolicy.Interpolate and not fixed_granularity:
+                new_df = new_df.interpolate()
+            else:
+                new_df = missing_value_policy.value(new_df)
 
             # Add the date offset only if we're resampling to a non-fixed granularity
-            offset = get_date_offset(time_stamps=new_df.index, reference=df.index)
-            if isinstance(granularity, pd.DateOffset):
-                try:
-                    granularity.nanos
-                except ValueError:
-                    new_df.index += offset
+            if not fixed_granularity:
+                new_df.index += get_date_offset(time_stamps=new_df.index, reference=df.index)
 
             # Do any forward-filling/back-filling to cover all the indices
             return TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_times=False)
