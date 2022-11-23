@@ -40,7 +40,7 @@ jobs:
       with:
         max_attempts: 1
         timeout_minutes: 60
-        retry-on: error
+        retry_on: error
         command: |
           set -euxo pipefail
           # Get a comma-separated list of the directories of all python source files
