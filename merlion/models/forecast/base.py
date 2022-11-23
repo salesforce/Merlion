@@ -144,7 +144,7 @@ class ForecasterBase(ModelBase):
         else:
             resampled = pd.date_range(start=t0, periods=self.max_forecast_steps + 1, freq=dt) + offset
             resampled = resampled[1:] if resampled[0] == t0 else resampled[:-1]
-            resampled = resampled[: sum(resampled <= to_pd_datetime(time_stamps[-1]))]
+            resampled = resampled[: 1 + sum(resampled < to_pd_datetime(time_stamps[-1]))]
 
         tf = resampled[-1]
         assert to_pd_datetime(time_stamps[0]) >= t0 and to_pd_datetime(time_stamps[-1]) <= tf, (
