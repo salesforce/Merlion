@@ -967,12 +967,17 @@ class TimeSeries:
                 origin = df.index[0] + elapsed % granularity
             new_df = df.resample(granularity, origin=to_pd_datetime(origin), label="right", closed="right")
 
-            # Apply aggregation & missing value imputation policies, and make sure we don't hallucinate new data
+            # Apply aggregation & missing value imputation policies
             new_df = aggregation_policy.value(new_df)
             new_df = missing_value_policy.value(new_df)
-            new_df.index += get_date_offset(time_stamps=new_df.index, reference=df.index)
-            new_df = new_df[df.index[0] : df.index[-1]]
-            return TimeSeries.from_pd(new_df.ffill().bfill(), check_times=False)
+
+            # Add the date offset ONLY if we need it, e.g. to adjust monthly granularities
+            offset = get_date_offset(time_stamps=new_df.index, reference=df.index)
+            if offset.days != 0 or offset.months != 0:
+                new_df.index += offset
+
+            # Do any forward-filling/back-filling to cover all the indices
+            return TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_times=False)
 
         elif alignment_policy in [None, AlignPolicy.OuterJoin]:
             # Outer join is the union of all timestamps appearing in any of the
