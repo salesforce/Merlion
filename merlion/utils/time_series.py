@@ -971,10 +971,13 @@ class TimeSeries:
             new_df = aggregation_policy.value(new_df)
             new_df = missing_value_policy.value(new_df)
 
-            # Add the date offset ONLY if we need it, e.g. to adjust monthly granularities
+            # Add the date offset only if we're resampling to a non-fixed granularity
             offset = get_date_offset(time_stamps=new_df.index, reference=df.index)
-            if offset.days != 0 or offset.months != 0:
-                new_df.index += offset
+            if isinstance(granularity, pd.DateOffset):
+                try:
+                    granularity.nanos
+                except ValueError:
+                    new_df.index += offset
 
             # Do any forward-filling/back-filling to cover all the indices
             return TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_times=False)

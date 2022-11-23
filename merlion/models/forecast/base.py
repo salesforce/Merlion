@@ -134,8 +134,11 @@ class ForecasterBase(ModelBase):
         # Handle the cases where we don't have a max_forecast_steps
         elif self.max_forecast_steps is None:
             tf = to_pd_datetime(time_stamps[-1])
-            resampled = pd.date_range(start=t0, end=tf + dt, freq=dt) + offset
-            resampled = resampled[1:] if resampled[0] == t0 else resampled[:-1]
+            resampled = pd.date_range(start=t0, end=tf + 2 * dt, freq=dt) + offset
+            if resampled[0] == t0:
+                resampled = resampled[1:]
+            if len(resampled) > 1 and resampled[-2] >= tf:
+                resampled = resampled[:-1]
 
         # Handle the case where we do have a max_forecast_steps
         else:
