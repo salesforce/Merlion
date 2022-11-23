@@ -965,7 +965,7 @@ class TimeSeries:
             if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
-            new_df = df.resample(granularity, origin=to_pd_datetime(origin), closed="right")
+            new_df = df.resample(granularity, origin=to_pd_datetime(origin), label="right", closed="right")
 
             # Apply aggregation & missing value imputation policies, and make sure we don't hallucinate new data
             new_df = aggregation_policy.value(new_df)
@@ -1009,25 +1009,16 @@ class TimeSeries:
             raise RuntimeError(f"Alignment policy {alignment_policy.name} not supported")
 
 
-def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float = None):
+def assert_equal_timedeltas(time_series: UnivariateTimeSeries, granularity, offset=None):
     """
     Checks that all time deltas in the time series are equal, either to each
     other, or a pre-specified timedelta (in seconds).
     """
-    if pd.infer_freq(time_series.index) is not None:
+    if len(time_series) <= 2:
         return
-    if len(time_series) >= 2:
-        timedeltas = np.diff(time_series.np_time_stamps)
-        if timedelta is None:
-            timedelta = timedeltas[0]
-            assert timedelta > 0, "All times in the time series must be distinct."
-        else:
-            assert timedelta > 0
-
-        assert (
-            np.abs(timedeltas - timedeltas[0]).max() < 2e-3
-        ), f"Data must be sampled with the same time difference between each element of the time series"
-        assert np.abs(timedeltas[0] - timedelta) < 2e-3, (
-            f"Expected data to be sampled every {timedelta} seconds, but time "
-            f"series is sampled every {timedeltas[0]} seconds instead."
-        )
+    index = time_series.index
+    offset = pd.to_timedelta(0) if offset is None else offset
+    expected = pd.date_range(start=index[0], end=index[-1], freq=granularity) + offset
+    deviation = expected - time_series.index[-len(expected) :]
+    max_deviation = np.abs(deviation.total_seconds().values).max()
+    assert max_deviation < 2e-3, f"Data must have the same time difference between each element of the time series"

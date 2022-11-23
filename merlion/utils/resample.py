@@ -10,6 +10,7 @@ Code for resampling time series.
 from enum import Enum
 from functools import partial
 import logging
+import math
 from typing import Iterable, Sequence, Union
 
 import numpy as np
@@ -106,49 +107,46 @@ def get_date_offset(time_stamps, reference):
     Returns the date offset one must add to ``time_stamps`` so its last timestamp aligns with that of ``reference``.
     """
     df, tf = time_stamps[-1], reference[-1]
-    if tf < df:
-        return -pd.DateOffset(
-            months=(df.month - tf.month) + 12 * int(df.year > tf.year),
-            days=df.day - tf.day,
-            hours=df.hour - tf.day,
-            minutes=df.minute - tf.minute,
-            seconds=df.second - tf.second,
-        )
-    else:
-        return pd.DateOffset(
-            months=(tf.month - df.month) + 12 * int(tf.year > df.year),
-            days=tf.day - df.day,
-            hours=tf.hour - df.hour,
-            minutes=tf.minute - df.minute,
-            seconds=tf.second - df.second,
-        )
+    return pd.DateOffset(
+        months=tf.month - df.month + 12 * (tf.year - df.year),
+        days=tf.day - df.day,
+        hours=tf.hour - df.hour,
+        minutes=tf.minute - df.minute,
+        seconds=tf.second - df.second,
+        microseconds=tf.microsecond - df.microsecond,
+    )
 
 
-def infer_granularity(time_stamps):
+def infer_granularity(time_stamps, return_offset=False):
     """
     Infers the granularity of a list of time stamps.
     """
     # See if pandas can infer the granularity on its own
     orig_t = to_pd_datetime(time_stamps)
-    freq = pd.infer_freq(orig_t)
+    if len(orig_t) > 2:
+        freq = pd.infer_freq(orig_t)
+    elif len(orig_t) == 2:
+        freq = orig_t[1] - orig_t[0]
+    else:
+        raise ValueError("Need at least 2 timestamps to infer a granularity.")
+    offset = pd.to_timedelta(0)
     if freq is not None:
-        return to_offset(freq)
+        freq = to_offset(freq)
+        return (freq, offset) if return_offset else freq
 
-    # Find the most commonly occurring timedelta
-    freq = dt = pd.to_timedelta(min(scipy.stats.mode(orig_t[1:] - orig_t[:-1], axis=None)[0]))
+    # Otherwise, start with the most commonly occurring timedelta
+    dt = pd.to_timedelta(min(scipy.stats.mode(orig_t[1:] - orig_t[:-1], axis=None)[0]))
 
-    # Check if the data could be sampled at a k-monthly granularity
-    t0, tf = orig_t[0], orig_t[-1]
-    for k in range(12):
-        if k * pd.Timedelta(days=28) <= dt <= k * pd.Timedelta(days=31):
-            freq2idx = {}
-            for f in [dt, to_offset(f"{k}MS"), to_offset(f"{k}M")]:
-                t = pd.date_range(start=t0, end=tf, freq=f)
-                freq2idx[f] = t + get_date_offset(time_stamps=t, reference=orig_t)
-            freq = sorted(freq2idx.keys(), key=lambda f: len(freq2idx[f].intersection(orig_t)), reverse=True)[0]
+    # Check if the data could be sampled at a k-monthly granularity.
+    candidate_freqs = [dt]
+    for k in range(math.ceil(dt / pd.Timedelta(days=31)), math.ceil(dt / pd.Timedelta(days=28))):
+        candidate_freqs.extend([to_offset(f"{k}MS"), to_offset(f"{k}M")])
 
-    logger.warning(f"Inferred granularity {freq}")
-    return freq
+    # Pick the sampling frequency which has the most overlap with the actual timestamps
+    freq2idx = {f: pd.date_range(start=orig_t[0], end=orig_t[-1], freq=f) for f in candidate_freqs}
+    freq2offset = {f: get_date_offset(time_stamps=freq2idx[f], reference=orig_t) for f in candidate_freqs}
+    freq = sorted(freq2idx.keys(), key=lambda f: len((freq2idx[f] + freq2offset[f]).intersection(orig_t)))[-1]
+    return (freq, freq2offset[freq]) if return_offset else freq
 
 
 def reindex_df(

@@ -38,7 +38,7 @@ jobs:
       env:
         PYTHON_VERSION: ${{ matrix.python-version }}
       with:
-        max_attempts: 3
+        max_attempts: 1
         timeout_minutes: 60
         retry-on: error
         command: |

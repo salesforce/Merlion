@@ -119,7 +119,9 @@ class TemporalResample(TransformBase):
 
     def train(self, time_series: TimeSeries):
         if self.trainable_granularity:
-            self.granularity = infer_granularity(time_series.np_time_stamps)
+            granularity = infer_granularity(time_series.np_time_stamps)
+            logger.warning(f"Inferred granularity {granularity}")
+            self.granularity = granularity
 
         if self.trainable_granularity or self.origin is None:
             t0, tf = time_series.t0, time_series.tf
