@@ -5,14 +5,6 @@ set -euo pipefail
 DIRNAME=$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 cd "${DIRNAME}/.."
 
-# Set up virtual environment
-pip3 install --upgrade pip setuptools wheel virtualenv
-if [ ! -d venv ]; then
-  rm -f venv
-  virtualenv venv
-fi
-source venv/bin/activate
-
 # Get current git head & stash unsaved changes
 GIT_HEAD=$(git rev-parse HEAD)
 GIT_BRANCH=$(git branch --show-current)
@@ -37,19 +29,23 @@ function exit_handler {
 }
 trap exit_handler EXIT
 
-# Install Sphinx requirements. Get old Merlion docs from gh-pages branch, but only keep the version-tagged ones.
+# Set up virtual environment & install Sphinx requirements.
+pip3 install --upgrade pip setuptools wheel virtualenv
+if [ ! -d venv ]; then
+  rm -f venv
+  virtualenv venv
+fi
+source venv/bin/activate
 pip3 install -r "${DIRNAME}/requirements.txt"
+
+# Get old Merlion docs from gh-pages branch. Only keep version-tagged ones, and update the version matrix as needed.
 git checkout gh-pages && git pull && git checkout --force "${GIT_HEAD}"
 sphinx-build -M clean "${DIRNAME}/source" "${DIRNAME}/build"
 mkdir -p "${DIRNAME}/build" "${DIRNAME}/build/html"
 git --work-tree "${DIRNAME}/build/html" checkout gh-pages . && git reset --hard
-python -c \
-"import re; import os; import shutil;
-for f in [os.path.join('${DIRNAME}/build/html', f) for f in os.listdir('${DIRNAME}/build/html')]:
-    if not (os.path.isdir(f) and re.search('v([0-9].)+[0-9]$', f)):
-        shutil.rmtree(f) if os.path.isdir(f) else os.remove(f)"
+python3 "${DIRNAME}/process_old_docs.py"
 
-# Install all released versions of Merlion/ts_datasets and use them to build the appropriate API docs.
+# Install all released versions of Merlion/ts_datasets _not_ on gh-pages and use them to build the appropriate API docs.
 # Uninstall after we're done with each one.
 versions=("latest")
 for v in $(git tag --list 'v[0-9]*'); do
