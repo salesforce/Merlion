@@ -13,6 +13,14 @@ MERLION_JARS = [
 ]
 
 MERLION_DASHBOARD_ASSETS = [
+    "dashboard/assets/fonts/SalesforceSans-Bold.woff",
+    "dashboard/assets/fonts/SalesforceSans-BoldItalic.woff",
+    "dashboard/assets/fonts/SalesforceSans-Italic.woff",
+    "dashboard/assets/fonts/SalesforceSans-Light.woff",
+    "dashboard/assets/fonts/SalesforceSans-LightItalic.woff",
+    "dashboard/assets/fonts/SalesforceSans-Regular.woff",
+    "dashboard/assets/fonts/SalesforceSans-Thin.woff",
+    "dashboard/assets/fonts/SalesforceSans-ThinItalic.woff",
     "dashboard/assets/Acumin-BdPro.otf",
     "dashboard/assets/base.css",
     "dashboard/assets/merlion.css",
@@ -20,6 +28,7 @@ MERLION_DASHBOARD_ASSETS = [
     "dashboard/assets/modal.css",
     "dashboard/assets/resizing.js",
     "dashboard/assets/styles.css",
+    "dashboard/assets/upload.svg",
 ]
 
 # optional dependencies
