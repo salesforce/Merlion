@@ -22,6 +22,7 @@ from merlion.utils.resample import (
     AggregationPolicy,
     AlignPolicy,
     MissingValuePolicy,
+    get_date_offset,
     infer_granularity,
     reindex_df,
     to_pd_datetime,
@@ -943,15 +944,19 @@ class TimeSeries:
                     f"so we are using alignment policy FixedGranularity."
                 )
 
-            # Get the granularity in seconds, if one is specified. Otherwise,
-            # find the GCD granularity of  all the timedeltas that appear in any
-            # of the univariate series.
+            # Get the granularity in seconds, if one is specified and the granularity is a fixed number of seconds.
+            # Otherwise, infer the granularity. If we have a non-fixed granularity, record that fact.
+            fixed_granularity = True
             if granularity is None:
                 granularity = infer_granularity(self.time_stamps)
             try:
                 granularity = pd.to_timedelta(granularity, unit="s")
-            except:
+            except ValueError:
                 granularity = to_offset(granularity)
+                try:
+                    granularity.nanos
+                except ValueError:
+                    fixed_granularity = False
 
             # Remove non-overlapping portions of univariates if desired
             df = self.to_pd()
@@ -964,14 +969,22 @@ class TimeSeries:
             if origin is None and isinstance(granularity, pd.Timedelta):
                 elapsed = df.index[-1] - df.index[0]
                 origin = df.index[0] + elapsed % granularity
-            origin = to_pd_datetime(origin)
-            new_df = df.resample(granularity, origin=origin, label="right", closed="right")
+            direction = None if not fixed_granularity else "right"
+            new_df = df.resample(granularity, origin=to_pd_datetime(origin), label=direction, closed=direction)
 
-            # Apply aggregation & missing value imputation policies, and make sure we don't hallucinate new data
+            # Apply aggregation & missing value imputation policies
             new_df = aggregation_policy.value(new_df)
-            new_df = missing_value_policy.value(new_df)
-            new_df = new_df[df.index[0] : df.index[-1]]
-            return TimeSeries.from_pd(new_df.ffill().bfill(), check_times=False)
+            if missing_value_policy is MissingValuePolicy.Interpolate and not fixed_granularity:
+                new_df = new_df.interpolate()
+            else:
+                new_df = missing_value_policy.value(new_df)
+
+            # Add the date offset only if we're resampling to a non-fixed granularity
+            if not fixed_granularity:
+                new_df.index += get_date_offset(time_stamps=new_df.index, reference=df.index)
+
+            # Do any forward-filling/back-filling to cover all the indices
+            return TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_times=False)
 
         elif alignment_policy in [None, AlignPolicy.OuterJoin]:
             # Outer join is the union of all timestamps appearing in any of the
@@ -1008,25 +1021,16 @@ class TimeSeries:
             raise RuntimeError(f"Alignment policy {alignment_policy.name} not supported")
 
 
-def assert_equal_timedeltas(time_series: UnivariateTimeSeries, timedelta: float = None):
+def assert_equal_timedeltas(time_series: UnivariateTimeSeries, granularity, offset=None):
     """
     Checks that all time deltas in the time series are equal, either to each
     other, or a pre-specified timedelta (in seconds).
     """
-    if pd.infer_freq(time_series.index) is not None:
+    if len(time_series) <= 2:
         return
-    if len(time_series) >= 2:
-        timedeltas = np.diff(time_series.np_time_stamps)
-        if timedelta is None:
-            timedelta = timedeltas[0]
-            assert timedelta > 0, "All times in the time series must be distinct."
-        else:
-            assert timedelta > 0
-
-        assert (
-            np.abs(timedeltas - timedeltas[0]).max() < 2e-3
-        ), f"Data must be sampled with the same time difference between each element of the time series"
-        assert np.abs(timedeltas[0] - timedelta) < 2e-3, (
-            f"Expected data to be sampled every {timedelta} seconds, but time "
-            f"series is sampled every {timedeltas[0]} seconds instead."
-        )
+    index = time_series.index
+    offset = pd.to_timedelta(0) if offset is None else offset
+    expected = pd.date_range(start=index[0], end=index[-1], freq=granularity) + offset
+    deviation = expected - time_series.index[-len(expected) :]
+    max_deviation = np.abs(deviation.total_seconds().values).max()
+    assert max_deviation < 2e-3, f"Data must have the same time difference between each element of the time series"

@@ -27,7 +27,7 @@ from merlion.models.factory import ModelFactory
 from merlion.models.forecast.base import ForecasterBase
 from merlion.transform.resample import TemporalResample, granularity_str_to_seconds
 from merlion.utils import TimeSeries, UnivariateTimeSeries
-from merlion.utils.resample import get_gcd_timedelta
+from merlion.utils.resample import infer_granularity, to_pd_datetime
 
 from ts_datasets.base import BaseDataset
 from ts_datasets.forecast import *
@@ -265,12 +265,7 @@ def train_model(
             df = df.resample(dt, closed="right", label="right").mean().interpolate()
 
         vals = TimeSeries.from_pd(df)
-        # Get time-delta
-        if not is_multivariate_data:
-            dt = df.index[1] - df.index[0]
-        else:
-            dt = get_gcd_timedelta(vals.time_stamps)
-            dt = pd.to_timedelta(dt, unit="s")
+        dt = infer_granularity(vals.time_stamps)
 
         # Get the train/val split
         t = trainval.index[np.argmax(~trainval)].value // 1e9
@@ -304,7 +299,11 @@ def train_model(
         # loop over horizon conditions
         for horizon in horizons:
             horizon = granularity_str_to_seconds(horizon)
-            max_forecast_steps = math.ceil(horizon / dt.total_seconds())
+            try:
+                max_forecast_steps = int(math.ceil(horizon / dt.total_seconds()))
+            except:
+                window = TimeSeries.from_pd(test_vals.to_pd()[: to_pd_datetime(train_end_timestamp + horizon)])
+                max_forecast_steps = len(TemporalResample(granularity=dt)(window))
             logger.debug(f"horizon is {pd.Timedelta(seconds=horizon)} and max_forecast_steps is {max_forecast_steps}")
             if retrain_type == "without_retrain":
                 retrain_freq = None

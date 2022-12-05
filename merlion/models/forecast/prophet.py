@@ -189,12 +189,6 @@ class Prophet(ForecasterExogBase, SeasonalityModel):
                 logger.debug(f"Add seasonality {str(p)} ({p * dt})")
                 self.model.add_seasonality(name=f"extra_season_{p}", period=period, fourier_order=p)
 
-    def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
-        if isinstance(time_stamps, (int, float)):
-            times = pd.date_range(start=self.last_train_time, freq=self.timedelta, periods=int(time_stamps + 1))[1:]
-            time_stamps = to_timestamp(times)
-        return time_stamps
-
     def _add_exog_data(self, data: pd.DataFrame, exog_data: pd.DataFrame):
         df = pd.DataFrame(data[self.target_name].rename("y"))
         if exog_data is not None:
