@@ -81,6 +81,7 @@ class ETS(SeasonalityModel, ForecasterBase):
         super().__init__(config)
         self.model = None
         self._last_val = None
+        self._n_train = None
 
     @property
     def require_even_sampling(self) -> bool:
@@ -136,12 +137,13 @@ class ETS(SeasonalityModel, ForecasterBase):
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
-        self.model = self._instantiate_model(train_data).fit(disp=False)
+        self.model = self._instantiate_model(pd.Series(train_data.values)).fit(disp=False)
 
         # get forecast for the training data
         self._last_val = train_data[-1]
-        yhat = pd.DataFrame(self.model.fittedvalues.values.tolist(), index=times, columns=[name])
-        err = pd.DataFrame(self.model.standardized_forecasts_error.tolist(), index=times, columns=[f"{name}_err"])
+        self._n_train = len(train_data)
+        yhat = pd.DataFrame(self.model.fittedvalues.values, index=times, columns=[name])
+        err = pd.DataFrame(self.model.standardized_forecasts_error, index=times, columns=[f"{name}_err"])
         return yhat, err
 
     def _forecast(
@@ -152,10 +154,12 @@ class ETS(SeasonalityModel, ForecasterBase):
         if time_series_prev is None:
             last_val = self._last_val
             model = self.model
+            start = self._n_train
         else:
             time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
-            val_prev = time_series_prev[-self._max_lookback :]
-            last_val = val_prev[-1]
+            val_prev = pd.Series(time_series_prev[-self._max_lookback :].values)
+            last_val = val_prev.iloc[-1]
+            start = len(val_prev)
 
             # the default setting of refit=False is fast and conducts exponential smoothing with given parameters,
             # while the setting of refit=True is slow and refits the model on time_series_prev.
@@ -165,16 +169,10 @@ class ETS(SeasonalityModel, ForecasterBase):
             else:
                 model = model.smooth(params=self.model.params)
 
-        # Run forecasting. Some variants of ETS model does not support prediction interval.
-        # In this case we use point forecasting and set prediction_interval as None.
-        try:
-            forecast_result = model.get_prediction(start=time_stamps[0], end=time_stamps[-1])
-            forecast = np.asarray(forecast_result.predicted_mean)
-            err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
-        except (NotImplementedError, AttributeError):
-            forecast_result = model.predict(start=time_stamps[0], end=time_stamps[-1])
-            forecast = np.asarray(forecast_result)
-            err = None
+        # Run forecasting.
+        forecast_result = model.get_prediction(start=start, end=start + len(time_stamps) - 1)
+        forecast = np.asarray(forecast_result.predicted_mean)
+        err = np.sqrt(np.asarray(forecast_result.var_pred_mean))
 
         # If return_prev is True, return the forecast and error of last train window instead of time_series_prev
         if time_series_prev is not None and return_prev:

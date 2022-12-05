@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -58,13 +58,9 @@ class M4(BaseDataset):
                 "the max length of yearly data is 841 which is too big to convert to "
                 "timestamps, we fallback to quarterly frequency"
             )
-            freq = "13W"
-        elif subset == "Quarterly":
-            freq = "13W"
-        elif subset == "Monthly":
-            freq = "30D"
+            self.freq = "Q"
         else:
-            freq = subset[0]
+            self.freq = subset[0]
 
         train_csv = os.path.join(rootdir, f"train/{subset}-train.csv")
         if not os.path.isfile(train_csv):
@@ -73,19 +69,19 @@ class M4(BaseDataset):
         if not os.path.isfile(test_csv):
             download(os.path.join(rootdir, "test"), self.url, f"{subset}-test", "Test")
 
-        train_set = pd.read_csv(train_csv).set_index("V1")
-        test_set = pd.read_csv(test_csv).set_index("V1")
-        for i in tqdm(range(train_set.shape[0])):
-            ntrain = train_set.iloc[i, :].dropna().shape[0]
-            sequence = pd.concat((train_set.iloc[i, :].dropna(), test_set.iloc[i, :].dropna()))
-            # raw data do not follow consistent timestamp format
-            sequence.index = pd.date_range(start=0, periods=sequence.shape[0], freq=freq)
-            sequence = sequence.to_frame()
+        self.train_set = pd.read_csv(train_csv).set_index("V1")
+        self.test_set = pd.read_csv(test_csv).set_index("V1")
 
-            metadata = pd.DataFrame({"trainval": sequence.index < sequence.index[ntrain]}, index=sequence.index)
+    def __getitem__(self, i):
+        train, test = self.train_set.iloc[i].dropna(), self.test_set.iloc[i].dropna()
+        ts = pd.concat((train, test)).to_frame()
+        # raw data do not follow consistent timestamp format
+        ts.index = pd.date_range(start=0, periods=ts.shape[0], freq=self.freq)
+        md = pd.DataFrame({"trainval": ts.index < ts.index[len(train)]}, index=ts.index)
+        return ts, md
 
-            self.metadata.append(metadata)
-            self.time_series.append(sequence)
+    def __len__(self):
+        return len(self.train_set)
 
 
 def download(datapath, url, name, split=None):

@@ -11,18 +11,14 @@ into vectors.
 
 from collections import OrderedDict
 import logging
-from typing import List, Tuple, Union
-
+from typing import Union
 import numpy as np
-import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.transform.base import TransformBase, InvertibleTransformBase
 from merlion.utils import UnivariateTimeSeries, TimeSeries
 from merlion.utils.resample import (
+    infer_granularity,
     granularity_str_to_seconds,
-    get_gcd_timedelta,
-    to_pd_datetime,
     AlignPolicy,
     AggregationPolicy,
     MissingValuePolicy,
@@ -51,31 +47,20 @@ class TemporalResample(TransformBase):
 
         :param granularity: The granularity at which we want to resample.
         :param origin: The time stamp defining the offset to start at.
-        :param trainable_granularity: Whether the granularity is trainable,
-            i.e. train() will set it to the GCD timedelta of a time series.
-            If ``None`` (default), it will be trainable only if no granularity is
-            explicitly given.
+        :param trainable_granularity: Whether  we will automatically infer the granularity of the time series.
+            If ``None`` (default), it will be trainable only if no granularity is explicitly given.
         :param remove_non_overlapping: If ``True``, we will only keep the portions
             of the univariates that overlap with each other. For example, if we
             have 3 univariates which span timestamps [0, 3600], [60, 3660], and
             [30, 3540], we will only keep timestamps in the range [60, 3540]. If
             ``False``, we will keep all timestamps produced by the resampling.
-        :param aggregation_policy: The policy we will use to aggregate multiple
-            values in a window (downsampling).
-        :param missing_value_policy: The policy we will use to impute missing
-            values (upsampling).
+        :param aggregation_policy: The policy we will use to aggregate multiple values in a window (downsampling).
+        :param missing_value_policy: The policy we will use to impute missing values (upsampling).
         """
         super().__init__()
-        if not isinstance(granularity, (int, float)):
-            try:
-                granularity = granularity_str_to_seconds(granularity)
-            except:
-                pass
         self.granularity = granularity
         self.origin = origin
-        if trainable_granularity is None:
-            trainable_granularity = granularity is None
-        self.trainable_granularity = trainable_granularity
+        self.trainable_granularity = (granularity is None) if trainable_granularity is None else trainable_granularity
         self.remove_non_overlapping = remove_non_overlapping
         self.aggregation_policy = aggregation_policy
         self.missing_value_policy = missing_value_policy
@@ -101,7 +86,7 @@ class TemporalResample(TransformBase):
             try:
                 granularity = granularity_str_to_seconds(granularity)
             except:
-                pass
+                granularity = getattr(granularity, "freqstr", granularity)
         self._granularity = granularity
 
     @property
@@ -132,16 +117,9 @@ class TemporalResample(TransformBase):
 
     def train(self, time_series: TimeSeries):
         if self.trainable_granularity:
-            time_stamps = time_series.time_stamps
-            freq = pd.infer_freq(to_pd_datetime(time_stamps))
-            if freq is not None:
-                try:
-                    self.granularity = pd.to_timedelta(to_offset(freq)).total_seconds()
-                except:
-                    self.granularity = freq
-            else:
-                self.granularity = get_gcd_timedelta(time_stamps)
-                logger.warning(f"Inferred granularity {pd.to_timedelta(self.granularity, unit='s')}")
+            granularity = infer_granularity(time_series.np_time_stamps)
+            logger.warning(f"Inferred granularity {granularity}")
+            self.granularity = granularity
 
         if self.trainable_granularity or self.origin is None:
             t0, tf = time_series.t0, time_series.tf
