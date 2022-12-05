@@ -72,5 +72,5 @@ def plot_timeseries(ts, figure_height=500):
     fig.update_yaxes(title_text="Time Series")
     for trace in traces:
         fig.add_trace(trace)
-    fig.update_layout(height=figure_height)
+    fig.update_layout(height=figure_height, xaxis_rangeselector_font_color='white', xaxis_rangeselector_activecolor='#0176D3', xaxis_rangeselector_bgcolor='#1B96FF', xaxis_rangeselector_font_family='Salesforce Sans')
     return dcc.Graph(figure=fig)

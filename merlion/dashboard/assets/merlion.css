@@ -1,8 +1,17 @@
+
 @font-face {
-    font-family: Acumin;
-    font-weight: bold;
-    src: url("Acumin-BdPro.otf") format("opentype");
-}
+    font-family: 'Salesforce Sans';
+    src: url('../assets/fonts/SalesforceSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+@font-face{
+    font-family:"Salesforce Sans";
+    src:url("../assets/fonts/SalesforceSans-Bold") format("woff");
+    font-weight:700;
+    font-display:swap;
+  }
 
 #app-container {
     width: 100%;
@@ -165,3 +174,63 @@ H5, H3 {
     }
 
 }
+.rc-slider-track{
+    background-color: #1B96FF;
+}
+.rc-slider-dot-active{
+    border: 2px solid #1B96FF;
+}
+.rc-slider-handle{
+    border: solid 2px #1B96FF
+}
+.rc-slider-handle:active{
+    border: solid 2px #1B96FF
+}
+.rc-slider-handle:hover{
+    border: solid 2px #1B96FF
+}
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .column-header-name{
+    color:white !important;
+    font-family: 'Salesforce Sans' !important;
+}
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td .dash-cell-value.unfocused{
+    font-family: 'Salesforce Sans' !important;
+}
+.Select-control{
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 8px !important;
+}
+.previous-next-container button{
+    padding:5px 15px !important;
+    line-height: unset !important;
+    height:30px !important;
+}
+.previous-next-container button svg{
+    line-height: unset !important;
+}
+#upload-data > div{
+    height:unset !important;
+}
+#upload-data > div:hover{
+    cursor: pointer;
+}
+
+#upload-data > div > div > p{
+    line-height: 10px;
+    margin-bottom:20px;
+}
+#select-a-file > p{
+    line-height: 10px;
+    margin-bottom:20px;
+}
+
+#select-a-file{
+    display:flex;
+    gap:3px;
+    justify-content: center;
+}
+#select-a-file > p:nth-child(1){
+    color:#1B96FF;
+    font-weight:bold;
+}
+

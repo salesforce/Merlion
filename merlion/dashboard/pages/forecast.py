@@ -96,7 +96,7 @@ def create_control_panel() -> html.Div:
             html.Br(),
             html.P("Algorithm Setting"),
             html.Div(id="forecasting-param-table", children=[create_param_table()]),
-            html.Progress(id="forecasting-progressbar", style={"width": "100%"}),
+            html.Progress(id="forecasting-progressbar", style={"width": "100%", 'color':'#1AB9FF'}),
             html.Br(),
             html.Div(
                 children=[
@@ -105,6 +105,7 @@ def create_control_panel() -> html.Div:
                 ],
                 style={"textAlign": "center"},
             ),
+            html.Br(),
             create_modal(
                 modal_id="forecasting-exception-modal",
                 header="An Exception Occurred",

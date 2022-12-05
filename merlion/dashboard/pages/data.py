@@ -21,9 +21,9 @@ def create_stats_table(data_stats=None):
         data=data,
         columns=[{"id": "Stats", "name": "Stats"}, {"id": "Value", "name": "Value"}],
         editable=False,
-        style_header_conditional=[{"textAlign": "center"}],
-        style_cell_conditional=[{"textAlign": "center"}],
-        style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
+        style_header_conditional=[{"textAlign": "center", 'font-family': 'Salesforce Sans'}],
+        style_cell_conditional=[{"textAlign": "center", 'font-family': 'Salesforce Sans'}],
+        style_header=dict(backgroundColor=TABLE_HEADER_COLOR, color="white"),
         style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
@@ -40,9 +40,9 @@ def create_metric_stats_table(metric_stats=None, column=None):
         data=data,
         columns=[{"id": "Stats", "name": "Stats"}, {"id": "Value", "name": "Value"}],
         editable=False,
-        style_header_conditional=[{"textAlign": "center"}],
-        style_cell_conditional=[{"textAlign": "center"}],
-        style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
+        style_header_conditional=[{"textAlign": "center", 'font-family': 'Salesforce Sans'}],
+        style_cell_conditional=[{"textAlign": "center", 'font-family': 'Salesforce Sans'}],
+        style_header=dict(backgroundColor=TABLE_HEADER_COLOR,color='white'),
         style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
@@ -53,10 +53,17 @@ def create_control_panel() -> html.Div:
         id="control-card",
         children=[
             html.Br(),
-            html.P("Upload Time Series Data File"),
+            html.P(id='label', children="Upload Time Series Data File"),
             dcc.Upload(
                 id="upload-data",
-                children=html.Div(["Drag & Drop or Select a File"]),
+                children=html.Div(children=[
+                    html.Img(src="../assets/upload.svg"),
+                    html.Div(id='select-a-file', children=[
+                        html.P('Select a file'),
+                        html.P(" or drag it here."),
+                    ]),
+
+                    ]),
                 style={
                     "height": "50px",
                     "lineHeight": "50px",
@@ -80,6 +87,7 @@ def create_control_panel() -> html.Div:
                 id="select-column-parent",
                 children=[dcc.Dropdown(id="select-column", options=[], style={"width": "100%"})],
             ),
+            html.Br(),
             html.Div(id="metric-stats-table", children=[create_stats_table()]),
             html.Br(),
             html.Div(
@@ -103,6 +111,7 @@ def create_control_panel() -> html.Div:
                 ],
                 style={"textAlign": "center"},
             ),
+            html.Br(),
             create_modal(
                 modal_id="data-exception-modal",
                 header="An Exception Occurred",
