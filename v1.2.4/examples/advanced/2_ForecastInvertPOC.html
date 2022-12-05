@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Proof of Concept: Inverse Transforms for Forecasters &mdash; Merlion 1.2.4 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Proof of Concept: Inverse Transforms for Forecasters — Merlion 1.2.4 documentation</title>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="Tutorial for AutoSARIMA Forecasting Model" href="1_AutoSARIMA_forecasting_tutorial.html" /> 
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../../_static/js/theme.js"></script>
+<link href="../../genindex.html" rel="index" title="Index"/>
+<link href="../../search.html" rel="search" title="Search"/>
+<link href="1_AutoSARIMA_forecasting_tutorial.html" rel="prev" title="Tutorial for AutoSARIMA Forecasting Model"/>
 </head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Merlion
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../../index.html"> Merlion
           </a>
-              <div class="version">
+<div class="version">
                 v1.2.4
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -59,33 +57,28 @@
 </ul>
 </li>
 </ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Merlion</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
-      <li>Proof of Concept: Inverse Transforms for Forecasters</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/examples/advanced/2_ForecastInvertPOC.ipynb.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../../index.html">Merlion</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="../../index.html"></a> »</li>
+<li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> »</li>
+<li>Proof of Concept: Inverse Transforms for Forecasters</li>
+<li class="wy-breadcrumbs-aside">
+<a href="../../_sources/examples/advanced/2_ForecastInvertPOC.ipynb.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
 <style>
 /* CSS for nbsphinx extension */
 
@@ -367,13 +360,13 @@ div.rendered_html tbody tr:hover {
 <span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
 
-<span class="n">ts</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;Hourly&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">train</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
-<span class="n">test</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="o">~</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+<span class="n">ts</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"Hourly"</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="n">md</span><span class="p">[</span><span class="s2">"trainval"</span><span class="p">]])</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="o">~</span><span class="n">md</span><span class="p">[</span><span class="s2">"trainval"</span><span class="p">]])</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">"k"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -390,7 +383,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_1_1.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_1_1.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_1_1.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_1_1.png"/>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -418,13 +411,13 @@ div.rendered_html tbody tr:hover {
     <span class="k">if</span> <span class="ow">not</span> <span class="n">apply_inverse</span><span class="p">:</span>
         <span class="n">test_data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">og_train</span> <span class="o">+</span> <span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Train sMAPE: </span><span class="si">{</span><span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">yhat_train</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test  sMAPE: </span><span class="si">{</span><span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">yhat_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Train sMAPE: </span><span class="si">{</span><span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">yhat_train</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Test  sMAPE: </span><span class="si">{</span><span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">yhat_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">train_data</span> <span class="o">+</span> <span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">yhat_train</span> <span class="o">+</span> <span class="n">yhat_test</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">),</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">train_data</span> <span class="o">+</span> <span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">"true"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">yhat_train</span> <span class="o">+</span> <span class="n">yhat_test</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">"model"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">),</span> <span class="n">c</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">yhat_test</span>
@@ -443,7 +436,7 @@ div.rendered_html tbody tr:hover {
 <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">TransformSequence</span><span class="p">([</span><span class="n">TemporalResample</span><span class="p">(),</span> <span class="n">transform</span><span class="p">])</span>
-    <span class="n">prophet</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">add_seasonality</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">))</span>
+    <span class="n">prophet</span> <span class="o">=</span> <span class="n">Prophet</span><span class="p">(</span><span class="n">ProphetConfig</span><span class="p">(</span><span class="n">add_seasonality</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">prophet</span>
 </pre></div>
 </div>
@@ -453,7 +446,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No transform...&quot;</span><span class="p">)</span>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"No transform..."</span><span class="p">)</span>
 <span class="n">base</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -487,7 +480,7 @@ Test  sMAPE: 17.83
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_4_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_4_3.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_4_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_4_3.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -497,10 +490,10 @@ Test  sMAPE: 17.83
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span><span class="p">,</span> <span class="n">MinMaxNormalize</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalize...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Normalize..."</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MeanVarNormalize</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalize + invert...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Normalize + invert..."</span><span class="p">)</span>
 <span class="n">norm</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MeanVarNormalize</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -527,7 +520,7 @@ Test  sMAPE: 118.24
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_5_2.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_5_2.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_5_2.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_5_2.png"/>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -559,7 +552,7 @@ Test  sMAPE: 17.55
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_5_6.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_5_6.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_5_6.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_5_6.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -569,10 +562,10 @@ Test  sMAPE: 17.55
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">PowerTransform</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log transform...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Log transform..."</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">PowerTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log transform + invert...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Log transform + invert..."</span><span class="p">)</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">PowerTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -606,7 +599,7 @@ Test  sMAPE: 1.19
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_6_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_6_3.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_6_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_6_3.png"/>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -638,7 +631,7 @@ Test  sMAPE: 8.61
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_6_7.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_6_7.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_6_7.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_6_7.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -648,10 +641,10 @@ Test  sMAPE: 8.61
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">MovingAverage</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving Average...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Moving Average..."</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MovingAverage</span><span class="p">(</span><span class="n">n_steps</span><span class="o">=</span><span class="mi">5</span><span class="p">)),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving Average + invert...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Moving Average + invert..."</span><span class="p">)</span>
 <span class="n">ma</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MovingAverage</span><span class="p">(</span><span class="n">n_steps</span><span class="o">=</span><span class="mi">5</span><span class="p">)),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -685,7 +678,7 @@ Test  sMAPE: 16.20
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_7_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_7_3.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_7_3.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_7_3.png"/>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -723,7 +716,7 @@ Test  sMAPE: 32.75
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_7_7.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_7_7.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_7_7.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_7_7.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -733,10 +726,10 @@ Test  sMAPE: 32.75
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">DifferenceTransform</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Difference transform...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Difference transform..."</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">DifferenceTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Difference transform + invert...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Difference transform + invert..."</span><span class="p">)</span>
 <span class="n">diff</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">DifferenceTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -763,7 +756,7 @@ Test  sMAPE: 48.12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_8_2.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_8_2.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_8_2.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_8_2.png"/>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -795,7 +788,7 @@ Test  sMAPE: 5.71
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_8_6.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_8_6.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_8_6.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_8_6.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -805,14 +798,14 @@ Test  sMAPE: 5.71
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
-<span class="n">series</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;norm&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="n">log</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">ma</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">"true"</span><span class="p">)</span>
+<span class="n">series</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"original"</span><span class="p">,</span> <span class="n">base</span><span class="p">),</span> <span class="p">(</span><span class="s2">"norm"</span><span class="p">,</span> <span class="n">norm</span><span class="p">),</span> <span class="p">(</span><span class="s2">"log"</span><span class="p">,</span> <span class="n">log</span><span class="p">),</span> <span class="p">(</span><span class="s2">"ma"</span><span class="p">,</span> <span class="n">ma</span><span class="p">),</span> <span class="p">(</span><span class="s2">"diff"</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>
 <span class="n">smapes</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">series</span><span class="p">}</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ns</span><span class="p">:</span> <span class="n">smapes</span><span class="p">[</span><span class="n">ns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
     <span class="n">smape</span> <span class="o">=</span> <span class="n">smapes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">smape</span> <span class="o">&lt;=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">smapes</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (sMAPE=</span><span class="si">{</span><span class="n">smape</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (sMAPE=</span><span class="si">{</span><span class="n">smape</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -822,23 +815,19 @@ Test  sMAPE: 5.71
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_9_0.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_9_0.png" />
+<img alt="../../_images/examples_advanced_2_ForecastInvertPOC_9_0.png" src="../../_images/examples_advanced_2_ForecastInvertPOC_9_0.png"/>
 </div>
 </div>
 </section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="1_AutoSARIMA_forecasting_tutorial.html" class="btn btn-neutral float-left" title="Tutorial for AutoSARIMA Forecasting Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="1_AutoSARIMA_forecasting_tutorial.html" rel="prev" title="Tutorial for AutoSARIMA Forecasting Model"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2021, salesforce.com, inc..</p>
+</div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
@@ -846,108 +835,24 @@ Test  sMAPE: 5.71
    
 
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  
-
-  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Versions</span>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span class="fa fa-book"> Versions</span>
       v1.2.4
       <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      
-      <dl>
-        <dt>Versions</dt>
-        
-          
-          
-          <dd><a href="../../../latest/index.html">latest</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd>
-          
-        
-           <strong> 
-          
-          <dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd>
-           </strong> 
-        
-          
-          
-          <dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
-          
-        
-      </dl>
-      
-    </div>
-  </div>
-
- <script>
+</span>
+<div class="rst-other-versions">
+<dl><dt>Versions</dt><dd><a href="../../../latest/index.html">latest</a></dd><dd><a href="../../../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd><dd><strong><a href="../../../v1.2.4/index.html">v1.2.4</a></strong></dd><dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd><dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd><dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd></dl>
+</div>
+</div>
+<script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
-
+  </script>
 </body>
 </html>

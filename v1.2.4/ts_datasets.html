@@ -1,48 +1,46 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ts_datasets: Easy Data Loading &mdash; Merlion 1.2.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ts_datasets: Easy Data Loading — Merlion 1.2.4 documentation</title>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ts_datasets.anomaly package" href="ts_datasets.anomaly.html" />
-    <link rel="prev" title="merlion.utils package" href="merlion.utils.html" /> 
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+<script src="_static/jquery.js"></script>
+<script src="_static/underscore.js"></script>
+<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+<script src="_static/doctools.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script src="_static/js/theme.js"></script>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="ts_datasets.anomaly.html" rel="next" title="ts_datasets.anomaly package"/>
+<link href="merlion.utils.html" rel="prev" title="merlion.utils package"/>
 </head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Merlion
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="index.html"> Merlion
           </a>
-              <div class="version">
+<div class="version">
                 v1.2.4
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ts_datasets: Easy Data Loading</a><ul>
@@ -57,32 +55,27 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
 </ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Merlion</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>ts_datasets: Easy Data Loading</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/ts_datasets.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="index.html">Merlion</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="index.html"></a> »</li>
+<li>ts_datasets: Easy Data Loading</li>
+<li class="wy-breadcrumbs-aside">
+<a href="_sources/ts_datasets.rst.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
 <style>
 /* CSS overrides for sphinx_rtd_theme */
 
@@ -116,8 +109,8 @@ Then, you can load a dataset (e.g. the “realAWSCloudwatch” split of the Nume
 or the “Hourly” subset of the M4 dataset) by calling</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">NAB</span>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
-<span class="n">anom_dataset</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;realAWSCloudwatch&quot;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_NAB</span><span class="p">)</span>
-<span class="n">forecast_dataset</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;Hourly&quot;</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_M4</span><span class="p">)</span>
+<span class="n">anom_dataset</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"realAWSCloudwatch"</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_NAB</span><span class="p">)</span>
+<span class="n">forecast_dataset</span> <span class="o">=</span> <span class="n">M4</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"Hourly"</span><span class="p">,</span> <span class="n">rootdir</span><span class="o">=</span><span class="n">path_to_M4</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you install this package in editable mode (i.e. specify <code class="docutils literal notranslate"><span class="pre">-e</span></code> when calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">ts_datasets/</span></code>),
@@ -129,8 +122,8 @@ are outlined in the API doc for <a class="reference internal" href="ts_datasets.
 datasets (both open source and internal) into standardized <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> s.</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col style="width: 10%"/>
+<col style="width: 90%"/>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="ts_datasets.anomaly.html#module-ts_datasets.anomaly" title="ts_datasets.anomaly"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anomaly</span></code></a></p></td>
@@ -184,36 +177,28 @@ the dataset will iterate over this list. Note that for some large datasets,
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> may be a list of filenames, which are read lazily either during
 iteration, or whenever <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> is invoked.</p>
 </dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ts_datasets.base.BaseDataset.metadata">
 <span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#ts_datasets.base.BaseDataset.metadata" title="Permalink to this definition"></a></dt>
 <dd><p>A list containing the metadata for all individual time series in the dataset.</p>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="ts_datasets.base.BaseDataset.describe">
 <span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ts_datasets.base.BaseDataset.describe" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 </dd></dl>
-
 </section>
 </section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="merlion.utils.html" class="btn btn-neutral float-left" title="merlion.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ts_datasets.anomaly.html" class="btn btn-neutral float-right" title="ts_datasets.anomaly package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="merlion.utils.html" rel="prev" title="merlion.utils package"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="ts_datasets.anomaly.html" rel="next" title="ts_datasets.anomaly package">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2021, salesforce.com, inc..</p>
+</div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
@@ -221,108 +206,24 @@ iteration, or whenever <code class="docutils literal notranslate"><span class="p
    
 
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  
-
-  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Versions</span>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span class="fa fa-book"> Versions</span>
       v1.2.4
       <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      
-      <dl>
-        <dt>Versions</dt>
-        
-          
-          
-          <dd><a href="../latest/index.html">latest</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
-          
-        
-           <strong> 
-          
-          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
-           </strong> 
-        
-          
-          
-          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
-          
-        
-      </dl>
-      
-    </div>
-  </div>
-
- <script>
+</span>
+<div class="rst-other-versions">
+<dl><dt>Versions</dt><dd><a href="../latest/index.html">latest</a></dd><dd><a href="../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../v1.2.5/index.html">v1.2.5</a></dd><dd><strong><a href="../v1.2.4/index.html">v1.2.4</a></strong></dd><dd><a href="../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../v1.0.2/index.html">v1.0.2</a></dd><dd><a href="../v1.0.1/index.html">v1.0.1</a></dd><dd><a href="../v1.0.0/index.html">v1.0.0</a></dd></dl>
+</div>
+</div>
+<script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
-
+  </script>
 </body>
 </html>

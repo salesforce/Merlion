@@ -208,10 +208,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -308,11 +309,12 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -321,10 +323,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -336,12 +342,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -379,14 +388,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterConfig</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.models.forecast.base</span> <span class="kn">import</span> <span class="n">ForecasterConfig</span>
 
 <span class="k">class</span> <span class="nc">RepeatRecentConfig</span><span class="p">(</span><span class="n">ForecasterConfig</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_forecast_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_forecast_steps</span><span class="o">=</span><span class="n">max_forecast_steps</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -397,8 +404,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -469,8 +475,7 @@ div.rendered_html tbody tr:hover {
             <span class="n">forecast</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">prev_forecast</span><span class="p">,</span> <span class="n">forecast</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">forecast</span><span class="p">,</span> <span class="kc">None</span>
-
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 </section>
@@ -481,8 +486,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">UnivariateTimeSeries</span>
@@ -522,8 +526,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
 <span class="n">test_data</span>  <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">time_series</span><span class="p">[</span><span class="o">~</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;trainval&quot;</span><span class="p">]])</span>
 </pre></div>
 </div>
@@ -532,8 +535,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Initialize a model &amp; train it. The dataframe returned &amp; printed</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize a model &amp; train it. The dataframe returned &amp; printed</span>
 <span class="c1"># below is the model&#39;s &quot;forecast&quot; on the training data. None is</span>
 <span class="c1"># the uncertainty estimate.</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">RepeatRecent</span><span class="p">(</span><span class="n">RepeatRecentConfig</span><span class="p">())</span>
@@ -569,8 +571,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Let&#39;s run our model on the test data now</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s run our model on the test data now</span>
 <span class="n">forecast</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Forecast&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">forecast</span><span class="p">)</span>
@@ -648,8 +649,7 @@ None
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Qualitatively, we can see what the forecaster is doing by plotting</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Qualitatively, we can see what the forecaster is doing by plotting</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Forecast w/ ground truth time series&quot;</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_forecast</span><span class="p">(</span><span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
                               <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
@@ -705,8 +705,7 @@ Forecast without ground truth time series
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
 <span class="n">smape</span> <span class="o">=</span> <span class="n">ForecastMetric</span><span class="o">.</span><span class="n">sMAPE</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">forecast</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sMAPE = </span><span class="si">{</span><span class="n">smape</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -729,8 +728,7 @@ sMAPE = 20.166
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
 <span class="kn">from</span> <span class="nn">merlion.models.anomaly.forecast_based.base</span> <span class="kn">import</span> <span class="n">ForecastingDetectorBase</span>
 <span class="kn">from</span> <span class="nn">merlion.models.anomaly.base</span> <span class="kn">import</span> <span class="n">DetectorConfig</span>
 <span class="kn">from</span> <span class="nn">merlion.post_process.threshold</span> <span class="kn">import</span> <span class="n">AggregateAlarms</span>
@@ -758,8 +756,7 @@ sMAPE = 20.166
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Train the anomaly detection variant</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train the anomaly detection variant</span>
 <span class="n">model2</span> <span class="o">=</span> <span class="n">RepeatRecentDetector</span><span class="p">(</span><span class="n">RepeatRecentDetectorConfig</span><span class="p">())</span>
 <span class="n">model2</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
 </pre></div>
@@ -792,8 +789,7 @@ time
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Obtain the anomaly detection variant&#39;s predictions on the test data</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain the anomaly detection variant&#39;s predictions on the test data</span>
 <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -860,8 +856,7 @@ time
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Visualize the anomaly detection variant&#39;s performance, with filtered anomaly scores</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the anomaly detection variant&#39;s performance, with filtered anomaly scores</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
                               <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">plot_forecast</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

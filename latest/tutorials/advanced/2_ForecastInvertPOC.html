@@ -196,10 +196,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -296,11 +297,12 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -309,10 +311,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -324,12 +330,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -362,8 +371,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">M4</span>
@@ -398,8 +406,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
@@ -445,8 +452,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No transform...&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No transform...&quot;</span><span class="p">)</span>
 <span class="n">base</span> <span class="o">=</span> <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -481,8 +487,7 @@ Test  sMAPE: 17.58
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span><span class="p">,</span> <span class="n">MinMaxNormalize</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">MeanVarNormalize</span><span class="p">,</span> <span class="n">MinMaxNormalize</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalize...&quot;</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MeanVarNormalize</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -562,8 +567,7 @@ Test  sMAPE: 17.55
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">BoxCoxTransform</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.transform.normalize</span> <span class="kn">import</span> <span class="n">BoxCoxTransform</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Box-Cox transform...&quot;</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">BoxCoxTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -643,8 +647,7 @@ Test  sMAPE: 12.30
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">MovingAverage</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">MovingAverage</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving Average...&quot;</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">MovingAverage</span><span class="p">(</span><span class="n">n_steps</span><span class="o">=</span><span class="mi">5</span><span class="p">)),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -724,8 +727,7 @@ Test  sMAPE: 17.88
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">DifferenceTransform</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.transform.moving_average</span> <span class="kn">import</span> <span class="n">DifferenceTransform</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Difference transform...&quot;</span><span class="p">)</span>
 <span class="n">eval_model</span><span class="p">(</span><span class="n">get_model</span><span class="p">(</span><span class="n">DifferenceTransform</span><span class="p">()),</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">apply_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -806,8 +808,7 @@ Test  sMAPE: 19.18
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">to_pd</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">)</span>
 <span class="n">series</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> <span class="n">base</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;norm&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;box-cox&quot;</span><span class="p">,</span> <span class="n">boxcox</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">ma</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;diff&quot;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)]</span>

@@ -136,7 +136,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_pd_datetime"><code class="docutils literal notranslate"><span class="pre">to_pd_datetime()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_timestamp"><code class="docutils literal notranslate"><span class="pre">to_timestamp()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.granularity_str_to_seconds"><code class="docutils literal notranslate"><span class="pre">granularity_str_to_seconds()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.get_gcd_timedelta"><code class="docutils literal notranslate"><span class="pre">get_gcd_timedelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.get_date_offset"><code class="docutils literal notranslate"><span class="pre">get_date_offset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.infer_granularity"><code class="docutils literal notranslate"><span class="pre">infer_granularity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.reindex_df"><code class="docutils literal notranslate"><span class="pre">reindex_df()</span></code></a></li>
 </ul>
@@ -1136,7 +1136,7 @@ of all timestamps present in all single-variable time series.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.time_series.assert_equal_timedeltas">
-<span class="sig-prename descclassname"><span class="pre">merlion.utils.time_series.</span></span><span class="sig-name descname"><span class="pre">assert_equal_timedeltas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timedelta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.assert_equal_timedeltas" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.time_series.</span></span><span class="sig-name descname"><span class="pre">assert_equal_timedeltas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granularity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.assert_equal_timedeltas" title="Permalink to this definition"></a></dt>
 <dd><p>Checks that all time deltas in the time series are equal, either to each
 other, or a pre-specified timedelta (in seconds).</p>
 </dd></dl>
@@ -1277,16 +1277,20 @@ number of seconds it represents, truncated at the millisecond.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="merlion.utils.resample.get_gcd_timedelta">
-<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">get_gcd_timedelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">time_stamp_lists</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.get_gcd_timedelta" title="Permalink to this definition"></a></dt>
-<dd><p>Calculates all timedeltas present in any of the lists of time stamps given,
-and returns the GCD of all these timedeltas (up to units of milliseconds).</p>
+<dt class="sig sig-object py" id="merlion.utils.resample.get_date_offset">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">get_date_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.get_date_offset" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the date offset one must add to <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> so its last timestamp aligns with that of <code class="docutils literal notranslate"><span class="pre">reference</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.resample.infer_granularity">
-<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">infer_granularity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.infer_granularity" title="Permalink to this definition"></a></dt>
-<dd><p>Infers the granularity of a list of time stamps</p>
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">infer_granularity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.infer_granularity" title="Permalink to this definition"></a></dt>
+<dd><p>Infers the granularity of a list of time stamps.</p>
 </dd></dl>
 
 <dl class="py function">

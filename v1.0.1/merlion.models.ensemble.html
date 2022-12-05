@@ -1,48 +1,46 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>merlion.models.ensemble package &mdash; Merlion 1.0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>merlion.models.ensemble package — Merlion 1.0.1 documentation</title>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="merlion.models.automl package" href="merlion.models.automl.html" />
-    <link rel="prev" title="merlion.models.forecast package" href="merlion.models.forecast.html" /> 
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+<script src="_static/jquery.js"></script>
+<script src="_static/underscore.js"></script>
+<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+<script src="_static/doctools.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script src="_static/js/theme.js"></script>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="merlion.models.automl.html" rel="next" title="merlion.models.automl package"/>
+<link href="merlion.models.forecast.html" rel="prev" title="merlion.models.forecast package"/>
 </head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Merlion
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="index.html"> Merlion
           </a>
-              <div class="version">
+<div class="version">
                 v1.0.1
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="merlion.html#subpackages">Subpackages</a><ul class="current">
@@ -82,34 +80,29 @@
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
 </ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Merlion</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
-          <li><a href="merlion.models.html">merlion.models package</a> &raquo;</li>
-      <li>merlion.models.ensemble package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/merlion.models.ensemble.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="index.html">Merlion</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="index.html"></a> »</li>
+<li><a href="merlion.html">merlion: Time Series Intelligence</a> »</li>
+<li><a href="merlion.models.html">merlion.models package</a> »</li>
+<li>merlion.models.ensemble package</li>
+<li class="wy-breadcrumbs-aside">
+<a href="_sources/merlion.models.ensemble.rst.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
 <style>
 /* CSS overrides for sphinx_rtd_theme */
 
@@ -138,8 +131,8 @@
 <p>Ensembles of models and automated model selection.</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col style="width: 10%"/>
+<col style="width: 90%"/>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.ensemble.base" title="merlion.models.ensemble.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
@@ -197,9 +190,7 @@ models in the ensemble.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleTrainConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleTrainConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_frac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_model_train_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleTrainConfig" title="Permalink to this definition"></a></dt>
@@ -217,7 +208,6 @@ model means that you use the default for that model.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.base.</span></span><span class="sig-name descname"><span class="pre">EnsembleBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase" title="Permalink to this definition"></a></dt>
@@ -239,12 +229,10 @@ constructed.</p></li>
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.base.EnsembleConfig" title="merlion.models.ensemble.base.EnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleConfig</span></code></a></p>
 </dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.models">
 <span class="sig-name descname"><span class="pre">models</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><span class="pre">ModelBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.models" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.train_valid_split">
 <span class="sig-name descname"><span class="pre">train_valid_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformed_train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_valid_split" title="Permalink to this definition"></a></dt>
@@ -254,17 +242,14 @@ constructed.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.get_max_common_horizon">
 <span class="sig-name descname"><span class="pre">get_max_common_horizon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.get_max_common_horizon" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.truncate_valid_data">
 <span class="sig-name descname"><span class="pre">truncate_valid_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transformed_valid_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.truncate_valid_data" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.train_combiner">
 <span class="sig-name descname"><span class="pre">train_combiner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.train_combiner" title="Permalink to this definition"></a></dt>
@@ -274,7 +259,6 @@ constructed.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.combiner">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combiner</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.ensemble.combine.CombinerBase" title="merlion.models.ensemble.combine.CombinerBase"><span class="pre">CombinerBase</span></a></em><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.combiner" title="Permalink to this definition"></a></dt>
@@ -287,18 +271,15 @@ constructed.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.reset" title="Permalink to this definition"></a></dt>
 <dd><p>Resets the model’s internal state.</p>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.models_used">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.models_used" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_only_used_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.save" title="Permalink to this definition"></a></dt>
@@ -314,7 +295,6 @@ actually used by the ensemble.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.load">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.load" title="Permalink to this definition"></a></dt>
@@ -330,7 +310,6 @@ actually used by the ensemble.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.to_bytes">
 <span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_only_used_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.to_bytes" title="Permalink to this definition"></a></dt>
@@ -348,7 +327,6 @@ actually used by the ensemble.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.base.EnsembleBase.from_bytes">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.base.EnsembleBase.from_bytes" title="Permalink to this definition"></a></dt>
@@ -362,9 +340,7 @@ actually used by the ensemble.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </section>
 <section id="module-merlion.models.ensemble.combine">
 <span id="merlion-models-ensemble-combine-module"></span><h2>merlion.models.ensemble.combine module<a class="headerlink" href="#module-merlion.models.ensemble.combine" title="Permalink to this heading"></a></h2>
@@ -396,7 +372,6 @@ representing the output of a single model.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>abs_score</strong> – whether to take the absolute value of the model
@@ -407,17 +382,14 @@ outputs. Useful for anomaly detection.</p>
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.requires_training">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_training</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.requires_training" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.to_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.from_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.models_used">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.models_used" title="Permalink to this definition"></a></dt>
@@ -430,7 +402,6 @@ outputs. Useful for anomaly detection.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerBase.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerBase.train" title="Permalink to this definition"></a></dt>
@@ -451,9 +422,7 @@ representing the output of a single model.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.Mean">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Mean" title="Permalink to this definition"></a></dt>
@@ -474,9 +443,7 @@ outputs. Useful for anomaly detection.</p>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.Median">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Median" title="Permalink to this definition"></a></dt>
@@ -489,7 +456,6 @@ outputs. Useful for anomaly detection.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.Max">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">Max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.Max" title="Permalink to this definition"></a></dt>
@@ -502,7 +468,6 @@ outputs. Useful for anomaly detection.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">ModelSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector" title="Permalink to this definition"></a></dt>
@@ -522,22 +487,18 @@ outputs. Useful for anomaly detection.</p></li>
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.invert">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invert</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.invert" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.requires_training">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">requires_training</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.requires_training" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_skipped_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.to_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.from_dict" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.models_used">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models_used</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.models_used" title="Permalink to this definition"></a></dt>
@@ -550,7 +511,6 @@ outputs. Useful for anomaly detection.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.ModelSelector.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_model_outs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.ModelSelector.train" title="Permalink to this definition"></a></dt>
@@ -571,9 +531,7 @@ representing the output of a single model.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">MetricWeightedMean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean" title="Permalink to this definition"></a></dt>
@@ -601,7 +559,6 @@ outputs. Useful for anomaly detection.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.MetricWeightedMean.weights">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weights</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#merlion.models.ensemble.combine.MetricWeightedMean.weights" title="Permalink to this definition"></a></dt>
@@ -611,9 +568,7 @@ outputs. Useful for anomaly detection.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.combine.CombinerFactory">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.combine.</span></span><span class="sig-name descname"><span class="pre">CombinerFactory</span></span><a class="headerlink" href="#merlion.models.ensemble.combine.CombinerFactory" title="Permalink to this definition"></a></dt>
@@ -628,9 +583,7 @@ outputs. Useful for anomaly detection.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </section>
 <section id="module-merlion.models.ensemble.anomaly">
 <span id="merlion-models-ensemble-anomaly-module"></span><h2>merlion.models.ensemble.anomaly module<a class="headerlink" href="#module-merlion.models.ensemble.anomaly" title="Permalink to this heading"></a></h2>
@@ -660,9 +613,7 @@ selection.</p>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.anomaly.</span></span><span class="sig-name descname"><span class="pre">DetectorEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble" title="Permalink to this definition"></a></dt>
@@ -676,13 +627,11 @@ selection.</p>
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.models">
 <span class="sig-name descname"><span class="pre">models</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><span class="pre">DetectorBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.models" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.anomaly.DetectorEnsembleConfig" title="merlion.models.ensemble.anomaly.DetectorEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorEnsembleConfig</span></code></a></p>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.per_model_threshold">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">per_model_threshold</span></span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.per_model_threshold" title="Permalink to this definition"></a></dt>
@@ -693,7 +642,6 @@ before aggregating their anomaly scores.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_model_post_rule_train_configs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.train" title="Permalink to this definition"></a></dt>
@@ -722,7 +670,6 @@ data.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.anomaly.DetectorEnsemble.get_anomaly_score">
 <span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.anomaly.DetectorEnsemble.get_anomaly_score" title="Permalink to this definition"></a></dt>
@@ -746,9 +693,7 @@ immediately follows the training data.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </section>
 <section id="module-merlion.models.ensemble.forecast">
 <span id="merlion-models-ensemble-forecast-module"></span><h2>merlion.models.ensemble.forecast module<a class="headerlink" href="#module-merlion.models.ensemble.forecast" title="Permalink to this heading"></a></h2>
@@ -771,7 +716,6 @@ would like to forecast.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.forecast.</span></span><span class="sig-name descname"><span class="pre">ForecasterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble" title="Permalink to this definition"></a></dt>
@@ -792,13 +736,11 @@ constructed.</p></li>
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.models">
 <span class="sig-name descname"><span class="pre">models</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><span class="pre">ForecasterBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.models" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.forecast.ForecasterEnsembleConfig" title="merlion.models.ensemble.forecast.ForecasterEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterEnsembleConfig</span></code></a></p>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.train_pre_process">
 <span class="sig-name descname"><span class="pre">train_pre_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_even_sampling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_univariate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.train_pre_process" title="Permalink to this definition"></a></dt>
@@ -821,7 +763,6 @@ time series</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.train" title="Permalink to this definition"></a></dt>
@@ -844,7 +785,6 @@ if you called <a class="reference internal" href="merlion.models.forecast.html#m
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.forecast.ForecasterEnsemble.forecast">
 <span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_iqr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.forecast.ForecasterEnsemble.forecast" title="Permalink to this definition"></a></dt>
@@ -889,9 +829,7 @@ is provided.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </section>
 <section id="module-merlion.models.ensemble.MoE_forecast">
 <span id="merlion-models-ensemble-moe-forecast-module"></span><h2>merlion.models.ensemble.MoE_forecast module<a class="headerlink" href="#module-merlion.models.ensemble.MoE_forecast" title="Permalink to this heading"></a></h2>
@@ -914,7 +852,6 @@ excludes it otherwise</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsembleConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.MoE_forecast.</span></span><span class="sig-name descname"><span class="pre">MoE_ForecasterEnsembleConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfree_experts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookback_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsembleConfig" title="Permalink to this definition"></a></dt>
@@ -937,7 +874,6 @@ training happens over multiple epochs.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.ensemble.MoE_forecast.</span></span><span class="sig-name descname"><span class="pre">MoE_ForecasterEnsemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moe_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble" title="Permalink to this definition"></a></dt>
@@ -979,13 +915,11 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.models">
 <span class="sig-name descname"><span class="pre">models</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><span class="pre">ForecasterBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.models" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsembleConfig" title="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsembleConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoE_ForecasterEnsembleConfig</span></code></a></p>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.batch_size">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.batch_size" title="Permalink to this definition"></a></dt>
@@ -995,7 +929,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.lr">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.lr" title="Permalink to this definition"></a></dt>
@@ -1005,7 +938,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.warmup_steps">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">warmup_steps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.warmup_steps" title="Permalink to this definition"></a></dt>
@@ -1015,7 +947,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.epoch_max">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epoch_max</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.epoch_max" title="Permalink to this definition"></a></dt>
@@ -1025,7 +956,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.nfree_experts">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nfree_experts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.nfree_experts" title="Permalink to this definition"></a></dt>
@@ -1035,7 +965,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.use_gpu">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_gpu</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.use_gpu" title="Permalink to this definition"></a></dt>
@@ -1045,7 +974,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.lookback_len">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lookback_len</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.lookback_len" title="Permalink to this definition"></a></dt>
@@ -1055,7 +983,6 @@ outputs a  tuple of 2 variables.  The first variable is the logit (pre-softmax) 
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.train" title="Permalink to this definition"></a></dt>
@@ -1078,7 +1005,6 @@ if you called <a class="reference internal" href="merlion.models.forecast.html#m
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.finetune">
 <span class="sig-name descname"><span class="pre">finetune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.finetune" title="Permalink to this definition"></a></dt>
@@ -1087,7 +1013,6 @@ of external experts (if any) and stores them. It then uses them along with the t
 MoE model to perform expert selection and forecasting. This function is called internally by the train
 function.</p>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.forecast">
 <span class="sig-name descname"><span class="pre">forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_iqr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.forecast" title="Permalink to this definition"></a></dt>
@@ -1129,7 +1054,6 @@ is provided.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.batch_forecast">
 <span class="sig-name descname"><span class="pre">batch_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_stamps_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_iqr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.batch_forecast" title="Permalink to this definition"></a></dt>
@@ -1165,7 +1089,6 @@ of size (B x nexperts x max_forecast_steps), sum of probs is 1 along dim 1</p></
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.expert_prediction">
 <span class="sig-name descname"><span class="pre">expert_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expert_preds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.expert_prediction" title="Permalink to this definition"></a></dt>
@@ -1179,7 +1102,6 @@ use_gpu: set True if GPU available for faster speed</p>
 y_pred: B x max_forecast_steps
 std: B x max_forecast_steps</p>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.evaluate">
 <span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_gpu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_batch_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_thres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.evaluate" title="Permalink to this definition"></a></dt>
@@ -1204,7 +1126,6 @@ is the standard deviation of the forecasts made by all the experts.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">save_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.save" title="Permalink to this definition"></a></dt>
@@ -1217,7 +1138,6 @@ is the standard deviation of the forecasts made by all the experts.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.load">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.ensemble.MoE_forecast.MoE_ForecasterEnsemble.load" title="Permalink to this definition"></a></dt>
@@ -1231,25 +1151,19 @@ discrepency between the saved model state and model used here will raise an erro
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </section>
 </section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="merlion.models.forecast.html" class="btn btn-neutral float-left" title="merlion.models.forecast package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="merlion.models.automl.html" class="btn btn-neutral float-right" title="merlion.models.automl package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="merlion.models.forecast.html" rel="prev" title="merlion.models.forecast package"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="merlion.models.automl.html" rel="next" title="merlion.models.automl package">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2021, salesforce.com, inc..</p>
+</div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
@@ -1257,108 +1171,24 @@ discrepency between the saved model state and model used here will raise an erro
    
 
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  
-
-  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Versions</span>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span class="fa fa-book"> Versions</span>
       v1.0.1
       <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      
-      <dl>
-        <dt>Versions</dt>
-        
-          
-          
-          <dd><a href="../latest/index.html">latest</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
-          
-        
-           <strong> 
-          
-          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
-           </strong> 
-        
-          
-          
-          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
-          
-        
-      </dl>
-      
-    </div>
-  </div>
-
- <script>
+</span>
+<div class="rst-other-versions">
+<dl><dt>Versions</dt><dd><a href="../latest/index.html">latest</a></dd><dd><a href="../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../v1.2.5/index.html">v1.2.5</a></dd><dd><a href="../v1.2.4/index.html">v1.2.4</a></dd><dd><a href="../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../v1.0.2/index.html">v1.0.2</a></dd><dd><strong><a href="../v1.0.1/index.html">v1.0.1</a></strong></dd><dd><a href="../v1.0.0/index.html">v1.0.0</a></dd></dl>
+</div>
+</div>
+<script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
-
+  </script>
 </body>
 </html>

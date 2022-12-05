@@ -200,10 +200,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -300,11 +301,12 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -313,10 +315,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -328,12 +334,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -371,8 +380,7 @@ about the sort of markdowns the store is running.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># This is the same dataset used in the custom dataset tutorial</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is the same dataset used in the custom dataset tutorial</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
 <span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart_mini.csv&quot;</span><span class="p">)</span>
@@ -595,8 +603,7 @@ about the sort of markdowns the store is running.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
 
 <span class="c1"># Get the endogenous variables X and split them into train &amp; test</span>
 <span class="n">endog</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[[</span><span class="s2">&quot;Weekly_Sales&quot;</span><span class="p">,</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;CPI&quot;</span><span class="p">,</span> <span class="s2">&quot;Unemployment&quot;</span><span class="p">]]</span>
@@ -615,8 +622,7 @@ about the sort of markdowns the store is running.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.forecast</span> <span class="kn">import</span> <span class="n">ForecastMetric</span>
 <span class="kn">from</span> <span class="nn">merlion.models.forecast.prophet</span> <span class="kn">import</span> <span class="n">Prophet</span><span class="p">,</span> <span class="n">ProphetConfig</span>
 
 <span class="c1"># Train a model without exogenous data</span>
@@ -660,8 +666,7 @@ sMAPE (w/ exog)  = 3.18
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">display</span><span class="p">(</span><span class="n">exog</span><span class="o">.</span><span class="n">to_pd</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">exog</span><span class="o">.</span><span class="n">to_pd</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -814,8 +819,7 @@ sMAPE (w/ exog)  = 3.18
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_transform:            </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_transform</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_transform:            </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_transform</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_missing_value_policy: </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_missing_value_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default exog_aggregation_policy:   </span><span class="si">{</span><span class="n">exog_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">exog_aggregation_policy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>

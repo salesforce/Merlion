@@ -208,10 +208,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -308,11 +309,12 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -321,10 +323,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -336,12 +342,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -385,8 +394,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">merlion.plot</span> <span class="kn">import</span> <span class="n">plot_anoms</span>
@@ -430,8 +438,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.utils</span> <span class="kn">import</span> <span class="n">TimeSeries</span>
 
 <span class="c1"># Get training split</span>
 <span class="n">train</span> <span class="o">=</span> <span class="n">time_series</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span>
@@ -458,8 +465,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Import models &amp; configs</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import models &amp; configs</span>
 <span class="kn">from</span> <span class="nn">merlion.models.anomaly.isolation_forest</span> <span class="kn">import</span> <span class="n">IsolationForest</span><span class="p">,</span> <span class="n">IsolationForestConfig</span>
 <span class="kn">from</span> <span class="nn">merlion.models.anomaly.windstats</span> <span class="kn">import</span> <span class="n">WindStats</span><span class="p">,</span> <span class="n">WindStatsConfig</span>
 <span class="kn">from</span> <span class="nn">merlion.models.anomaly.forecast_based.prophet</span> <span class="kn">import</span> <span class="n">ProphetDetector</span><span class="p">,</span> <span class="n">ProphetDetectorConfig</span>
@@ -500,8 +506,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.models.ensemble.anomaly</span> <span class="kn">import</span> <span class="n">DetectorEnsemble</span><span class="p">,</span> <span class="n">DetectorEnsembleConfig</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.models.ensemble.anomaly</span> <span class="kn">import</span> <span class="n">DetectorEnsemble</span><span class="p">,</span> <span class="n">DetectorEnsembleConfig</span>
 
 <span class="n">ensemble_config</span> <span class="o">=</span> <span class="n">DetectorEnsembleConfig</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">AggregateAlarms</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">ensemble</span> <span class="o">=</span> <span class="n">DetectorEnsemble</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">ensemble_config</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">])</span>
@@ -516,8 +521,7 @@ Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperat
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
 
 <span class="c1"># Train IsolationForest in the default way, using the ground truth anomaly labels</span>
 <span class="c1"># to set the post-rule&#39;s threshold</span>
@@ -621,8 +625,7 @@ Done!
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Here is a full example for the first model, IsolationForest</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here is a full example for the first model, IsolationForest</span>
 <span class="n">scores_1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 <span class="n">scores_1_df</span> <span class="o">=</span> <span class="n">scores_1</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.get_anomaly_score() nonzero values (raw)&quot;</span><span class="p">)</span>
@@ -722,8 +725,7 @@ Raw scores are challenging to interpret
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">scores_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scores_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 <span class="n">labels_2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -732,8 +734,7 @@ Raw scores are challenging to interpret
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">scores_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scores_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 <span class="n">labels_3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -742,8 +743,7 @@ Raw scores are challenging to interpret
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">scores_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scores_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 <span class="n">labels_e</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -761,8 +761,7 @@ Raw scores are challenging to interpret
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADMetric</span>
 
 <span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">model1</span><span class="p">,</span> <span class="n">labels_1</span><span class="p">),</span> <span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="n">labels_2</span><span class="p">),</span> <span class="p">(</span><span class="n">model3</span><span class="p">,</span> <span class="n">labels_3</span><span class="p">),</span> <span class="p">(</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">labels_e</span><span class="p">)]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -818,8 +817,7 @@ MTTD:      1 days 10:25:00
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">]:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="n">model3</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span>
         <span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
@@ -890,8 +888,7 @@ ProphetDetector
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span>
     <span class="n">time_series</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">time_series_prev</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span>
     <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_time_series_prev</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">test_labels</span><span class="p">)</span>
@@ -916,8 +913,7 @@ ProphetDetector
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">from</span> <span class="nn">merlion.models.factory</span> <span class="kn">import</span> <span class="n">ModelFactory</span>
@@ -981,8 +977,7 @@ IsolationForest Config
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Save the ensemble</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save the ensemble</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">)</span>
 <span class="n">ensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
@@ -1114,8 +1109,7 @@ a maximum amount of data (<code class="docutils literal notranslate"><span class
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Initialize the evaluator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the evaluator</span>
 <span class="kn">from</span> <span class="nn">merlion.evaluate.anomaly</span> <span class="kn">import</span> <span class="n">TSADEvaluator</span><span class="p">,</span> <span class="n">TSADEvaluatorConfig</span>
 
 <span class="n">evaluator</span> <span class="o">=</span> <span class="n">TSADEvaluator</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">TSADEvaluatorConfig</span><span class="p">(</span><span class="n">retrain_freq</span><span class="o">=</span><span class="s2">&quot;7d&quot;</span><span class="p">))</span>
@@ -1126,8 +1120,7 @@ a maximum amount of data (<code class="docutils literal notranslate"><span class
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The kwargs we would provide to ensemble.train() for the initial training</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># The kwargs we would provide to ensemble.train() for the initial training</span>
 <span class="c1"># Note that we are training the ensemble unsupervised.</span>
 <span class="n">train_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;anomaly_labels&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
@@ -1167,8 +1160,7 @@ TSADEvaluator: 100%|██████████| 5783700/5783700 [00:36&lt;00
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Now let&#39;s evaluate how we did.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now let&#39;s evaluate how we did.</span>
 <span class="n">precision</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="p">)</span>
 <span class="n">recall</span>    <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="p">)</span>
 <span class="n">f1</span>        <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="p">)</span>
