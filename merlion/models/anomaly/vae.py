@@ -140,7 +140,7 @@ class VAE(DetectorBase):
         for epoch in range(self.num_epochs):
             total_loss = 0
             for i, (batch, _, _, _) in enumerate(loader):
-                x = torch.FloatTensor(batch, device=self.device)
+                x = torch.tensor(batch, dtype=torch.float, device=self.device)
                 recon_x, mu, log_var, _ = self.model(x, None)
                 recon_loss = loss_func(x, recon_x)
                 kld_loss = -0.5 * torch.mean(torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
@@ -168,7 +168,7 @@ class VAE(DetectorBase):
         ys, rs = [], []
         for y, _, _, _ in loader:
             ys.append(y)
-            y = torch.FloatTensor(y, device=self.device)
+            y = torch.tensor(y, dtype=torch.float, device=self.device)
             r = np.zeros(y.shape)
             for _ in range(self.num_eval_samples):
                 recon_y, _, _, _ = self.model(y, None)

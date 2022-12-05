@@ -158,7 +158,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         for epoch in range(self.num_epochs):
             total_loss, recon_error = 0, 0
             for input_data, _, _, _ in data_loader:
-                input_data = torch.FloatTensor(input_data, device=self.device)
+                input_data = torch.tensor(input_data, dtype=torch.float, device=self.device)
                 loss, _, error, _ = self._step(input_data)
                 total_loss += loss
                 recon_error += error
@@ -188,7 +188,7 @@ class DAGMM(DetectorBase, MultipleTimeseriesDetectorMixin):
         test_energy = np.full((self.sequence_length, ts.shape[0]), np.nan)
 
         for i, (sequence, _, _, _) in enumerate(data_loader):
-            sequence = torch.FloatTensor(sequence, device=self.device)
+            sequence = torch.tensor(sequence, dtype=torch.float, device=self.device)
             enc, dec, z, gamma = self.dagmm(sequence.float())
             sample_energy, _ = self.dagmm.compute_energy(z, size_average=False)
             idx = (i % self.sequence_length, np.arange(i, i + self.sequence_length))
@@ -339,7 +339,7 @@ class DAGMMModule(nn.Module):
         cov_inv, cov_det, cov_diag = [], [], 0
         for i in range(cov.shape[0]):
             cov_k = cov[i] + torch.eye(cov.shape[1], device=self.device) * eps
-            inv_k = torch.FloatTensor(np.linalg.pinv(cov_k.cpu().data.numpy())).to(self.device)
+            inv_k = torch.tensor(np.linalg.pinv(cov_k.cpu().data.numpy()), dtype=torch.float, device=self.device)
             cov_inv.append(inv_k.unsqueeze(0))
             eigenvalues = np.linalg.eigvals(cov_k.data.cpu().numpy() * (2 * np.pi))
             determinant = np.prod(np.clip(eigenvalues, a_min=eps, a_max=None))
@@ -348,7 +348,7 @@ class DAGMMModule(nn.Module):
 
         z_mu = z.unsqueeze(1) - mu.unsqueeze(0)
         cov_inv = torch.cat(cov_inv, dim=0)
-        cov_det = torch.FloatTensor(cov_det).to(self.device)
+        cov_det = torch.tensor(cov_det, dtype=torch.float, device=self.device)
         exp_term_tmp = -0.5 * torch.sum(torch.sum(z_mu.unsqueeze(-1) * cov_inv.unsqueeze(0), dim=-2) * z_mu, dim=-1)
         max_val = torch.max(exp_term_tmp.clamp(min=0), dim=1, keepdim=True)[0]
         exp_term = torch.exp(exp_term_tmp - max_val)

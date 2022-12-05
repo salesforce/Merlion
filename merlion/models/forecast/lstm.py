@@ -119,7 +119,7 @@ class Corpus(Dataset):
 
     def __getitem__(self, idx):
         max_idx = idx + (self.seq_len - 1) * self.stride + 1
-        return torch.FloatTensor(self.sequence[idx : max_idx : self.stride])
+        return torch.tensor(self.sequence[idx : max_idx : self.stride], dtype=torch.float)
 
 
 class _LSTMBase(nn.Module):
@@ -372,7 +372,7 @@ class LSTM(ForecasterBase):
         # Since we've updated the transform's granularity, re-apply it on
         # the original train data (self.train_data) before proceeding.
         ts = self.transform(self.train_data).univariates[self.target_name]
-        vals = torch.FloatTensor([ts.np_values])
+        vals = torch.tensor([ts.np_values], dtype=torch.float)
         if torch.cuda.is_available():
             vals = vals.cuda()
 
@@ -397,7 +397,7 @@ class LSTM(ForecasterBase):
         #      (self.seq_len - self.max_forecast_steps) time steps?
         #      This would better match the training distribution
         time_series_prev = time_series_prev.iloc[:, self.target_seq_index]
-        vals = torch.FloatTensor([time_series_prev.values])
+        vals = torch.tensor([time_series_prev.values], dtype=torch.float)
         if torch.cuda.is_available():
             vals = vals.cuda()
             self.model.cuda()
