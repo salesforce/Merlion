@@ -33,8 +33,13 @@ class DefaultEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-@callback(Output("select-file", "options"), [Input("upload-data", "filename"), Input("upload-data", "contents")])
+@callback(
+    Output("select-file", "options"),
+    Output("select-file", "value"),
+    [Input("upload-data", "filename"), Input("upload-data", "contents")],
+)
 def upload_file(filenames, contents):
+    name = None
     if filenames is not None and contents is not None:
         for name, data in zip(filenames, contents):
             file_manager.save_file(name, data)
@@ -42,7 +47,7 @@ def upload_file(filenames, contents):
     files = file_manager.uploaded_files()
     for filename in files:
         options.append({"label": filename, "value": filename})
-    return options
+    return options, name
 
 
 @callback(
