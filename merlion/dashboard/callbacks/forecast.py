@@ -22,12 +22,11 @@ file_manager = FileManager()
 def update_select_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-file-parent":
-            files = file_manager.uploaded_files()
-            for filename in files:
-                options.append({"label": filename, "value": filename})
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-file-parent":
+        files = file_manager.uploaded_files()
+        for filename in files:
+            options.append({"label": filename, "value": filename})
     return options
 
 
@@ -35,12 +34,11 @@ def update_select_file_dropdown(n_clicks):
 def update_select_test_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-test-file-parent":
-            files = file_manager.uploaded_files()
-            for filename in files:
-                options.append({"label": filename, "value": filename})
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-test-file-parent":
+        files = file_manager.uploaded_files()
+        for filename in files:
+            options.append({"label": filename, "value": filename})
     return options
 
 
@@ -56,14 +54,13 @@ def update_select_test_file_dropdown(n_clicks):
 def select_target(n_clicks, filename, feat_names, exog_names):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-target-parent":
-            if filename is not None:
-                file_path = os.path.join(file_manager.data_directory, filename)
-                df = ForecastModel().load_data(file_path, nrows=2)
-                forbidden = (feat_names or []) + (exog_names or [])
-                options += [{"label": s, "value": s} for s in df.columns if s not in forbidden]
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-target-parent":
+        if filename is not None:
+            file_path = os.path.join(file_manager.data_directory, filename)
+            df = ForecastModel().load_data(file_path, nrows=2)
+            forbidden = (feat_names or []) + (exog_names or [])
+            options += [{"label": s, "value": s} for s in df.columns if s not in forbidden]
     return options
 
 
@@ -79,13 +76,12 @@ def select_target(n_clicks, filename, feat_names, exog_names):
 def select_features(n_clicks, filename, target_name, exog_names):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-features-parent":
-            if filename is not None and target_name is not None:
-                file_path = os.path.join(file_manager.data_directory, filename)
-                df = ForecastModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (exog_names or [])]
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-features-parent":
+        if filename is not None and target_name is not None:
+            file_path = os.path.join(file_manager.data_directory, filename)
+            df = ForecastModel().load_data(file_path, nrows=2)
+            options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (exog_names or [])]
     return options
 
 
@@ -101,13 +97,12 @@ def select_features(n_clicks, filename, target_name, exog_names):
 def select_exog(n_clicks, filename, target_name, feat_names):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-exog-parent":
-            if filename is not None and target_name is not None:
-                file_path = os.path.join(file_manager.data_directory, filename)
-                df = ForecastModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (feat_names or [])]
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-exog-parent":
+        if filename is not None and target_name is not None:
+            file_path = os.path.join(file_manager.data_directory, filename)
+            df = ForecastModel().load_data(file_path, nrows=2)
+            options += [{"label": s, "value": s} for s in df.columns if s not in [target_name] + (feat_names or [])]
     return options
 
 
@@ -119,27 +114,25 @@ def select_exog(n_clicks, filename, target_name, feat_names):
 def select_algorithm_parent(n_clicks, selected_target):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-algorithm-parent":
-            algorithms = ForecastModel.get_available_algorithms()
-            options += [{"label": s, "value": s} for s in algorithms]
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-algorithm-parent":
+        algorithms = ForecastModel.get_available_algorithms()
+        options += [{"label": s, "value": s} for s in algorithms]
     return options
 
 
 @callback(
     Output("forecasting-param-table", "children"),
     Input("forecasting-select-algorithm", "value"),
-    prevent_initial_call=True
+    prevent_initial_call=True,
 )
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "forecasting-select-algorithm":
-            param_info = ForecastModel.get_parameter_info(algorithm)
-            param_table = create_param_table(param_info)
+    prop_id = ctx.triggered_id
+    if prop_id == "forecasting-select-algorithm":
+        param_info = ForecastModel.get_parameter_info(algorithm)
+        param_table = create_param_table(param_info)
     return param_table
 
 
@@ -194,7 +187,7 @@ def click_train_test(
 
     try:
         if ctx.triggered and n_clicks > 0:
-            prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+            prop_id = ctx.triggered_id
             if prop_id == "forecasting-train-btn":
                 assert filename, "The training data file is empty!"
                 assert target_col, "Please select a target variable/metric for forecasting."
