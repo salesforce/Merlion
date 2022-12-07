@@ -119,7 +119,7 @@ class AutoEncoder(DetectorBase):
         for epoch in range(self.num_epochs):
             total_loss = 0
             for i, (batch, _, _, _) in enumerate(loader):
-                batch = torch.FloatTensor(batch, device=self.device)
+                batch = torch.tensor(batch, dtype=torch.float, device=self.device)
                 loss = self.model.loss(batch)
                 optimizer.zero_grad()
                 loss.backward()
@@ -144,7 +144,7 @@ class AutoEncoder(DetectorBase):
         )
         scores = []
         for y, _, _, _ in loader:
-            y = torch.FloatTensor(y, device=self.device)
+            y = torch.tensor(y, dtype=torch.float, device=self.device)
             scores.append(self.model(y).cpu().data.numpy())
         scores = np.concatenate([np.ones(self.k - 1) * scores[0][0], *scores])
         return pd.DataFrame(scores[-len(time_series) :], index=time_series.index)
