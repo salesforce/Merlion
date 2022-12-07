@@ -18,16 +18,31 @@ logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
-@callback(Output("forecasting-select-file", "options"), Input("forecasting-select-file-parent", "n_clicks"))
-def update_select_file_dropdown(n_clicks):
+@callback(
+    Output("forecasting-select-file", "options"),
+    Output("forecasting-select-target", "value"),
+    Output("forecasting-select-features", "value"),
+    Output("forecasting-select-exog", "value"),
+    Input("forecasting-select-file-parent", "n_clicks"),
+    Input("forecasting-select-file", "value"),
+    [
+        State("forecasting-select-target", "value"),
+        State("forecasting-select-features", "value"),
+        State("forecasting-select-exog", "value"),
+    ],
+)
+def update_select_file_dropdown(n_clicks, filename, target, features, exog):
     options = []
     ctx = dash.callback_context
-    prop_id = ctx.triggered_id
-    if prop_id == "forecasting-select-file-parent":
-        files = file_manager.uploaded_files()
-        for filename in files:
-            options.append({"label": filename, "value": filename})
-    return options
+    if ctx.triggered:
+        prop_ids = {p["prop_id"].split(".")[0]: p["value"] for p in ctx.triggered}
+        if "forecasting-select-file-parent" in prop_ids:
+            files = file_manager.uploaded_files()
+            for f in files:
+                options.append({"label": f, "value": f})
+        if "forecasting-select-file" in prop_ids:
+            target, features, exog = None, None, None
+    return options, target, features, exog
 
 
 @callback(Output("forecasting-select-test-file", "options"), Input("forecasting-select-test-file-parent", "n_clicks"))

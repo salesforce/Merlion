@@ -18,16 +18,26 @@ logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
-@callback(Output("anomaly-select-file", "options"), Input("anomaly-select-file-parent", "n_clicks"))
-def update_select_file_dropdown(n_clicks):
+@callback(
+    Output("anomaly-select-file", "options"),
+    Output("anomaly-select-features", "value"),
+    Output("anomaly-select-label", "value"),
+    Input("anomaly-select-file-parent", "n_clicks"),
+    Input("anomaly-select-file", "value"),
+    [State("anomaly-select-features", "value"), State("anomaly-select-label", "value")],
+)
+def update_select_file_dropdown(n_clicks, filename, features, label):
     options = []
     ctx = dash.callback_context
-    prop_id = ctx.triggered_id
-    if prop_id == "anomaly-select-file-parent":
-        files = file_manager.uploaded_files()
-        for filename in files:
-            options.append({"label": filename, "value": filename})
-    return options
+    if ctx.triggered:
+        prop_ids = {p["prop_id"].split(".")[0]: p["value"] for p in ctx.triggered}
+        if "anomaly-select-file-parent" in prop_ids:
+            files = file_manager.uploaded_files()
+            for f in files:
+                options.append({"label": f, "value": f})
+        if "anomaly-select-file" in prop_ids:
+            features, label = None, None
+    return options, features, label
 
 
 @callback(Output("anomaly-select-test-file", "options"), Input("anomaly-select-test-file-parent", "n_clicks"))
