@@ -213,4 +213,5 @@ class ICAutoMLForecaster(AutoMLMixIn, ForecasterBase, metaclass=AutodocABCMeta):
 
         # Return best model after post-processing its train result
         theta, model, train_result = best["theta"], best["model"], best["train_result"]
+        logger.info(f"Best model: {self._model_name(theta)}")
         return theta, model, train_result
