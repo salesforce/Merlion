@@ -128,9 +128,9 @@ To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
 You can view the dashboard at http://localhost:8050.
 Below, we show some screenshots of the dashboard for both anomaly detection and forecasting.
 
-![anomaly dashboard](https://github.com/salesforce/Merlion/raw/main/docs/source/_static/dashboard_anomaly.png)
+![anomaly dashboard](https://github.com/salesforce/Merlion/raw/main/figures/dashboard_anomaly.png)
 
-![forecast dashboard](https://github.com/salesforce/Merlion/raw/main/docs/source/_static/dashboard_forecast.png)
+![forecast dashboard](https://github.com/salesforce/Merlion/raw/main/figures/dashboard_forecast.png)
 
 To help you get started with using Merlion in your own code, we provide below some minimal examples using Merlion
 default models for both anomaly detection and forecasting.
@@ -187,7 +187,7 @@ print(f"Precision: {p:.4f}, Recall: {r:.4f}, F1: {f1:.4f}\n"
 ```
 ```
 Precision: 0.6667, Recall: 0.6667, F1: 0.6667
-Mean Time To Detect: 1 days 10:30:00
+Mean Time To Detect: 1 days 10:22:30
 ```
 ### Forecasting
 Here, we show the code to replicate the results from the forecasting dashboard above.
