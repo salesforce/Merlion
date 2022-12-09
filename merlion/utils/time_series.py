@@ -15,7 +15,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.utils.misc import ValIterOrderedDict
 from merlion.utils.resample import (
@@ -27,6 +26,7 @@ from merlion.utils.resample import (
     reindex_df,
     to_pd_datetime,
     to_timestamp,
+    to_offset,
 )
 
 logger = logging.getLogger(__name__)
@@ -104,10 +104,7 @@ class UnivariateTimeSeries(pd.Series):
             super().__init__(values.values, name=name, index=pd.to_datetime(values.index))
         else:
             if time_stamps is None:
-                if isinstance(freq, (int, float)):
-                    freq = pd.to_timedelta(freq, unit="s")
-                else:
-                    freq = to_offset(freq)
+                freq = to_offset(freq)
                 if is_pd and values.index.dtype in ("int64", "float64"):
                     index = values.index.values * freq + np.full(len(values), pd.to_datetime(0))
                 else:
@@ -344,8 +341,7 @@ class TimeSeries:
     is *aligned* if all of its univariates have observations sampled at the exact
     set set of times.
 
-    One may access the `UnivariateTimeSeries` comprising this `TimeSeries` in
-    four ways:
+    One may access the `UnivariateTimeSeries` comprising this `TimeSeries` in four ways:
 
     1.  Iterate over the individual univariates using
 
@@ -424,46 +420,72 @@ class TimeSeries:
 
     def __init__(
         self,
-        univariates: Union[Mapping[Any, UnivariateTimeSeries], Iterable[UnivariateTimeSeries]],
+        univariates: Union[Mapping[Any, UnivariateTimeSeries], Iterable[UnivariateTimeSeries]] = None,
         *,
+        df: Union[pd.DataFrame, pd.Series, np.ndarray] = None,
+        freq: str = "1h",
         check_aligned=True,
     ):
-        # Type/length checking of univariates
-        if isinstance(univariates, Mapping):
-            univariates = ValIterOrderedDict((str(k), v) for k, v in univariates.items())
-            assert all(isinstance(var, UnivariateTimeSeries) for var in univariates.values())
-        elif isinstance(univariates, Iterable):
-            univariates = list(univariates)
-            assert all(isinstance(var, UnivariateTimeSeries) for var in univariates)
-            names = [str(var.name) for var in univariates]
-            if len(set(names)) == len(names):
-                names = [str(i) if name is None else name for i, name in enumerate(names)]
-                univariates = ValIterOrderedDict(zip(names, univariates))
+        if univariates is not None:
+            # Type/length checking of univariates
+            if isinstance(univariates, Mapping):
+                univariates = ValIterOrderedDict((str(k), v) for k, v in univariates.items())
+                assert all(isinstance(var, UnivariateTimeSeries) for var in univariates.values())
+            elif isinstance(univariates, Iterable):
+                univariates = list(univariates)
+                assert all(isinstance(var, UnivariateTimeSeries) for var in univariates)
+                names = [str(var.name) for var in univariates]
+                if len(set(names)) == len(names):
+                    names = [str(i) if name is None else name for i, name in enumerate(names)]
+                    univariates = ValIterOrderedDict(zip(names, univariates))
+                else:
+                    univariates = ValIterOrderedDict((str(i), v) for i, v in enumerate(univariates))
             else:
-                univariates = ValIterOrderedDict((str(i), v) for i, v in enumerate(univariates))
-        else:
-            raise TypeError(
-                "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
-                "`Mapping[Hashable, UnivariateTimeSeries]`."
-            )
-        assert len(univariates) > 0
+                raise TypeError(
+                    "Expected univariates to be either a `Sequence[UnivariateTimeSeries]` or a "
+                    "`Mapping[Hashable, UnivariateTimeSeries]`."
+                )
+            assert len(univariates) > 0
+            df = pd.DataFrame(univariates)
+        elif df is not None:
+            df = df.copy()
+        if df is None:
+            raise ValueError("Expected either `univariates` or `df` to be passed to TimeSeries constructor")
 
-        # Assign all the individual univariate series the appropriate names
-        for name, var in univariates.items():
-            var.name = name
-
-        # Set self.univariates and check if they are perfectly aligned
-        self.univariates = univariates
-        if check_aligned and self.dim > 1:
-            t = self.univariates[self.names[0]].time_stamps
-            self._is_aligned = all(self.univariates[name].time_stamps == t for name in self.names[1:])
+        # Get the dataframe into the appropriate form
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
+        elif isinstance(df, np.ndarray):
+            df = pd.DataFrame(df.reshape(len(df), -1).T)
         else:
-            self._is_aligned = len(univariates) <= 1
+            df = pd.DataFrame(df)
+
+        # Make sure we have a datetime index
+        if not isinstance(df.index, pd.DatetimeIndex):
+            if df.index.dtype == "O":
+                df.index = pd.to_datetime(df.index)
+            elif df.index.dtype in ("int32", "int64", "float32", "float64"):
+                df.index = pd.to_datetime(0) + df.index * to_offset(freq)
+            else:
+                df.index = pd.date_range(start=0, periods=len(df), freq=freq)
+
+        # Make sure the datetime index doesn't have any duplicate times, and check whether the time series is aligned
+        if df.shape[1] == 1:
+            df = df[~df.isna()]
+        if check_aligned:
+            if not df.index.is_unique:
+                df = df[~df.index.duplicated()]
+            if not df.index.is_monotonic_increasing:
+                df = df.sort_index()
+            self._is_aligned = not df.isna().any().any()
+        else:
+            self._is_aligned = df.shape == 1
+        self._df = df
 
         # Raise a warning if the univariates are too mis-aligned
         if check_aligned and not self.is_aligned:
-            all_t0 = [var.index[0] for var in univariates if len(var) > 0]
-            all_tf = [var.index[-1] for var in univariates if len(var) > 0]
+            all_t0 = [var.index[0] for var in self.univariates if len(var) > 0]
+            all_tf = [var.index[-1] for var in self.univariates if len(var) > 0]
             min_elapsed = min(tf - t0 for t0, tf in zip(all_t0, all_tf))
             min_t0, max_t0 = min(all_t0), max(all_t0)
             min_tf, max_tf = min(all_tf), max(all_tf)
@@ -489,33 +511,46 @@ class TimeSeries:
                 )
 
     @property
+    def univariates(self):
+        return ValIterOrderedDict(self.items())
+
+    @property
     def names(self):
         """:return: The list of the names of the univariates."""
-        return list(self.univariates.keys())
+        return list(self._df.columns)
 
     def items(self):
         """:return: Iterator over ``(name, univariate)`` tuples."""
-        return self.univariates.items()
+        names = self._df.columns
+        univariates = [self._df.loc[:, c] for c in names]
+        if not self.is_aligned:
+            univariates = [c[~c.isna()] for c in univariates]
+        return zip(names, [UnivariateTimeSeries.from_pd(u) for u in univariates])
 
     @property
     def dim(self) -> int:
         """
         :return: The dimension of the time series (the number of variables).
         """
-        return len(self.univariates)
+        return self._df.shape[1]
 
-    def rename(self, mapper: Union[Iterable[str], Mapping[str, str], Callable[[str], str]]):
+    def rename(self, mapper: Union[Iterable[str], Mapping[str, str], Callable[[str], str]], inplace=False):
         """
         :param mapper: Dict-like or function transformations to apply to the univariate names. Can also be an iterable
              of new univariate names.
+        :param inplace: Whether to rename the univariates in-place or not.
         :return: the time series with renamed univariates.
         """
         if isinstance(mapper, Callable):
             mapper = [mapper(old) for old in self.names]
         elif isinstance(mapper, Mapping):
             mapper = [mapper.get(old, old) for old in self.names]
-        univariates = ValIterOrderedDict((new_name, var) for new_name, var in zip(mapper, self.univariates))
-        return self.__class__(univariates)
+        if inplace:
+            self._df.columns = mapper
+            return self
+        else:
+            univariates = ValIterOrderedDict((new_name, var) for new_name, var in zip(mapper, self.univariates))
+            return self.__class__(univariates)
 
     @property
     def is_aligned(self) -> bool:
@@ -525,12 +560,16 @@ class TimeSeries:
         return self._is_aligned
 
     @property
+    def index(self):
+        return self._df.index
+
+    @property
     def np_time_stamps(self):
         """
         :rtype: np.ndarray
         :return: the ``numpy`` representation of this time series's Unix timestamps
         """
-        return np.unique(np.concatenate([var.np_time_stamps for var in self.univariates]))
+        return to_timestamp(self.index.values)
 
     @property
     def time_stamps(self):
@@ -546,7 +585,7 @@ class TimeSeries:
         :rtype: float
         :return: the first timestamp in the time series.
         """
-        return min(var.t0 for var in self.univariates)
+        return to_timestamp(self._df.index[0])
 
     @property
     def tf(self) -> float:
@@ -554,16 +593,7 @@ class TimeSeries:
         :rtype: float
         :return: the final timestamp in the time series.
         """
-        return max(var.tf for var in self.univariates)
-
-    @staticmethod
-    def _txs_to_vec(txs):
-        """
-        Helper function that converts [(t_1[i], x_1[i]), ..., (t_k[i], x_k[i])],
-        i.e. [var[i] for var in self.univariates], into the desired output form
-        (t_1[i], (x_1[i], ..., x_k[i])).
-        """
-        return txs[0][0], tuple(tx[1] for tx in txs)
+        return to_timestamp(self._df.index[-1])
 
     def __iter__(self):
         """
@@ -577,8 +607,8 @@ class TimeSeries:
                 "(they have different time stamps), but alignment is required "
                 "to iterate over the time series."
             )
-
-        return map(self._txs_to_vec, zip(*self.univariates))
+        for i in range(len(self._df)):
+            yield to_timestamp(self.index[i]), self._df.iloc[i].tolist()
 
     def __getitem__(self, i: Union[int, slice]):
         """
@@ -600,11 +630,10 @@ class TimeSeries:
                 "to index into the time series."
             )
         if isinstance(i, int):
-            return self._txs_to_vec([var[i] for var in self.univariates])
+            return to_timestamp(self.index[i]), self._df.iloc[i].tolist()
         elif isinstance(i, slice):
             # ret must be aligned, so bypass the (potentially) expensive check
-            univariates = ValIterOrderedDict([(k, v[i]) for k, v in self.items()])
-            ret = TimeSeries(univariates, check_aligned=False)
+            ret = TimeSeries(df=self._df.iloc[i], check_aligned=False)
             ret._is_aligned = True
             return ret
         else:
@@ -619,12 +648,11 @@ class TimeSeries:
         """
         :return: whether the time series is empty
         """
-        return all(len(var) == 0 for var in self.univariates)
+        return len(self._df) == 0
 
     def squeeze(self) -> UnivariateTimeSeries:
         """
-        :return: a `UnivariateTimeSeries` if the time series only
-            has one univariate, otherwise returns itself, a `TimeSeries`
+        :return: `UnivariateTimeSeries` if the time series is univariate; otherwise returns itself, a `TimeSeries`
         """
         if self.dim == 1:
             return self.univariates[self.names[0]]
@@ -643,8 +671,7 @@ class TimeSeries:
             )
             warnings.warn(warning)
             logger.warning(warning)
-            return len(self.to_pd())
-        return len(self.univariates[self.names[0]])
+        return len(self._df)
 
     @property
     def shape(self) -> Tuple[int, int]:
@@ -678,17 +705,15 @@ class TimeSeries:
                 f"Cannot concatenate time series on the time axis if they have two different sets of "
                 f"variable names, {self.names} and {other.names}."
             )
-            univariates = ValIterOrderedDict(
-                [(name, ts0.concat(ts1)) for (name, ts0), ts1 in zip(self.items(), other.univariates)]
-            )
-            ret = TimeSeries(univariates, check_aligned=False)
-            ret._is_aligned = self.is_aligned and other.is_aligned
-            return ret
+            skip_check = self.is_aligned and other.is_aligned and len(self.index.intersection(other.index)) == 0
         else:
-            univariates = ValIterOrderedDict([(name, var.copy()) for name, var in [*self.items(), other.items()]])
-            ret = TimeSeries(univariates, check_aligned=False)
-            ret._is_aligned = self.is_aligned and other.is_aligned and self.time_stamps == other.time_stamps
-            return ret
+            skip_check = self.is_aligned and other.is_aligned and self.time_stamps == other.time_stamps
+
+        # Concatenate them together
+        ret = TimeSeries(df=pd.concat((self._df, other._df), axis=axis), check_aligned=not skip_check)
+        if skip_check:
+            ret._is_aligned = True
+        return ret
 
     def __eq__(self, other):
         if self.dim != other.dim:
@@ -702,11 +727,9 @@ class TimeSeries:
         """
         Splits the time series at the point where the given timestamp ``t`` occurs.
 
-        :param t: a Unix timestamp or datetime object. Everything before time
-            ``t`` is in the left split, and everything after time ``t`` is in
-            the right split.
-        :param t_in_left: if ``True``, ``t`` is in the left split. Otherwise,
-            ``t`` is in the right split.
+        :param t: a Unix timestamp or datetime object. Everything before time ``t`` is in the left split,
+            and everything after time ``t`` is in the right split.
+        :param t_in_left: if ``True``, ``t`` is in the left split. Otherwise, ``t`` is in the right split.
 
         :rtype: Tuple[TimeSeries, TimeSeries]
         :return: the left and right splits of the time series.
@@ -730,9 +753,8 @@ class TimeSeries:
             if ``include_tf`` is ``True``, non-inclusive otherwise)
         :param include_tf: Whether to include ``tf`` in the window.
 
-        :return: The subset of the time series occurring between timestamps
-            ``t0`` (inclusive) and ``tf`` (included if ``include_tf`` is
-            ``True``, excluded otherwise).
+        :return: The subset of the time series occurring between timestamps ``t0`` (inclusive) and ``tf``
+            (included if ``include_tf`` is ``True``, excluded otherwise).
         :rtype: `TimeSeries`
         """
         return TimeSeries(ValIterOrderedDict([(k, var.window(t0, tf, include_tf)) for k, var in self.items()]))
@@ -744,32 +766,19 @@ class TimeSeries:
             Timestamps which are present for one variable but not another, are
             represented with NaN.
         """
-        t = pd.DatetimeIndex([])
-        univariates = [(name, var.to_pd()[~var.index.duplicated()]) for name, var in self.items()]
-        for _, var in univariates:
-            t = t.union(var.index)
-        t = t.sort_values()
-        t.name = _time_col_name
-        if len(t) >= 3:
-            t.freq = pd.infer_freq(t)
-        df = pd.DataFrame(np.full((len(t), len(univariates)), np.nan), index=t, columns=self.names)
-        for name, var in univariates:
-            df.loc[var.index, name] = var[~var.index.duplicated()]
-        return df
+        return self._df.copy()
 
     def to_csv(self, file_name, **kwargs):
         self.to_pd().to_csv(file_name, **kwargs)
 
     @classmethod
-    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_times=True, drop_nan=True, freq="1h"):
+    def from_pd(cls, df: Union[pd.Series, pd.DataFrame, np.ndarray], check_aligned=True, freq="1h"):
         """
         :param df: A ``pandas.DataFrame`` with a ``DatetimeIndex``. Each column corresponds to a different variable of
             the time series, and the  key of column (in sorted order) give the relative order of those variables in
             ``self.univariates``. Missing values should be represented with ``NaN``. May also be a ``pandas.Series``
             for single-variable time series.
-        :param check_times: whether to check that all times in the index are unique (up to the millisecond) and sorted.
-        :param drop_nan: whether to drop all ``NaN`` entries before creating the time series. Specifying ``False`` is
-            useful if you wish to impute the values on your own.
+        :param check_aligned: Should we check whether the time series is aligned?
         :param freq: if ``df`` is not indexed by time, this is the frequency at which we will assume it is sampled.
 
         :rtype: TimeSeries
@@ -781,70 +790,16 @@ class TimeSeries:
             return df
         elif isinstance(df, UnivariateTimeSeries):
             return cls([df])
-        elif isinstance(df, pd.Series):
-            if drop_nan:
-                df = df[~df.isna()]
-            return cls({df.name: UnivariateTimeSeries.from_pd(df)})
-        elif isinstance(df, np.ndarray):
-            arr = df.reshape(len(df), -1).T
-            ret = cls([UnivariateTimeSeries(time_stamps=None, values=v, freq=freq) for v in arr], check_aligned=False)
-            ret._is_aligned = True
-            return ret
-        elif not isinstance(df, pd.DataFrame):
-            df = pd.DataFrame(df)
-
-        # Time series is not aligned iff there are missing values
-        aligned = df.shape[1] == 1 or not df.isna().any().any()
-
-        # Check for a string-type index
-        if df.index.dtype == "O":
-            df = df.copy()
-            df.index = pd.to_datetime(df.index)
-
-        # Make sure there are no time duplicates (by milliseconds) if desired
-        dt_index = isinstance(df.index, pd.DatetimeIndex)
-        if check_times:
-            if not df.index.is_unique:
-                df = df[~df.index.duplicated()]
-            if not df.index.is_monotonic_increasing:
-                df = df.sort_index()
-            if dt_index:
-                times = df.index.values.astype("datetime64[ms]").astype(np.int64)
-                df = df.reindex(pd.to_datetime(np.unique(times), unit="ms"), method="bfill")
-
-        elif not aligned and not dt_index and df.index.dtype not in ("int64", "float64"):
-            raise RuntimeError(
-                f"We only support instantiating time series from a "
-                f"``pd.DataFrame`` with missing values when the data frame is "
-                f"indexed by time, int, or float. This dataframe's index is of "
-                f"type {type(df.index).__name__}"
-            )
-
-        if drop_nan and not aligned:
-            ret = cls(
-                ValIterOrderedDict(
-                    [(k, UnivariateTimeSeries.from_pd(ser[~ser.isna()], freq=freq)) for k, ser in df.items()]
-                ),
-                check_aligned=False,
-            )
         else:
-            ret = cls(
-                ValIterOrderedDict([(k, UnivariateTimeSeries.from_pd(ser, freq=freq)) for k, ser in df.items()]),
-                check_aligned=False,
-            )
-        ret._is_aligned = aligned
-        return ret
+            return cls(df=df, freq=freq, check_aligned=check_aligned)
 
     @classmethod
     def from_ts_list(cls, ts_list, *, check_aligned=True):
         """
-        :param Iterable[TimeSeries] ts_list: iterable of time series we wish to
-            form a multivariate time series with
-        :param bool check_aligned: whether to check if the output time series is
-            aligned
+        :param Iterable[TimeSeries] ts_list: iterable of time series we wish to form a multivariate time series with
+        :param bool check_aligned: whether to check if the output time series is aligned
         :rtype: TimeSeries
-        :return: A multivariate `TimeSeries` created from all the time series in
-            the inputs.
+        :return: A multivariate `TimeSeries` created from all the time series in  the inputs.
         """
         ts_list = list(ts_list)
         all_names = [set(ts.names) for ts in ts_list]
@@ -932,7 +887,9 @@ class TimeSeries:
 
             # Align each univariate time series to the reference timestamps
             df = reindex_df(self.to_pd(), reference, missing_value_policy)
-            return TimeSeries.from_pd(df, check_times=False)
+            ret = TimeSeries.from_pd(df, check_aligned=False)
+            ret._is_aligned = True
+            return ret
 
         elif granularity is not None or alignment_policy is AlignPolicy.FixedGranularity:
             if alignment_policy not in [None, AlignPolicy.FixedGranularity]:
@@ -949,10 +906,8 @@ class TimeSeries:
             fixed_granularity = True
             if granularity is None:
                 granularity = infer_granularity(self.time_stamps)
-            try:
-                granularity = pd.to_timedelta(granularity, unit="s")
-            except ValueError:
-                granularity = to_offset(granularity)
+            granularity = to_offset(granularity)
+            if isinstance(granularity, pd.DateOffset):
                 try:
                     granularity.nanos
                 except ValueError:
@@ -984,7 +939,9 @@ class TimeSeries:
                 new_df.index += get_date_offset(time_stamps=new_df.index, reference=df.index)
 
             # Do any forward-filling/back-filling to cover all the indices
-            return TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_times=False)
+            ret = TimeSeries.from_pd(new_df[df.index[0] : df.index[-1]].ffill().bfill(), check_aligned=False)
+            ret._is_aligned = True
+            return ret
 
         elif alignment_policy in [None, AlignPolicy.OuterJoin]:
             # Outer join is the union of all timestamps appearing in any of the
@@ -999,7 +956,9 @@ class TimeSeries:
                 df = df[t0:tf]
             else:
                 df = df.ffill().bfill()
-            return TimeSeries.from_pd(df, check_times=False)
+            ret = TimeSeries.from_pd(df, check_aligned=False)
+            ret._is_aligned = True
+            return ret
 
         elif alignment_policy is AlignPolicy.InnerJoin:
             # Inner join is the intersection of all the timestamps appearing in
@@ -1015,7 +974,9 @@ class TimeSeries:
                     "No time stamps are shared between all variables! Try again with a different alignment policy."
                 )
             t = to_pd_datetime(sorted(t))
-            return TimeSeries.from_pd(self.to_pd().loc[t], check_times=False)
+            ret = TimeSeries.from_pd(self.to_pd().loc[t], check_aligned=False)
+            ret._is_aligned = True
+            return ret
 
         else:
             raise RuntimeError(f"Alignment policy {alignment_policy.name} not supported")
