@@ -56,6 +56,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">merlion.evaluate package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-merlion.evaluate.base">merlion.evaluate.base</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.train_window"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.train_window</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.retrain_freq"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.retrain_freq</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.cadence"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.cadence</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.horizon"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.horizon</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.evaluate.base.EvaluatorConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">EvaluatorConfig.to_dict()</span></code></a></li>
@@ -252,26 +254,51 @@ of time series models on different tasks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_window</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the maximum duration of data we would like to train
-the model on. <code class="docutils literal notranslate"><span class="pre">None</span></code> means no limit.</p></li>
-<li><p><strong>retrain_freq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the frequency at which we want to re-train the
-model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means we only train the model once on the initial
-training data.</p></li>
-<li><p><strong>cadence</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the frequency at which we want to obtain predictions
-from the model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means that we obtain a new prediction at
-the same frequency as the model’s predictive horizon (set by the
-alert condition). <code class="docutils literal notranslate"><span class="pre">0</span></code> means that we obtain a new prediction at
-every timestamp.</p></li>
+<li><p><strong>train_window</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the maximum duration of data we would like to train the model on. <code class="docutils literal notranslate"><span class="pre">None</span></code> means no limit.</p></li>
+<li><p><strong>retrain_freq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the frequency at which we want to re-train the model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means we only train the
+model once on the initial training data.</p></li>
+<li><p><strong>cadence</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the frequency at which we want to obtain predictions from the model.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> means that we obtain a new prediction at the same frequency as the model’s predictive horizon.
+<code class="docutils literal notranslate"><span class="pre">0</span></code> means that we obtain a new prediction at every timestamp.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.cadence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.train_window">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_window</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DateOffset</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.train_window" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the cadence (interval, in number of seconds) at which we are
-having our model produce new predictions. Defaults to the retraining
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the maximum duration of data we would like to train the model on. <code class="docutils literal notranslate"><span class="pre">None</span></code> means no limit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.retrain_freq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">retrain_freq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DateOffset</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.retrain_freq" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the frequency at which we want to re-train the model. <code class="docutils literal notranslate"><span class="pre">None</span></code> means we only train the model on the
+initial training data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.cadence">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DateOffset</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the cadence at which we are having our model produce new predictions. Defaults to the retraining
 frequency if not explicitly provided.</p>
 </dd>
 </dl>
@@ -279,11 +306,13 @@ frequency if not explicitly provided.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.base.EvaluatorConfig.horizon">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DateOffset</span></em><a class="headerlink" href="#merlion.evaluate.base.EvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the horizon (number of seconds) our model is predicting into
-the future. Equal to the prediction cadence by default.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the horizon our model is predicting into the future. Equal to the prediction cadence by default.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -939,22 +968,26 @@ a prediction, it will predict <code class="docutils literal notranslate"><span c
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">horizon</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DateOffset</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.horizon" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the horizon (number of seconds) our model is predicting into
-the future. Defaults to the retraining frequency.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the horizon our model is predicting into the future. Defaults to the retraining frequency.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cadence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DateOffset</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.evaluate.forecast.ForecastEvaluatorConfig.cadence" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the cadence (interval, in number of seconds) at which we are
-having our model produce new predictions. Defaults to the predictive
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Timedelta</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DateOffset</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the cadence at which we are having our model produce new predictions. Defaults to the predictive
 horizon if there is one, and the retraining frequency otherwise.</p>
 </dd>
 </dl>

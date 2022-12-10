@@ -599,7 +599,7 @@ about the sort of markdowns the store is running.</p>
 <p>143 rows × 11 columns</p>
 </div></div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -614,6 +614,83 @@ about the sort of markdowns the store is running.</p>
 <span class="n">exog</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">ts</span><span class="p">[[</span><span class="s2">&quot;IsHoliday&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown1&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown2&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown3&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown4&quot;</span><span class="p">,</span> <span class="s2">&quot;MarkDown5&quot;</span><span class="p">]])</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+The earliest univariate starts at 2010-02-05 00:00:00, but the latest univariate starts at 2011-11-11 00:00:00, a difference of 644 days 00:00:00. This is more than 10% of the length of the shortest univariate (350 days 00:00:00). You may want to check that the univariates cover the same window of time.
+Stack (most recent call last):
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/runpy.py&#34;, line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/runpy.py&#34;, line 87, in _run_code
+    exec(code, run_globals)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel_launcher.py&#34;, line 16, in &lt;module&gt;
+    app.launch_new_instance()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/traitlets/config/application.py&#34;, line 845, in launch_instance
+    app.start()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/kernelapp.py&#34;, line 612, in start
+    self.io_loop.start()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/platform/asyncio.py&#34;, line 199, in start
+    self.asyncio_loop.run_forever()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py&#34;, line 596, in run_forever
+    self._run_once()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py&#34;, line 1890, in _run_once
+    handle._run()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/asyncio/events.py&#34;, line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/ioloop.py&#34;, line 688, in &lt;lambda&gt;
+    lambda f: self._run_callback(functools.partial(callback, future))
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/ioloop.py&#34;, line 741, in _run_callback
+    ret = callback()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 814, in inner
+    self.ctx_run(self.run)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 775, in run
+    yielded = self.gen.send(value)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/kernelbase.py&#34;, line 374, in dispatch_queue
+    yield self.process_one()
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 250, in wrapper
+    runner = Runner(ctx_run, result, future, yielded)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 741, in __init__
+    self.ctx_run(self.run)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 775, in run
+    yielded = self.gen.send(value)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/kernelbase.py&#34;, line 358, in process_one
+    yield gen.maybe_future(dispatch(*args))
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 234, in wrapper
+    yielded = ctx_run(next, result)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/kernelbase.py&#34;, line 261, in dispatch_shell
+    yield gen.maybe_future(handler(stream, idents, msg))
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 234, in wrapper
+    yielded = ctx_run(next, result)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/kernelbase.py&#34;, line 536, in execute_request
+    self.do_execute(
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/tornado/gen.py&#34;, line 234, in wrapper
+    yielded = ctx_run(next, result)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/ipkernel.py&#34;, line 302, in do_execute
+    res = shell.run_cell(code, store_history=store_history, silent=silent)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/ipykernel/zmqshell.py&#34;, line 539, in run_cell
+    return super(ZMQInteractiveShell, self).run_cell(*args, **kwargs)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/interactiveshell.py&#34;, line 2898, in run_cell
+    result = self._run_cell(
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/interactiveshell.py&#34;, line 2944, in _run_cell
+    return runner(coro)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/async_helpers.py&#34;, line 68, in _pseudo_sync_runner
+    coro.send(None)
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/interactiveshell.py&#34;, line 3169, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/interactiveshell.py&#34;, line 3361, in run_ast_nodes
+    if (await self.run_code(code, result,  async_=asy)):
+  File &#34;/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/IPython/core/interactiveshell.py&#34;, line 3441, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File &#34;&lt;ipython-input-2-f4b6cbd5939f&gt;&#34;, line 9, in &lt;module&gt;
+    exog = TimeSeries.from_pd(ts[[&#34;IsHoliday&#34;, &#34;MarkDown1&#34;, &#34;MarkDown2&#34;, &#34;MarkDown3&#34;, &#34;MarkDown4&#34;, &#34;MarkDown5&#34;]])
+  File &#34;/Users/abhatnagar/Desktop/Merlion/merlion/utils/time_series.py&#34;, line 794, in from_pd
+    return cls(df=df, freq=freq, check_aligned=check_aligned)
+  File &#34;/Users/abhatnagar/Desktop/Merlion/merlion/utils/time_series.py&#34;, line 493, in __init__
+    logger.warning(
+</pre></div></div>
 </div>
 <p>Here, our task is to predict the weekly sales. We would like our model to also account for variables which may have an impact on consumer demand (i.e. temperature, consumer price index, and unemployment), as knowledge of these variables could improve the quality of our sales forecast. This would be a multivariate forecasting problem, covered <a class="reference internal" href="2_ForecastMultivariate.html"><span class="doc">here</span></a>.</p>
 <p>In principle, we could add markdowns and holidays to the multivariate model. However, as a retailer, we know a priori which days are holidays, and we ourselves control the markdowns. In many cases, we can get better forecasts by providing the future values of these variables in addition to the past values. Moreover, we may wish to model how changing the future markdowns would change the future sales. This is why we should model these variables as exogenous regressors instead.</p>
@@ -646,10 +723,10 @@ about the sort of markdowns the store is running.</p>
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-13:37:26 - cmdstanpy - INFO - Chain [1] start processing
-13:37:26 - cmdstanpy - INFO - Chain [1] done processing
-13:37:27 - cmdstanpy - INFO - Chain [1] start processing
-13:37:27 - cmdstanpy - INFO - Chain [1] done processing
+17:50:59 - cmdstanpy - INFO - Chain [1] start processing
+17:50:59 - cmdstanpy - INFO - Chain [1] done processing
+17:50:59 - cmdstanpy - INFO - Chain [1] start processing
+17:50:59 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -700,7 +777,7 @@ sMAPE (w/ exog)  = 3.18
       <th>MarkDown5</th>
     </tr>
     <tr>
-      <th>time</th>
+      <th>Date</th>
       <th></th>
       <th></th>
       <th></th>
@@ -712,7 +789,7 @@ sMAPE (w/ exog)  = 3.18
   <tbody>
     <tr>
       <th>2010-02-05</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -721,7 +798,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2010-02-12</th>
-      <td>1.0</td>
+      <td>True</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -730,7 +807,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2010-02-19</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -739,7 +816,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2010-02-26</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -748,7 +825,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2010-03-05</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -766,7 +843,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2012-09-28</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>7106.05</td>
       <td>1.91</td>
       <td>1.65</td>
@@ -775,7 +852,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2012-10-05</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>6037.76</td>
       <td>NaN</td>
       <td>10.04</td>
@@ -784,7 +861,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2012-10-12</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>2145.50</td>
       <td>NaN</td>
       <td>33.31</td>
@@ -793,7 +870,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2012-10-19</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>4461.89</td>
       <td>NaN</td>
       <td>1.14</td>
@@ -802,7 +879,7 @@ sMAPE (w/ exog)  = 3.18
     </tr>
     <tr>
       <th>2012-10-26</th>
-      <td>0.0</td>
+      <td>False</td>
       <td>6152.59</td>
       <td>129.77</td>
       <td>200.00</td>

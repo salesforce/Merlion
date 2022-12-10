@@ -423,15 +423,24 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
-Time series /Users/isenilov/dev/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_1_AnomalyFeatures_1_1.png" src="../../_images/tutorials_anomaly_1_AnomalyFeatures_1_1.png" />
+<img alt="../../_images/tutorials_anomaly_1_AnomalyFeatures_1_2.png" src="../../_images/tutorials_anomaly_1_AnomalyFeatures_1_2.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -567,9 +576,7 @@ Training IsolationForest...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.post_process.threshold:Threshold 3.2263 achieves F1=0.5000.
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+17:22:24 - cmdstanpy - INFO - Chain [1] start processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -588,7 +595,7 @@ Training ProphetDetector...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.post_process.threshold:Threshold 3.2263 achieves F1=0.6667.
+17:22:24 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -605,8 +612,8 @@ Training ensemble...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
+17:22:26 - cmdstanpy - INFO - Chain [1] start processing
+17:22:26 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -655,6 +662,7 @@ Done!
 <div class="highlight"><pre>
 IsolationForest.get_anomaly_score() nonzero values (raw)
                      anom_score
+time
 2013-12-14 16:55:00    0.424103
 2013-12-14 17:00:00    0.418938
 2013-12-14 17:05:00    0.484891
@@ -671,6 +679,7 @@ IsolationForest.get_anomaly_score() nonzero values (raw)
 
 IsolationForest.get_anomaly_label() nonzero values (post-processed)
                      anom_score
+time
 2013-12-16 16:00:00    3.251397
 2013-12-16 18:35:00    3.681691
 2013-12-27 19:25:00    3.914430
@@ -696,6 +705,7 @@ IsolationForest fires 20 alarms
 
 Raw scores at the locations where alarms were fired:
                      anom_score
+time
 2013-12-16 16:00:00    0.701491
 2013-12-16 18:35:00    0.772563
 2013-12-27 19:25:00    0.810997
@@ -789,22 +799,22 @@ F1:        0.2857
 MTTD:      0 days 23:31:40
 
 WindStats
-Precision: 0.2500
-Recall:    0.6667
-F1:        0.3636
-MTTD:      1 days 10:25:00
+Precision: 0.0270
+Recall:    1.0000
+F1:        0.0526
+MTTD:      0 days 12:01:40
 
 ProphetDetector
-Precision: 0.3750
-Recall:    1.0000
-F1:        0.5455
-MTTD:      1 days 00:03:20
+Precision: 0.2000
+Recall:    0.6667
+F1:        0.3077
+MTTD:      1 days 10:22:30
 
 DetectorEnsemble
 Precision: 0.4000
 Recall:    0.6667
 F1:        0.5000
-MTTD:      1 days 10:25:00
+MTTD:      1 days 10:22:30
 
 </pre></div></div>
 </div>
@@ -1006,7 +1016,10 @@ Ensemble Config
                 &#39;anchors&#39;: None,
                 &#39;max_score&#39;: 1000,
                 &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
- &#39;combiner&#39;: {&#39;abs_score&#39;: True, &#39;n_models&#39;: 3, &#39;name&#39;: &#39;Mean&#39;},
+ &#39;combiner&#39;: {&#39;_override_models_used&#39;: {},
+              &#39;abs_score&#39;: True,
+              &#39;n_models&#39;: 3,
+              &#39;name&#39;: &#39;Mean&#39;},
  &#39;dim&#39;: 1,
  &#39;enable_calibrator&#39;: False,
  &#39;enable_threshold&#39;: True,
@@ -1039,13 +1052,14 @@ Ensemble Config
                                            &#39;size&#39;: 2,
                                            &#39;stride&#39;: 1}]}},
             {&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
-                            &#39;anchors&#39;: [[0.0005687426322338457, 0.0],
-                                        [0.8270481271598537, 0.5],
-                                        [1.6872394706496963, 1.0],
-                                        [2.371538318320157, 1.5],
-                                        [2.9246837154735017, 2.0],
-                                        [4.064135464545045, 4.032821539569336],
-                                        [8.12827092909009, 5.032821539569336]],
+                            &#39;anchors&#39;: [[0.0004858784421674658, 0.0],
+                                        [0.4318659926885851, 0.5],
+                                        [0.9774407588312237, 1.0],
+                                        [1.4231054875246496, 1.5],
+                                        [1.7393725195754337, 2.0],
+                                        [2.4271291767175622, 4.032894437734716],
+                                        [4.8542583534351245,
+                                         5.032894437734716]],
                             &#39;max_score&#39;: 1000,
                             &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
              &#39;dim&#39;: 1,
@@ -1062,20 +1076,29 @@ Ensemble Config
              &#39;transform&#39;: {&#39;name&#39;: &#39;DifferenceTransform&#39;},
              &#39;wind_sz&#39;: 60},
             {&#39;calibrator&#39;: {&#39;abs_score&#39;: True,
-                            &#39;anchors&#39;: [[0.00034442266386701815, 0.0],
-                                        [0.50672704564658, 0.5],
-                                        [1.0444911207158671, 1.0],
-                                        [1.5495525355806337, 1.5],
-                                        [1.9643452887114796, 2.0],
-                                        [4.831069032732285, 4.032894437734716],
-                                        [9.66213806546457, 5.032894437734716]],
+                            &#39;anchors&#39;: [[0.00040425650796231867, 0.0],
+                                        [0.5103916318368437, 0.5],
+                                        [1.0369977090370754, 1.0],
+                                        [1.5325298959635636, 1.5],
+                                        [1.9215534761800885, 2.0],
+                                        [5.2965340676146635, 4.032894437734716],
+                                        [10.593068135229327,
+                                         5.032894437734716]],
                             &#39;max_score&#39;: 1000,
                             &#39;name&#39;: &#39;AnomScoreCalibrator&#39;},
              &#39;daily_seasonality&#39;: &#39;auto&#39;,
              &#39;dim&#39;: 1,
              &#39;enable_calibrator&#39;: True,
              &#39;enable_threshold&#39;: False,
+             &#39;exog_aggregation_policy&#39;: &#39;Mean&#39;,
+             &#39;exog_missing_value_policy&#39;: &#39;ZFill&#39;,
+             &#39;exog_transform&#39;: {&#39;bias&#39;: None,
+                                &#39;name&#39;: &#39;MeanVarNormalize&#39;,
+                                &#39;normalize_bias&#39;: True,
+                                &#39;normalize_scale&#39;: True,
+                                &#39;scale&#39;: None},
              &#39;holidays&#39;: None,
+             &#39;invert_transform&#39;: False,
              &#39;max_forecast_steps&#39;: None,
              &#39;name&#39;: &#39;ProphetDetector&#39;,
              &#39;seasonality_mode&#39;: &#39;additive&#39;,
@@ -1142,18 +1165,27 @@ a maximum amount of data (<code class="docutils literal notranslate"><span class
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1501940.88it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  21%|██        | 1209600/5783700 [00:02&lt;00:10, 421704.52it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:05&lt;00:13, 293996.29it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:08&lt;00:13, 241431.47it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:13&lt;00:14, 185310.19it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:16&lt;00:11, 186082.04it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:20&lt;00:09, 168778.34it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:24&lt;00:05, 166406.09it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:30&lt;00:02, 138865.20it/s]INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-TSADEvaluator: 100%|██████████| 5783700/5783700 [00:36&lt;00:00, 160502.25it/s]
+17:22:42 - cmdstanpy - INFO - Chain [1] start processing
+17:22:43 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  10%|█         | 604800/5783700 [00:00&lt;00:03, 1307785.29it/s]17:22:44 - cmdstanpy - INFO - Chain [1] start processing
+17:22:44 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  21%|██        | 1209600/5783700 [00:02&lt;00:08, 551941.29it/s]17:22:46 - cmdstanpy - INFO - Chain [1] start processing
+17:22:46 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  31%|███▏      | 1814400/5783700 [00:04&lt;00:10, 365146.12it/s]17:22:48 - cmdstanpy - INFO - Chain [1] start processing
+17:22:48 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  42%|████▏     | 2419200/5783700 [00:06&lt;00:09, 339456.87it/s]17:22:50 - cmdstanpy - INFO - Chain [1] start processing
+17:22:51 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  52%|█████▏    | 3024000/5783700 [00:08&lt;00:09, 291111.79it/s]17:22:53 - cmdstanpy - INFO - Chain [1] start processing
+17:22:53 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  63%|██████▎   | 3628800/5783700 [00:11&lt;00:07, 269495.41it/s]17:22:55 - cmdstanpy - INFO - Chain [1] start processing
+17:22:58 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  73%|███████▎  | 4233600/5783700 [00:15&lt;00:07, 206629.47it/s]17:23:00 - cmdstanpy - INFO - Chain [1] start processing
+17:23:01 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  84%|████████▎ | 4838400/5783700 [00:19&lt;00:05, 188649.53it/s]17:23:04 - cmdstanpy - INFO - Chain [1] start processing
+17:23:06 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator:  94%|█████████▍| 5443200/5783700 [00:24&lt;00:02, 166964.38it/s]17:23:09 - cmdstanpy - INFO - Chain [1] start processing
+17:23:12 - cmdstanpy - INFO - Chain [1] done processing
+TSADEvaluator: 100%|██████████| 5783700/5783700 [00:29&lt;00:00, 193604.33it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1180,14 +1212,14 @@ TSADEvaluator: 100%|██████████| 5783700/5783700 [00:36&lt;00
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Ensemble Performance
-Precision: 0.6667
+Precision: 0.5000
 Recall:    0.6667
-F1:        0.6667
+F1:        0.5714
 MTTD:      1 days 10:25:00
 
 </pre></div></div>
 </div>
-<p>In this case, we see that by simply re-training the ensemble weekly in an unsupervised manner, we have increased the precision from <span class="math notranslate nohighlight">\(\frac{2}{5}\)</span> to <span class="math notranslate nohighlight">\(\frac{2}{3}\)</span>, while leaving unchanged the recall and mean time to detect. This is due to data drift over time.</p>
+<p>In this case, we see that by simply re-training the ensemble weekly in an unsupervised manner, we have increased the precision from <span class="math notranslate nohighlight">\(\frac{2}{5}\)</span> to <span class="math notranslate nohighlight">\(\frac{2}{4}\)</span>, while leaving unchanged the recall and mean time to detect. This is due to data drift over time.</p>
 </section>
 </section>
 

@@ -515,15 +515,24 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
-Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/ec2_request_latency_system_failure.csv (index 2) has timestamp duplicates. Kept first values.
+Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_temperature_system_failure.csv (index 3) has timestamp duplicates. Kept first values.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_1.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_1.png" />
+<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png" />
 </div>
 </div>
 <p>Now, we’ll split the data into train &amp; test splits, and run our anomaly detection model on it.</p>
@@ -561,7 +570,7 @@ Time series /Users/abhatnagar/Desktop/Merlion_public/data/nab/realKnownCause/mac
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                      anom_score
-time
+timestamp
 2013-12-02 21:15:00   -9.065700
 2013-12-02 21:20:00   -8.097140
 2013-12-02 21:25:00   -6.908860
@@ -598,7 +607,6 @@ time
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                      no post rule  with post rule
-time
 2013-12-14 16:50:00     14.520900             0.0
 2013-12-14 16:55:00     15.065935             0.0
 2013-12-14 17:00:00     15.825172             0.0

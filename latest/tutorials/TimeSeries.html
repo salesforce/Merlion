@@ -514,6 +514,7 @@ Is UnivariateTimeSeries an instance of pd.Series? True
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+time
 2020-03-02 09:12:00     667.118
 2020-03-02 09:13:00     611.751
 2020-03-02 09:14:00     599.456
@@ -581,7 +582,7 @@ type(kpi.to_pd()) = &lt;class &#39;pandas.core.series.Series&#39;&gt;
 DatetimeIndex([&#39;2020-03-02 09:12:00&#39;, &#39;2020-03-02 09:13:00&#39;,
                &#39;2020-03-02 09:14:00&#39;, &#39;2020-03-02 09:15:00&#39;,
                &#39;2020-03-02 09:16:00&#39;],
-              dtype=&#39;datetime64[ns]&#39;, freq=None)
+              dtype=&#39;datetime64[ns]&#39;, name=&#39;time&#39;, freq=None)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -637,6 +638,7 @@ type(kpi[1:5]) = &lt;class &#39;merlion.utils.time_series.UnivariateTimeSeries&#
 
 kpi[1:5] =
 
+time
 2020-03-02 09:13:00     611.751
 2020-03-02 09:14:00     599.456
 2020-03-02 09:15:00     621.446
@@ -780,6 +782,7 @@ dtype: bool
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+time
 2020-03-02 09:12:00     667.118
 2020-03-02 09:13:00     611.751
 2020-03-02 09:14:00     599.456
@@ -793,6 +796,7 @@ dtype: bool
 2020-05-01 23:50:00     935.405
 Name: kpi_renamed, Length: 86807, dtype: float64
 
+time
 2020-03-02 09:12:00    0.0
 2020-03-02 09:13:00    0.0
 2020-03-02 09:14:00    0.0
@@ -826,6 +830,7 @@ Name: kpi_label, Length: 86807, dtype: float64
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Univariate kpi_renamed
+time
 2020-03-02 09:12:00     667.118
 2020-03-02 09:13:00     611.751
 2020-03-02 09:14:00     599.456
@@ -840,6 +845,7 @@ Univariate kpi_renamed
 Name: kpi_renamed, Length: 86807, dtype: float64
 
 Univariate kpi_label
+time
 2020-03-02 09:12:00    0.0
 2020-03-02 09:13:00    0.0
 2020-03-02 09:14:00    0.0
@@ -909,7 +915,7 @@ Is aligned? False
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(1583140320.0, (667.118, 0.0))
+(1583140320.0, [667.118, 0.0])
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -930,6 +936,7 @@ type(aligned[1:5]) = &lt;class &#39;merlion.utils.time_series.TimeSeries&#39;&gt
 
 aligned[1:5] =
                           kpi  kpi_label
+time
 2020-03-02 09:13:00   611.751        0.0
 2020-03-02 09:14:00   599.456        0.0
 2020-03-02 09:15:00   621.446        0.0
@@ -992,7 +999,7 @@ RuntimeError: The univariates comprising this time series are not aligned (they 
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/abhatnagar/Desktop/Merlion_public/merlion/utils/time_series.py:617: UserWarning: The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
+/Users/abhatnagar/Desktop/Merlion/merlion/utils/time_series.py:672: UserWarning: The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
   warnings.warn(warning)
 The univariates comprising this time series are not aligned (they have different time stamps). The length returned is equal to the length of the _union_ of all time stamps present in any of the univariates.
 </pre></div></div>
@@ -1066,6 +1073,7 @@ Is not_aligned.align() aligned? True
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                           kpi  kpi_label
+time
 2020-03-05 12:00:00  1166.819        0.0
 2020-03-05 12:01:00  1345.504        0.0
 2020-03-05 12:02:00  1061.391        0.0
@@ -1097,6 +1105,7 @@ Is not_aligned.align() aligned? True
 <div class="output_area docutils container">
 <div class="highlight"><pre>
                           kpi  kpi_label
+time
 2020-03-02 09:12:00       NaN        0.0
 2020-03-02 09:13:00   611.751        0.0
 2020-03-02 09:14:00   599.456        0.0
@@ -1131,6 +1140,7 @@ Is not_aligned.align() aligned? True
 <div class="highlight"><pre>
 Left
                           kpi  kpi_label
+time
 2020-03-02 09:12:00   667.118        0.0
 2020-03-02 09:13:00   611.751        0.0
 2020-03-02 09:14:00   599.456        0.0
@@ -1148,6 +1158,7 @@ Left
 
 Right
                           kpi  kpi_label
+time
 2020-05-01 00:00:00  1381.110        0.0
 2020-05-01 00:01:00  1807.039        0.0
 2020-05-01 00:02:00  1833.385        0.0

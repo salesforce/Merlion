@@ -428,14 +428,6 @@ div.rendered_html tbody tr:hover {
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 852.29it/s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Has missing data: False
@@ -445,7 +437,7 @@ Has missing data: False
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_forecast_1_ForecastFeatures_1_2.png" src="../../_images/tutorials_forecast_1_ForecastFeatures_1_2.png" />
+<img alt="../../_images/tutorials_forecast_1_ForecastFeatures_1_1.png" src="../../_images/tutorials_forecast_1_ForecastFeatures_1_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -579,7 +571,7 @@ Training Arima...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
+17:42:09 - cmdstanpy - INFO - Chain [1] start processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -589,8 +581,6 @@ INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=T
 <div class="highlight"><pre>
 
 Training Prophet...
-
-Training MSES...
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -598,7 +588,7 @@ Training MSES...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
+17:42:09 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -606,6 +596,8 @@ INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+
+Training MSES...
 
 Training ensemble...
 </pre></div></div>
@@ -615,10 +607,8 @@ Training ensemble...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
+17:42:20 - cmdstanpy - INFO - Chain [1] start processing
+17:42:20 - cmdstanpy - INFO - Chain [1] done processing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -635,15 +625,11 @@ Training model selector...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-INFO:merlion.models.ensemble.forecast:Evaluating validation performance...
-INFO:merlion.models.ensemble.forecast:Re-training model 1/3 (Arima) on full data...
-INFO:merlion.models.ensemble.forecast:Re-training model 2/3 (Prophet) on full data...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Re-training model 3/3 (MSES) on full data...
-INFO:merlion.models.ensemble.forecast:Models used (of 3): 1 (Arima)
+ForecastEvaluator: 100%|██████████| 500400/500400 [00:00&lt;00:00, 3420724.07it/s]
+17:42:31 - cmdstanpy - INFO - Chain [1] start processing
+17:42:32 - cmdstanpy - INFO - Chain [1] done processing
+ForecastEvaluator: 100%|██████████| 500400/500400 [00:00&lt;00:00, 1342155.82it/s]
+ForecastEvaluator: 100%|██████████| 500400/500400 [00:01&lt;00:00, 407983.30it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -723,7 +709,7 @@ Done!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Arima sMAPE is 3.795
+Arima sMAPE is 3.472
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -759,7 +745,7 @@ Arima sMAPE is 3.795
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Prophet sMAPE is 2.913
+Prophet sMAPE is 2.947
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -820,7 +806,7 @@ MSES sMAPE is 4.377
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ensemble sMAPE is 2.599
+Ensemble sMAPE is 2.505
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -850,7 +836,7 @@ Ensemble sMAPE is 2.599
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Selector sMAPE is 3.795
+Selector sMAPE is 3.472
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -901,7 +887,15 @@ Selector sMAPE is 3.795
 Prophet Config
 {&#39;daily_seasonality&#39;: &#39;auto&#39;,
  &#39;dim&#39;: 1,
+ &#39;exog_aggregation_policy&#39;: &#39;Mean&#39;,
+ &#39;exog_missing_value_policy&#39;: &#39;ZFill&#39;,
+ &#39;exog_transform&#39;: {&#39;bias&#39;: None,
+                    &#39;name&#39;: &#39;MeanVarNormalize&#39;,
+                    &#39;normalize_bias&#39;: True,
+                    &#39;normalize_scale&#39;: True,
+                    &#39;scale&#39;: None},
  &#39;holidays&#39;: None,
+ &#39;invert_transform&#39;: True,
  &#39;max_forecast_steps&#39;: None,
  &#39;seasonality_mode&#39;: &#39;additive&#39;,
  &#39;target_seq_index&#39;: 0,
@@ -941,16 +935,33 @@ Prophet Config
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Selector Config
-{&#39;combiner&#39;: {&#39;abs_score&#39;: False,
+{&#39;combiner&#39;: {&#39;_override_models_used&#39;: {},
+              &#39;abs_score&#39;: False,
               &#39;metric&#39;: &#39;ForecastMetric.sMAPE&#39;,
-              &#39;metric_values&#39;: [5.537074367680436,
-                                8.691874724892063,
-                                17.72980301555831],
+              &#39;metric_values&#39;: [5.3927462062042695,
+                                6.993034179559698,
+                                14.33041679538694],
               &#39;n_models&#39;: 3,
               &#39;name&#39;: &#39;ModelSelector&#39;},
  &#39;dim&#39;: 1,
+ &#39;exog_aggregation_policy&#39;: &#39;Mean&#39;,
+ &#39;exog_missing_value_policy&#39;: &#39;ZFill&#39;,
+ &#39;exog_transform&#39;: {&#39;bias&#39;: None,
+                    &#39;name&#39;: &#39;MeanVarNormalize&#39;,
+                    &#39;normalize_bias&#39;: True,
+                    &#39;normalize_scale&#39;: True,
+                    &#39;scale&#39;: None},
+ &#39;invert_transform&#39;: True,
  &#39;max_forecast_steps&#39;: None,
  &#39;models&#39;: [{&#39;dim&#39;: 1,
+             &#39;exog_aggregation_policy&#39;: &#39;Mean&#39;,
+             &#39;exog_missing_value_policy&#39;: &#39;ZFill&#39;,
+             &#39;exog_transform&#39;: {&#39;bias&#39;: None,
+                                &#39;name&#39;: &#39;MeanVarNormalize&#39;,
+                                &#39;normalize_bias&#39;: True,
+                                &#39;normalize_scale&#39;: True,
+                                &#39;scale&#39;: None},
+             &#39;invert_transform&#39;: True,
              &#39;max_forecast_steps&#39;: 100,
              &#39;name&#39;: &#39;Arima&#39;,
              &#39;order&#39;: [20, 1, 5],
@@ -964,7 +975,15 @@ Selector Config
                            &#39;trainable_granularity&#39;: False}},
             {&#39;daily_seasonality&#39;: &#39;auto&#39;,
              &#39;dim&#39;: 1,
+             &#39;exog_aggregation_policy&#39;: &#39;Mean&#39;,
+             &#39;exog_missing_value_policy&#39;: &#39;ZFill&#39;,
+             &#39;exog_transform&#39;: {&#39;bias&#39;: None,
+                                &#39;name&#39;: &#39;MeanVarNormalize&#39;,
+                                &#39;normalize_bias&#39;: True,
+                                &#39;normalize_scale&#39;: True,
+                                &#39;scale&#39;: None},
              &#39;holidays&#39;: None,
+             &#39;invert_transform&#39;: True,
              &#39;max_forecast_steps&#39;: None,
              &#39;name&#39;: &#39;Prophet&#39;,
              &#39;seasonality_mode&#39;: &#39;additive&#39;,
@@ -977,6 +996,7 @@ Selector Config
              &#39;dim&#39;: 1,
              &#39;eta&#39;: 0.0,
              &#39;inflation&#39;: 1.0,
+             &#39;invert_transform&#39;: True,
              &#39;max_backstep&#39;: 60,
              &#39;max_forecast_steps&#39;: 100,
              &#39;name&#39;: &#39;MSES&#39;,
@@ -1044,7 +1064,7 @@ Selector Config
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-ForecastEvaluator: 100%|██████████| 169200/169200 [00:07&lt;00:00, 22208.87it/s]
+ForecastEvaluator: 100%|██████████| 169200/169200 [00:12&lt;00:00, 13919.39it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1070,8 +1090,8 @@ ForecastEvaluator: 100%|██████████| 169200/169200 [00:07&lt;
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Arima sMAPE: 2.013
-Arima RMSE:  143.281
+Arima sMAPE: 2.014
+Arima RMSE:  142.828
 </pre></div></div>
 </div>
 <p>Next, we will evaluate the ensemble (taking the mean prediction of ARIMA, Prophet, and MSES every time the models are called).</p>
@@ -1093,26 +1113,15 @@ Arima RMSE:  143.281
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-ForecastEvaluator:  26%|██▌       | 43200/169200 [00:03&lt;00:09, 12999.69it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-ForecastEvaluator:  51%|█████     | 86400/169200 [00:09&lt;00:06, 12030.39it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-ForecastEvaluator:  77%|███████▋  | 129600/169200 [00:16&lt;00:03, 11949.85it/s]INFO:merlion.models.ensemble.forecast:Training model 1/3 (Arima)...
-INFO:merlion.models.ensemble.forecast:Training model 2/3 (Prophet)...
-INFO:prophet:Disabling yearly seasonality. Run prophet with yearly_seasonality=True to override this.
-INFO:prophet:Disabling weekly seasonality. Run prophet with weekly_seasonality=True to override this.
-INFO:merlion.models.ensemble.forecast:Training model 3/3 (MSES)...
-ForecastEvaluator: 100%|██████████| 169200/169200 [00:22&lt;00:00, 7586.00it/s]
+17:43:09 - cmdstanpy - INFO - Chain [1] start processing
+17:43:09 - cmdstanpy - INFO - Chain [1] done processing
+ForecastEvaluator:  26%|██▌       | 43200/169200 [00:09&lt;00:29, 4298.97it/s]17:43:28 - cmdstanpy - INFO - Chain [1] start processing
+17:43:28 - cmdstanpy - INFO - Chain [1] done processing
+ForecastEvaluator:  51%|█████     | 86400/169200 [00:25&lt;00:20, 3994.83it/s]17:43:43 - cmdstanpy - INFO - Chain [1] start processing
+17:43:43 - cmdstanpy - INFO - Chain [1] done processing
+ForecastEvaluator:  77%|███████▋  | 129600/169200 [00:40&lt;00:09, 4108.92it/s]17:43:59 - cmdstanpy - INFO - Chain [1] start processing
+17:43:59 - cmdstanpy - INFO - Chain [1] done processing
+ForecastEvaluator: 100%|██████████| 169200/169200 [00:56&lt;00:00, 2979.61it/s]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1138,8 +1147,8 @@ ForecastEvaluator: 100%|██████████| 169200/169200 [00:22&lt;
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ensemble sMAPE: 2.896
-Ensemble RMSE:  210.626
+Ensemble sMAPE: 2.914
+Ensemble RMSE:  211.616
 </pre></div></div>
 </div>
 </section>

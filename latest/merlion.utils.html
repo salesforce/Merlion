@@ -87,6 +87,7 @@
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.dim"><code class="docutils literal notranslate"><span class="pre">TimeSeries.dim</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.rename"><code class="docutils literal notranslate"><span class="pre">TimeSeries.rename()</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.is_aligned"><code class="docutils literal notranslate"><span class="pre">TimeSeries.is_aligned</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.index"><code class="docutils literal notranslate"><span class="pre">TimeSeries.index</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.np_time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.np_time_stamps</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.time_stamps"><code class="docutils literal notranslate"><span class="pre">TimeSeries.time_stamps</span></code></a></li>
 <li class="toctree-l5"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries.t0"><code class="docutils literal notranslate"><span class="pre">TimeSeries.t0</span></code></a></li>
@@ -134,6 +135,7 @@
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_pd_datetime"><code class="docutils literal notranslate"><span class="pre">to_pd_datetime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_offset"><code class="docutils literal notranslate"><span class="pre">to_offset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.to_timestamp"><code class="docutils literal notranslate"><span class="pre">to_timestamp()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.granularity_str_to_seconds"><code class="docutils literal notranslate"><span class="pre">granularity_str_to_seconds()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#merlion.utils.resample.get_date_offset"><code class="docutils literal notranslate"><span class="pre">get_date_offset()</span></code></a></li>
@@ -429,8 +431,7 @@ if <code class="docutils literal notranslate"><span class="pre">i</span></code> 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.time_series.UnivariateTimeSeries.__iter__">
 <span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.UnivariateTimeSeries.__iter__" title="Permalink to this definition"></a></dt>
-<dd><p>The i’th item in the iterator is the tuple
-<code class="docutils literal notranslate"><span class="pre">(self.time_stamps[i],</span> <span class="pre">self.values[i])</span></code>.</p>
+<dd><p>The i’th item in the iterator is the tuple <code class="docutils literal notranslate"><span class="pre">(self.time_stamps[i],</span> <span class="pre">self.values[i])</span></code>.</p>
 </dd></dl>
 
 <dl class="field-list simple">
@@ -700,7 +701,7 @@ Otherwise, we will create one at the specified frequency.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.time_series.</span></span><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">univariates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.time_series.</span></span><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">univariates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1h'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_aligned</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Please read the <a class="reference internal" href="tutorials/TimeSeries.html"><span class="doc">tutorial</span></a> before reading this API doc.
 This class represents a general multivariate time series as a wrapper around
@@ -712,8 +713,7 @@ mapping string names to their corresponding <a class="reference internal" href="
 important concept for <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> is <em>alignment</em>. We say that a <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>
 is <em>aligned</em> if all of its univariates have observations sampled at the exact
 set set of times.</p>
-<p>One may access the <a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a> comprising this <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> in
-four ways:</p>
+<p>One may access the <a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a> comprising this <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> in four ways:</p>
 <ol class="arabic">
 <li><p>Iterate over the individual univariates using</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">time_series</span><span class="o">.</span><span class="n">univariates</span><span class="p">:</span>
@@ -875,6 +875,11 @@ of new univariate names.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.np_time_stamps">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">np_time_stamps</span></span><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.np_time_stamps" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -947,8 +952,7 @@ of new univariate names.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a> if the time series only
-has one univariate, otherwise returns itself, a <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a> if the time series is univariate; otherwise returns itself, a <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -981,11 +985,9 @@ has one univariate, otherwise returns itself, a <a class="reference internal" hr
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a Unix timestamp or datetime object. Everything before time
-<code class="docutils literal notranslate"><span class="pre">t</span></code> is in the left split, and everything after time <code class="docutils literal notranslate"><span class="pre">t</span></code> is in
-the right split.</p></li>
-<li><p><strong>t_in_left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">t</span></code> is in the left split. Otherwise,
-<code class="docutils literal notranslate"><span class="pre">t</span></code> is in the right split.</p></li>
+<li><p><strong>t</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a Unix timestamp or datetime object. Everything before time <code class="docutils literal notranslate"><span class="pre">t</span></code> is in the left split,
+and everything after time <code class="docutils literal notranslate"><span class="pre">t</span></code> is in the right split.</p></li>
+<li><p><strong>t_in_left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">t</span></code> is in the left split. Otherwise, <code class="docutils literal notranslate"><span class="pre">t</span></code> is in the right split.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -1010,9 +1012,8 @@ if <code class="docutils literal notranslate"><span class="pre">include_tf</span
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The subset of the time series occurring between timestamps
-<code class="docutils literal notranslate"><span class="pre">t0</span></code> (inclusive) and <code class="docutils literal notranslate"><span class="pre">tf</span></code> (included if <code class="docutils literal notranslate"><span class="pre">include_tf</span></code> is
-<code class="docutils literal notranslate"><span class="pre">True</span></code>, excluded otherwise).</p>
+<dd class="field-even"><p>The subset of the time series occurring between timestamps <code class="docutils literal notranslate"><span class="pre">t0</span></code> (inclusive) and <code class="docutils literal notranslate"><span class="pre">tf</span></code>
+(included if <code class="docutils literal notranslate"><span class="pre">include_tf</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, excluded otherwise).</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
@@ -1072,18 +1073,15 @@ useful if you wish to impute the values on your own.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ts_list</strong> (<em>Iterable</em><em>[</em><a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><em>TimeSeries</em></a><em>]</em>) – iterable of time series we wish to
-form a multivariate time series with</p></li>
-<li><p><strong>check_aligned</strong> (<em>bool</em>) – whether to check if the output time series is
-aligned</p></li>
+<li><p><strong>ts_list</strong> (<em>Iterable</em><em>[</em><a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><em>TimeSeries</em></a><em>]</em>) – iterable of time series we wish to form a multivariate time series with</p></li>
+<li><p><strong>check_aligned</strong> (<em>bool</em>) – whether to check if the output time series is aligned</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries">TimeSeries</a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A multivariate <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> created from all the time series in
-the inputs.</p>
+<dd class="field-odd"><p>A multivariate <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> created from all the time series in  the inputs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1256,6 +1254,12 @@ pandas.core.resample.Resampler methods.</p>
 <dt class="sig sig-object py" id="merlion.utils.resample.to_pd_datetime">
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">to_pd_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.to_pd_datetime" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a timestamp (or list/iterable of timestamps) to pandas Datetime, truncated at the millisecond.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.utils.resample.to_offset">
+<span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">to_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.to_offset" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a time gap to a <code class="docutils literal notranslate"><span class="pre">pd.Timedelta</span></code> if possible, otherwise a <code class="docutils literal notranslate"><span class="pre">pd.DateOffset</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -372,7 +372,7 @@ div.rendered_html tbody tr:hover {
 <section id="A-Gentle-Introduction-to-Forecasting-in-Merlion">
 <h1>A Gentle Introduction to Forecasting in Merlion<a class="headerlink" href="#A-Gentle-Introduction-to-Forecasting-in-Merlion" title="Permalink to this heading"></a></h1>
 <p>We begin by importing Merlion’s <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class and the data loader for the <code class="docutils literal notranslate"><span class="pre">M4</span></code> dataset. We can then divide a specific time series from this dataset into training and testing splits.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -385,16 +385,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-100%|██████████| 414/414 [00:00&lt;00:00, 770.19it/s]
-</pre></div></div>
-</div>
 <p>We can then initialize and train Merlion’s <code class="docutils literal notranslate"><span class="pre">DefaultForecaster</span></code>, which is an forecasting model that balances performance with efficiency. We also obtain its predictions on the test split.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -404,6 +396,20 @@ div.rendered_html tbody tr:hover {
 <span class="n">test_pred</span><span class="p">,</span> <span class="n">test_err</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">time_stamps</span><span class="o">=</span><span class="n">test_data</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Inferred granularity &lt;Hour&gt;
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/statsmodels/base/model.py:604: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn(&#34;Maximum Likelihood optimization failed to &#34;
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/statsmodels/base/model.py:604: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn(&#34;Maximum Likelihood optimization failed to &#34;
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/statsmodels/base/model.py:604: ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals
+  warnings.warn(&#34;Maximum Likelihood optimization failed to &#34;
+</pre></div></div>
 </div>
 <p>Next, we visualize the model’s predictions.</p>
 <div class="nbinput docutils container">
