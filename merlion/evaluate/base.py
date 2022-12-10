@@ -35,8 +35,8 @@ class EvaluatorConfig(metaclass=AutodocABCMeta):
         :param retrain_freq: the frequency at which we want to re-train the model. ``None`` means we only train the
             model once on the initial training data.
         :param cadence: the frequency at which we want to obtain predictions from the model.
-        ``None`` means that we obtain a new prediction at the same frequency as the model's predictive horizon.
-        ``0`` means that we obtain a new prediction at every timestamp.
+            ``None`` means that we obtain a new prediction at the same frequency as the model's predictive horizon.
+            ``0`` means that we obtain a new prediction at every timestamp.
         """
         self.train_window = train_window
         self.retrain_freq = retrain_freq

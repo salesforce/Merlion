@@ -173,8 +173,7 @@ class UnivariateTimeSeries(pd.Series):
 
     def __iter__(self):
         """
-        The i'th item in the iterator is the tuple
-        ``(self.time_stamps[i], self.values[i])``.
+        The i'th item in the iterator is the tuple ``(self.time_stamps[i], self.values[i])``.
         """
         return itertools.starmap(lambda t, x: (t.item(), x.item()), zip(self.np_time_stamps, self.np_values))
 
@@ -456,7 +455,7 @@ class TimeSeries:
         if isinstance(df, pd.Series):
             df = df.to_frame()
         elif isinstance(df, np.ndarray):
-            df = pd.DataFrame(df.reshape(len(df), -1).T)
+            df = pd.DataFrame(df.reshape(len(df), -1))
         else:
             df = pd.DataFrame(df)
 

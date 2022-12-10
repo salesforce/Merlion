@@ -148,6 +148,7 @@ def infer_granularity(time_stamps, return_offset=False):
         raise ValueError("Need at least 2 timestamps to infer a granularity.")
     offset = pd.to_timedelta(0)
     if freq is not None:
+        freq = pd_to_offset(freq)
         return (freq, offset) if return_offset else freq
 
     # Otherwise, start with the most commonly occurring timedelta
