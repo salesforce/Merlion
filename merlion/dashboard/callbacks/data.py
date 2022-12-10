@@ -33,8 +33,13 @@ class DefaultEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-@callback(Output("select-file", "options"), [Input("upload-data", "filename"), Input("upload-data", "contents")])
+@callback(
+    Output("select-file", "options"),
+    Output("select-file", "value"),
+    [Input("upload-data", "filename"), Input("upload-data", "contents")],
+)
 def upload_file(filenames, contents):
+    name = None
     if filenames is not None and contents is not None:
         for name, data in zip(filenames, contents):
             file_manager.save_file(name, data)
@@ -42,7 +47,7 @@ def upload_file(filenames, contents):
     files = file_manager.uploaded_files()
     for filename in files:
         options.append({"label": filename, "value": filename})
-    return options
+    return options, name
 
 
 @callback(
@@ -69,23 +74,22 @@ def click_run(btn_click, modal_close, filename, data):
     modal_is_open = False
     modal_content = ""
 
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "data-btn" and btn_click > 0:
-            try:
-                assert filename, "Please select a file to load."
-                file_path = os.path.join(file_manager.data_directory, filename)
-                df = DataAnalyzer().load_data(file_path)
-                stats = DataAnalyzer.get_stats(df)
-                stats_table = create_stats_table(stats)
-                data_table = DataAnalyzer.get_data_table(df)
-                data_figure = DataAnalyzer.get_data_figure(df)
+    prop_id = ctx.triggered_id
+    if prop_id == "data-btn" and btn_click > 0:
+        try:
+            assert filename, "Please select a file to load."
+            file_path = os.path.join(file_manager.data_directory, filename)
+            df = DataAnalyzer().load_data(file_path)
+            stats = DataAnalyzer.get_stats(df)
+            stats_table = create_stats_table(stats)
+            data_table = DataAnalyzer.get_data_table(df)
+            data_figure = DataAnalyzer.get_data_figure(df)
 
-            except Exception:
-                error = traceback.format_exc()
-                modal_is_open = True
-                modal_content = error
-                logger.error(error)
+        except Exception:
+            error = traceback.format_exc()
+            modal_is_open = True
+            modal_content = error
+            logger.error(error)
 
     return stats_table, json.dumps(stats, cls=DefaultEncoder), data_table, data_figure, modal_is_open, modal_content
 
@@ -94,11 +98,10 @@ def click_run(btn_click, modal_close, filename, data):
 def update_metric_dropdown(n_clicks, data):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "select-column-parent":
-            stats = json.loads(data)
-            options += [{"label": s, "value": s} for s in stats.keys() if s.find("@") == -1]
+    prop_id = ctx.triggered_id
+    if prop_id == "select-column-parent":
+        stats = json.loads(data)
+        options += [{"label": s, "value": s} for s in stats.keys() if s.find("@") == -1]
     return options
 
 
@@ -107,11 +110,10 @@ def update_metric_table(column, data):
     ctx = dash.callback_context
     metric_stats_table = create_metric_stats_table()
 
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "select-column":
-            stats = json.loads(data)
-            metric_stats_table = create_metric_stats_table(stats, column)
+    prop_id = ctx.triggered_id
+    if prop_id == "select-column":
+        stats = json.loads(data)
+        metric_stats_table = create_metric_stats_table(stats, column)
     return metric_stats_table
 
 
@@ -119,11 +121,10 @@ def update_metric_table(column, data):
 def select_download_parent(n_clicks):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "data-download-parent":
-            models = file_manager.get_model_list()
-            options += [{"label": s, "value": s} for s in models]
+    prop_id = ctx.triggered_id
+    if prop_id == "data-download-parent":
+        models = file_manager.get_model_list()
+        options += [{"label": s, "value": s} for s in models]
     return options
 
 
@@ -144,17 +145,16 @@ def click_run(btn_click, modal_close, model):
     modal_content = ""
     data = None
 
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "data-download-btn" and btn_click > 0:
-            try:
-                assert model, "Please select the model to download."
-                path = file_manager.get_model_download_path(model)
-                data = dcc.send_file(path)
-            except Exception:
-                error = traceback.format_exc()
-                modal_is_open = True
-                modal_content = error
-                logger.error(error)
+    prop_id = ctx.triggered_id
+    if prop_id == "data-download-btn" and btn_click > 0:
+        try:
+            assert model, "Please select the model to download."
+            path = file_manager.get_model_download_path(model)
+            data = dcc.send_file(path)
+        except Exception:
+            error = traceback.format_exc()
+            modal_is_open = True
+            modal_content = error
+            logger.error(error)
 
     return data, modal_is_open, modal_content

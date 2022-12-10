@@ -18,7 +18,6 @@ from typing import Any, Dict, Optional, Tuple, List
 
 import dill
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.transform.base import TransformBase, Identity
 from merlion.transform.factory import TransformFactory
@@ -26,6 +25,7 @@ from merlion.transform.normalize import Rescale, MeanVarNormalize
 from merlion.transform.sequence import TransformSequence
 from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, infer_granularity, TimeSeries
 from merlion.utils.misc import AutodocABCMeta, ModelConfigMeta
+from merlion.utils.resample import to_offset
 
 logger = logging.getLogger(__name__)
 
@@ -260,10 +260,7 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     @timedelta.setter
     def timedelta(self, timedelta):
-        try:
-            self._timedelta = pd.to_timedelta(timedelta, unit="s")
-        except:
-            self._timedelta = to_offset(timedelta)
+        self._timedelta = to_offset(timedelta)
 
     @property
     def last_train_time(self):

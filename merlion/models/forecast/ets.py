@@ -144,6 +144,8 @@ class ETS(SeasonalityModel, ForecasterBase):
         self._n_train = len(train_data)
         yhat = pd.DataFrame(self.model.fittedvalues.values, index=times, columns=[name])
         err = pd.DataFrame(self.model.standardized_forecasts_error, index=times, columns=[f"{name}_err"])
+        if err.isna().any().any():
+            err[err.isna()] = 0
         return yhat, err
 
     def _forecast(

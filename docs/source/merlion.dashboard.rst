@@ -14,7 +14,7 @@ The app has three tabs. The first one is called "file manager" in which you can 
 (the datasets will be stored in ``~/merlion/data``), check basic statistics of the datasets, visualize
 the time series data, or download a particular trained model:
 
-.. image:: _static/dashboard_file.png
+.. image:: _static/figures/dashboard_file.png
 
 You can click "Drag & Drop" to upload the file to the ``merlion`` folder (our app is designed to support
 docker deployment, so it doesn't allow to open a local file directly). If you use the app on a local
@@ -29,7 +29,7 @@ and click the download button. The model and its configuration file will be comp
 
 The second tab is used to train a time series anomaly detection model:
 
-.. image:: _static/dashboard_anomaly.png
+.. image:: _static/figures/dashboard_anomaly.png
 
 The app provides full support for these models, where you can choose different algorithms and set particular parameters
 according to your needs. To train a model, you need to:
@@ -56,7 +56,7 @@ label column.
 
 The third tab is used to train a time series forecasting model supported in Merlion:
 
-.. image:: _static/dashboard_forecast.png
+.. image:: _static/figures/dashboard_forecast.png
 
 The app provides full support for these models, where you can choose different algorithms and set particular parameters
 according to your needs. To train a model, you need to:

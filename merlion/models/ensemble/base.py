@@ -13,13 +13,13 @@ from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.models.base import ModelBase, Config
 from merlion.models.ensemble.combine import CombinerBase, CombinerFactory, Mean
 from merlion.models.factory import ModelFactory
 from merlion.utils import TimeSeries
 from merlion.utils.misc import AutodocABCMeta
+from merlion.utils.resample import to_offset
 
 logger = logging.getLogger(__name__)
 
@@ -175,11 +175,7 @@ class EnsembleBase(ModelBase, metaclass=AutodocABCMeta):
                 dt = getattr(model, "timedelta", None)
                 n = getattr(model, "max_forecast_steps", None)
             if dt is not None and n is not None:
-                try:
-                    h = pd.to_timedelta(dt * n, unit="s")
-                except:
-                    h = to_offset(dt * n)
-                horizons.append(h)
+                horizons.append(to_offset(dt * n))
         if all(h is None for h in horizons):
             return None
         i = np.argmin([pd.to_datetime(0) + h for h in horizons if h is not None])

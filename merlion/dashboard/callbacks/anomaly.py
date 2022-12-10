@@ -18,29 +18,37 @@ logger = logging.getLogger(__name__)
 file_manager = FileManager()
 
 
-@callback(Output("anomaly-select-file", "options"), Input("anomaly-select-file-parent", "n_clicks"))
-def update_select_file_dropdown(n_clicks):
+@callback(
+    Output("anomaly-select-file", "options"),
+    Output("anomaly-select-features", "value"),
+    Output("anomaly-select-label", "value"),
+    Input("anomaly-select-file-parent", "n_clicks"),
+    Input("anomaly-select-file", "value"),
+    [State("anomaly-select-features", "value"), State("anomaly-select-label", "value")],
+)
+def update_select_file_dropdown(n_clicks, filename, features, label):
     options = []
     ctx = dash.callback_context
     if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-file-parent":
+        prop_ids = {p["prop_id"].split(".")[0]: p["value"] for p in ctx.triggered}
+        if "anomaly-select-file-parent" in prop_ids:
             files = file_manager.uploaded_files()
-            for filename in files:
-                options.append({"label": filename, "value": filename})
-    return options
+            for f in files:
+                options.append({"label": f, "value": f})
+        if "anomaly-select-file" in prop_ids:
+            features, label = None, None
+    return options, features, label
 
 
 @callback(Output("anomaly-select-test-file", "options"), Input("anomaly-select-test-file-parent", "n_clicks"))
 def update_select_test_file_dropdown(n_clicks):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-test-file-parent":
-            files = file_manager.uploaded_files()
-            for filename in files:
-                options.append({"label": filename, "value": filename})
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-test-file-parent":
+        files = file_manager.uploaded_files()
+        for filename in files:
+            options.append({"label": filename, "value": filename})
     return options
 
 
@@ -56,17 +64,16 @@ def update_select_test_file_dropdown(n_clicks):
 def select_features(n_clicks, train_file, test_file, label_name):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-features-parent":
-            file_path = None
-            if train_file:
-                file_path = os.path.join(file_manager.data_directory, train_file)
-            elif test_file:
-                file_path = os.path.join(file_manager.data_directory, test_file)
-            if file_path:
-                df = AnomalyModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns if s != label_name]
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-features-parent":
+        file_path = None
+        if train_file:
+            file_path = os.path.join(file_manager.data_directory, train_file)
+        elif test_file:
+            file_path = os.path.join(file_manager.data_directory, test_file)
+        if file_path:
+            df = AnomalyModel().load_data(file_path, nrows=2)
+            options += [{"label": s, "value": s} for s in df.columns if s != label_name]
     return options
 
 
@@ -82,17 +89,16 @@ def select_features(n_clicks, train_file, test_file, label_name):
 def select_label(n_clicks, train_file, test_file, features):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-label-parent":
-            file_path = None
-            if train_file:
-                file_path = os.path.join(file_manager.data_directory, train_file)
-            elif test_file:
-                file_path = os.path.join(file_manager.data_directory, test_file)
-            if file_path:
-                df = AnomalyModel().load_data(file_path, nrows=2)
-                options += [{"label": s, "value": s} for s in df.columns if s not in (features or [])]
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-label-parent":
+        file_path = None
+        if train_file:
+            file_path = os.path.join(file_manager.data_directory, train_file)
+        elif test_file:
+            file_path = os.path.join(file_manager.data_directory, test_file)
+        if file_path:
+            df = AnomalyModel().load_data(file_path, nrows=2)
+            options += [{"label": s, "value": s} for s in df.columns if s not in (features or [])]
     return options
 
 
@@ -100,16 +106,15 @@ def select_label(n_clicks, train_file, test_file, features):
     Output("anomaly-select-algorithm", "options"),
     Input("anomaly-select-algorithm-parent", "n_clicks"),
     State("anomaly-select-features", "value"),
-    prevent_initial_call=True
+    prevent_initial_call=True,
 )
 def select_algorithm_parent(n_clicks, selected_metrics):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-algorithm-parent":
-            algorithms = AnomalyModel.get_available_algorithms(len(selected_metrics))
-            options += [{"label": s, "value": s} for s in algorithms]
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-algorithm-parent":
+        algorithms = AnomalyModel.get_available_algorithms(len(selected_metrics))
+        options += [{"label": s, "value": s} for s in algorithms]
     return options
 
 
@@ -117,11 +122,10 @@ def select_algorithm_parent(n_clicks, selected_metrics):
 def select_algorithm(algorithm):
     param_table = create_param_table()
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-algorithm":
-            param_info = AnomalyModel.get_parameter_info(algorithm)
-            param_table = create_param_table(param_info)
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-algorithm":
+        param_info = AnomalyModel.get_parameter_info(algorithm)
+        param_table = create_param_table(param_info)
     return param_table
 
 
@@ -129,11 +133,10 @@ def select_algorithm(algorithm):
 def select_threshold_parent(n_clicks):
     options = []
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-threshold-parent":
-            algorithms = AnomalyModel.get_available_thresholds()
-            options += [{"label": s, "value": s} for s in algorithms]
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-threshold-parent":
+        algorithms = AnomalyModel.get_available_thresholds()
+        options += [{"label": s, "value": s} for s in algorithms]
     return options
 
 
@@ -141,11 +144,10 @@ def select_threshold_parent(n_clicks):
 def select_threshold(threshold):
     param_table = create_param_table(height=80)
     ctx = dash.callback_context
-    if ctx.triggered:
-        prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        if prop_id == "anomaly-select-threshold" and threshold:
-            param_info = AnomalyModel.get_threshold_info(threshold)
-            param_table = create_param_table(param_info, height=80)
+    prop_id = ctx.triggered_id
+    if prop_id == "anomaly-select-threshold" and threshold:
+        param_info = AnomalyModel.get_threshold_info(threshold)
+        param_table = create_param_table(param_info, height=80)
     return param_table
 
 
@@ -210,7 +212,7 @@ def click_train_test(
 
     try:
         if ctx.triggered:
-            prop_id = ctx.triggered[0]["prop_id"].split(".")[0]
+            prop_id = ctx.triggered_id
             if prop_id == "anomaly-train-btn" and train_clicks > 0:
                 assert train_filename, "The training file is empty!"
                 assert columns, "Please select variables/metrics for analysis."

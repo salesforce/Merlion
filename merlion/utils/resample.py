@@ -11,11 +11,12 @@ from enum import Enum
 from functools import partial
 import logging
 import math
+import re
 from typing import Iterable, Sequence, Union
 
 import numpy as np
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
+from pandas.tseries.frequencies import to_offset as pd_to_offset
 import scipy.stats
 
 logger = logging.getLogger(__name__)
@@ -77,6 +78,22 @@ def to_pd_datetime(timestamp):
     return pd.to_datetime(timestamp)
 
 
+def to_offset(dt):
+    """
+    Converts a time gap to a ``pd.Timedelta`` if possible, otherwise a ``pd.DateOffset``.
+    """
+    if dt is None:
+        return None
+    if isinstance(dt, (int, float)):
+        dt = pd.to_timedelta(dt, unit="s")
+    elif isinstance(dt, str) and not any(re.match(r"\d+" + suf, dt) for suf in ("M", "m", "MS", "Q", "Y", "y")):
+        try:
+            dt = pd.to_timedelta(dt)
+        except ValueError:
+            pass
+    return dt if isinstance(dt, pd.Timedelta) else pd_to_offset(dt)
+
+
 def to_timestamp(t):
     """
     Converts a datetime to a Unix timestamp.
@@ -98,7 +115,7 @@ def granularity_str_to_seconds(granularity: Union[str, float, int, None]) -> Uni
     if isinstance(granularity, (float, int)):
         ms = np.floor(granularity * 1000)
     else:
-        ms = np.floor(pd.tseries.frequencies.to_offset(granularity).nanos / 1e6)
+        ms = np.floor(pd_to_offset(granularity).nanos / 1e6)
     return (ms / 1000).item()
 
 
@@ -131,7 +148,7 @@ def infer_granularity(time_stamps, return_offset=False):
         raise ValueError("Need at least 2 timestamps to infer a granularity.")
     offset = pd.to_timedelta(0)
     if freq is not None:
-        freq = to_offset(freq)
+        freq = pd_to_offset(freq)
         return (freq, offset) if return_offset else freq
 
     # Otherwise, start with the most commonly occurring timedelta
@@ -140,7 +157,7 @@ def infer_granularity(time_stamps, return_offset=False):
     # Check if the data could be sampled at a k-monthly granularity.
     candidate_freqs = [dt]
     for k in range(math.ceil(dt / pd.Timedelta(days=31)), math.ceil(dt / pd.Timedelta(days=28))):
-        candidate_freqs.extend([to_offset(f"{k}MS"), to_offset(f"{k}M")])
+        candidate_freqs.extend([pd_to_offset(f"{k}MS"), pd_to_offset(f"{k}M")])
 
     # Pick the sampling frequency which has the most overlap with the actual timestamps
     freq2idx = {f: pd.date_range(start=orig_t[0], end=orig_t[-1], freq=f) for f in candidate_freqs}

@@ -15,7 +15,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.utils.misc import ValIterOrderedDict
 from merlion.utils.resample import (
@@ -27,6 +26,7 @@ from merlion.utils.resample import (
     reindex_df,
     to_pd_datetime,
     to_timestamp,
+    to_offset,
 )
 
 logger = logging.getLogger(__name__)
@@ -104,12 +104,9 @@ class UnivariateTimeSeries(pd.Series):
             super().__init__(values.values, name=name, index=pd.to_datetime(values.index))
         else:
             if time_stamps is None:
-                if isinstance(freq, (int, float)):
-                    freq = pd.to_timedelta(freq, unit="s")
-                else:
-                    freq = to_offset(freq)
+                freq = to_offset(freq)
                 if is_pd and values.index.dtype in ("int64", "float64"):
-                    index = values.index.values * freq + np.full(len(values), pd.to_datetime(0))
+                    index = pd.to_datetime(0) + freq * values.index
                 else:
                     index = pd.date_range(start=0, periods=len(values), freq=freq)
             else:
@@ -176,8 +173,7 @@ class UnivariateTimeSeries(pd.Series):
 
     def __iter__(self):
         """
-        The i'th item in the iterator is the tuple
-        ``(self.time_stamps[i], self.values[i])``.
+        The i'th item in the iterator is the tuple ``(self.time_stamps[i], self.values[i])``.
         """
         return itertools.starmap(lambda t, x: (t.item(), x.item()), zip(self.np_time_stamps, self.np_values))
 
@@ -344,8 +340,7 @@ class TimeSeries:
     is *aligned* if all of its univariates have observations sampled at the exact
     set set of times.
 
-    One may access the `UnivariateTimeSeries` comprising this `TimeSeries` in
-    four ways:
+    One may access the `UnivariateTimeSeries` comprising this `TimeSeries` in four ways:
 
     1.  Iterate over the individual univariates using
 
@@ -426,6 +421,7 @@ class TimeSeries:
         self,
         univariates: Union[Mapping[Any, UnivariateTimeSeries], Iterable[UnivariateTimeSeries]],
         *,
+        freq: str = "1h",
         check_aligned=True,
     ):
         # Type/length checking of univariates
@@ -525,6 +521,10 @@ class TimeSeries:
         return self._is_aligned
 
     @property
+    def index(self):
+        return to_pd_datetime(self.np_time_stamps)
+
+    @property
     def np_time_stamps(self):
         """
         :rtype: np.ndarray
@@ -577,7 +577,6 @@ class TimeSeries:
                 "(they have different time stamps), but alignment is required "
                 "to iterate over the time series."
             )
-
         return map(self._txs_to_vec, zip(*self.univariates))
 
     def __getitem__(self, i: Union[int, slice]):
@@ -623,8 +622,7 @@ class TimeSeries:
 
     def squeeze(self) -> UnivariateTimeSeries:
         """
-        :return: a `UnivariateTimeSeries` if the time series only
-            has one univariate, otherwise returns itself, a `TimeSeries`
+        :return: `UnivariateTimeSeries` if the time series is univariate; otherwise returns itself, a `TimeSeries`
         """
         if self.dim == 1:
             return self.univariates[self.names[0]]
@@ -702,11 +700,9 @@ class TimeSeries:
         """
         Splits the time series at the point where the given timestamp ``t`` occurs.
 
-        :param t: a Unix timestamp or datetime object. Everything before time
-            ``t`` is in the left split, and everything after time ``t`` is in
-            the right split.
-        :param t_in_left: if ``True``, ``t`` is in the left split. Otherwise,
-            ``t`` is in the right split.
+        :param t: a Unix timestamp or datetime object. Everything before time ``t`` is in the left split,
+            and everything after time ``t`` is in the right split.
+        :param t_in_left: if ``True``, ``t`` is in the left split. Otherwise, ``t`` is in the right split.
 
         :rtype: Tuple[TimeSeries, TimeSeries]
         :return: the left and right splits of the time series.
@@ -730,9 +726,8 @@ class TimeSeries:
             if ``include_tf`` is ``True``, non-inclusive otherwise)
         :param include_tf: Whether to include ``tf`` in the window.
 
-        :return: The subset of the time series occurring between timestamps
-            ``t0`` (inclusive) and ``tf`` (included if ``include_tf`` is
-            ``True``, excluded otherwise).
+        :return: The subset of the time series occurring between timestamps ``t0`` (inclusive) and ``tf``
+            (included if ``include_tf`` is ``True``, excluded otherwise).
         :rtype: `TimeSeries`
         """
         return TimeSeries(ValIterOrderedDict([(k, var.window(t0, tf, include_tf)) for k, var in self.items()]))
@@ -838,13 +833,10 @@ class TimeSeries:
     @classmethod
     def from_ts_list(cls, ts_list, *, check_aligned=True):
         """
-        :param Iterable[TimeSeries] ts_list: iterable of time series we wish to
-            form a multivariate time series with
-        :param bool check_aligned: whether to check if the output time series is
-            aligned
+        :param Iterable[TimeSeries] ts_list: iterable of time series we wish to form a multivariate time series with
+        :param bool check_aligned: whether to check if the output time series is aligned
         :rtype: TimeSeries
-        :return: A multivariate `TimeSeries` created from all the time series in
-            the inputs.
+        :return: A multivariate `TimeSeries` created from all the time series in  the inputs.
         """
         ts_list = list(ts_list)
         all_names = [set(ts.names) for ts in ts_list]
@@ -949,10 +941,8 @@ class TimeSeries:
             fixed_granularity = True
             if granularity is None:
                 granularity = infer_granularity(self.time_stamps)
-            try:
-                granularity = pd.to_timedelta(granularity, unit="s")
-            except ValueError:
-                granularity = to_offset(granularity)
+            granularity = to_offset(granularity)
+            if isinstance(granularity, pd.DateOffset):
                 try:
                     granularity.nanos
                 except ValueError:
@@ -1016,7 +1006,6 @@ class TimeSeries:
                 )
             t = to_pd_datetime(sorted(t))
             return TimeSeries.from_pd(self.to_pd().loc[t], check_times=False)
-
         else:
             raise RuntimeError(f"Alignment policy {alignment_policy.name} not supported")
 

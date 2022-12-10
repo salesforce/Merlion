@@ -13,11 +13,12 @@ from typing import List, Union, Tuple
 import warnings
 
 import numpy as np
+import pandas as pd
 
 from merlion.evaluate.base import EvaluatorBase, EvaluatorConfig
 from merlion.models.forecast.base import ForecasterBase
 from merlion.utils import TimeSeries, UnivariateTimeSeries
-from merlion.utils.resample import granularity_str_to_seconds
+from merlion.utils.resample import to_offset
 
 
 class ForecastScoreAccumulator:
@@ -316,10 +317,9 @@ class ForecastEvaluatorConfig(EvaluatorConfig):
         self.horizon = horizon
 
     @property
-    def horizon(self):
+    def horizon(self) -> Union[pd.Timedelta, pd.DateOffset, None]:
         """
-        :return: the horizon (number of seconds) our model is predicting into
-            the future. Defaults to the retraining frequency.
+        :return: the horizon our model is predicting into the future. Defaults to the retraining frequency.
         """
         if self._horizon is None:
             return self.retrain_freq
@@ -327,13 +327,12 @@ class ForecastEvaluatorConfig(EvaluatorConfig):
 
     @horizon.setter
     def horizon(self, horizon):
-        self._horizon = granularity_str_to_seconds(horizon)
+        self._horizon = to_offset(horizon)
 
     @property
-    def cadence(self):
+    def cadence(self) -> Union[pd.Timedelta, pd.DateOffset, None]:
         """
-        :return: the cadence (interval, in number of seconds) at which we are
-            having our model produce new predictions. Defaults to the predictive
+        :return: the cadence at which we are having our model produce new predictions. Defaults to the predictive
             horizon if there is one, and the retraining frequency otherwise.
         """
         if self._cadence is None:
@@ -342,7 +341,7 @@ class ForecastEvaluatorConfig(EvaluatorConfig):
 
     @cadence.setter
     def cadence(self, cadence):
-        self._cadence = granularity_str_to_seconds(cadence)
+        self._cadence = to_offset(cadence)
 
 
 class ForecastEvaluator(EvaluatorBase):

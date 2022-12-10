@@ -4,5 +4,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
-TABLE_HEADER_COLOR = "lightskyblue"
-TABLE_DATA_COLOR = "rgb(239, 243, 255)"
+TABLE_HEADER_COLOR = "#014486"
+TABLE_DATA_COLOR = 'white'
