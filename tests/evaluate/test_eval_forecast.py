@@ -93,7 +93,7 @@ class TestEvaluateForecast(unittest.TestCase):
 
         # Compute ensemble's sMAPE
         smape = evaluator.evaluate(ground_truth=test, predict=pred, metric=ForecastMetric.sMAPE)
-        self.assertAlmostEqual(smape, 79.4, delta=0.2)
+        self.assertAlmostEqual(smape, 77.9, delta=2.0)
 
         # Do a quick test of save/load
         ensemble.save("tmp/eval/forecast_ensemble")
