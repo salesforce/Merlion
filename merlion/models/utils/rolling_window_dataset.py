@@ -9,7 +9,7 @@ import numpy as np
 from typing import Optional, Union
 import pandas as pd
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
-from merlion.utils.timefeatures import time_features
+from merlion.models.utils.timefeatures import get_time_features
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +26,7 @@ class RollingWindowDataset:
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
         flatten: bool = True,
-        ts_encoding: bool = False,
-        ts_freq: str = "h",
+        ts_encoding: Union[None, str] = None,
         start_token_len: int = 0,
         seed: int = 0,
     ):
@@ -60,8 +59,8 @@ class RollingWindowDataset:
         :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
         :param flatten: whether the output time series arrays should be flattened to 2 dimensions.
         :param ts_encoding: whether the timestamp should be encoded to a float vector, which can be used
-            for training transformer based deep time series models
-        :param ts_freq: Frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
+            for training deep learning based time series models; if ``None``, the timestamp is not encoded.
+            If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
             d:daily, b:business days, w:weekly, m:monthly]
         :param start_token_len: Length of start token for deep transformer encoder-decoder based models; start token,
             which you can view as the special token for nlp models (e.g., bos, sep, eos tokens). For non-transformer based models,
@@ -93,7 +92,6 @@ class RollingWindowDataset:
         self.shuffle = shuffle
         self.flatten = flatten
         self.ts_encoding = ts_encoding
-        self.ts_freq = ts_freq
         self.start_token_len = start_token_len
 
         self.target_seq_index = target_seq_index
@@ -120,17 +118,9 @@ class RollingWindowDataset:
             self.target = df.values if self.target_seq_index is None else df.values[:, target_seq_index]
 
         if self.ts_encoding:
-            self._timestamp_encoding()
+            self.timestamp = get_time_features(self.timestamp, freq=self.ts_encoding)
 
         self.seed = seed
-
-    def _timestamp_encoding(self):
-        self.timestamp = time_features(self.timestamp, freq=self.ts_freq)
-        self.timestamp = self.timestamp.transpose(1, 0)
-
-    @property
-    def autoregressive(self):
-        return (self.target_seq_index is None) and (self.n_future == 1)
 
     @property
     def n_points(self):

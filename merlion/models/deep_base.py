@@ -7,7 +7,6 @@
 """
     Base class for Deep Learning Models
 """
-
 import copy
 import logging
 from typing import List, Optional, Tuple, Union
@@ -16,6 +15,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 from abc import abstractmethod
+from enum import Enum
 
 try:
     import torch
@@ -37,22 +37,40 @@ from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, 
 logger = logging.getLogger(__name__)
 
 
+class Optimizer(Enum):
+    Adam = torch.optim.Adam
+    AdamW = torch.optim.AdamW
+    SGD = torch.optim.SGD
+    Adagrad = torch.optim.Adagrad
+    RMSprop = torch.optim.RMSprop
+
+
+class LossFunction(Enum):
+    mse = nn.MSELoss
+    l1 = nn.L1Loss
+    huber = nn.HuberLoss
+
+
 class DeepConfig(Config):
     """
-    Config Object used to define a deep learning (pytorch) model
+    Config object used to define a deep learning (pytorch) model
     """
 
     @initializer
     def __init__(
         self,
         lr: float = 1e-3,
+        weight_decay: float = 0.0,
         batch_size: int = 256,
         num_epochs: int = 10,
-        optim_name: str = "adam",
-        criterion: str = "mse",
-        clip_gradient: bool = False,
-        grad_norm_threshold: float = 1.0,
-        **kwargs
+        optimizer: Union[str, Optimizer] = Optimizer.Adam,
+        loss_fn: Union[str, LossFunction] = LossFunction.mse,
+        clip_gradient: Optional[float] = None,
+        use_gpu: bool = False,
+        ts_encoding: Union[None, str] = "h",
+        validation_rate: float = 0.2,
+        early_stop_patience: Union[None, int] = None,
+        **kwargs,
     ):
         """
         :param lr: The learning rate for training
@@ -61,6 +79,32 @@ class DeepConfig(Config):
         """
         super().__init__(**kwargs)
         self.device = None
+
+    @property
+    def optimizer(self) -> Optimizer:
+        return self._optimizer
+
+    @optimizer.setter
+    def optimizer(self, optimizer: Union[str, Optimizer]):
+        if isinstance(optimizer, str):
+            valid = set(Optimizer.__members__.keys())
+            if optimizer not in valid:
+                raise KeyError(f"{optimizer} is not a valid optimizer that supported. Valid optimizers are: {valid}")
+            optimizer = Optimizer[optimizer]
+        self._optimizer = optimizer
+
+    @property
+    def loss_fn(self) -> LossFunction:
+        return self._loss_fn
+
+    @loss_fn.setter
+    def loss_fn(self, loss_fn: Union[str, LossFunction]):
+        if isinstance(loss_fn, str):
+            valid = set(LossFunction.__members__.keys())
+            if loss_fn not in valid:
+                raise KeyError(f"{loss_fn} is not a valid loss that supported. Valid optimizers are: {valid}")
+            loss_fn = LossFunction[loss_fn]
+        self._loss_fn = loss_fn
 
 
 class TorchModel(nn.Module):
@@ -80,17 +124,34 @@ class DeepModelBase(ModelBase):
 
     config_class = DeepConfig
     deep_model_class = TorchModel
-    deep_model = None
 
     def __init__(self, config: DeepConfig):
         super().__init__(config)
+        self.deep_model = None
 
     @abstractmethod
     def _create_model(self):
+        """
+        Create and initialize deep models
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def _deep_batch_iter(self, batch, config: DeepConfig):
+    def _init_optimizer(self):
+        """
+        Initialize the optimizer for training
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _init_loss_fn(self):
+        """
+        Initialize loss functions for training
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _get_batch_model_loss_and_outputs(self, batch):
         """
         Calculate loss and get prediction given a batch
         """
@@ -99,13 +160,13 @@ class DeepModelBase(ModelBase):
     def to_gpu(self):
         """
         Set device to GPU, and move deep model to GPU
-        Currently we only support single GPU training
         """
         if torch.cuda.is_available():
             self.config.device = torch.device("cuda")
-            self.deep_model = self.deep_model.to(self.config.device)
+            if self.deep_model is not None:
+                self.deep_model = self.deep_model.to(self.config.device)
         else:
-            logger.warning("GPU not available, using CPU instead...")
+            logger.warning("GPU not available, using CPU instead")
             self.to_cpu()
 
     def to_cpu(self):
@@ -118,8 +179,26 @@ class DeepModelBase(ModelBase):
         if self.deep_model is not None:
             self.deep_model = self.deep_model.to(self.config.device)
 
-    def save_model(self, model_path: str = None):
-        raise NotImplementedError
+    def __getstate__(self):
+        state = copy.copy(self.__dict__)
+        deep_model = state.pop("deep_model", None)
+        optimizer = state.pop("optimizer", None)
+        loss_fn = state.pop("loss_fn", None)
 
-    def load_model(self, model_path: str = None):
-        raise NotImplementedError
+        state = copy.deepcopy(state)
+
+        if deep_model is not None:
+            deep_model = deep_model.to(torch.device("cpu"))
+            state["deep_model"] = copy.deepcopy(deep_model.state_dict())
+
+        return state
+
+    def __setstate__(self, state):
+        deep_model_state_dict = state.pop("forest", None)
+        super().__setstate__(state)
+
+        pdb.set_trace()
+        if deep_model_state_dict:
+            self._create_model()
+            self.to_cpu()
+            self.deep_model.load_state_dict(deep_model_state_dict)

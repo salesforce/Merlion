@@ -33,22 +33,13 @@ except ImportError as e:
 
 from merlion.models.base import NormalizingConfig
 from merlion.models.deep_base import TorchModel
-from merlion.models.forecast.deep_models.deep_forecast_base import DeepForecasterConfig, DeepForecaster
-from merlion.models.forecast.deep_models.layers.Transformer_EncDec import (
-    Decoder,
-    DecoderLayer,
-    Encoder,
-    EncoderLayer,
-    ConvLayer,
-)
-from merlion.models.forecast.deep_models.layers.SelfAttention_Family import FullAttention, AttentionLayer
-from merlion.models.forecast.deep_models.layers.Embed import DataEmbedding
+from merlion.models.forecast.deep_base import DeepForecasterConfig, DeepForecaster
 
+from merlion.models.utils.nn_modules import FullAttention, AttentionLayer, DataEmbedding, ConvLayer
 
-from merlion.transform.base import TransformBase, Identity
-from merlion.transform.factory import TransformFactory
+from merlion.models.utils.nn_modules.enc_dec_transformer import Encoder, EncoderLayer, Decoder, DecoderLayer
+
 from merlion.utils.misc import initializer
-from merlion.utils.time_series import to_pd_datetime, to_timestamp, TimeSeries, AggregationPolicy, MissingValuePolicy
 
 logger = logging.getLogger(__name__)
 
@@ -90,15 +81,19 @@ class TransformerModel(TorchModel):
         if config.target_seq_index is None:
             config.c_out = config.enc_in
         else:
-            copnfig.c_out = 1
+            config.c_out = 1
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
         self.max_forecast_steps = config.max_forecast_steps
 
-        self.enc_embedding = DataEmbedding(config.enc_in, config.d_model, config.embed, config.ts_freq, config.dropout)
+        self.enc_embedding = DataEmbedding(
+            config.enc_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+        )
 
-        self.dec_embedding = DataEmbedding(config.dec_in, config.d_model, config.embed, config.ts_freq, config.dropout)
+        self.dec_embedding = DataEmbedding(
+            config.dec_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+        )
 
         # Encoder
         self.encoder = Encoder(
@@ -148,17 +143,27 @@ class TransformerModel(TorchModel):
         self,
         past,
         past_timestamp,
-        past_dec,
-        past_timestamp_dec,
+        future,
+        future_timestamp,
         enc_self_mask=None,
         dec_self_mask=None,
         dec_enc_mask=None,
         **kwargs
     ):
+        config = self.config
+        # if future is None, we only need to do inference
+        if future is None:
+            start_token = past[:, past.shape[1] - config.start_token_len :]
+            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(config.device)
+            dec_inp = torch.cat([start_token, dec_inp], dim=1)
+        else:
+            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(config.device)
+            dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1)
+
         enc_out = self.enc_embedding(past, past_timestamp)
         enc_out, attns = self.encoder(enc_out, attn_mask=enc_self_mask)
 
-        dec_out = self.dec_embedding(past_dec, past_timestamp_dec)
+        dec_out = self.dec_embedding(dec_inp, future_timestamp)
         dec_out = self.decoder(dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
         return dec_out[:, -self.max_forecast_steps :, :]

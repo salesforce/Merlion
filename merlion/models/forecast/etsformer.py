@@ -34,9 +34,11 @@ except ImportError as e:
 
 from merlion.models.base import NormalizingConfig
 from merlion.models.deep_base import TorchModel
-from merlion.models.forecast.deep_models.deep_forecast_base import DeepForecasterConfig, DeepForecaster
-from merlion.models.forecast.deep_models.layers.Embed import ETSEmbedding
-from merlion.models.forecast.deep_models.layers.ETSformer_EncDec import EncoderLayer, Encoder, DecoderLayer, Decoder
+from merlion.models.forecast.deep_base import DeepForecasterConfig, DeepForecaster
+
+from merlion.models.utils.nn_modules import ETSEmbedding
+from merlion.models.utils.nn_modules.enc_dec_etsformer import EncoderLayer, Encoder, DecoderLayer, Decoder
+
 from merlion.utils.misc import initializer
 
 logger = logging.getLogger(__name__)
@@ -68,14 +70,14 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         )
 
         self.top_K = top_K
-        assert self.start_token_len == 0, "No need of start token for ETSformer"
+        assert self.start_token_len == 0, "No need of start token for ETSformer!"
 
 
 class ETSformerModel(TorchModel):
     def __init__(self, config: ETSformerConfig):
         super().__init__(config)
 
-        assert config.e_layers == config.d_layers, "Encoder and decoder layers must be equal"
+        assert config.e_layers == config.d_layers, "The number of encoder and decoder layers must be equal!"
         if config.dim is not None:
             config.enc_in = config.dim if config.enc_in is None else config.enc_in
             config.dec_in = config.enc_in if config.dec_in is None else config.dec_in
@@ -83,7 +85,7 @@ class ETSformerModel(TorchModel):
         if config.target_seq_index is None:
             config.c_out = config.enc_in
         else:
-            copnfig.c_out = 1
+            config.c_out = 1
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
@@ -128,12 +130,11 @@ class ETSformerModel(TorchModel):
         self,
         past,
         past_timestamp,
-        past_dec,
-        past_timestamp_dec,
+        future,
+        future_timestamp,
         enc_self_mask=None,
         dec_self_mask=None,
         dec_enc_mask=None,
-        decomposed=False,
         attention=False,
         **kwargs
     ):
@@ -144,9 +145,6 @@ class ETSformerModel(TorchModel):
         level, growths, seasons, season_attns, growth_attns = self.encoder(res, past, attn_mask=enc_self_mask)
 
         growth, season, growth_dampings = self.decoder(growths, seasons)
-
-        if decomposed:
-            return level[:, -1:], growth, season
 
         preds = level[:, -1:] + growth + season
 

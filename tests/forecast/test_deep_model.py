@@ -15,7 +15,6 @@ import pandas as pd
 from os.path import abspath, dirname, join, exists
 
 from merlion.evaluate.forecast import ForecastMetric
-from merlion.models.defaults import DefaultForecaster, DefaultForecasterConfig
 from merlion.models.forecast.autoformer import AutoformerConfig, AutoformerForecaster
 from merlion.models.forecast.transformer import TransformerConfig, TransformerForecaster
 from merlion.models.forecast.informer import InformerConfig, InformerForecaster
@@ -41,9 +40,12 @@ class TestDeepModels(unittest.TestCase):
 
         self.n_past = 96
         self.max_forecast_steps = 96
+        self.early_stop_patience = 4
+        self.num_epochs = 2
+        self.use_gpu = True
 
         df = self._obtain_df("weather")
-        bound = 96 * 3
+        bound = 96 * 10
         train_df = df[0:bound]
         test_df = df[bound : 2 * bound]
 
@@ -61,6 +63,9 @@ class TestDeepModels(unittest.TestCase):
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
             start_token_len=start_token_len,
+            early_stop_patience=self.early_stop_patience,
+            num_epochs=self.num_epochs,
+            use_gpu=self.use_gpu,
         )
 
         forecaster = AutoformerForecaster(config)
@@ -74,6 +79,9 @@ class TestDeepModels(unittest.TestCase):
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
             start_token_len=start_token_len,
+            early_stop_patience=self.early_stop_patience,
+            num_epochs=self.num_epochs,
+            use_gpu=self.use_gpu,
         )
 
         forecaster = TransformerForecaster(config)
@@ -88,6 +96,9 @@ class TestDeepModels(unittest.TestCase):
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
             start_token_len=start_token_len,
+            early_stop_patience=self.early_stop_patience,
+            num_epochs=self.num_epochs,
+            use_gpu=self.use_gpu,
         )
 
         forecaster = InformerForecaster(config)
@@ -103,6 +114,9 @@ class TestDeepModels(unittest.TestCase):
             max_forecast_steps=self.max_forecast_steps,
             start_token_len=start_token_len,
             top_K=3,  # top fourier basis
+            early_stop_patience=self.early_stop_patience,
+            num_epochs=self.num_epochs,
+            use_gpu=self.use_gpu,
         )
 
         forecaster = ETSformerForecaster(config)
@@ -155,15 +169,6 @@ class TestDeepModels(unittest.TestCase):
         pred, _ = forecaster.forecast(test.time_stamps, time_series_prev=test_prev)
 
         logger.info("Finishing testing")
-
-    def _test_multivariate(self):
-        pass
-
-    def _test_univariate(self):
-        pass
-
-    def _test_load_and_save(self):
-        pass
 
 
 if __name__ == "__main__":

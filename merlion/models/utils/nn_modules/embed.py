@@ -8,7 +8,6 @@ try:
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from torch.nn.utils import weight_norm
 except ImportError as e:
     err = (
         "Try installing Merlion with optional dependencies using `pip install salesforce-merlion[deep-learning]` or "
@@ -135,9 +134,9 @@ class DataEmbedding(nn.Module):
         return self.dropout(x)
 
 
-class DataEmbedding_wo_pos(nn.Module):
+class DataEmbeddingWoPos(nn.Module):
     def __init__(self, c_in, d_model, embed_type="fixed", freq="h", dropout=0.1):
-        super(DataEmbedding_wo_pos, self).__init__()
+        super(DataEmbeddingWoPos, self).__init__()
 
         self.value_embedding = TokenEmbedding(c_in=c_in, d_model=d_model)
         self.position_embedding = PositionalEmbedding(d_model=d_model)
@@ -160,9 +159,6 @@ class ETSEmbedding(nn.Module):
         self.dropout = nn.Dropout(p=dropout)
         nn.init.kaiming_normal_(self.conv.weight)
 
-    def forward(
-        self,
-        x,
-    ):
+    def forward(self, x):
         x = self.conv(x.permute(0, 2, 1))[..., :-2]
         return self.dropout(x.transpose(1, 2))

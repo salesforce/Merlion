@@ -34,17 +34,17 @@ except ImportError as e:
 
 from merlion.models.base import NormalizingConfig
 from merlion.models.deep_base import TorchModel
-from merlion.models.forecast.deep_models.deep_forecast_base import DeepForecasterConfig, DeepForecaster
-from merlion.models.forecast.deep_models.layers.Embed import DataEmbedding, DataEmbedding_wo_pos
-from merlion.models.forecast.deep_models.layers.AutoCorrelation import AutoCorrelation, AutoCorrelationLayer
-from merlion.models.forecast.deep_models.layers.Autoformer_EncDec import (
-    Encoder,
-    Decoder,
-    EncoderLayer,
-    DecoderLayer,
-    my_Layernorm,
-    series_decomp,
+from merlion.models.forecast.deep_base import DeepForecasterConfig, DeepForecaster
+
+from merlion.models.utils.nn_modules import (
+    AutoCorrelation,
+    AutoCorrelationLayer,
+    SeriesDecomposeBlock,
+    SeasonalLayernorm,
+    DataEmbeddingWoPos,
 )
+
+from merlion.models.utils.nn_modules.enc_dec_autoformer import Encoder, Decoder, EncoderLayer, DecoderLayer
 
 
 from merlion.utils.misc import initializer
@@ -96,17 +96,17 @@ class AutoformerModel(TorchModel):
         self.max_forecast_steps = config.max_forecast_steps
 
         kernel_size = config.moving_avg
-        self.decomp = series_decomp(kernel_size)
+        self.decomp = SeriesDecomposeBlock(kernel_size)
 
         # Embedding
         # The series-wise connection inherently contains the sequential information.
         # Thus, we can discard the position embedding of transformers.
-        self.enc_embedding = DataEmbedding_wo_pos(
-            config.enc_in, config.d_model, config.embed, config.ts_freq, config.dropout
+        self.enc_embedding = DataEmbeddingWoPos(
+            config.enc_in, config.d_model, config.embed, config.ts_encoding, config.dropout
         )
 
-        self.dec_embedding = DataEmbedding_wo_pos(
-            config.dec_in, config.d_model, config.embed, config.ts_freq, config.dropout
+        self.dec_embedding = DataEmbeddingWoPos(
+            config.dec_in, config.d_model, config.embed, config.ts_encoding, config.dropout
         )
 
         # Encoder
@@ -126,7 +126,7 @@ class AutoformerModel(TorchModel):
                 )
                 for l in range(config.e_layers)
             ],
-            norm_layer=my_Layernorm(config.d_model),
+            norm_layer=SeasonalLayernorm(config.d_model),
         )
 
         # Decoder
@@ -152,7 +152,7 @@ class AutoformerModel(TorchModel):
                 )
                 for l in range(config.d_layers)
             ],
-            norm_layer=my_Layernorm(config.d_model),
+            norm_layer=SeasonalLayernorm(config.d_model),
             projection=nn.Linear(config.d_model, config.c_out, bias=True),
         )
 
@@ -160,26 +160,37 @@ class AutoformerModel(TorchModel):
         self,
         past,
         past_timestamp,
-        past_dec,
-        past_timestamp_dec,
+        future,
+        future_timestamp,
         enc_self_mask=None,
         dec_self_mask=None,
         dec_enc_mask=None,
         **kwargs
     ):
+        config = self.config
+        # if future is None, we only need to do inference
+        if future is None:
+            start_token = past[:, (past.shape[1] - config.start_token_len) :]
+            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(config.device)
+            dec_inp = torch.cat([start_token, dec_inp], dim=1)
+        else:
+            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(config.device)
+            dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1)
 
         # decomp init
         mean = torch.mean(past, dim=1).unsqueeze(1).repeat(1, self.max_forecast_steps, 1)
-        zeros = torch.zeros([past_dec.shape[0], self.max_forecast_steps, past_dec.shape[2]], device=past.device)
+        zeros = torch.zeros([dec_inp.shape[0], self.max_forecast_steps, dec_inp.shape[2]], device=config.device)
         seasonal_init, trend_init = self.decomp(past)
         # decoder input
-        trend_init = torch.cat([trend_init[:, -self.start_token_len :, :], mean], dim=1)
-        seasonal_init = torch.cat([seasonal_init[:, -self.start_token_len :, :], zeros], dim=1)
+        trend_init = torch.cat([trend_init[:, (trend_init.shape[1] - self.start_token_len) :, :], mean], dim=1)
+        seasonal_init = torch.cat(
+            [seasonal_init[:, (seasonal_init.shape[1] - self.start_token_len) :, :], zeros], dim=1
+        )
         # enc
         enc_out = self.enc_embedding(past, past_timestamp)
         enc_out, attns = self.encoder(enc_out, attn_mask=enc_self_mask)
         # dec
-        dec_out = self.dec_embedding(seasonal_init, past_timestamp_dec)
+        dec_out = self.dec_embedding(seasonal_init, future_timestamp)
         seasonal_part, trend_part = self.decoder(
             dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask, trend=trend_init
         )
