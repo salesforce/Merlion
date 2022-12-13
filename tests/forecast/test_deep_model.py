@@ -151,7 +151,7 @@ class TestDeepModels(unittest.TestCase):
 
     def _test_model(self, forecaster, train_data, test_data):
         config = forecaster.config
-        logger.info(config.__dict__)
+        logger.info(forecaster.deep_model_class)
 
         # training
         forecaster.train(train_data)
