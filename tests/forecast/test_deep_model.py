@@ -168,8 +168,6 @@ class TestDeepModels(unittest.TestCase):
 
         pred, _ = forecaster.forecast(test.time_stamps, time_series_prev=test_prev)
 
-        logger.info("Finishing testing")
-
 
 if __name__ == "__main__":
     logging.basicConfig(
