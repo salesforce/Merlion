@@ -241,13 +241,15 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         For loss calculation and output prediction
         """
         config = self.config
+        device = self.deep_model.device
+
         past, past_timestamp, future, future_timestamp = batch
 
-        past = torch.FloatTensor(past, device=config.device)
-        future = future if future is None else torch.FloatTensor(future, device=config.device)
+        past = torch.FloatTensor(past, device=device)
+        future = future if future is None else torch.FloatTensor(future, device=device)
 
-        past_timestamp = torch.FloatTensor(past_timestamp, device=config.device)
-        future_timestamp = torch.FloatTensor(future_timestamp, device=config.device)
+        past_timestamp = torch.FloatTensor(past_timestamp, device=device)
+        future_timestamp = torch.FloatTensor(future_timestamp, device=device)
 
         model_output = self.deep_model(past, past_timestamp, future, future_timestamp)
 
@@ -255,11 +257,11 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             return None, model_output, None
 
         if config.target_seq_index is None and self.support_multivariate_output:
-            target_future = future[:, -config.max_forecast_steps :].to(config.device)
+            target_future = future[:, -config.max_forecast_steps :].to(device)
         else:
             # choose specific target_seq_index for regression
             target_idx = config.target_seq_index
-            target_future = future[:, -config.max_forecast_steps :, target_idx : target_idx + 1].to(config.device)
+            target_future = future[:, -config.max_forecast_steps :, target_idx : target_idx + 1].to(device)
 
         loss = self.loss_fn(model_output, target_future)
         return loss, model_output, target_future

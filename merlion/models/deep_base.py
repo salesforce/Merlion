@@ -16,6 +16,7 @@ import pandas as pd
 from scipy.stats import norm
 from abc import abstractmethod
 from enum import Enum
+import pdb
 
 try:
     import torch
@@ -78,7 +79,6 @@ class DeepConfig(Config):
         :param num_epochs: The number of traning epochs
         """
         super().__init__(**kwargs)
-        self.device = None
 
     @property
     def optimizer(self) -> Optimizer:
@@ -115,6 +115,10 @@ class TorchModel(nn.Module):
     @abstractmethod
     def forward(self, past, *args, **kwargs):
         raise NotImplementedError
+
+    @property
+    def device(self):
+        return next(self.parameters()).device
 
 
 class DeepModelBase(ModelBase):
@@ -159,25 +163,23 @@ class DeepModelBase(ModelBase):
 
     def to_gpu(self):
         """
-        Set device to GPU, and move deep model to GPU
+        Move deep model to GPU
         """
         if torch.cuda.is_available():
-            self.config.device = torch.device("cuda")
             if self.deep_model is not None:
-                self.deep_model = self.deep_model.to(self.config.device)
+                device = torch.device("cuda")
+                self.deep_model = self.deep_model.to(device)
         else:
             logger.warning("GPU not available, using CPU instead")
             self.to_cpu()
 
     def to_cpu(self):
         """
-        Set device to CPU and move deep model to CPU
+        Move deep model to CPU
         """
-        if self.config.device is None:
-            self.config.device = torch.device("cpu")
-
         if self.deep_model is not None:
-            self.deep_model = self.deep_model.to(self.config.device)
+            device = torch.device("cpu")
+            self.deep_model = self.deep_model.to(device)
 
     def __getstate__(self):
         state = copy.copy(self.__dict__)

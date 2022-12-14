@@ -154,10 +154,10 @@ class TransformerModel(TorchModel):
         # if future is None, we only need to do inference
         if future is None:
             start_token = past[:, past.shape[1] - config.start_token_len :]
-            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(config.device)
+            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(self.device)
             dec_inp = torch.cat([start_token, dec_inp], dim=1)
         else:
-            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(config.device)
+            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(self.device)
             dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1)
 
         enc_out = self.enc_embedding(past, past_timestamp)
