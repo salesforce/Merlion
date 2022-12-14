@@ -437,7 +437,7 @@ class BOCPD(ForecastingDetectorBase):
         i_best = np.argmin([candidate[0] for candidate in candidates])
         log_likelihood, best, train_scores = candidates[i_best]
         self.__setstate__(best.__getstate__())
-        logger.info(f"Using change kind {self.change_kind.name} because it has the best log likelihood.")
+        logger.info(f"Using change kind {self.change_kind.name} because it has the best AICc.")
         return train_scores
 
     def get_anomaly_score(

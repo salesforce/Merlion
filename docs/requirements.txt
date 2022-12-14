@@ -1,6 +1,7 @@
 GitPython
+beautifulsoup4
 ipykernel
-nbsphinx==0.8.7
+nbsphinx
 pandoc
 sphinx
 sphinx_autodoc_typehints

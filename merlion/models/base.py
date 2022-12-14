@@ -18,14 +18,14 @@ from typing import Any, Dict, Optional, Tuple, List
 
 import dill
 import pandas as pd
-from pandas.tseries.frequencies import to_offset
 
 from merlion.transform.base import TransformBase, Identity
 from merlion.transform.factory import TransformFactory
 from merlion.transform.normalize import Rescale, MeanVarNormalize
 from merlion.transform.sequence import TransformSequence
-from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, TimeSeries
+from merlion.utils.time_series import assert_equal_timedeltas, to_pd_datetime, infer_granularity, TimeSeries
 from merlion.utils.misc import AutodocABCMeta, ModelConfigMeta
+from merlion.utils.resample import to_offset
 
 logger = logging.getLogger(__name__)
 
@@ -169,6 +169,7 @@ class ModelBase(metaclass=AutodocABCMeta):
         self.config = copy.copy(config)
         self.last_train_time = None
         self.timedelta = None
+        self.timedelta_offset = pd.to_timedelta(0)
         self.train_data = None
 
     def reset(self):
@@ -259,10 +260,7 @@ class ModelBase(metaclass=AutodocABCMeta):
 
     @timedelta.setter
     def timedelta(self, timedelta):
-        try:
-            self._timedelta = pd.to_timedelta(timedelta, unit="s")
-        except:
-            self._timedelta = to_offset(timedelta)
+        self._timedelta = to_offset(timedelta)
 
     @property
     def last_train_time(self):
@@ -304,12 +302,10 @@ class ModelBase(metaclass=AutodocABCMeta):
 
         # Make sure timestamps are equally spaced if needed (e.g. for ARIMA)
         t = train_data.time_stamps
+        self.timedelta, self.timedelta_offset = infer_granularity(t, return_offset=True)
         if self.require_even_sampling:
-            assert_equal_timedeltas(train_data.univariates[train_data.names[0]])
+            assert_equal_timedeltas(train_data.univariates[train_data.names[0]], self.timedelta, self.timedelta_offset)
             assert train_data.is_aligned
-            self.timedelta = pd.infer_freq(to_pd_datetime(t))
-        else:
-            self.timedelta = t[1] - t[0]
         self.last_train_time = t[-1]
         return train_data.align() if self.auto_align else train_data
 

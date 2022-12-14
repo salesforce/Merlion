@@ -263,7 +263,7 @@ class Figure:
         ax.set_xlabel("Time")
         ax.set_ylabel(metric_name)
         ax.set_title(title if title else metric_name)
-        ax.legend(lines, [l.get_label() for l in lines])
+        fig.legend(lines, [l.get_label() for l in lines])
         fig.tight_layout()
         return fig, ax
 

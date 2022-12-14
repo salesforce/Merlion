@@ -36,7 +36,13 @@ default_role = "any"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["nbsphinx", "sphinx.ext.autodoc", "sphinx.ext.autosummary", "sphinx_autodoc_typehints"]
+extensions = [
+    "nbsphinx",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx_autodoc_typehints",
+]
 
 autoclass_content = "both"  # include both class docstring and __init__
 autodoc_default_options = {
@@ -91,3 +97,4 @@ if current_version == "latest" or packaging.version.parse(current_version) > pac
     exclude_patterns = ["examples"]
 else:
     exclude_patterns = ["tutorials"]
+exclude_patterns += ["**.ipynb_checkpoints"]

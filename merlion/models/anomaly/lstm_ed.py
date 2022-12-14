@@ -124,7 +124,7 @@ class LSTMED(DetectorBase):
         for epoch in range(self.num_epochs):
             total_loss = 0
             for batch, _, _, _ in train_loader:
-                batch = torch.FloatTensor(batch, device=self.device)
+                batch = torch.tensor(batch, dtype=torch.float, device=self.device)
                 output = self.lstmed(batch)
                 loss = loss_func(output, batch)
                 self.lstmed.zero_grad()
@@ -149,7 +149,7 @@ class LSTMED(DetectorBase):
         )
         scores, outputs = [], []
         for idx, (batch, _, _, _) in enumerate(data_loader):
-            batch = torch.FloatTensor(batch, device=self.device)
+            batch = torch.tensor(batch, dtype=torch.float, device=self.device)
             output = self.lstmed(batch)
             error = nn.L1Loss(reduction="none")(output, batch)
             score = np.mean(error.view(-1, ts.shape[1]).data.cpu().numpy(), axis=1)

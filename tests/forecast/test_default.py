@@ -138,7 +138,8 @@ class TestUnivariate(unittest.TestCase):
             forecast, err = self.model.forecast(cur_test.time_stamps, cur_train)
             if forecast_results is None:
                 forecast_results = forecast
-            forecast_results += forecast
+            else:
+                forecast_results += forecast
             t += self.model.timedelta
         rmse_onestep = ForecastMetric.RMSE.value(self.test_data, forecast_results)
         logger.info(f"Streaming RMSE = {rmse_onestep:.4f} for {self.max_forecast_steps} step forecasting")

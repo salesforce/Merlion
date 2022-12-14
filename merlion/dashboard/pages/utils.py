@@ -49,10 +49,10 @@ def create_param_table(params=None, height=100):
         data=data,
         columns=[{"id": "Parameter", "name": "Parameter"}, {"id": "Value", "name": "Value"}],
         editable=True,
-        style_header_conditional=[{"textAlign": "center"}],
-        style_cell_conditional=[{"textAlign": "center"}],
+        style_header_conditional=[{"textAlign": "center", "font-family": "Salesforce Sans"}],
+        style_cell_conditional=[{"textAlign": "center", "font-family": "Salesforce Sans"}],
         style_table={"overflowX": "scroll", "overflowY": "scroll", "height": height},
-        style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
+        style_header=dict(backgroundColor=TABLE_HEADER_COLOR, color="white"),
         style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
@@ -75,10 +75,10 @@ def create_metric_table(metrics=None):
         data=data,
         columns=columns,
         editable=False,
-        style_header_conditional=[{"textAlign": "center"}],
-        style_cell_conditional=[{"textAlign": "center"}],
+        style_header_conditional=[{"textAlign": "center", "font-family": "Salesforce Sans"}],
+        style_cell_conditional=[{"textAlign": "center", "font-family": "Salesforce Sans"}],
         style_table={"overflowX": "scroll"},
-        style_header=dict(backgroundColor=TABLE_HEADER_COLOR),
+        style_header=dict(backgroundColor=TABLE_HEADER_COLOR, color="white"),
         style_data=dict(backgroundColor=TABLE_DATA_COLOR),
     )
     return table
