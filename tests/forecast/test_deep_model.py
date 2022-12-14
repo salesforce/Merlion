@@ -5,7 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 import logging
-
+import os
 import sys
 import shutil
 import unittest
@@ -151,10 +151,13 @@ class TestDeepModels(unittest.TestCase):
 
     def _test_model(self, forecaster, train_data, test_data):
         config = forecaster.config
-        logger.info(forecaster.deep_model_class)
+        model_name = forecaster.deep_model_class.__name__
+        model_save_path = join("./models", model_name.lower())
 
+        logger.info(model_name)
         # training
         forecaster.train(train_data)
+        forecaster.save(model_save_path)
 
         # Single data forecasting testing
         dataset = RollingWindowDataset(
@@ -165,8 +168,13 @@ class TestDeepModels(unittest.TestCase):
             ts_index=True,
         )
         test_prev, test = dataset[0]
-
+        forecaster.load(model_save_path)
         pred, _ = forecaster.forecast(test.time_stamps, time_series_prev=test_prev)
+
+        try:
+            shutil.rmtree(model_save_path)
+        except OSError as e:
+            logger.error(f"Error: {e.filename} - {e.strerror}.")
 
 
 if __name__ == "__main__":

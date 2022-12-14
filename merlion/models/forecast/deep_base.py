@@ -229,7 +229,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             early_stopping.load_best_model(self.deep_model)
             logger.info(f"Load the best model with validation loss: {early_stopping.val_loss_min: .4f}")
 
-        logger.info("Ending of the train loop")
+        logger.info("End of the training loop")
 
         pred, _ = self._get_np_loss_and_prediction(total_data)
 

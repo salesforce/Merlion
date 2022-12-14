@@ -7,8 +7,11 @@
 """
     Base class for Deep Learning Models
 """
+import io
+import json
 import copy
 import logging
+
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
@@ -16,7 +19,6 @@ import pandas as pd
 from scipy.stats import norm
 from abc import abstractmethod
 from enum import Enum
-import pdb
 
 try:
     import torch
@@ -190,17 +192,19 @@ class DeepModelBase(ModelBase):
         state = copy.deepcopy(state)
 
         if deep_model is not None:
-            deep_model = deep_model.to(torch.device("cpu"))
-            state["deep_model"] = copy.deepcopy(deep_model.state_dict())
+            buffer = io.BytesIO()
+            torch.save(deep_model.state_dict(), buffer)
+            buffer.seek(0)
+            state["deep_model"] = buffer
 
         return state
 
     def __setstate__(self, state):
-        deep_model_state_dict = state.pop("forest", None)
+        model_buffer = state.pop("deep_model", None)
         super().__setstate__(state)
 
-        pdb.set_trace()
-        if deep_model_state_dict:
-            self._create_model()
-            self.to_cpu()
-            self.deep_model.load_state_dict(deep_model_state_dict)
+        if model_buffer:
+            if self.deep_model is None:
+                self._create_model()
+            device = self.deep_model.device
+            self.deep_model.load_state_dict(torch.load(model_buffer, map_location=device))
