@@ -245,11 +245,11 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         past, past_timestamp, future, future_timestamp = batch
 
-        past = torch.FloatTensor(past, device=device)
-        future = future if future is None else torch.FloatTensor(future, device=device)
+        past = torch.FloatTensor(past).to(device)
+        future = future if future is None else torch.FloatTensor(future).to(device)
 
-        past_timestamp = torch.FloatTensor(past_timestamp, device=device)
-        future_timestamp = torch.FloatTensor(future_timestamp, device=device)
+        past_timestamp = torch.FloatTensor(past_timestamp).to(device)
+        future_timestamp = torch.FloatTensor(future_timestamp).to(device)
 
         model_output = self.deep_model(past, past_timestamp, future, future_timestamp)
 
