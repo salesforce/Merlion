@@ -9,7 +9,7 @@ import numpy as np
 from typing import Optional, Union
 import pandas as pd
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
-from merlion.models.utils.timefeatures import get_time_features
+from merlion.models.utils.time_features import get_time_features
 
 logger = logging.getLogger(__name__)
 

@@ -32,7 +32,7 @@ except ImportError as e:
 from merlion.models.deep_base import DeepConfig, DeepModelBase
 from merlion.models.forecast.base import ForecasterBase, ForecasterConfig
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
-from merlion.models.utils.timefeatures import get_time_features
+from merlion.models.utils.time_features import get_time_features
 from merlion.models.utils.early_stopping import EarlyStopping
 
 from merlion.transform.base import TransformBase, Identity
