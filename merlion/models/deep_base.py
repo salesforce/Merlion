@@ -221,11 +221,6 @@ class DeepModelBase(ModelBase):
         if deep_model is not None:
             state["deep_model_state_dict"] = deep_model.state_dict()
 
-            # buffer = io.BytesIO()
-            # torch.save(deep_model.state_dict(), buffer)
-            # buffer.seek(0)
-            # state["deep_model"] = buffer
-
         return state
 
     def __setstate__(self, state):
