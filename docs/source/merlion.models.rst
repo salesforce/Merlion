@@ -60,7 +60,6 @@ Finally, we support ensembles of models in :py:mod:`merlion.models.ensemble`.
     defaults
     factory
     base
-    deep_base
     layers
     anomaly
     anomaly.change_point
@@ -116,14 +115,6 @@ layers
 ------
 
 .. automodule:: merlion.models.layers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-deep\_base
-----------
-
-.. automodule:: merlion.models.deep_base
    :members:
    :undoc-members:
    :show-inheritance:

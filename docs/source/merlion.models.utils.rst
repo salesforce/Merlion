@@ -30,19 +30,3 @@ utils.autosarima\_utils
    :show-inheritance:
 
 
-utils.early\_stopping
----------------------
-
-.. automodule:: merlion.models.utils.early_stopping
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-utils.time\_features
---------------------
-
-.. automodule:: merlion.models.utils.time_features
-   :members:
-   :undoc-members:
-   :show-inheritance:
-

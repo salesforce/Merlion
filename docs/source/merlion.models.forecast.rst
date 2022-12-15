@@ -10,7 +10,6 @@ Base classes:
 
 .. autosummary::
     base
-    deep_base
     sklearn_base
 
 Univariate models:
@@ -28,11 +27,6 @@ Univariate models:
 .. autosummary::
     vector_ar
     trees
-    informer
-    etsformer
-    autoformer 
-    transformer
-
 
 `Exogenous regressor <tutorials/forecast/3_ForecastExogenous>` models:
 
@@ -62,13 +56,6 @@ forecast.base
 forecast.sklearn\_base
 ^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.sklearn_base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-forecast.deep\_base
-^^^^^^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.deep_base
    :members:
    :undoc-members:
    :show-inheritance:
@@ -136,30 +123,3 @@ forecast.trees
    :undoc-members:
    :show-inheritance:
 
-forecast.informer
-^^^^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.informer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-forecast.etsformer
-^^^^^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.etsformer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-forecast.autoformer
-^^^^^^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.autoformer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-forecast.transformer
-^^^^^^^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.transformer
-   :members:
-   :undoc-members:
-   :show-inheritance:
