@@ -67,7 +67,7 @@ forecast.sklearn\_base
    :show-inheritance:
 
 forecast.deep\_base
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.deep_base
    :members:
    :undoc-members:

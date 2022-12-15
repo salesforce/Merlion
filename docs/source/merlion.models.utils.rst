@@ -31,7 +31,7 @@ utils.autosarima\_utils
 
 
 utils.early\_stopping
------------------------
+---------------------
 
 .. automodule:: merlion.models.utils.early_stopping
    :members:
@@ -39,7 +39,7 @@ utils.early\_stopping
    :show-inheritance:
 
 utils.time\_features
------------------------
+--------------------
 
 .. automodule:: merlion.models.utils.time_features
    :members:

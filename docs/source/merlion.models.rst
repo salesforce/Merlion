@@ -120,8 +120,8 @@ layers
    :undoc-members:
    :show-inheritance:
 
-deep_base
-----
+deep\_base
+----------
 
 .. automodule:: merlion.models.deep_base
    :members:
