@@ -137,28 +137,28 @@ forecast.trees
    :show-inheritance:
 
 forecast.informer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.informer
    :members:
    :undoc-members:
    :show-inheritance:
 
 forecast.etsformer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.etsformer
    :members:
    :undoc-members:
    :show-inheritance:
 
 forecast.autoformer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.autoformer
    :members:
    :undoc-members:
    :show-inheritance:
 
 forecast.transformer
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.transformer
    :members:
    :undoc-members:
