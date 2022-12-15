@@ -145,7 +145,7 @@ forecast.informer
 
 forecast.etsformer
 ^^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.etsforemr
+.. automodule:: merlion.models.forecast.etsformer
    :members:
    :undoc-members:
    :show-inheritance:
