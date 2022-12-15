@@ -24,7 +24,17 @@ logger = logging.getLogger(__name__)
 
 
 class EarlyStopping:
+    """
+    Early stopping for deep model training
+    """
+
     def __init__(self, patience=7, delta=0):
+        """
+        :param patience: Number of epochs with no improvement after which training will be stopped.
+        :param delta: Minimum change in the monitored quantity to qualify as an improvement,
+            i.e. an absolute change of less than min_delta, will count as no improvement.
+        """
+
         self.patience = patience
         self.counter = 0
         self.best_score = None

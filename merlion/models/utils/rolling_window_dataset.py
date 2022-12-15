@@ -118,7 +118,7 @@ class RollingWindowDataset:
             self.target = df.values if self.target_seq_index is None else df.values[:, target_seq_index]
 
         if self.ts_encoding:
-            self.timestamp = get_time_features(self.timestamp, freq=self.ts_encoding)
+            self.timestamp = get_time_features(self.timestamp, self.ts_encoding)
 
         self.seed = seed
 

@@ -182,7 +182,7 @@ class ForecasterBase(ModelBase):
         )
 
         if self.support_multivariate_output and self.target_seq_index is None:
-            self.target_name = "multivariate outputs"
+            self.target_name = str(train_data.names)
         else:
             self.target_name = train_data.names[self.target_seq_index]
 

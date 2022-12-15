@@ -45,12 +45,15 @@ logger = logging.getLogger(__name__)
 
 
 class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
+    """
+    Config object for transformer forecaster
+    """
+
     @initializer
     def __init__(
         self,
         n_past,
         max_forecast_steps: int = None,
-        start_token_len: int = 0,
         enc_in: int = None,
         dec_in: int = None,
         e_layers: int = 2,
@@ -65,12 +68,33 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
         distil: bool = True,
         **kwargs
     ):
-        super().__init__(
-            n_past=n_past, max_forecast_steps=max_forecast_steps, start_token_len=start_token_len, **kwargs
-        )
+        """
+        :param n_past: # of past steps used for forecasting future.
+        :param max_forecast_steps:  Max # of steps we would like to forecast for.
+        :param enc_in: Input size of encoder. If `enc_in = None`, then the model will automatically use `config.dim`,
+            which is the dimension of the input data.
+        :param dec_in: Input size of decoder. If `dec_in = None`, then the model will automatically use `config.dim`,
+            which is the dimension of the input data.
+        :param e_layers: Number of encoder layers.
+        :param d_layers: Number of decoder layers.
+        :param factor: Attention factor.
+        :param d_model: Dimension of the model.
+        :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
+        :param dropout: dropout rate.
+        :param activation: Activation function, can be `gelu`, `relu`, `sigmoid`, etc.
+        :param n_heads: Number of heads of the model.
+        :param d_ff: Hidden dimension of the MLP layer in the model.
+        :param distil: whether to use distilling in the encoder of the model.
+        """
+
+        super().__init__(n_past=n_past, max_forecast_steps=max_forecast_steps, **kwargs)
 
 
 class TransformerModel(TorchModel):
+    """
+    Implementaion of Transformer Deep Torch Model
+    """
+
     def __init__(self, config: TransformerConfig):
         super().__init__(config)
 
@@ -170,6 +194,10 @@ class TransformerModel(TorchModel):
 
 
 class TransformerForecaster(DeepForecaster):
+    """
+    Implementaion of Transformer deep forecaster
+    """
+
     config_class = TransformerConfig
     deep_model_class = TransformerModel
 

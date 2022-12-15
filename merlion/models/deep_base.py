@@ -5,7 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Base class for Deep Learning Models
+Contains the base classes for all deep learning models.
 """
 import io
 import json
@@ -62,23 +62,36 @@ class DeepConfig(Config):
     @initializer
     def __init__(
         self,
-        lr: float = 1e-3,
-        weight_decay: float = 0.0,
-        batch_size: int = 256,
+        batch_size: int = 32,
         num_epochs: int = 10,
         optimizer: Union[str, Optimizer] = Optimizer.Adam,
         loss_fn: Union[str, LossFunction] = LossFunction.mse,
         clip_gradient: Optional[float] = None,
         use_gpu: bool = False,
         ts_encoding: Union[None, str] = "h",
+        lr: float = 1e-4,
+        weight_decay: float = 0.0,
         validation_rate: float = 0.2,
         early_stop_patience: Union[None, int] = None,
         **kwargs,
     ):
         """
-        :param lr: The learning rate for training
-        :param batch_size: The batch size for training
-        :param num_epochs: The number of traning epochs
+        :param batch_size: Batch size of a batch for stochastic training of deep models
+        :param num_epochs: Total number of epochs for training.
+        :param optimizer: The optimizer for learning the parameters of the deep learning models. The value of optimizer
+            can be `Adam`, `AdamW`, `SGD`, `Adagrad`, `RMSprop`.
+        :param loss_fn: Loss function for optimizing deep learning models. The value of loss_fn can be `mse` for l2 loss,
+            `l1` for l1 loss, `huber` for huber loss.
+        :param clip_gradient: Clipping gradient norm of model parameters before updating. If `clip_gradient is None`,
+            then the gradient will not be clipped.
+        :param use_gpu: Whether to use gpu for training deep models. If `use_gpu = True` while thre is no GPU device,
+            the model will use CPU for training instead.
+        :param ts_encoding: Encoding timestamps into float vectors, which can be further utilized for deep learning model training
+        :param lr: Learning rate for optimizing deep learning models.
+        :param weight_decay: Weight decay (L2 penalty) (default: 0)
+        :param validation_rate: Data percent of validation set splitted from training data
+        :param early_stop_patience: Number of epochs with no improvement after which training will be stopped for
+            early stopping function. If `early_stop_patience = None`, the training process will not stop early.
         """
         super().__init__(**kwargs)
 
@@ -110,6 +123,10 @@ class DeepConfig(Config):
 
 
 class TorchModel(nn.Module):
+    """
+    Abstract base class for Pytorch deep learning models
+    """
+
     def __init__(self, config: DeepConfig):
         super(TorchModel, self).__init__()
         self.config = config
@@ -125,7 +142,7 @@ class TorchModel(nn.Module):
 
 class DeepModelBase(ModelBase):
     """
-    Base class for a deep learning model
+    Abstract base class for all deep learning models
     """
 
     config_class = DeepConfig
@@ -138,28 +155,38 @@ class DeepModelBase(ModelBase):
     @abstractmethod
     def _create_model(self):
         """
-        Create and initialize deep models
+        Create and initialize deep models and neccessary components for training
         """
         raise NotImplementedError
 
-    @abstractmethod
     def _init_optimizer(self):
         """
         Initialize the optimizer for training
         """
-        raise NotImplementedError
 
-    @abstractmethod
+        self.optimizer = self.config.optimizer.value(
+            self.deep_model.parameters(),
+            lr=self.config.lr,
+            weight_decay=self.config.weight_decay,
+        )
+
     def _init_loss_fn(self):
         """
-        Initialize loss functions for training
+        Initialize the loss function for training
         """
-        raise NotImplementedError
+
+        self.loss_fn = self.config.loss_fn.value()
+
+    def _post_model_creation(self):
+        """
+        Post Model creation
+        """
+        pass
 
     @abstractmethod
     def _get_batch_model_loss_and_outputs(self, batch):
         """
-        Calculate loss and get prediction given a batch
+        Calculate optimizing loss and get the output of the deep_model,  given a batch of data
         """
         raise NotImplementedError
 
@@ -192,19 +219,27 @@ class DeepModelBase(ModelBase):
         state = copy.deepcopy(state)
 
         if deep_model is not None:
-            buffer = io.BytesIO()
-            torch.save(deep_model.state_dict(), buffer)
-            buffer.seek(0)
-            state["deep_model"] = buffer
+            state["deep_model_state_dict"] = deep_model.state_dict()
+
+            # buffer = io.BytesIO()
+            # torch.save(deep_model.state_dict(), buffer)
+            # buffer.seek(0)
+            # state["deep_model"] = buffer
 
         return state
 
     def __setstate__(self, state):
-        model_buffer = state.pop("deep_model", None)
+        deep_model_state_dict = state.pop("deep_model_state_dict", None)
         super().__setstate__(state)
 
-        if model_buffer:
+        if deep_model_state_dict:
             if self.deep_model is None:
                 self._create_model()
+
             device = self.deep_model.device
-            self.deep_model.load_state_dict(torch.load(model_buffer, map_location=device))
+
+            buffer = io.BytesIO()
+            torch.save(deep_model_state_dict, buffer)
+            buffer.seek(0)
+
+            self.deep_model.load_state_dict(torch.load(buffer, map_location=device))

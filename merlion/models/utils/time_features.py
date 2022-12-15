@@ -97,8 +97,9 @@ class WeekOfYear(TimeFeature):
 
 def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
     """
-    Returns a list of time features that will be appropriate for the given frequency string.
     :param freq_str: Frequency string of the form [multiple][granularity] such as "12H", "5min", "1D" etc.
+
+    :return: a list of time features that will be appropriate for the given frequency string.
     """
 
     features_by_offsets = {
@@ -149,6 +150,10 @@ def time_features_from_frequency_str(freq_str: str) -> List[TimeFeature]:
     raise RuntimeError(supported_freq_msg)
 
 
-def get_time_features(dates, freq="h"):
-    features = np.vstack([feat(dates) for feat in time_features_from_frequency_str(freq)])
+def get_time_features(dates: pd.DatetimeIndex, ts_encoding: str = "h"):
+    """
+    Convert pandas Datetime to numerical vectors that can be used for training
+    """
+
+    features = np.vstack([feat(dates) for feat in time_features_from_frequency_str(ts_encoding)])
     return features.transpose(1, 0)

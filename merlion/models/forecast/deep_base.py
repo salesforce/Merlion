@@ -45,12 +45,21 @@ logger = logging.getLogger(__name__)
 
 
 class DeepForecasterConfig(DeepConfig, ForecasterConfig):
+    """
+    Config object used to define a forecaster with deep model
+    """
+
     def __init__(
         self,
         n_past: int,
         start_token_len: int = 0,
         **kwargs,
     ):
+        """
+        :param n_past: # of past steps used for forecasting future.
+        :param start_token_len: Length of the start token for transformer based deep models such as
+            `Autoformer` or `Informer`. The start token is similar to sos or eos token concepts in NLP transformer models.
+        """
         super().__init__(
             **kwargs,
         )
@@ -77,40 +86,16 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         self._post_model_creation()
 
-    def _init_optimizer(self):
-        self.optimizer = self.config.optimizer.value(
-            self.deep_model.parameters(),
-            lr=self.config.lr,
-            weight_decay=self.config.weight_decay,
-        )
-
-    def _init_loss_fn(self):
-        self.loss_fn = self.config.loss_fn.value()
-
-    def _post_model_creation(self):
-        logger.info("Finish model creation")
-
-    def _get_np_loss_and_prediction(self, evaluate_data: Union[pd.DataFrame, RollingWindowDataset]):
+    def _get_np_loss_and_prediction(self, eval_dataset: RollingWindowDataset):
         """
-        Get numpy prediction and loss with evaluation mode for a whole dataset
+        Get numpy prediction and loss with evaluation mode for a given dataset or data
+
+        :param evaluate_data: Evaluation data or dataset
+
+        :return: The numpy prediction of the model and the average loss for the given dataset.
         """
         config = self.config
         self.deep_model.eval()
-
-        if isinstance(evaluate_data, pd.DataFrame):
-            eval_dataset = RollingWindowDataset(
-                evaluate_data,
-                n_past=config.n_past,
-                n_future=config.max_forecast_steps,
-                batch_size=config.batch_size,
-                target_seq_index=None,  # set None, we use config.target_seq_index later in the training
-                ts_encoding=config.ts_encoding,
-                start_token_len=config.start_token_len,
-                flatten=False,
-                shuffle=False,
-            )
-        else:
-            eval_dataset = evaluate_data
 
         all_preds = []
         all_trues = []
@@ -239,17 +224,21 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
     def _get_batch_model_loss_and_outputs(self, batch):
         """
         For loss calculation and output prediction
+
+        :param batch: a batch contains `(past, past_timestamp, future, future_timestamp)` used for calculating loss and outputs
+
+        :return: calculated loss, deep model outputs and targeted ground truth future
         """
         config = self.config
         device = self.deep_model.device
 
         past, past_timestamp, future, future_timestamp = batch
 
-        past = torch.FloatTensor(past).to(device)
-        future = future if future is None else torch.FloatTensor(future).to(device)
+        past = torch.tensor(past, dtype=torch.float, device=device)
+        future = future if future is None else torch.tensor(future, dtype=torch.float, device=device)
 
-        past_timestamp = torch.FloatTensor(past_timestamp).to(device)
-        future_timestamp = torch.FloatTensor(future_timestamp).to(device)
+        past_timestamp = torch.tensor(past_timestamp, dtype=torch.float, device=device)
+        future_timestamp = torch.tensor(future_timestamp, dtype=torch.float, device=device)
 
         model_output = self.deep_model(past, past_timestamp, future, future_timestamp)
 

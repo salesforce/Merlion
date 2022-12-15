@@ -38,14 +38,15 @@ class TestDeepModels(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.n_past = 96
-        self.max_forecast_steps = 96
+        self.n_past = 16
+        self.max_forecast_steps = 16
         self.early_stop_patience = 4
         self.num_epochs = 2
         self.use_gpu = True
+        self.batch_size = 32
 
         df = self._obtain_df("weather")
-        bound = 96 * 10
+        bound = 16 * 10
         train_df = df[0:bound]
         test_df = df[bound : 2 * bound]
 
@@ -58,7 +59,7 @@ class TestDeepModels(unittest.TestCase):
     def test_autoformer(self):
 
         logger.info("Testing Autoformer forecasting")
-        start_token_len = 48
+        start_token_len = 8
         config = AutoformerConfig(
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
@@ -66,6 +67,7 @@ class TestDeepModels(unittest.TestCase):
             early_stop_patience=self.early_stop_patience,
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
+            batch_size=self.batch_size,
         )
 
         forecaster = AutoformerForecaster(config)
@@ -74,7 +76,7 @@ class TestDeepModels(unittest.TestCase):
 
     def test_transformer(self):
         logger.info("Testing Transformer forecasting")
-        start_token_len = 48
+        start_token_len = 8
         config = TransformerConfig(
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
@@ -82,6 +84,7 @@ class TestDeepModels(unittest.TestCase):
             early_stop_patience=self.early_stop_patience,
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
+            batch_size=self.batch_size,
         )
 
         forecaster = TransformerForecaster(config)
@@ -90,7 +93,7 @@ class TestDeepModels(unittest.TestCase):
 
     def test_informer(self):
         logger.info("Testing Informer forecasting")
-        start_token_len = 48
+        start_token_len = 8
 
         config = InformerConfig(
             n_past=self.n_past,
@@ -99,6 +102,7 @@ class TestDeepModels(unittest.TestCase):
             early_stop_patience=self.early_stop_patience,
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
+            batch_size=self.batch_size,
         )
 
         forecaster = InformerForecaster(config)
@@ -117,6 +121,7 @@ class TestDeepModels(unittest.TestCase):
             early_stop_patience=self.early_stop_patience,
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
+            batch_size=self.batch_size,
         )
 
         forecaster = ETSformerForecaster(config)

@@ -45,35 +45,52 @@ logger = logging.getLogger(__name__)
 
 
 class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
+    """
+    Config object for ETSformer forecaster
+    """
+
     @initializer
     def __init__(
         self,
         n_past,
         max_forecast_steps: int = None,
-        start_token_len: int = 0,
         enc_in: int = None,
         dec_in: int = None,
         e_layers: int = 2,
         d_layers: int = 2,
         d_model: int = 512,
-        embed: str = "timeF",
         dropout: float = 0.2,
-        activation: str = "sigmoid",
         n_heads: int = 8,
         d_ff: int = 2048,
         top_K: int = 1,  # Top-K Fourier bases
         sigma=0.2,
         **kwargs
     ):
-        super().__init__(
-            n_past=n_past, max_forecast_steps=max_forecast_steps, start_token_len=start_token_len, **kwargs
-        )
-
-        self.top_K = top_K
+        """
+        :param n_past: # of past steps used for forecasting future.
+        :param max_forecast_steps:  Max # of steps we would like to forecast for.
+        :param enc_in: Input size of encoder. If `enc_in = None`, then the model will automatically use `config.dim`,
+            which is the dimension of the input data.
+        :param dec_in: Input size of decoder. If `dec_in = None`, then the model will automatically use `config.dim`,
+            which is the dimension of the input data.
+        :param e_layers: Number of encoder layers.
+        :param d_layers: Number of decoder layers.
+        :param d_model: Dimension of the model.
+        :param dropout: dropout rate.
+        :param n_heads: Number of heads of the model.
+        :param d_ff: Hidden dimension of the MLP layer in the model.
+        :param top_K: Top-K Frequent Fourier basis.
+        :param sigma: Standard derivation for ETS input data transform.
+        """
+        super().__init__(n_past=n_past, max_forecast_steps=max_forecast_steps, **kwargs)
         assert self.start_token_len == 0, "No need of start token for ETSformer!"
 
 
 class ETSformerModel(TorchModel):
+    """
+    Implementaion of ETSformer Deep Torch Model
+    """
+
     def __init__(self, config: ETSformerConfig):
         super().__init__(config)
 
@@ -104,7 +121,6 @@ class ETSformerModel(TorchModel):
                     config.top_K,
                     dim_feedforward=config.d_ff,
                     dropout=config.dropout,
-                    activation=config.activation,
                     output_attention=False,
                 )
                 for _ in range(config.e_layers)
@@ -177,6 +193,10 @@ class ETSformerModel(TorchModel):
 
 
 class ETSformerForecaster(DeepForecaster):
+    """
+    Implementaion of ETSformer deep forecaster
+    """
+
     config_class = ETSformerConfig
     deep_model_class = ETSformerModel
 
