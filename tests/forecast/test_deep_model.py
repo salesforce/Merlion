@@ -46,7 +46,7 @@ class TestDeepModels(unittest.TestCase):
         self.batch_size = 32
 
         df = self._obtain_df("weather")
-        bound = 16 * 10
+        bound = 16 * 20
         train_df = df[0:bound]
         test_df = df[bound : 2 * bound]
 

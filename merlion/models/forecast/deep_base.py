@@ -216,7 +216,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         logger.info("End of the training loop")
 
-        pred, _ = self._get_np_loss_and_prediction(total_data)
+        pred, _ = self._get_np_loss_and_prediction(training_dataset)
 
         # since the model predicts multiple steps, we concatenate all the first steps together
         return pd.DataFrame(pred[:, 0], columns=total_data.columns), None
