@@ -155,7 +155,6 @@ class DeepModelBase(ModelBase):
         super().__init__(config)
         self.deep_model = None
 
-    @abstractmethod
     def _create_model(self):
         """
         Create and initialize deep models and neccessary components for training
