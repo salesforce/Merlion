@@ -78,15 +78,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
     def __init__(self, config: DeepForecasterConfig):
         super().__init__(config)
 
-    def _create_model(self):
-        self.deep_model = self.deep_model_class(self.config)
-
-        self._init_optimizer()
-
-        self._init_loss_fn()
-
-        self._post_model_creation()
-
     def _get_np_loss_and_prediction(self, eval_dataset: RollingWindowDataset):
         """
         Get numpy prediction and loss with evaluation mode for a given dataset or data

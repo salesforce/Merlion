@@ -79,14 +79,17 @@ class DeepConfig(Config):
         :param batch_size: Batch size of a batch for stochastic training of deep models
         :param num_epochs: Total number of epochs for training.
         :param optimizer: The optimizer for learning the parameters of the deep learning models. The value of optimizer
-            can be `Adam`, `AdamW`, `SGD`, `Adagrad`, `RMSprop`.
+            can be ``Adam``, ``AdamW``, ``SGD``, ``Adagrad``, ``RMSprop``.
         :param loss_fn: Loss function for optimizing deep learning models. The value of loss_fn can be `mse` for l2 loss,
             `l1` for l1 loss, `huber` for huber loss.
         :param clip_gradient: Clipping gradient norm of model parameters before updating. If `clip_gradient is None`,
             then the gradient will not be clipped.
-        :param use_gpu: Whether to use gpu for training deep models. If `use_gpu = True` while thre is no GPU device,
+        :param use_gpu: Whether to use gpu for training deep models. If ``use_gpu = True`` while thre is no GPU device,
             the model will use CPU for training instead.
-        :param ts_encoding: Encoding timestamps into float vectors, which can be further utilized for deep learning model training
+        :param ts_encoding: whether the timestamp should be encoded to a float vector, which can be used
+            for training deep learning based time series models; if ``None``, the timestamp is not encoded.
+            If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
+            d:daily, b:business days, w:weekly, m:monthly]
         :param lr: Learning rate for optimizing deep learning models.
         :param weight_decay: Weight decay (L2 penalty) (default: 0)
         :param validation_rate: Data percent of validation set splitted from training data
@@ -157,12 +160,8 @@ class DeepModelBase(ModelBase):
         """
         Create and initialize deep models and neccessary components for training
         """
-        raise NotImplementedError
 
-    def _init_optimizer(self):
-        """
-        Initialize the optimizer for training
-        """
+        self.deep_model = self.deep_model_class(self.config)
 
         self.optimizer = self.config.optimizer.value(
             self.deep_model.parameters(),
@@ -170,18 +169,7 @@ class DeepModelBase(ModelBase):
             weight_decay=self.config.weight_decay,
         )
 
-    def _init_loss_fn(self):
-        """
-        Initialize the loss function for training
-        """
-
         self.loss_fn = self.config.loss_fn.value()
-
-    def _post_model_creation(self):
-        """
-        Post Model creation
-        """
-        pass
 
     @abstractmethod
     def _get_batch_model_loss_and_outputs(self, batch):
