@@ -9,7 +9,6 @@ utils
 .. autosummary::
     rolling_window_dataset
     autosarima_utils
-    
 
 
 utils.rolling\_window\_dataset
@@ -19,6 +18,7 @@ utils.rolling\_window\_dataset
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 utils.autosarima\_utils
 -----------------------

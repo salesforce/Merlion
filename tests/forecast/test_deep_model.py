@@ -160,7 +160,8 @@ class TestDeepModels(unittest.TestCase):
         model_save_path = join("./models", model_name.lower())
 
         logger.info(model_name)
-        # training
+
+        # training & saving
         forecaster.train(train_data)
         forecaster.save(model_save_path)
 
