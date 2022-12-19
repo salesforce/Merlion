@@ -105,7 +105,6 @@ class ETSformerModel(TorchModel):
             config.c_out = 1
 
         self.n_past = config.n_past
-        self.start_token_len = config.start_token_len
         self.max_forecast_steps = config.max_forecast_steps
 
         self.enc_embedding = ETSEmbedding(config.enc_in, config.d_model, dropout=config.dropout)
@@ -146,7 +145,6 @@ class ETSformerModel(TorchModel):
         self,
         past,
         past_timestamp,
-        future,
         future_timestamp,
         enc_self_mask=None,
         dec_self_mask=None,

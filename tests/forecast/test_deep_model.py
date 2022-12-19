@@ -59,7 +59,7 @@ class TestDeepModels(unittest.TestCase):
     def test_autoformer(self):
 
         logger.info("Testing Autoformer forecasting")
-        start_token_len = 8
+        start_token_len = 3
         config = AutoformerConfig(
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
@@ -76,7 +76,7 @@ class TestDeepModels(unittest.TestCase):
 
     def test_transformer(self):
         logger.info("Testing Transformer forecasting")
-        start_token_len = 8
+        start_token_len = 3
         config = TransformerConfig(
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
@@ -93,7 +93,7 @@ class TestDeepModels(unittest.TestCase):
 
     def test_informer(self):
         logger.info("Testing Informer forecasting")
-        start_token_len = 8
+        start_token_len = 3
 
         config = InformerConfig(
             n_past=self.n_past,

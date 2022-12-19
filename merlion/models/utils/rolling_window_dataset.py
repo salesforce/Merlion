@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+A rolling window dataset
+"""
 import logging
 import numpy as np
 from typing import Optional, Union
@@ -27,7 +30,6 @@ class RollingWindowDataset:
         batch_size: Optional[int] = 1,
         flatten: bool = True,
         ts_encoding: Union[None, str] = None,
-        start_token_len: int = 0,
         seed: int = 0,
     ):
         """
@@ -62,9 +64,6 @@ class RollingWindowDataset:
             for training deep learning based time series models; if ``None``, the timestamp is not encoded.
             If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
             d:daily, b:business days, w:weekly, m:monthly]
-        :param start_token_len: Length of start token for deep transformer encoder-decoder based models; start token,
-            which you can view as the special token for nlp models (e.g., bos, sep, eos tokens). For non-transformer based models,
-            we set the token_length = 0
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -92,7 +91,6 @@ class RollingWindowDataset:
         self.shuffle = shuffle
         self.flatten = flatten
         self.ts_encoding = ts_encoding
-        self.start_token_len = start_token_len
 
         self.target_seq_index = target_seq_index
         self.n_future = n_future
@@ -170,8 +168,8 @@ class RollingWindowDataset:
         assert 0 <= idx < self.n_points
         past_start = idx
         past_end = past_start + self.n_past
-        future_start = past_end - self.start_token_len
-        future_end = future_start + self.start_token_len + self.n_future
+        future_start = past_end
+        future_end = future_start + self.n_future
 
         past = self.data[past_start:past_end]
         past_timestamp = self.timestamp[past_start:past_end]

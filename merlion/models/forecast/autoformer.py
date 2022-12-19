@@ -184,7 +184,6 @@ class AutoformerModel(TorchModel):
         self,
         past,
         past_timestamp,
-        future,
         future_timestamp,
         enc_self_mask=None,
         dec_self_mask=None,
@@ -192,24 +191,23 @@ class AutoformerModel(TorchModel):
         **kwargs
     ):
         config = self.config
-        # if future is None, we only need to do inference
-        if future is None:
-            start_token = past[:, (past.shape[1] - config.start_token_len) :]
-            dec_inp = torch.zeros(past.shape[0], config.max_forecast_steps, config.dec_in).float().to(self.device)
-            dec_inp = torch.cat([start_token, dec_inp], dim=1)
-        else:
-            dec_inp = torch.zeros_like(future[:, -config.max_forecast_steps :, :]).float().to(self.device)
-            dec_inp = torch.cat([future[:, : config.start_token_len, :], dec_inp], dim=1)
+
+        future_timestamp = torch.cat(
+            [past_timestamp[:, (past_timestamp.shape[1] - self.start_token_len) :], future_timestamp], dim=1
+        )
 
         # decomp init
         mean = torch.mean(past, dim=1).unsqueeze(1).repeat(1, self.max_forecast_steps, 1)
-        zeros = torch.zeros([dec_inp.shape[0], self.max_forecast_steps, dec_inp.shape[2]], device=self.device)
+        zeros = torch.zeros(
+            [past.shape[0], self.max_forecast_steps, past.shape[2]], dtype=torch.float, device=self.device
+        )
         seasonal_init, trend_init = self.decomp(past)
         # decoder input
         trend_init = torch.cat([trend_init[:, (trend_init.shape[1] - self.start_token_len) :, :], mean], dim=1)
         seasonal_init = torch.cat(
             [seasonal_init[:, (seasonal_init.shape[1] - self.start_token_len) :, :], zeros], dim=1
         )
+
         # enc
         enc_out = self.enc_embedding(past, past_timestamp)
         enc_out, attns = self.encoder(enc_out, attn_mask=enc_self_mask)

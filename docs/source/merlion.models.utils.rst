@@ -9,7 +9,7 @@ utils
 .. autosummary::
     rolling_window_dataset
     autosarima_utils
-    early_stopping
+    
 
 
 utils.rolling\_window\_dataset
@@ -20,7 +20,6 @@ utils.rolling\_window\_dataset
    :undoc-members:
    :show-inheritance:
 
-
 utils.autosarima\_utils
 -----------------------
 
@@ -28,5 +27,3 @@ utils.autosarima\_utils
    :members:
    :undoc-members:
    :show-inheritance:
-
-

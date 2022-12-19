@@ -57,8 +57,9 @@ class DeepForecasterConfig(DeepConfig, ForecasterConfig):
     ):
         """
         :param n_past: # of past steps used for forecasting future.
-        :param start_token_len: Length of the start token for transformer based deep models such as
-            `Autoformer` or `Informer`. The start token is similar to sos or eos token concepts in NLP transformer models.
+        :param start_token_len: Length of start token for deep transformer encoder-decoder based models such as
+            ``Autoformer`` or ``informer``. The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
+            For non-transformer based models, we set the ``start_token_len = 0``.
         """
         super().__init__(
             **kwargs,
@@ -152,7 +153,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             batch_size=config.batch_size,
             target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training, if not this is a bug
             ts_encoding=config.ts_encoding,
-            start_token_len=config.start_token_len,
             flatten=False,
             shuffle=True,
         )
@@ -164,7 +164,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             batch_size=config.batch_size,
             target_seq_index=None,
             ts_encoding=config.ts_encoding,
-            start_token_len=config.start_token_len,
             flatten=False,
             shuffle=False,
         )
@@ -225,7 +224,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         """
         For loss calculation and output prediction
 
-        :param batch: a batch contains `(past, past_timestamp, future, future_timestamp)` used for calculating loss and outputs
+        :param batch: a batch contains `(past, past_timestamp, future, future_timestamp)` used for calculating loss and model outputs
 
         :return: calculated loss, deep model outputs and targeted ground truth future
         """
@@ -240,7 +239,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         past_timestamp = torch.tensor(past_timestamp, dtype=torch.float, device=device)
         future_timestamp = torch.tensor(future_timestamp, dtype=torch.float, device=device)
 
-        model_output = self.deep_model(past, past_timestamp, future, future_timestamp)
+        model_output = self.deep_model(past, past_timestamp, future_timestamp)
 
         if future is None:
             return None, model_output, None
@@ -263,16 +262,9 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         self, time_stamps: List[int], time_series_prev: pd.DataFrame, return_prev=False
     ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
 
-        pred_datetime = to_pd_datetime(time_stamps)
-        prev_datetime = time_series_prev.index
-
         # convert to vector feature
-        prev_timestamp = get_time_features(prev_datetime, self.config.ts_encoding)
-
-        if self.config.start_token_len > 0:
-            pred_datetime = prev_datetime[self.config.start_token_len :].append(pred_datetime)
-
-        future_timestamp = get_time_features(pred_datetime, self.config.ts_encoding)
+        prev_timestamp = get_time_features(time_series_prev.index, self.config.ts_encoding)
+        future_timestamp = get_time_features(to_pd_datetime(time_stamps), self.config.ts_encoding)
 
         # preparing data
         past = np.expand_dims(time_series_prev.values, 0)
