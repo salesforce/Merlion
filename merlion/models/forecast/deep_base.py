@@ -135,6 +135,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             valid_fraction=config.valid_fraction,
             flatten=False,
             shuffle=True,
+            validation=False,
         )
 
         train_steps = len(total_dataset)
@@ -152,6 +153,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             self.deep_model.train()
             epoch_time = time.time()
 
+            total_dataset.seed = epoch
             for i, batch in enumerate(total_dataset):
                 self.optimizer.zero_grad()
 

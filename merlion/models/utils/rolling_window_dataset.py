@@ -32,6 +32,7 @@ class RollingWindowDataset:
         flatten: bool = True,
         ts_encoding: Union[None, str] = None,
         valid_fraction: float = 0.0,
+        validation: bool = False,
         seed: int = 0,
     ):
         """
@@ -68,6 +69,7 @@ class RollingWindowDataset:
             d:daily, b:business days, w:weekly, m:monthly]
         :param valid_fraction: Fraction of validation set splitted from training data. if ``valid_fraction = 0``
             or ``valid_fraction = 1``, we iterate over the entire dataset
+        :param validation: Whether the data is from the validation set or not.
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -122,21 +124,29 @@ class RollingWindowDataset:
         if self.ts_encoding:
             self.timestamp = get_time_features(self.timestamp, self.ts_encoding)
 
-        self.seed = seed
+        self._seed = seed
 
-        self._valid = False
+        self._valid = validation
         self.valid_fraction = valid_fraction
 
-        len_threshold = self.n_past + self.n_future - 1
-        if (self.n_valid <= len_threshold) or (self.n_train <= len_threshold):
-            logger.warning("Validation or training data is not enough. Setting valid_fraction = 0 .")
-            self.valid_fraction = 0.0
+        if valid_fraction <= 0.0 or valid_fraction >= 1.0:
+            n_valid = n_train = self.n_windows
+        else:
+            n_valid = math.ceil(self.n_windows * self.valid_fraction)
+            n_train = self.n_windows - n_valid
+
+        data_indices = np.arange(self.n_windows)
+        # use seed -1 to perturb the dataset
+        data_indices = np.random.RandomState(seed).permutation(data_indices)
+
+        self.train_indices = data_indices[:n_train]
+        self.valid_indices = data_indices[-n_valid:]
 
     @property
     def validation(self):
         """
-        If set ``False``, we only provide access to the training windows;
-        if set ``True``, we only provide access to the validation windows.
+        If set ``False``, we only provide access to the training windows; if set ``True``,
+        we only provide access to the validation windows.
         """
         return self._valid
 
@@ -145,53 +155,47 @@ class RollingWindowDataset:
         self._valid = valid
 
     @property
+    def seed(self):
+        return self._seed
+
+    @seed.setter
+    def seed(self, seed: int):
+        """
+        Random seed to perturb the training data
+        """
+        self._seed = seed
+
+    @property
+    def n_windows(self):
+        return len(self.data) - self.n_past - self.n_future + 1
+
+    @property
     def n_valid(self):
-        return math.ceil(len(self.data) * self.valid_fraction)
+        return len(self.valid_indices)
 
     @property
     def n_train(self):
-        return math.ceil(len(self.data) * (1 - self.valid_fraction))
+        return len(self.train_indices)
 
     @property
     def n_points(self):
-        # if self.validation and (0.0 < self.valid_fraction < 1.0):
-        #     return self.n_valid - self.n_past + 1 - self.n_future
-        # elif self.valid_fraction <= 0.0 or self.valid_fraction >= 1.0:
-        #     return len(self.data) - self.n_past + 1 - self.n_future
-        # else:
-        #     return len(self.data) - self.n_valid - self.n_past + 1 - self.n_future
-
-        left_border, right_border = self._get_dataset_borders()
-        return right_border - left_border
-
-    def _get_dataset_borders(self):
-        if self.validation and (0.0 < self.valid_fraction < 1.0):
-            left_border = len(self.data) - self.n_valid
-            right_border = len(self.data) - self.n_past + 1 - self.n_future
-        elif self.valid_fraction <= 0.0 or self.valid_fraction >= 1.0:
-            left_border = 0
-            right_border = len(self.data) - self.n_past + 1 - self.n_future
+        if self.validation:
+            return self.n_valid
         else:
-            left_border = 0
-            # right_border can be len(self.data) - self.n_valid if we want to use the data efficiently
-            right_border = len(self.data) - self.n_valid - self.n_past + 1 - self.n_future
-
-        return left_border, right_border
+            return self.n_train
 
     def __len__(self):
         return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
 
     def __iter__(self):
         batch = []
-        left_border, right_border = self._get_dataset_borders()
-        data_ranges = np.arange(left_border, right_border)
 
         if self.validation:
-            order = data_ranges
+            order = self.valid_indices
         elif self.shuffle and self.batch_size is not None:
-            order = np.random.RandomState(self.seed).permutation(data_ranges)
+            order = np.random.RandomState(self.seed).permutation(self.train_indices)
         else:
-            order = data_ranges
+            order = self.train_indices
 
         for i in order:
             batch.append(self[i])
@@ -225,8 +229,10 @@ class RollingWindowDataset:
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
-        left_border, right_border = self._get_dataset_borders()
-        assert left_border <= idx < right_border
+        if self.validation:
+            assert idx in self.valid_indices
+        else:
+            assert idx in self.train_indices
 
         past_start = idx
         past_end = past_start + self.n_past
