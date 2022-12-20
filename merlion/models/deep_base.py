@@ -71,7 +71,7 @@ class DeepConfig(Config):
         ts_encoding: Union[None, str] = "h",
         lr: float = 1e-4,
         weight_decay: float = 0.0,
-        validation_rate: float = 0.2,
+        valid_fraction: float = 0.2,
         early_stop_patience: Union[None, int] = None,
         **kwargs,
     ):
@@ -92,7 +92,7 @@ class DeepConfig(Config):
             d:daily, b:business days, w:weekly, m:monthly]
         :param lr: Learning rate for optimizing deep learning models.
         :param weight_decay: Weight decay (L2 penalty) (default: 0)
-        :param validation_rate: Data percent of validation set splitted from training data
+        :param valid_fraction: Fraction of validation set splitted from training data
         :param early_stop_patience: Number of epochs with no improvement after which training will be stopped for
             early stopping function. If `early_stop_patience = None`, the training process will not stop early.
         """

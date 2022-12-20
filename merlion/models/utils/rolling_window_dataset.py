@@ -8,6 +8,7 @@
 A rolling window dataset
 """
 import logging
+import math
 import numpy as np
 from typing import Optional, Union
 import pandas as pd
@@ -30,6 +31,7 @@ class RollingWindowDataset:
         batch_size: Optional[int] = 1,
         flatten: bool = True,
         ts_encoding: Union[None, str] = None,
+        valid_fraction: float = 0.0,
         seed: int = 0,
     ):
         """
@@ -64,6 +66,8 @@ class RollingWindowDataset:
             for training deep learning based time series models; if ``None``, the timestamp is not encoded.
             If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
             d:daily, b:business days, w:weekly, m:monthly]
+        :param valid_fraction: Fraction of validation set splitted from training data. if ``valid_fraction = 0``
+            or ``valid_fraction = 1``, we iterate over the entire dataset
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -120,19 +124,75 @@ class RollingWindowDataset:
 
         self.seed = seed
 
+        self._valid = False
+        self.valid_fraction = valid_fraction
+
+        len_threshold = self.n_past + self.n_future - 1
+        if (self.n_valid <= len_threshold) or (self.n_train <= len_threshold):
+            logger.warning("Validation or training data is not enough. Setting valid_fraction = 0 .")
+            self.valid_fraction = 0.0
+
+    @property
+    def validation(self):
+        """
+        If set ``False``, we only provide access to the training windows;
+        if set ``True``, we only provide access to the validation windows.
+        """
+        return self._valid
+
+    @validation.setter
+    def validation(self, valid: bool):
+        self._valid = valid
+
+    @property
+    def n_valid(self):
+        return math.ceil(len(self.data) * self.valid_fraction)
+
+    @property
+    def n_train(self):
+        return math.ceil(len(self.data) * (1 - self.valid_fraction))
+
     @property
     def n_points(self):
-        return len(self.data) - self.n_past + 1 - self.n_future
+        # if self.validation and (0.0 < self.valid_fraction < 1.0):
+        #     return self.n_valid - self.n_past + 1 - self.n_future
+        # elif self.valid_fraction <= 0.0 or self.valid_fraction >= 1.0:
+        #     return len(self.data) - self.n_past + 1 - self.n_future
+        # else:
+        #     return len(self.data) - self.n_valid - self.n_past + 1 - self.n_future
+
+        left_border, right_border = self._get_dataset_borders()
+        return right_border - left_border
+
+    def _get_dataset_borders(self):
+        if self.validation and (0.0 < self.valid_fraction < 1.0):
+            left_border = len(self.data) - self.n_valid
+            right_border = len(self.data) - self.n_past + 1 - self.n_future
+        elif self.valid_fraction <= 0.0 or self.valid_fraction >= 1.0:
+            left_border = 0
+            right_border = len(self.data) - self.n_past + 1 - self.n_future
+        else:
+            left_border = 0
+            # right_border can be len(self.data) - self.n_valid if we want to use the data efficiently
+            right_border = len(self.data) - self.n_valid - self.n_past + 1 - self.n_future
+
+        return left_border, right_border
 
     def __len__(self):
         return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
 
     def __iter__(self):
         batch = []
-        if self.shuffle and self.batch_size is not None:
-            order = np.random.RandomState(self.seed).permutation(self.n_points)
+        left_border, right_border = self._get_dataset_borders()
+        data_ranges = np.arange(left_border, right_border)
+
+        if self.validation:
+            order = data_ranges
+        elif self.shuffle and self.batch_size is not None:
+            order = np.random.RandomState(self.seed).permutation(data_ranges)
         else:
-            order = range(self.n_points)
+            order = data_ranges
+
         for i in order:
             batch.append(self[i])
             if self.batch_size is not None and len(batch) >= self.batch_size:
@@ -165,7 +225,9 @@ class RollingWindowDataset:
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
-        assert 0 <= idx < self.n_points
+        left_border, right_border = self._get_dataset_borders()
+        assert left_border <= idx < right_border
+
         past_start = idx
         past_end = past_start + self.n_past
         future_start = past_end

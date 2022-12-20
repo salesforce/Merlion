@@ -125,41 +125,19 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         else:
             self.to_cpu()
 
-        total_data = copy.deepcopy(train_data)
-        data_size = len(total_data)
-
-        # splitting the data into training and valdation set
-        if config.validation_rate > 0:
-            training_data = total_data[: int(data_size * (1 - config.validation_rate))]
-            validation_data = total_data[int(data_size * (1 - config.validation_rate)) :]
-        else:
-            # if validation rate is zero, we use all training data as validation
-            training_data = copy.deepcopy(total_data)
-            validation_data = copy.deepcopy(total_data)
-
-        training_dataset = RollingWindowDataset(
-            training_data,
+        total_dataset = RollingWindowDataset(
+            train_data,
             n_past=config.n_past,
             n_future=config.max_forecast_steps,
             batch_size=config.batch_size,
             target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training, if not this is a bug
             ts_encoding=config.ts_encoding,
+            valid_fraction=config.valid_fraction,
             flatten=False,
             shuffle=True,
         )
 
-        validation_dataset = RollingWindowDataset(
-            validation_data,
-            n_past=config.n_past,
-            n_future=config.max_forecast_steps,
-            batch_size=config.batch_size,
-            target_seq_index=None,
-            ts_encoding=config.ts_encoding,
-            flatten=False,
-            shuffle=False,
-        )
-
-        train_steps = len(training_dataset)
+        train_steps = len(total_dataset)
         logger.info(f"Training steps each epoch: {train_steps}")
 
         bar = ProgressBar(total=config.num_epochs)
@@ -174,7 +152,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             self.deep_model.train()
             epoch_time = time.time()
 
-            for i, batch in enumerate(training_dataset):
+            for i, batch in enumerate(total_dataset):
                 self.optimizer.zero_grad()
 
                 loss, _, _ = self._get_batch_model_loss_and_outputs(batch)
@@ -187,7 +165,11 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                 self.optimizer.step()
 
             train_loss = np.average(train_loss)
-            _, val_loss = self._get_np_loss_and_prediction(validation_dataset)
+
+            # set validation flag
+            total_dataset.validation = True
+            _, val_loss = self._get_np_loss_and_prediction(total_dataset)
+            total_dataset.validation = False
 
             if bar is not None:
                 bar.print(
@@ -206,10 +188,10 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         logger.info("End of the training loop")
 
-        pred, _ = self._get_np_loss_and_prediction(training_dataset)
+        pred, _ = self._get_np_loss_and_prediction(total_dataset)
 
         # since the model predicts multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0], columns=total_data.columns), None
+        return pd.DataFrame(pred[:, 0], columns=train_data.columns), None
 
     def _get_batch_model_loss_and_outputs(self, batch):
         """
