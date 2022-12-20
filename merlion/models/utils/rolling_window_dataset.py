@@ -136,8 +136,9 @@ class RollingWindowDataset:
             n_train = self.n_windows - n_valid
 
         data_indices = np.arange(self.n_windows)
-        # use seed -1 to perturb the dataset
-        data_indices = np.random.RandomState(seed).permutation(data_indices)
+        # use seed 0 to perturb the dataset
+        if shuffle:
+            data_indices = np.random.RandomState(seed).permutation(data_indices)
 
         self.train_indices = data_indices[:n_train]
         self.valid_indices = data_indices[-n_valid:]
@@ -156,12 +157,15 @@ class RollingWindowDataset:
 
     @property
     def seed(self):
+        """
+        Set Random seed to perturb the training data
+        """
         return self._seed
 
     @seed.setter
     def seed(self, seed: int):
         """
-        Random seed to perturb the training data
+        Set Random seed to perturb the training data
         """
         self._seed = seed
 
