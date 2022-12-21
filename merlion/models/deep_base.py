@@ -52,6 +52,7 @@ class LossFunction(Enum):
     mse = nn.MSELoss
     l1 = nn.L1Loss
     huber = nn.HuberLoss
+    guassian_nll = nn.GaussianNLLLoss
 
 
 class DeepConfig(Config):

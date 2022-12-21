@@ -19,6 +19,7 @@ from merlion.models.forecast.autoformer import AutoformerConfig, AutoformerForec
 from merlion.models.forecast.transformer import TransformerConfig, TransformerForecaster
 from merlion.models.forecast.informer import InformerConfig, InformerForecaster
 from merlion.models.forecast.etsformer import ETSformerConfig, ETSformerForecaster
+from merlion.models.forecast.deep_ar import DeepARConfig, DeepARForecaster
 
 
 from merlion.models.utils.rolling_window_dataset import RollingWindowDataset
@@ -55,6 +56,22 @@ class TestDeepModels(unittest.TestCase):
 
         self.train_data = TimeSeries.from_pd(self.train_df)
         self.test_data = TimeSeries.from_pd(self.test_df)
+
+    def test_deepar(self):
+
+        logger.info("Testing Deep AR forecasting")
+        config = DeepARConfig(
+            n_past=self.n_past,
+            max_forecast_steps=self.max_forecast_steps,
+            early_stop_patience=self.early_stop_patience,
+            num_epochs=self.num_epochs,
+            use_gpu=self.use_gpu,
+            batch_size=self.batch_size,
+        )
+
+        forecaster = DeepARForecaster(config)
+
+        self._test_model(forecaster, self.train_data, self.test_data)
 
     def test_autoformer(self):
 

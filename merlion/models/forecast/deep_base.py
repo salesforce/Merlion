@@ -95,7 +95,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         for i, batch in enumerate(eval_dataset):
             with torch.no_grad():
-                loss, outputs, y_true = self._get_batch_model_loss_and_outputs(batch)
+                loss, outputs, y_true = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
                 pred = outputs.detach().cpu().numpy()
                 true = y_true.detach().cpu().numpy()
 
@@ -114,6 +114,19 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         Deep models support multivariate output by default.
         """
         return True
+
+    def _convert_batch_to_tensors(self, batch):
+        device = self.deep_model.device
+
+        past, past_timestamp, future, future_timestamp = batch
+
+        past = torch.tensor(past, dtype=torch.float, device=device)
+        future = future if future is None else torch.tensor(future, dtype=torch.float, device=device)
+
+        past_timestamp = torch.tensor(past_timestamp, dtype=torch.float, device=device)
+        future_timestamp = torch.tensor(future_timestamp, dtype=torch.float, device=device)
+
+        return (past, past_timestamp, future, future_timestamp)
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         config = self.config
@@ -157,7 +170,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             for i, batch in enumerate(total_dataset):
                 self.optimizer.zero_grad()
 
-                loss, _, _ = self._get_batch_model_loss_and_outputs(batch)
+                loss, _, _ = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
                 train_loss.append(loss.item())
 
                 loss.backward()
@@ -204,15 +217,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         :return: calculated loss, deep model outputs and targeted ground truth future
         """
         config = self.config
-        device = self.deep_model.device
-
         past, past_timestamp, future, future_timestamp = batch
-
-        past = torch.tensor(past, dtype=torch.float, device=device)
-        future = future if future is None else torch.tensor(future, dtype=torch.float, device=device)
-
-        past_timestamp = torch.tensor(past_timestamp, dtype=torch.float, device=device)
-        future_timestamp = torch.tensor(future_timestamp, dtype=torch.float, device=device)
 
         model_output = self.deep_model(past, past_timestamp, future_timestamp)
 
@@ -220,11 +225,11 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             return None, model_output, None
 
         if config.target_seq_index is None and self.support_multivariate_output:
-            target_future = future[:, -config.max_forecast_steps :].to(device)
+            target_future = future
         else:
             # choose specific target_seq_index for regression
             target_idx = config.target_seq_index
-            target_future = future[:, -config.max_forecast_steps :, target_idx : target_idx + 1].to(device)
+            target_future = future[:, :, target_idx : target_idx + 1]
 
         loss = self.loss_fn(model_output, target_future)
         return loss, model_output, target_future
@@ -248,7 +253,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         self.deep_model.eval()
         batch = (past, past_timestamp, None, future_timestamp)
-        _, model_output, _ = self._get_batch_model_loss_and_outputs(batch)
+        _, model_output, _ = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
 
         preds = model_output.detach().cpu().numpy().squeeze()
         pd_pred = pd.DataFrame(preds, index=to_pd_datetime(time_stamps), columns=time_series_prev.columns)

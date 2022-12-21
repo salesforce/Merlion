@@ -171,22 +171,28 @@ class RollingWindowDataset:
 
     @property
     def n_windows(self):
+        """
+        Number of total slides windows
+        """
         return len(self.data) - self.n_past - self.n_future + 1
 
     @property
     def n_valid(self):
+        """
+        Number of slides windows in validation set
+        """
         return len(self.valid_indices)
 
     @property
     def n_train(self):
+        """
+        Number of slides windows in training set
+        """
         return len(self.train_indices)
 
     @property
     def n_points(self):
-        if self.validation:
-            return self.n_valid
-        else:
-            return self.n_train
+        return self.n_valid if self.validation else self.n_train
 
     def __len__(self):
         return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
