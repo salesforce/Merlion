@@ -59,36 +59,36 @@ class InformerConfig(DeepForecasterConfig, NormalizingConfig):
         self,
         n_past,
         max_forecast_steps: int = None,
-        enc_in: int = None,
-        dec_in: int = None,
-        e_layers: int = 2,
-        d_layers: int = 1,
+        encoder_input_size: int = None,
+        decoder_input_size: int = None,
+        num_encoder_layers: int = 2,
+        num_decoder_layers: int = 1,
         factor: int = 3,
-        d_model: int = 512,
+        model_dim: int = 512,
         embed: str = "timeF",
         dropout: float = 0.05,
         activation: str = "gelu",
         n_heads: int = 8,
-        d_ff: int = 2048,
+        fcn_dim: int = 2048,
         distil: bool = True,
         **kwargs
     ):
         """
         :param n_past: # of past steps used for forecasting future.
         :param max_forecast_steps:  Max # of steps we would like to forecast for.
-        :param enc_in: Input size of encoder. If `enc_in = None`, then the model will automatically use `config.dim`,
+        :param encoder_input_size: Input size of encoder. If `encoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param dec_in: Input size of decoder. If `dec_in = None`, then the model will automatically use `config.dim`,
+        :param decoder_input_size: Input size of decoder. If `decoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param e_layers: Number of encoder layers.
-        :param d_layers: Number of decoder layers.
+        :param num_encoder_layers: Number of encoder layers.
+        :param num_decoder_layers: Number of decoder layers.
         :param factor: Attention factor.
-        :param d_model: Dimension of the model.
+        :param model_dim: Dimension of the model.
         :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
         :param dropout: dropout rate.
         :param activation: Activation function, can be `gelu`, `relu`, `sigmoid`, etc.
         :param n_heads: Number of heads of the model.
-        :param d_ff: Hidden dimension of the MLP layer in the model.
+        :param fcn_dim: Hidden dimension of the MLP layer in the model.
         :param distil: whether to use distilling in the encoder of the model.
         """
 
@@ -104,11 +104,13 @@ class InformerModel(TorchModel):
         super().__init__(config)
 
         if config.dim is not None:
-            config.enc_in = config.dim if config.enc_in is None else config.enc_in
-            config.dec_in = config.enc_in if config.dec_in is None else config.dec_in
+            config.encoder_input_size = config.dim if config.encoder_input_size is None else config.encoder_input_size
+            config.decoder_input_size = (
+                config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
+            )
 
         if config.target_seq_index is None:
-            config.c_out = config.enc_in
+            config.c_out = config.encoder_input_size
         else:
             config.c_out = 1
 
@@ -117,11 +119,11 @@ class InformerModel(TorchModel):
         self.max_forecast_steps = config.max_forecast_steps
 
         self.enc_embedding = DataEmbedding(
-            config.enc_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+            config.encoder_input_size, config.model_dim, config.embed, config.ts_encoding, config.dropout
         )
 
         self.dec_embedding = DataEmbedding(
-            config.dec_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+            config.decoder_input_size, config.model_dim, config.embed, config.ts_encoding, config.dropout
         )
 
         # Encoder
@@ -130,18 +132,18 @@ class InformerModel(TorchModel):
                 EncoderLayer(
                     AttentionLayer(
                         ProbAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
-                    config.d_model,
-                    config.d_ff,
+                    config.model_dim,
+                    config.fcn_dim,
                     dropout=config.dropout,
                     activation=config.activation,
                 )
-                for l in range(config.e_layers)
+                for l in range(config.num_encoder_layers)
             ],
-            [ConvLayer(config.d_model) for l in range(config.e_layers - 1)] if config.distil else None,
-            norm_layer=torch.nn.LayerNorm(config.d_model),
+            [ConvLayer(config.model_dim) for l in range(config.num_encoder_layers - 1)] if config.distil else None,
+            norm_layer=torch.nn.LayerNorm(config.model_dim),
         )
 
         # Decoder
@@ -150,23 +152,23 @@ class InformerModel(TorchModel):
                 DecoderLayer(
                     AttentionLayer(
                         ProbAttention(True, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
                     AttentionLayer(
                         ProbAttention(False, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
-                    config.d_model,
-                    config.d_ff,
+                    config.model_dim,
+                    config.fcn_dim,
                     dropout=config.dropout,
                     activation=config.activation,
                 )
-                for l in range(config.d_layers)
+                for l in range(config.num_decoder_layers)
             ],
-            norm_layer=torch.nn.LayerNorm(config.d_model),
-            projection=nn.Linear(config.d_model, config.c_out, bias=True),
+            norm_layer=torch.nn.LayerNorm(config.model_dim),
+            projection=nn.Linear(config.model_dim, config.c_out, bias=True),
         )
 
         self.config = config
@@ -184,10 +186,10 @@ class InformerModel(TorchModel):
         config = self.config
 
         start_token = past[:, past.shape[1] - self.start_token_len :]
-        dec_inp = torch.zeros(
-            past.shape[0], self.max_forecast_steps, config.dec_in, dtype=torch.float, device=self.device
+        decoder_input_sizep = torch.zeros(
+            past.shape[0], self.max_forecast_steps, config.decoder_input_size, dtype=torch.float, device=self.device
         )
-        dec_inp = torch.cat([start_token, dec_inp], dim=1)
+        decoder_input_sizep = torch.cat([start_token, decoder_input_sizep], dim=1)
 
         future_timestamp = torch.cat(
             [past_timestamp[:, (past_timestamp.shape[1] - self.start_token_len) :], future_timestamp], dim=1
@@ -196,7 +198,7 @@ class InformerModel(TorchModel):
         enc_out = self.enc_embedding(past, past_timestamp)
         enc_out, attns = self.encoder(enc_out, attn_mask=enc_self_mask)
 
-        dec_out = self.dec_embedding(dec_inp, future_timestamp)
+        dec_out = self.dec_embedding(decoder_input_sizep, future_timestamp)
         dec_out = self.decoder(dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
         return dec_out[:, -self.max_forecast_steps :, :]

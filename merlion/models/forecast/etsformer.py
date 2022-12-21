@@ -54,14 +54,14 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         self,
         n_past,
         max_forecast_steps: int = None,
-        enc_in: int = None,
-        dec_in: int = None,
-        e_layers: int = 2,
-        d_layers: int = 2,
-        d_model: int = 512,
+        encoder_input_size: int = None,
+        decoder_input_size: int = None,
+        num_encoder_layers: int = 2,
+        num_decoder_layers: int = 2,
+        model_dim: int = 512,
         dropout: float = 0.2,
         n_heads: int = 8,
-        d_ff: int = 2048,
+        fcn_dim: int = 2048,
         top_K: int = 1,  # Top-K Fourier bases
         sigma=0.2,
         **kwargs
@@ -69,16 +69,16 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         """
         :param n_past: # of past steps used for forecasting future.
         :param max_forecast_steps:  Max # of steps we would like to forecast for.
-        :param enc_in: Input size of encoder. If `enc_in = None`, then the model will automatically use `config.dim`,
+        :param encoder_input_size: Input size of encoder. If `encoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param dec_in: Input size of decoder. If `dec_in = None`, then the model will automatically use `config.dim`,
+        :param decoder_input_size: Input size of decoder. If `decoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param e_layers: Number of encoder layers.
-        :param d_layers: Number of decoder layers.
-        :param d_model: Dimension of the model.
+        :param num_encoder_layers: Number of encoder layers.
+        :param num_decoder_layers: Number of decoder layers.
+        :param model_dim: Dimension of the model.
         :param dropout: dropout rate.
         :param n_heads: Number of heads of the model.
-        :param d_ff: Hidden dimension of the MLP layer in the model.
+        :param fcn_dim: Hidden dimension of the MLP layer in the model.
         :param top_K: Top-K Frequent Fourier basis.
         :param sigma: Standard derivation for ETS input data transform.
         """
@@ -94,35 +94,39 @@ class ETSformerModel(TorchModel):
     def __init__(self, config: ETSformerConfig):
         super().__init__(config)
 
-        assert config.e_layers == config.d_layers, "The number of encoder and decoder layers must be equal!"
+        assert (
+            config.num_encoder_layers == config.num_decoder_layers
+        ), "The number of encoder and decoder layers must be equal!"
         if config.dim is not None:
-            config.enc_in = config.dim if config.enc_in is None else config.enc_in
-            config.dec_in = config.enc_in if config.dec_in is None else config.dec_in
+            config.encoder_input_size = config.dim if config.encoder_input_size is None else config.encoder_input_size
+            config.decoder_input_size = (
+                config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
+            )
 
         if config.target_seq_index is None:
-            config.c_out = config.enc_in
+            config.c_out = config.encoder_input_size
         else:
             config.c_out = 1
 
         self.n_past = config.n_past
         self.max_forecast_steps = config.max_forecast_steps
 
-        self.enc_embedding = ETSEmbedding(config.enc_in, config.d_model, dropout=config.dropout)
+        self.enc_embedding = ETSEmbedding(config.encoder_input_size, config.model_dim, dropout=config.dropout)
 
         self.encoder = Encoder(
             [
                 EncoderLayer(
-                    config.d_model,
+                    config.model_dim,
                     config.n_heads,
                     config.c_out,
                     config.n_past,
                     config.max_forecast_steps,
                     config.top_K,
-                    dim_feedforward=config.d_ff,
+                    dim_feedforward=config.fcn_dim,
                     dropout=config.dropout,
                     output_attention=False,
                 )
-                for _ in range(config.e_layers)
+                for _ in range(config.num_encoder_layers)
             ]
         )
 
@@ -130,14 +134,14 @@ class ETSformerModel(TorchModel):
         self.decoder = Decoder(
             [
                 DecoderLayer(
-                    config.d_model,
+                    config.model_dim,
                     config.n_heads,
                     config.c_out,
                     config.max_forecast_steps,
                     dropout=config.dropout,
                     output_attention=False,
                 )
-                for _ in range(config.d_layers)
+                for _ in range(config.num_decoder_layers)
             ],
         )
 

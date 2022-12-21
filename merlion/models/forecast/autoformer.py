@@ -63,36 +63,36 @@ class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
         n_past,
         max_forecast_steps: int = None,
         moving_avg: int = 25,
-        enc_in: int = None,
-        dec_in: int = None,
-        e_layers: int = 2,
-        d_layers: int = 1,
+        encoder_input_size: int = None,
+        decoder_input_size: int = None,
+        num_encoder_layers: int = 2,
+        num_decoder_layers: int = 1,
         factor: int = 3,
-        d_model: int = 512,
+        model_dim: int = 512,
         embed: str = "timeF",
         dropout: float = 0.05,
         activation: str = "gelu",
         n_heads: int = 8,
-        d_ff: int = 2048,
+        fcn_dim: int = 2048,
         **kwargs
     ):
         """
         :param n_past: # of past steps used for forecasting future.
         :param max_forecast_steps:  Max # of steps we would like to forecast for.
         :param moving_avg: Window size of moving average for Autoformer.
-        :param enc_in: Input size of encoder. If `enc_in = None`, then the model will automatically use `config.dim`,
+        :param encoder_input_size: Input size of encoder. If `encoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param dec_in: Input size of decoder. If `dec_in = None`, then the model will automatically use `config.dim`,
+        :param decoder_input_size: Input size of decoder. If `decoder_input_size = None`, then the model will automatically use `config.dim`,
             which is the dimension of the input data.
-        :param e_layers: Number of encoder layers.
-        :param d_layers: Number of decoder layers.
+        :param num_encoder_layers: Number of encoder layers.
+        :param num_decoder_layers: Number of decoder layers.
         :param factor: Attention factor.
-        :param d_model: Dimension of the model.
+        :param model_dim: Dimension of the model.
         :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
         :param dropout: dropout rate.
         :param activation: Activation function, can be `gelu`, `relu`, `sigmoid`, etc.
         :param n_heads: Number of heads of the model.
-        :param d_ff: Hidden dimension of the MLP layer in the model.
+        :param fcn_dim: Hidden dimension of the MLP layer in the model.
         """
 
         super().__init__(n_past=n_past, max_forecast_steps=max_forecast_steps, **kwargs)
@@ -107,11 +107,13 @@ class AutoformerModel(TorchModel):
         super().__init__(config)
 
         if config.dim is not None:
-            config.enc_in = config.dim if config.enc_in is None else config.enc_in
-            config.dec_in = config.enc_in if config.dec_in is None else config.dec_in
+            config.encoder_input_size = config.dim if config.encoder_input_size is None else config.encoder_input_size
+            config.decoder_input_size = (
+                config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
+            )
 
         if config.target_seq_index is None:
-            config.c_out = config.enc_in
+            config.c_out = config.encoder_input_size
         else:
             copnfig.c_out = 1
 
@@ -126,11 +128,11 @@ class AutoformerModel(TorchModel):
         # The series-wise connection inherently contains the sequential information.
         # Thus, we can discard the position embedding of transformers.
         self.enc_embedding = DataEmbeddingWoPos(
-            config.enc_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+            config.encoder_input_size, config.model_dim, config.embed, config.ts_encoding, config.dropout
         )
 
         self.dec_embedding = DataEmbeddingWoPos(
-            config.dec_in, config.d_model, config.embed, config.ts_encoding, config.dropout
+            config.decoder_input_size, config.model_dim, config.embed, config.ts_encoding, config.dropout
         )
 
         # Encoder
@@ -139,18 +141,18 @@ class AutoformerModel(TorchModel):
                 EncoderLayer(
                     AutoCorrelationLayer(
                         AutoCorrelation(False, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
-                    config.d_model,
-                    config.d_ff,
+                    config.model_dim,
+                    config.fcn_dim,
                     moving_avg=config.moving_avg,
                     dropout=config.dropout,
                     activation=config.activation,
                 )
-                for l in range(config.e_layers)
+                for l in range(config.num_encoder_layers)
             ],
-            norm_layer=SeasonalLayernorm(config.d_model),
+            norm_layer=SeasonalLayernorm(config.model_dim),
         )
 
         # Decoder
@@ -159,25 +161,25 @@ class AutoformerModel(TorchModel):
                 DecoderLayer(
                     AutoCorrelationLayer(
                         AutoCorrelation(True, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
                     AutoCorrelationLayer(
                         AutoCorrelation(False, config.factor, attention_dropout=config.dropout, output_attention=False),
-                        config.d_model,
+                        config.model_dim,
                         config.n_heads,
                     ),
-                    config.d_model,
+                    config.model_dim,
                     config.c_out,
-                    config.d_ff,
+                    config.fcn_dim,
                     moving_avg=config.moving_avg,
                     dropout=config.dropout,
                     activation=config.activation,
                 )
-                for l in range(config.d_layers)
+                for l in range(config.num_decoder_layers)
             ],
-            norm_layer=SeasonalLayernorm(config.d_model),
-            projection=nn.Linear(config.d_model, config.c_out, bias=True),
+            norm_layer=SeasonalLayernorm(config.model_dim),
+            projection=nn.Linear(config.model_dim, config.c_out, bias=True),
         )
 
     def forward(
