@@ -186,10 +186,10 @@ class InformerModel(TorchModel):
         config = self.config
 
         start_token = past[:, past.shape[1] - self.start_token_len :]
-        decoder_input_sizep = torch.zeros(
+        dec_inp = torch.zeros(
             past.shape[0], self.max_forecast_steps, config.decoder_input_size, dtype=torch.float, device=self.device
         )
-        decoder_input_sizep = torch.cat([start_token, decoder_input_sizep], dim=1)
+        dec_inp = torch.cat([start_token, dec_inp], dim=1)
 
         future_timestamp = torch.cat(
             [past_timestamp[:, (past_timestamp.shape[1] - self.start_token_len) :], future_timestamp], dim=1
@@ -198,7 +198,7 @@ class InformerModel(TorchModel):
         enc_out = self.enc_embedding(past, past_timestamp)
         enc_out, attns = self.encoder(enc_out, attn_mask=enc_self_mask)
 
-        dec_out = self.dec_embedding(decoder_input_sizep, future_timestamp)
+        dec_out = self.dec_embedding(dec_inp, future_timestamp)
         dec_out = self.decoder(dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
         return dec_out[:, -self.max_forecast_steps :, :]
