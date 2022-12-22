@@ -16,5 +16,5 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache 2.0",
     packages=find_packages(include=["ts_datasets*"]),
-    install_requires=["cython", "numpy", "pandas", "requests", "sklearn", "tqdm", "wheel", "gdown"],
+    install_requires=["cython", "numpy", "pandas", "requests", "tqdm", "wheel", "gdown"],
 )
