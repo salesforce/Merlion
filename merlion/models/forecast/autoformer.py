@@ -5,9 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of Autoformer: 
-    Decomposition Transformers with Auto-Correlation for Long-Term Series Forecasting: https://arxiv.org/abs/2106.13008 
-    Code adapted from https://github.com/thuml/Autoformer. 
+Implementation of Autoformer.
 """
 import copy
 import logging
@@ -54,7 +52,8 @@ logger = logging.getLogger(__name__)
 
 class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
     """
-    Config object for autoformer forecaster
+    Decomposition Transformers with Auto-Correlation for Long-Term Series Forecasting: https://arxiv.org/abs/2106.13008.
+    Code adapted from https://github.com/thuml/Autoformer.
     """
 
     @initializer
@@ -67,6 +66,7 @@ class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
         decoder_input_size: int = None,
         num_encoder_layers: int = 2,
         num_decoder_layers: int = 1,
+        start_token_len: int = 0,
         factor: int = 3,
         model_dim: int = 512,
         embed: str = "timeF",
@@ -86,6 +86,8 @@ class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
             which is the dimension of the input data.
         :param num_encoder_layers: Number of encoder layers.
         :param num_decoder_layers: Number of decoder layers.
+        :param start_token_len: Length of start token for deep transformer encoder-decoder based models.
+            The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
         :param factor: Attention factor.
         :param model_dim: Dimension of the model.
         :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
@@ -100,7 +102,7 @@ class AutoformerConfig(DeepForecasterConfig, NormalizingConfig):
 
 class AutoformerModel(TorchModel):
     """
-    Implementaion of Autoformer Deep Torch Model
+    Implementaion of Autoformer deep torch model.
     """
 
     def __init__(self, config: AutoformerConfig):
@@ -112,10 +114,7 @@ class AutoformerModel(TorchModel):
                 config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
             )
 
-        if config.target_seq_index is None:
-            config.c_out = config.encoder_input_size
-        else:
-            copnfig.c_out = 1
+        config.c_out = config.encoder_input_size
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
@@ -218,15 +217,19 @@ class AutoformerModel(TorchModel):
         seasonal_part, trend_part = self.decoder(
             dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask, trend=trend_init
         )
+
         # final
         dec_out = trend_part + seasonal_part
 
-        return dec_out[:, -self.max_forecast_steps :, :]  # [B, L, D]
+        if self.config.target_seq_index is not None:
+            return dec_out[:, -self.max_forecast_steps :, :1]
+        else:
+            return dec_out[:, -self.max_forecast_steps :, :]  # [B, L, D]
 
 
 class AutoformerForecaster(DeepForecaster):
     """
-    Implementaion of Autoformer deep forecaster
+    Implementaion of Autoformer deep forecaster.
     """
 
     config_class = AutoformerConfig

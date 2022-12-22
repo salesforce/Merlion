@@ -5,9 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of ETSformer: 
-    ETSformer: Exponential Smoothing Transformers for Time-series Forecasting: https://arxiv.org/abs/2202.01381 
-    Code adapted from https://github.com/salesforce/ETSformer. 
+Implementation of ETSformer.
 """
 import copy
 import logging
@@ -46,7 +44,8 @@ logger = logging.getLogger(__name__)
 
 class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
     """
-    Config object for ETSformer forecaster
+    ETSformer: Exponential Smoothing Transformers for Time-series Forecasting: https://arxiv.org/abs/2202.01381
+    Code adapted from https://github.com/salesforce/ETSformer.
     """
 
     @initializer
@@ -88,7 +87,7 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
 
 class ETSformerModel(TorchModel):
     """
-    Implementaion of ETSformer Deep Torch Model
+    Implementaion of ETSformer deep torch model.
     """
 
     def __init__(self, config: ETSformerConfig):
@@ -103,10 +102,7 @@ class ETSformerModel(TorchModel):
                 config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
             )
 
-        if config.target_seq_index is None:
-            config.c_out = config.encoder_input_size
-        else:
-            config.c_out = 1
+        config.c_out = config.encoder_input_size
 
         self.n_past = config.n_past
         self.max_forecast_steps = config.max_forecast_steps
@@ -178,7 +174,10 @@ class ETSformerModel(TorchModel):
             decoder_growth_attns = reduce(decoder_growth_attns, "l b d o t -> b o t", reduction="mean")
             return preds, season_attns, decoder_growth_attns
 
-        return preds
+        if self.config.target_seq_index is not None:
+            return preds[:, :, :1]
+        else:
+            return preds
 
     @torch.no_grad()
     def transform(self, x):
@@ -196,7 +195,7 @@ class ETSformerModel(TorchModel):
 
 class ETSformerForecaster(DeepForecaster):
     """
-    Implementaion of ETSformer deep forecaster
+    Implementaion of ETSformer deep forecaster.
     """
 
     config_class = ETSformerConfig

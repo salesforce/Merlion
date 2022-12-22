@@ -41,6 +41,10 @@ logger = logging.getLogger(__name__)
 
 
 class Optimizer(Enum):
+    """
+    Optimizers for learning model parameters.
+    """
+
     Adam = torch.optim.Adam
     AdamW = torch.optim.AdamW
     SGD = torch.optim.SGD
@@ -49,6 +53,10 @@ class Optimizer(Enum):
 
 
 class LossFunction(Enum):
+    """
+    Loss functions for learning model parameters.
+    """
+
     mse = nn.MSELoss
     l1 = nn.L1Loss
     huber = nn.HuberLoss
@@ -57,7 +65,7 @@ class LossFunction(Enum):
 
 class DeepConfig(Config):
     """
-    Config object used to define a deep learning (pytorch) model
+    Config object used to define a deep learning (pytorch) model.
     """
 
     @initializer
@@ -136,7 +144,7 @@ class TorchModel(nn.Module):
         self.config = config
 
     @abstractmethod
-    def forward(self, past, *args, **kwargs):
+    def forward(self, past, past_timestamp, future_timestamp, *args, **kwargs):
         raise NotImplementedError
 
     @property
@@ -170,6 +178,11 @@ class DeepModelBase(ModelBase):
         )
 
         self.loss_fn = self.config.loss_fn.value()
+
+        if self.config.use_gpu:
+            self.to_gpu()
+        else:
+            self.to_cpu()
 
     @abstractmethod
     def _get_batch_model_loss_and_outputs(self, batch):

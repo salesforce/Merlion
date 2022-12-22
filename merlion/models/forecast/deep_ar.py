@@ -5,9 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of Deep AR: 
-    Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting: https://arxiv.org/abs/2012.07436
-    Code adapted from https://github.com/thuml/Autoformer. 
+Implementation of Deep AR
 """
 import pdb
 import copy
@@ -42,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 class DeepARConfig(DeepForecasterConfig, NormalizingConfig):
     """
-    Config object for informer forecaster
+    DeepAR: Probabilistic Forecasting with Autoregressive Recurrent Networks: https://arxiv.org/abs/1704.04110
     """
 
     @initializer
@@ -100,6 +98,11 @@ class DeepARModel(TorchModel):
         sigma = torch.log(1 + torch.exp(log_sigma)) + 1e-06
 
         output = mu + torch.randn_like(mu, dtype=torch.float, device=self.device) * sigma
+
+        if self.config.target_seq_index is not None:
+            output = output[:, :, :1]
+            mu = mu[:, :, :1]
+            sigma = sigma[:, :, :1]
 
         return output if sample_only else output, mu, sigma
 

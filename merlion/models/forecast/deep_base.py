@@ -5,7 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Base class for Deep Learning Forecasting Models
+Base class for Deep Learning Forecasting Models
 """
 import copy
 import time
@@ -52,20 +52,15 @@ class DeepForecasterConfig(DeepConfig, ForecasterConfig):
     def __init__(
         self,
         n_past: int,
-        start_token_len: int = 0,
         **kwargs,
     ):
         """
         :param n_past: # of past steps used for forecasting future.
-        :param start_token_len: Length of start token for deep transformer encoder-decoder based models such as
-            ``Autoformer`` or ``informer``. The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
-            For non-transformer based models, we set the ``start_token_len = 0``.
         """
         super().__init__(
             **kwargs,
         )
         self.n_past = n_past
-        self.start_token_len = start_token_len
 
 
 class DeepForecaster(DeepModelBase, ForecasterBase):
@@ -82,7 +77,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         """
         Get numpy prediction and loss with evaluation mode for a given dataset or data
 
-        :param evaluate_data: Evaluation data or dataset
+        :param eval_dataset: Evaluation dataset
 
         :return: The numpy prediction of the model and the average loss for the given dataset.
         """
@@ -133,10 +128,6 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         # creating model before the training
         self._create_model()
-        if config.use_gpu:
-            self.to_gpu()
-        else:
-            self.to_cpu()
 
         total_dataset = RollingWindowDataset(
             train_data,
@@ -166,7 +157,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             self.deep_model.train()
             epoch_time = time.time()
 
-            total_dataset.seed = epoch
+            total_dataset.seed = epoch + 1
             for i, batch in enumerate(total_dataset):
                 self.optimizer.zero_grad()
 
@@ -203,10 +194,26 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         logger.info("End of the training loop")
 
-        pred, _ = self._get_np_loss_and_prediction(total_dataset)
+        prediction_dataset = RollingWindowDataset(
+            train_data,
+            n_past=config.n_past,
+            n_future=config.max_forecast_steps,
+            batch_size=config.batch_size,
+            target_seq_index=None,
+            ts_encoding=config.ts_encoding,
+            valid_fraction=0.0,
+            flatten=False,
+            shuffle=False,
+            validation=None,
+        )
+
+        pred, _ = self._get_np_loss_and_prediction(prediction_dataset)
 
         # since the model predicts multiple steps, we concatenate all the first steps together
-        return pd.DataFrame(pred[:, 0], columns=train_data.columns), None
+        columns = [self.target_name] if config.target_seq_index else train_data.columns
+        column_index = train_data.index[config.n_past : (len(train_data) - config.max_forecast_steps + 1)]
+
+        return pd.DataFrame(pred[:, 0], index=column_index, columns=columns), None
 
     def _get_batch_model_loss_and_outputs(self, batch):
         """
@@ -242,6 +249,9 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         self, time_stamps: List[int], time_series_prev: pd.DataFrame, return_prev=False
     ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
 
+        if time_series_prev is None:
+            time_series_prev = self.transform(self.train_data[-self.config.n_past :]).to_pd()
+
         # convert to vector feature
         prev_timestamp = get_time_features(time_series_prev.index, self.config.ts_encoding)
         future_timestamp = get_time_features(to_pd_datetime(time_stamps), self.config.ts_encoding)
@@ -256,6 +266,8 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         _, model_output, _ = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
 
         preds = model_output.detach().cpu().numpy().squeeze()
-        pd_pred = pd.DataFrame(preds, index=to_pd_datetime(time_stamps), columns=time_series_prev.columns)
+        columns = [self.target_name] if self.config.target_seq_index else time_series_prev.columns
+
+        pd_pred = pd.DataFrame(preds, index=to_pd_datetime(time_stamps), columns=columns)
 
         return pd_pred, None

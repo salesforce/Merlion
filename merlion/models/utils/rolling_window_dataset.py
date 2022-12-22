@@ -32,7 +32,7 @@ class RollingWindowDataset:
         flatten: bool = True,
         ts_encoding: Union[None, str] = None,
         valid_fraction: float = 0.0,
-        validation: bool = False,
+        validation: Union[bool, None] = False,
         seed: int = 0,
     ):
         """
@@ -68,8 +68,9 @@ class RollingWindowDataset:
             If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
             d:daily, b:business days, w:weekly, m:monthly]
         :param valid_fraction: Fraction of validation set splitted from training data. if ``valid_fraction = 0``
-            or ``valid_fraction = 1``, we iterate over the entire dataset
-        :param validation: Whether the data is from the validation set or not.
+            or ``valid_fraction = 1``, we iterate over the entire dataset.
+        :param validation: Whether the data is from the validation set or not. if ``validation = None``, we iterate over
+            the entire dataset.
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -129,13 +130,14 @@ class RollingWindowDataset:
         self._valid = validation
         self.valid_fraction = valid_fraction
 
-        if valid_fraction <= 0.0 or valid_fraction >= 1.0:
+        if valid_fraction <= 0.0 or valid_fraction >= 1.0 or (self.validation is None):
             n_valid = n_train = self.n_windows
         else:
             n_valid = math.ceil(self.n_windows * self.valid_fraction)
             n_train = self.n_windows - n_valid
 
         data_indices = np.arange(self.n_windows)
+
         # use seed 0 to perturb the dataset
         if shuffle:
             data_indices = np.random.RandomState(seed).permutation(data_indices)
@@ -147,7 +149,8 @@ class RollingWindowDataset:
     def validation(self):
         """
         If set ``False``, we only provide access to the training windows; if set ``True``,
-        we only provide access to the validation windows.
+        we only provide access to the validation windows. if set``None``, we iterate over
+        the entire dataset.
         """
         return self._valid
 

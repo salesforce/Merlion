@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+Utils for converting pandas datetime to numerical vectors
+"""
 from typing import List
 
 import numpy as np

@@ -5,9 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of Informer: 
-    Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting: https://arxiv.org/abs/2012.07436
-    Code adapted from https://github.com/thuml/Autoformer. 
+Implementation of Informer.
 """
 import copy
 import logging
@@ -51,7 +49,8 @@ logger = logging.getLogger(__name__)
 
 class InformerConfig(DeepForecasterConfig, NormalizingConfig):
     """
-    Config object for informer forecaster
+    Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting: https://arxiv.org/abs/2012.07436
+    Code adapted from https://github.com/thuml/Autoformer.
     """
 
     @initializer
@@ -63,6 +62,7 @@ class InformerConfig(DeepForecasterConfig, NormalizingConfig):
         decoder_input_size: int = None,
         num_encoder_layers: int = 2,
         num_decoder_layers: int = 1,
+        start_token_len: int = 0,
         factor: int = 3,
         model_dim: int = 512,
         embed: str = "timeF",
@@ -82,6 +82,8 @@ class InformerConfig(DeepForecasterConfig, NormalizingConfig):
             which is the dimension of the input data.
         :param num_encoder_layers: Number of encoder layers.
         :param num_decoder_layers: Number of decoder layers.
+        :param start_token_len: Length of start token for deep transformer encoder-decoder based models.
+            The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
         :param factor: Attention factor.
         :param model_dim: Dimension of the model.
         :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
@@ -97,7 +99,7 @@ class InformerConfig(DeepForecasterConfig, NormalizingConfig):
 
 class InformerModel(TorchModel):
     """
-    Implementaion of informer Deep Torch Model
+    Implementaion of informer deep torch model.
     """
 
     def __init__(self, config: InformerConfig):
@@ -109,10 +111,7 @@ class InformerModel(TorchModel):
                 config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
             )
 
-        if config.target_seq_index is None:
-            config.c_out = config.encoder_input_size
-        else:
-            config.c_out = 1
+        config.c_out = config.encoder_input_size
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
@@ -201,12 +200,15 @@ class InformerModel(TorchModel):
         dec_out = self.dec_embedding(dec_inp, future_timestamp)
         dec_out = self.decoder(dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
-        return dec_out[:, -self.max_forecast_steps :, :]
+        if self.config.target_seq_index is not None:
+            return dec_out[:, -self.max_forecast_steps :, :1]
+        else:
+            return dec_out[:, -self.max_forecast_steps :, :]
 
 
 class InformerForecaster(DeepForecaster):
     """
-    Implementaion of Informer deep forecaster
+    Implementaion of Informer deep forecaster.
     """
 
     config_class = InformerConfig

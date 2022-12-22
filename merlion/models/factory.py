@@ -56,6 +56,11 @@ import_alias = dict(
     RandomForestForecaster="merlion.models.forecast.trees:RandomForestForecaster",
     ExtraTreesForecaster="merlion.models.forecast.trees:ExtraTreesForecaster",
     LGBMForecaster="merlion.models.forecast.trees:LGBMForecaster",
+    TransformerForecaster="merlion.models.forecast.transformer:TransformerForecaster",
+    InformerForecaster="merlion.models.forecast.informer:InformerForecaster",
+    AutoformerForecaster="merlion.models.forecast.autoformer:AutoformerForecaster",
+    ETSformerForecaster="merlion.models.forecast.etsformer:ETSformerForecaster",
+    DeepARForecaster="merlion.models.forecast.deep_ar:DeepARForecaster",
     # Ensembles
     DetectorEnsemble="merlion.models.ensemble.anomaly:DetectorEnsemble",
     ForecasterEnsemble="merlion.models.ensemble.forecast:ForecasterEnsemble",

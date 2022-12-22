@@ -57,7 +57,27 @@ class TestDeepModels(unittest.TestCase):
         self.train_data = TimeSeries.from_pd(self.train_df)
         self.test_data = TimeSeries.from_pd(self.test_df)
 
-    def test_deepar(self):
+    def test_multivariate_predict_multivariate(self):
+        logger.info("Multivariate output testing")
+        target_seq_index = None
+
+        self._test_deepar(target_seq_index)
+        self._test_autoformer(target_seq_index)
+        self._test_informer(target_seq_index)
+        self._test_ETSformer(target_seq_index)
+        self._test_transformer(target_seq_index)
+
+    def test_multivariate_predict_univariate(self):
+        logger.info("Univarate output testing")
+        target_seq_index = 20
+
+        self._test_deepar(target_seq_index)
+        self._test_autoformer(target_seq_index)
+        self._test_informer(target_seq_index)
+        self._test_ETSformer(target_seq_index)
+        self._test_transformer(target_seq_index)
+
+    def _test_deepar(self, target_seq_index):
 
         logger.info("Testing Deep AR forecasting")
         config = DeepARConfig(
@@ -67,13 +87,14 @@ class TestDeepModels(unittest.TestCase):
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
+            target_seq_index=target_seq_index,
         )
 
         forecaster = DeepARForecaster(config)
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def test_autoformer(self):
+    def _test_autoformer(self, target_seq_index):
 
         logger.info("Testing Autoformer forecasting")
         start_token_len = 3
@@ -85,13 +106,14 @@ class TestDeepModels(unittest.TestCase):
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
+            target_seq_index=target_seq_index,
         )
 
         forecaster = AutoformerForecaster(config)
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def test_transformer(self):
+    def _test_transformer(self, target_seq_index):
         logger.info("Testing Transformer forecasting")
         start_token_len = 3
         config = TransformerConfig(
@@ -102,13 +124,14 @@ class TestDeepModels(unittest.TestCase):
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
+            target_seq_index=target_seq_index,
         )
 
         forecaster = TransformerForecaster(config)
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def test_informer(self):
+    def _test_informer(self, target_seq_index):
         logger.info("Testing Informer forecasting")
         start_token_len = 3
 
@@ -120,13 +143,14 @@ class TestDeepModels(unittest.TestCase):
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
+            target_seq_index=target_seq_index,
         )
 
         forecaster = InformerForecaster(config)
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def test_ETSformer(self):
+    def _test_ETSformer(self, target_seq_index):
         logger.info("Testing ETSformer forecasting")
         start_token_len = 0
 
@@ -139,6 +163,7 @@ class TestDeepModels(unittest.TestCase):
             num_epochs=self.num_epochs,
             use_gpu=self.use_gpu,
             batch_size=self.batch_size,
+            target_seq_index=target_seq_index,
         )
 
         forecaster = ETSformerForecaster(config)

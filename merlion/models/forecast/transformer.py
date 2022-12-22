@@ -5,8 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-    Implementation of Transformer for time series data 
-    Code adapted from https://github.com/thuml/Autoformer
+Implementation of Transformer for time series data.
 """
 import copy
 import logging
@@ -46,7 +45,8 @@ logger = logging.getLogger(__name__)
 
 class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
     """
-    Config object for transformer forecaster
+    Transformer for time series forecasting.
+    Code adapted from https://github.com/thuml/Autoformer.
     """
 
     @initializer
@@ -58,6 +58,7 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
         decoder_input_size: int = None,
         num_encoder_layers: int = 2,
         num_decoder_layers: int = 1,
+        start_token_len: int = 0,
         factor: int = 3,
         model_dim: int = 512,
         embed: str = "timeF",
@@ -77,6 +78,8 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
             which is the dimension of the input data.
         :param num_encoder_layers: Number of encoder layers.
         :param num_decoder_layers: Number of decoder layers.
+        :param start_token_len: Length of start token for deep transformer encoder-decoder based models.
+            The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
         :param factor: Attention factor.
         :param model_dim: Dimension of the model.
         :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
@@ -92,7 +95,7 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
 
 class TransformerModel(TorchModel):
     """
-    Implementaion of Transformer Deep Torch Model
+    Implementaion of Transformer deep torch model.
     """
 
     def __init__(self, config: TransformerConfig):
@@ -104,10 +107,7 @@ class TransformerModel(TorchModel):
                 config.encoder_input_size if config.decoder_input_size is None else config.decoder_input_size
             )
 
-        if config.target_seq_index is None:
-            config.c_out = config.encoder_input_size
-        else:
-            config.c_out = 1
+        config.c_out = config.encoder_input_size
 
         self.n_past = config.n_past
         self.start_token_len = config.start_token_len
@@ -193,7 +193,10 @@ class TransformerModel(TorchModel):
         dec_out = self.dec_embedding(dec_inp, future_timestamp)
         dec_out = self.decoder(dec_out, enc_out, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
-        return dec_out[:, -self.max_forecast_steps :, :]
+        if self.config.target_seq_index is not None:
+            return dec_out[:, -self.max_forecast_steps :, :1]
+        else:
+            return dec_out[:, -self.max_forecast_steps :, :]
 
 
 class TransformerForecaster(DeepForecaster):
