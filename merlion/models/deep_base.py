@@ -89,9 +89,9 @@ class DeepConfig(Config):
         :param num_epochs: Total number of epochs for training.
         :param optimizer: The optimizer for learning the parameters of the deep learning models. The value of optimizer
             can be ``Adam``, ``AdamW``, ``SGD``, ``Adagrad``, ``RMSprop``.
-        :param loss_fn: Loss function for optimizing deep learning models. The value of loss_fn can be `mse` for l2 loss,
-            `l1` for l1 loss, `huber` for huber loss.
-        :param clip_gradient: Clipping gradient norm of model parameters before updating. If `clip_gradient is None`,
+        :param loss_fn: Loss function for optimizing deep learning models. The value of loss_fn can be
+            ``mse`` for l2 loss, ``l1`` for l1 loss, ``huber`` for huber loss.
+        :param clip_gradient: Clipping gradient norm of model parameters before updating. If ``clip_gradient is None``,
             then the gradient will not be clipped.
         :param use_gpu: Whether to use gpu for training deep models. If ``use_gpu = True`` while thre is no GPU device,
             the model will use CPU for training instead.
@@ -101,9 +101,9 @@ class DeepConfig(Config):
             d:daily, b:business days, w:weekly, m:monthly]
         :param lr: Learning rate for optimizing deep learning models.
         :param weight_decay: Weight decay (L2 penalty) (default: 0)
-        :param valid_fraction: Fraction of validation set splitted from training data
+        :param valid_fraction: Fraction of validation set to be split from training data
         :param early_stop_patience: Number of epochs with no improvement after which training will be stopped for
-            early stopping function. If `early_stop_patience = None`, the training process will not stop early.
+            early stopping function. If ``early_stop_patience = None``, the training process will not stop early.
         """
         super().__init__(**kwargs)
 

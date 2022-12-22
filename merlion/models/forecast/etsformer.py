@@ -68,10 +68,10 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         """
         :param n_past: # of past steps used for forecasting future.
         :param max_forecast_steps:  Max # of steps we would like to forecast for.
-        :param encoder_input_size: Input size of encoder. If `encoder_input_size = None`, then the model will automatically use `config.dim`,
-            which is the dimension of the input data.
-        :param decoder_input_size: Input size of decoder. If `decoder_input_size = None`, then the model will automatically use `config.dim`,
-            which is the dimension of the input data.
+        :param encoder_input_size: Input size of encoder. If ``encoder_input_size = None``,
+            then the model will automatically use ``config.dim``,  which is the dimension of the input data.
+        :param decoder_input_size: Input size of decoder. If ``decoder_input_size = None``,
+            then the model will automatically use ``config.dim``, which is the dimension of the input data.
         :param num_encoder_layers: Number of encoder layers.
         :param num_decoder_layers: Number of decoder layers.
         :param model_dim: Dimension of the model.

@@ -28,6 +28,7 @@ Univariate models:
 .. autosummary::
     vector_ar
     trees
+    deep_ar
     autoformer
     etsformer
     informer
@@ -42,6 +43,16 @@ Univariate models:
     sarima
     vector_ar
     arima
+
+Deep Learning models:
+
+.. autosummary::
+    deep_ar
+    autoformer
+    etsformer
+    informer
+    transformer
+
 
 Note that the AutoML variants
 :py:mod:`AutoSarima <merlion.models.automl.autosarima>` and
@@ -132,6 +143,13 @@ forecast.vector\_ar
 forecast.trees
 ^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.trees
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+forecast.deep\_ar
+^^^^^^^^^^^^^^^^^
+.. automodule:: merlion.models.forecast.deep_ar
    :members:
    :undoc-members:
    :show-inheritance:

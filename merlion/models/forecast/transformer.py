@@ -72,19 +72,19 @@ class TransformerConfig(DeepForecasterConfig, NormalizingConfig):
         """
         :param n_past: # of past steps used for forecasting future.
         :param max_forecast_steps:  Max # of steps we would like to forecast for.
-        :param encoder_input_size: Input size of encoder. If `encoder_input_size = None`, then the model will automatically use `config.dim`,
-            which is the dimension of the input data.
-        :param decoder_input_size: Input size of decoder. If `decoder_input_size = None`, then the model will automatically use `config.dim`,
-            which is the dimension of the input data.
+        :param encoder_input_size: Input size of encoder. If ``encoder_input_size = None``,
+            then the model will automatically use ``config.dim``,  which is the dimension of the input data.
+        :param decoder_input_size: Input size of decoder. If ``decoder_input_size = None``,
+            then the model will automatically use ``config.dim``, which is the dimension of the input data.
         :param num_encoder_layers: Number of encoder layers.
         :param num_decoder_layers: Number of decoder layers.
         :param start_token_len: Length of start token for deep transformer encoder-decoder based models.
             The start token is similar to the special tokens for NLP models (e.g., bos, sep, eos tokens).
         :param factor: Attention factor.
         :param model_dim: Dimension of the model.
-        :param embed: Time feature encoding type, options include `timeF`, `fixed` and `learned`.
+        :param embed: Time feature encoding type, options include ``timeF``, ``fixed`` and ``learned``.
         :param dropout: dropout rate.
-        :param activation: Activation function, can be `gelu`, `relu`, `sigmoid`, etc.
+        :param activation: Activation function, can be ``gelu``, ``relu``, ``sigmoid``, etc.
         :param n_heads: Number of heads of the model.
         :param fcn_dim: Hidden dimension of the MLP layer in the model.
         :param distil: whether to use distilling in the encoder of the model.

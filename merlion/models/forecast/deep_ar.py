@@ -120,7 +120,6 @@ class DeepARForecaster(DeepForecaster):
 
     def _get_batch_model_loss_and_outputs(self, batch):
         config = self.config
-        device = self.deep_model.device
         past, past_timestamp, future, future_timestamp = batch
 
         model_output, mu, sigma = self.deep_model(past, past_timestamp, future_timestamp, sample_only=False)
