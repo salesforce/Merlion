@@ -8,7 +8,6 @@
 Base class for Deep Learning Forecasting Models
 """
 import copy
-import time
 
 import logging
 import numpy as np
@@ -81,26 +80,17 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         :return: The numpy prediction of the model and the average loss for the given dataset.
         """
-        config = self.config
         self.deep_model.eval()
-
         all_preds = []
-        all_trues = []
         total_loss = []
-
         for i, batch in enumerate(eval_dataset):
             with torch.no_grad():
                 loss, outputs, y_true = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
                 pred = outputs.detach().cpu().numpy()
-                true = y_true.detach().cpu().numpy()
-
                 all_preds.append(pred)
-                all_trues.append(true)
                 total_loss.append(loss.item())
 
         preds = np.concatenate(all_preds, axis=0)
-        trues = np.concatenate(all_trues, axis=0)
-
         return preds, np.average(total_loss)
 
     @property
@@ -121,7 +111,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         past_timestamp = torch.tensor(past_timestamp, dtype=torch.float, device=device)
         future_timestamp = torch.tensor(future_timestamp, dtype=torch.float, device=device)
 
-        return (past, past_timestamp, future, future_timestamp)
+        return past, past_timestamp, future, future_timestamp
 
     def _train(self, train_data: pd.DataFrame, train_config=None) -> pd.DataFrame:
         config = self.config
@@ -134,7 +124,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
             n_past=config.n_past,
             n_future=config.max_forecast_steps,
             batch_size=config.batch_size,
-            target_seq_index=None,  # have to set None, we use config.target_seq_index later in the training, if not this is a bug
+            target_seq_index=None,  # have to set None, we use target_seq_index later in the training, if not this is a bug
             ts_encoding=config.ts_encoding,
             valid_fraction=config.valid_fraction,
             flatten=False,
@@ -146,18 +136,14 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         logger.info(f"Training steps each epoch: {train_steps}")
 
         bar = ProgressBar(total=config.num_epochs)
-
-        if config.early_stop_patience:
-            early_stopping = EarlyStopping(patience=config.early_stop_patience)
+        early_stopping = EarlyStopping(patience=config.early_stop_patience) if config.early_stop_patience else None
 
         # start training
         for epoch in range(config.num_epochs):
             train_loss = []
-
             self.deep_model.train()
-            epoch_time = time.time()
-
             total_dataset.seed = epoch + 1
+
             for i, batch in enumerate(total_dataset):
                 self.optimizer.zero_grad()
 
@@ -182,37 +168,26 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
                     epoch + 1, prefix="", suffix=f"Train Loss: {train_loss: .4f}, Validation Loss: {val_loss: .4f}"
                 )
 
-            if config.early_stop_patience:
+            if early_stopping is not None:
                 early_stopping(val_loss, self.deep_model)
                 if early_stopping.early_stop:
                     logger.info(f"Early stopping with {config.early_stop_patience} patience")
                     break
 
-        if config.early_stop_patience:
+        if early_stopping is not None:
             early_stopping.load_best_model(self.deep_model)
             logger.info(f"Load the best model with validation loss: {early_stopping.val_loss_min: .4f}")
 
         logger.info("End of the training loop")
 
-        prediction_dataset = RollingWindowDataset(
-            train_data,
-            n_past=config.n_past,
-            n_future=config.max_forecast_steps,
-            batch_size=config.batch_size,
-            target_seq_index=None,
-            ts_encoding=config.ts_encoding,
-            valid_fraction=0.0,
-            flatten=False,
-            shuffle=False,
-            validation=None,
-        )
-
-        pred, _ = self._get_np_loss_and_prediction(prediction_dataset)
+        # get predictions
+        total_dataset.shuffle = False
+        total_dataset.validation = None
+        pred, _ = self._get_np_loss_and_prediction(total_dataset)
 
         # since the model predicts multiple steps, we concatenate all the first steps together
-        columns = [self.target_name] if config.target_seq_index else train_data.columns
+        columns = train_data.columns if self.target_seq_index is None else [self.target_name]
         column_index = train_data.index[config.n_past : (len(train_data) - config.max_forecast_steps + 1)]
-
         return pd.DataFrame(pred[:, 0], index=column_index, columns=columns), None
 
     def _get_batch_model_loss_and_outputs(self, batch):
@@ -223,34 +198,28 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
 
         :return: calculated loss, deep model outputs and targeted ground truth future
         """
-        config = self.config
         past, past_timestamp, future, future_timestamp = batch
-
         model_output = self.deep_model(past, past_timestamp, future_timestamp)
 
         if future is None:
             return None, model_output, None
 
-        if config.target_seq_index is None and self.support_multivariate_output:
-            target_future = future
-        else:
-            # choose specific target_seq_index for regression
-            target_idx = config.target_seq_index
-            target_future = future[:, :, target_idx : target_idx + 1]
+        if self.target_seq_index is not None:
+            future = future[:, :, self.target_seq_index : self.target_seq_index + 1]
 
-        loss = self.loss_fn(model_output, target_future)
-        return loss, model_output, target_future
+        loss = self.loss_fn(model_output, future)
+        return loss, model_output, future
 
     @property
     def require_even_sampling(self) -> bool:
         return False
 
     def _forecast(
-        self, time_stamps: List[int], time_series_prev: pd.DataFrame, return_prev=False
+        self, time_stamps: List[int], time_series_prev: pd.DataFrame = None, return_prev=False
     ) -> Tuple[pd.DataFrame, Optional[pd.DataFrame]]:
 
         if time_series_prev is None:
-            time_series_prev = self.transform(self.train_data[-self.config.n_past :]).to_pd()
+            time_series_prev = self.transform(self.train_data).to_pd().iloc[-self.config.n_past :]
 
         # convert to vector feature
         prev_timestamp = get_time_features(time_series_prev.index, self.config.ts_encoding)
@@ -266,8 +235,7 @@ class DeepForecaster(DeepModelBase, ForecasterBase):
         _, model_output, _ = self._get_batch_model_loss_and_outputs(self._convert_batch_to_tensors(batch))
 
         preds = model_output.detach().cpu().numpy().squeeze()
-        columns = [self.target_name] if self.config.target_seq_index else time_series_prev.columns
-
+        columns = time_series_prev.columns if self.target_seq_index is None else [self.target_name]
         pd_pred = pd.DataFrame(preds, index=to_pd_datetime(time_stamps), columns=columns)
 
         return pd_pred, None

@@ -57,27 +57,57 @@ class TestDeepModels(unittest.TestCase):
         self.train_data = TimeSeries.from_pd(self.train_df)
         self.test_data = TimeSeries.from_pd(self.test_df)
 
-    def test_multivariate_predict_multivariate(self):
-        logger.info("Multivariate output testing")
-        target_seq_index = None
+    def test_deep_ar_predict_univariate(self):
+        print("-" * 80)
+        logger.info("test_deep_ar_predict_univariate\n" + "-" * 80)
+        self._test_deep_ar(20)
 
-        self._test_deepar(target_seq_index)
-        self._test_autoformer(target_seq_index)
-        self._test_informer(target_seq_index)
-        self._test_ETSformer(target_seq_index)
-        self._test_transformer(target_seq_index)
+    def test_deep_ar_predict_multivariate(self):
+        print("-" * 80)
+        logger.info("test_deep_ar_predict_multivariate\n" + "-" * 80)
+        self._test_deep_ar(None)
 
-    def test_multivariate_predict_univariate(self):
-        logger.info("Univarate output testing")
-        target_seq_index = 20
+    def test_autoformer_predict_univariate(self):
+        print("-" * 80)
+        logger.info("test_autoformer_predict_univariate\n" + "-" * 80)
+        self._test_autoformer(9)
 
-        self._test_deepar(target_seq_index)
-        self._test_autoformer(target_seq_index)
-        self._test_informer(target_seq_index)
-        self._test_ETSformer(target_seq_index)
-        self._test_transformer(target_seq_index)
+    def test_autoformer_predict_multivariate(self):
+        print("-" * 80)
+        logger.info("test_autoformer_predict_multivariate\n" + "-" * 80)
+        self._test_autoformer(None)
 
-    def _test_deepar(self, target_seq_index):
+    def test_informer_predict_univariate(self):
+        print("-" * 80)
+        logger.info("test_informer_predict_univariate\n" + "-" * 80)
+        self._test_informer(3)
+
+    def test_informer_predict_multivariate(self):
+        print("-" * 80)
+        logger.info("test_informer_predict_multivariate\n" + "-" * 80)
+        self._test_informer(None)
+
+    def test_etsformer_predict_univariate(self):
+        print("-" * 80)
+        logger.info("test_etsformer_predict_univariate\n" + "-" * 80)
+        self._test_etsformer(15)
+
+    def test_etsformer_predict_multivariate(self):
+        print("-" * 80)
+        logger.info("test_etsformer_predict_multivariate\n" + "-" * 80)
+        self._test_etsformer(None)
+
+    def test_transformer_predict_univariate(self):
+        print("-" * 80)
+        logger.info("test_transformer_predict_univariate\n" + "-" * 80)
+        self._test_transformer(0)
+
+    def test_transformer_predict_multivariate(self):
+        print("-" * 80)
+        logger.info("test_transformer_predict_multivariate\n" + "-" * 80)
+        self._test_transformer(None)
+
+    def _test_deep_ar(self, target_seq_index):
 
         logger.info("Testing Deep AR forecasting")
         config = DeepARConfig(
@@ -150,7 +180,7 @@ class TestDeepModels(unittest.TestCase):
 
         self._test_model(forecaster, self.train_data, self.test_data)
 
-    def _test_ETSformer(self, target_seq_index):
+    def _test_etsformer(self, target_seq_index):
         logger.info("Testing ETSformer forecasting")
         start_token_len = 0
 
@@ -218,6 +248,7 @@ class TestDeepModels(unittest.TestCase):
         test_prev, test = dataset[0]
         forecaster.load(model_save_path)
         pred, _ = forecaster.forecast(test.time_stamps, time_series_prev=test_prev)
+        assert pred.dim == 1 if forecaster.target_seq_index is not None else train_data.dim
 
         try:
             shutil.rmtree(model_save_path)

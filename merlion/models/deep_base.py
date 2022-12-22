@@ -214,9 +214,8 @@ class DeepModelBase(ModelBase):
     def __getstate__(self):
         state = copy.copy(self.__dict__)
         deep_model = state.pop("deep_model", None)
-        optimizer = state.pop("optimizer", None)
-        loss_fn = state.pop("loss_fn", None)
-
+        state.pop("optimizer", None)
+        state.pop("loss_fn", None)
         state = copy.deepcopy(state)
 
         if deep_model is not None:
@@ -232,10 +231,7 @@ class DeepModelBase(ModelBase):
             if self.deep_model is None:
                 self._create_model()
 
-            device = self.deep_model.device
-
             buffer = io.BytesIO()
             torch.save(deep_model_state_dict, buffer)
             buffer.seek(0)
-
-            self.deep_model.load_state_dict(torch.load(buffer, map_location=device))
+            self.deep_model.load_state_dict(torch.load(buffer, map_location=self.deep_model.device))

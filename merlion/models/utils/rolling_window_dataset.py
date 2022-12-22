@@ -131,10 +131,9 @@ class RollingWindowDataset:
         self.valid_fraction = valid_fraction
 
         if valid_fraction <= 0.0 or valid_fraction >= 1.0 or (self.validation is None):
-            n_valid = n_train = self.n_windows
+            n_train = self.n_windows
         else:
-            n_valid = math.ceil(self.n_windows * self.valid_fraction)
-            n_train = self.n_windows - n_valid
+            n_train = self.n_windows - math.ceil(self.n_windows * self.valid_fraction)
 
         data_indices = np.arange(self.n_windows)
 
@@ -143,7 +142,7 @@ class RollingWindowDataset:
             data_indices = np.random.RandomState(seed).permutation(data_indices)
 
         self.train_indices = data_indices[:n_train]
-        self.valid_indices = data_indices[-n_valid:]
+        self.valid_indices = data_indices[n_train:]
 
     @property
     def validation(self):
@@ -195,7 +194,8 @@ class RollingWindowDataset:
 
     @property
     def n_points(self):
-        return self.n_valid if self.validation else self.n_train
+        n_train, n_valid = self.n_train, self.n_valid
+        return n_train + n_valid if self.validation is None else n_valid if self.validation else n_train
 
     def __len__(self):
         return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
@@ -203,7 +203,11 @@ class RollingWindowDataset:
     def __iter__(self):
         batch = []
 
-        if self.validation:
+        if self.validation is None:
+            order = sorted(np.concatenate((self.train_indices, self.valid_indices)))
+            if self.shuffle:
+                order = np.random.RandomState(self.seed).permutation(order)
+        elif self.validation:
             order = self.valid_indices
         elif self.shuffle and self.batch_size is not None:
             order = np.random.RandomState(self.seed).permutation(self.train_indices)
@@ -242,7 +246,9 @@ class RollingWindowDataset:
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
-        if self.validation:
+        if self.validation is None:
+            assert 0 <= idx < self.n_points
+        elif self.validation:
             assert idx in self.valid_indices
         else:
             assert idx in self.train_indices
