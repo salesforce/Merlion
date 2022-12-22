@@ -64,6 +64,10 @@ class Sarima(ForecasterExogBase, SeasonalityModel):
         return True
 
     @property
+    def _default_train_config(self):
+        return dict(enforce_stationarity=False, enforce_invertibility=False)
+
+    @property
     def order(self) -> Tuple[int, int, int]:
         """
         :return: the order (p, d, q) of the model, where p is the AR order,
