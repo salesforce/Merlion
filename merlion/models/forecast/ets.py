@@ -166,10 +166,12 @@ class ETS(SeasonalityModel, ForecasterBase):
             # the default setting of refit=False is fast and conducts exponential smoothing with given parameters,
             # while the setting of refit=True is slow and refits the model on time_series_prev.
             model = self._instantiate_model(val_prev)
-            if self.config.refit and len(time_series_prev) > self._max_lookback:
-                model = model.fit(start_params=self.model.params, disp=False)
-            else:
-                model = model.smooth(params=self.model.params)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                if self.config.refit and len(time_series_prev) > self._max_lookback:
+                    model = model.fit(start_params=self.model.params, disp=False)
+                else:
+                    model = model.smooth(params=self.model.params)
 
         # Run forecasting.
         forecast_result = model.get_prediction(start=start, end=start + len(time_stamps) - 1)
