@@ -82,7 +82,6 @@ class ETSformerConfig(DeepForecasterConfig, NormalizingConfig):
         :param sigma: Standard derivation for ETS input data transform.
         """
         super().__init__(n_past=n_past, max_forecast_steps=max_forecast_steps, **kwargs)
-        assert self.start_token_len == 0, "No need of start token for ETSformer!"
 
 
 class ETSformerModel(TorchModel):

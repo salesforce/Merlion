@@ -182,12 +182,10 @@ class TestDeepModels(unittest.TestCase):
 
     def _test_etsformer(self, target_seq_index):
         logger.info("Testing ETSformer forecasting")
-        start_token_len = 0
 
         config = ETSformerConfig(
             n_past=self.n_past,
             max_forecast_steps=self.max_forecast_steps,
-            start_token_len=start_token_len,
             top_K=3,  # top fourier basis
             early_stop_patience=self.early_stop_patience,
             num_epochs=self.num_epochs,
