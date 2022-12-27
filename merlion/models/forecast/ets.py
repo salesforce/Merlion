@@ -137,7 +137,9 @@ class ETS(SeasonalityModel, ForecasterBase):
         name = self.target_name
         train_data = train_data[name]
         times = train_data.index
-        self.model = self._instantiate_model(pd.Series(train_data.values)).fit(disp=False)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.model = self._instantiate_model(pd.Series(train_data.values)).fit(disp=False)
 
         # get forecast for the training data
         self._last_val = train_data[-1]
