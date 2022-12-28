@@ -92,7 +92,8 @@ class TestSarima(unittest.TestCase):
         n_alarms = np.sum(alarms.to_pd().values != 0)
         logger.info(f"Alarms look like:\n{alarms[:5]}")
         logger.info(f"Number of alarms: {n_alarms}\n")
-        self.assertEqual(n_alarms, 1)
+        self.assertLessEqual(n_alarms, 3)
+        self.assertGreaterEqual(n_alarms, 2)
         loaded_model_alarms = loaded_model.get_anomaly_label(self.vals_test)
         self.assertSequenceEqual(list(alarms), list(loaded_model_alarms))
 

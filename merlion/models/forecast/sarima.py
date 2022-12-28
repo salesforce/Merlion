@@ -14,7 +14,7 @@ from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
-from statsmodels.tsa.arima.model import ARIMA as sm_Sarima
+import statsmodels.api as sm
 
 from merlion.models.automl.seasonality import SeasonalityModel
 from merlion.models.forecast.base import ForecasterExogBase, ForecasterExogConfig
@@ -61,7 +61,7 @@ class Sarima(ForecasterExogBase, SeasonalityModel):
 
     @property
     def require_even_sampling(self) -> bool:
-        return True
+        return False
 
     @property
     def _default_train_config(self):
@@ -103,10 +103,10 @@ class Sarima(ForecasterExogBase, SeasonalityModel):
         train_config = train_config or {}
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            model = sm_Sarima(
+            model = sm.tsa.SARIMAX(
                 train_data, exog=exog_data, order=self.order, seasonal_order=self.seasonal_order, **train_config
             )
-            self.model = model.fit(method_kwargs={"disp": 0})
+            self.model = model.fit(disp=0)
 
         # FORECASTING: forecast for next n steps using Sarima model
         self._last_val = train_data[-1]
