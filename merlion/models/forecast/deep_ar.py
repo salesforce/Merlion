@@ -99,11 +99,9 @@ class DeepARModel(TorchModel):
 
         output = mu + torch.randn_like(mu, dtype=torch.float, device=self.device) * sigma
 
-        if self.config.target_seq_index is not None:
-            output = output[:, :, :1]
-            mu = mu[:, :, :1]
-            sigma = sigma[:, :, :1]
-
+        target_idx = self.config.target_seq_index
+        if target_idx is not None:
+            output = output[:, :, target_idx : target_idx + 1]
         return output if sample_only else output, mu, sigma
 
 
@@ -133,5 +131,5 @@ class DeepARForecaster(DeepForecaster):
             target_idx = config.target_seq_index
             target_future = future[:, :, target_idx : target_idx + 1]
 
-        loss = self.loss_fn(mu, target_future, torch.square(sigma))
+        loss = self.loss_fn(mu, future, torch.square(sigma))
         return loss, model_output, target_future
