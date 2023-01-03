@@ -21,7 +21,6 @@ Univariate models:
     ets
     prophet
     smoother
-    lstm
 
 `Multivariate <tutorials/forecast/2_ForecastMultivariate>` models:
 
@@ -119,13 +118,6 @@ forecast.prophet
 forecast.smoother
 ^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.forecast.smoother
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-forecast.lstm
-^^^^^^^^^^^^^
-.. automodule:: merlion.models.forecast.lstm
    :members:
    :undoc-members:
    :show-inheritance:

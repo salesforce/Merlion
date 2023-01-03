@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -30,8 +30,8 @@ following interface, in addition to ``model.save()`` and ``ForecasterClass.load`
 3.  ``model.train(train_data, train_config=None)``
 
     -   trains the model on the `TimeSeries` ``train_data``
-    -   ``train_config`` (optional): extra configuration describing how the model should be trained (e.g. learning rate
-        for `LSTM`). Not used for all models. Class-level default provided for models which do use it.
+    -   ``train_config`` (optional): extra configuration describing how the model should be trained. 
+        Not used for all models. Class-level default provided for models which do use it.
     -   returns the model's prediction ``train_data``, in the same format as if you called `ForecasterBase.forecast`
         on the time stamps of ``train_data``
 """
