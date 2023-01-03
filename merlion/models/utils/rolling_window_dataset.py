@@ -4,11 +4,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
+"""
+A rolling window dataset
+"""
 import logging
+import math
 import numpy as np
 from typing import Optional, Union
 import pandas as pd
 from merlion.utils.time_series import TimeSeries, to_pd_datetime
+from merlion.models.utils.time_features import get_time_features
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +30,9 @@ class RollingWindowDataset:
         ts_index: bool = False,
         batch_size: Optional[int] = 1,
         flatten: bool = True,
+        ts_encoding: Union[None, str] = None,
+        valid_fraction: float = 0.0,
+        validation: Union[bool, None] = False,
         seed: int = 0,
     ):
         """
@@ -55,6 +63,14 @@ class RollingWindowDataset:
             by default, Numpy array will handle the internal data workflow and Numpy array will be the output.
         :param batch_size: the number of windows to return in parallel. If ``None``, return the whole dataset.
         :param flatten: whether the output time series arrays should be flattened to 2 dimensions.
+        :param ts_encoding: whether the timestamp should be encoded to a float vector, which can be used
+            for training deep learning based time series models; if ``None``, the timestamp is not encoded.
+            If not ``None``, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
+            d:daily, b:business days, w:weekly, m:monthly]
+        :param valid_fraction: Fraction of validation set splitted from training data. if ``valid_fraction = 0``
+            or ``valid_fraction = 1``, we iterate over the entire dataset.
+        :param validation: Whether the data is from the validation set or not. if ``validation = None``, we iterate over
+            the entire dataset.
         """
         assert isinstance(
             data, (TimeSeries, pd.DataFrame)
@@ -81,22 +97,17 @@ class RollingWindowDataset:
         self.n_past = n_past
         self.shuffle = shuffle
         self.flatten = flatten
+        self.ts_encoding = ts_encoding
 
         self.target_seq_index = target_seq_index
-        if target_seq_index is None:
-            if n_future not in [0, 1]:
-                logger.warning(
-                    "Since target_seq_index is None, we predict all univariates for this dataset. Currently, this is "
-                    "only valid with 1-step lookahead (autoregressive forecasting) or 0-step lookahead (autoencoding). "
-                    "Setting n_future = 1. If you are not expecting this behavior, set target_seq_index appropriately."
-                )
-                n_future = 1
         self.n_future = n_future
 
         self.ts_index = ts_index
         if ts_index:
             self.data = data.concat(exog_data, axis=1) if exog_data is not None else data
-            self.target = data if self.autoregressive else data.univariates[data.names[target_seq_index]].to_ts()
+            self.target = (
+                data if self.target_seq_index is None else data.univariates[data.names[target_seq_index]].to_ts()
+            )
             self.timestamp = to_pd_datetime(data.np_time_stamps)
         else:
             df = data.to_pd() if isinstance(data, TimeSeries) else data
@@ -109,27 +120,100 @@ class RollingWindowDataset:
                 self.data = np.concatenate((df.values, exog_vals), axis=1)
             self.data = np.concatenate((df.values, exog_df.values), axis=1) if exog_data is not None else df.values
             self.timestamp = df.index
-            self.target = df.values if self.autoregressive else df.values[:, target_seq_index]
+            self.target = df.values if self.target_seq_index is None else df.values[:, target_seq_index]
 
-        self.seed = seed
+        if self.ts_encoding:
+            self.timestamp = get_time_features(self.timestamp, self.ts_encoding)
+
+        self._seed = seed
+
+        self._valid = validation
+        self.valid_fraction = valid_fraction
+
+        if valid_fraction <= 0.0 or valid_fraction >= 1.0 or (self.validation is None):
+            n_train = self.n_windows
+        else:
+            n_train = self.n_windows - math.ceil(self.n_windows * self.valid_fraction)
+
+        data_indices = np.arange(self.n_windows)
+
+        # use seed 0 to perturb the dataset
+        if shuffle:
+            data_indices = np.random.RandomState(seed).permutation(data_indices)
+
+        self.train_indices = data_indices[:n_train]
+        self.valid_indices = data_indices[n_train:]
 
     @property
-    def autoregressive(self):
-        return self.target_seq_index is None
+    def validation(self):
+        """
+        If set ``False``, we only provide access to the training windows; if set ``True``,
+        we only provide access to the validation windows. if set``None``, we iterate over
+        the entire dataset.
+        """
+        return self._valid
+
+    @validation.setter
+    def validation(self, valid: bool):
+        self._valid = valid
+
+    @property
+    def seed(self):
+        """
+        Set Random seed to perturb the training data
+        """
+        return self._seed
+
+    @seed.setter
+    def seed(self, seed: int):
+        """
+        Set Random seed to perturb the training data
+        """
+        self._seed = seed
+
+    @property
+    def n_windows(self):
+        """
+        Number of total slides windows
+        """
+        return len(self.data) - self.n_past - self.n_future + 1
+
+    @property
+    def n_valid(self):
+        """
+        Number of slides windows in validation set
+        """
+        return len(self.valid_indices)
+
+    @property
+    def n_train(self):
+        """
+        Number of slides windows in training set
+        """
+        return len(self.train_indices)
 
     @property
     def n_points(self):
-        return len(self.data) - self.n_past + 1 - self.n_future
+        n_train, n_valid = self.n_train, self.n_valid
+        return n_train + n_valid if self.validation is None else n_valid if self.validation else n_train
 
     def __len__(self):
         return int(np.ceil(self.n_points / self.batch_size)) if self.batch_size is not None else 1
 
     def __iter__(self):
         batch = []
-        if self.shuffle and self.batch_size is not None:
-            order = np.random.RandomState(self.seed).permutation(self.n_points)
+
+        if self.validation is None:
+            order = sorted(np.concatenate((self.train_indices, self.valid_indices)))
+            if self.shuffle:
+                order = np.random.RandomState(self.seed).permutation(order)
+        elif self.validation:
+            order = self.valid_indices
+        elif self.shuffle and self.batch_size is not None:
+            order = np.random.RandomState(self.seed).permutation(self.train_indices)
         else:
-            order = range(self.n_points)
+            order = self.train_indices
+
         for i in order:
             batch.append(self[i])
             if self.batch_size is not None and len(batch) >= self.batch_size:
@@ -144,21 +228,39 @@ class RollingWindowDataset:
         # TODO: allow output shape to be specified as class parameter
         past, past_ts, future, future_ts = zip(*batch)
         past = np.stack(past)
+        past_ts = np.stack(past_ts)
+
         if self.flatten:
             past = past.reshape((len(batch), -1))
-        past_ts = np.stack(past_ts)
+            past_ts = past_ts.reshape((len(batch), -1)) if self.ts_encoding else past_ts
+
         if future is not None:
-            future = np.stack(future).reshape((len(batch), -1))
+            future = np.stack(future)
+            future = future.reshape((len(batch), -1)) if self.flatten else future
+
             future_ts = np.stack(future_ts)
+            if self.flatten and self.ts_encoding:
+                future_ts = future_ts.reshape((len(batch), -1))
         else:
             future, future_ts = None, None
         return past, past_ts, future, future_ts
 
     def __getitem__(self, idx):
-        assert 0 <= idx < self.n_points
-        idx_end = idx + self.n_past
-        past = self.data[idx:idx_end]
-        past_timestamp = self.timestamp[idx:idx_end]
-        future = self.target[idx_end : idx_end + self.n_future]
-        future_timestamp = self.timestamp[idx_end : idx_end + self.n_future]
+        if self.validation is None:
+            assert 0 <= idx < self.n_points
+        elif self.validation:
+            assert idx in self.valid_indices
+        else:
+            assert idx in self.train_indices
+
+        past_start = idx
+        past_end = past_start + self.n_past
+        future_start = past_end
+        future_end = future_start + self.n_future
+
+        past = self.data[past_start:past_end]
+        past_timestamp = self.timestamp[past_start:past_end]
+        future = self.target[future_start:future_end]
+        future_timestamp = self.timestamp[future_start:future_end]
+
         return (past, future) if self.ts_index else (past, past_timestamp, future, future_timestamp)

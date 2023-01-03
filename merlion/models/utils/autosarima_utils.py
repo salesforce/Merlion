@@ -105,6 +105,8 @@ def _fit_sarima_model(y, order, seasonal_order, trend, method, maxiter, informat
             seasonal_order=seasonal_order,
             trend=trend,
             validate_specification=False,
+            enforce_stationarity=False,
+            enforce_invertibility=False,
             **kwargs,
         )
         try:
@@ -185,7 +187,7 @@ def detect_maxiter_sarima_model(y, d, D, m, method, information_criterion, exog=
     maxiter = 10
     ic = np.inf
     model_spec = sm.tsa.SARIMAX(
-        endog=y, exog=exog, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False
+        endog=y, exog=exog, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False, enforce_stationarity=False, enforce_invertibility=False
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

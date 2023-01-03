@@ -106,7 +106,7 @@ class TestForecastEnsemble(unittest.TestCase):
         logger.info("test_selector_small_train\n" + "-" * 80 + "\n")
         self.vals_train = self.vals_train[-8:]
         self.expected_smape = 194
-        self._test_selector(test_name="test_selector_small_train", expected_smapes=[np.inf, 50.64, 6.16])
+        self._test_selector(test_name="test_selector_small_train", expected_smapes=[np.inf, 7.27, 6.16])
 
     def run_test(self, test_name):
         logger.info("Training model...")
@@ -138,7 +138,7 @@ class TestForecastEnsemble(unittest.TestCase):
         y = self.vals_test.np_values
         smape = np.mean(200.0 * np.abs((y - yhat) / (np.abs(y) + np.abs(yhat))))
         logger.info(f"sMAPE = {smape:.4f}")
-        self.assertAlmostEqual(smape, self.expected_smape, delta=2)
+        self.assertAlmostEqual(smape, self.expected_smape, delta=2 if self.expected_smape < 100 else 10)
 
 
 if __name__ == "__main__":

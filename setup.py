@@ -34,7 +34,7 @@ MERLION_DASHBOARD_ASSETS = [
 # optional dependencies
 extra_require = {
     "dashboard": ["dash[diskcache]>=2.4", "dash_bootstrap_components>=1.0", "diskcache"],
-    "deep-learning": ["torch>=1.1.0"],
+    "deep-learning": ["torch>=1.9.0", "einops>=0.4.0"],
     "spark": ["pyspark[sql]>=3"],
 }
 extra_require["all"] = sum(extra_require.values(), [])

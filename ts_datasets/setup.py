@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2022 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -16,5 +16,5 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache 2.0",
     packages=find_packages(include=["ts_datasets*"]),
-    install_requires=["cython", "numpy", "pandas", "requests", "sklearn", "tqdm", "wheel"],
+    install_requires=["cython", "numpy", "pandas", "requests", "tqdm", "wheel", "gdown"],
 )

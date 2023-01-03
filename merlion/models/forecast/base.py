@@ -106,6 +106,13 @@ class ForecasterBase(ModelBase):
         """
         return False
 
+    @property
+    def support_multivariate_output(self) -> bool:
+        """
+        Indicating whether the forecasting model can forecast multivariate output.
+        """
+        return False
+
     def resample_time_stamps(self, time_stamps: Union[int, List[int]], time_series_prev: TimeSeries = None):
         assert self.timedelta is not None and self.last_train_time is not None, (
             "train() must be called before you can call forecast(). "
@@ -157,19 +164,27 @@ class ForecasterBase(ModelBase):
         self, train_data: TimeSeries, exog_data: TimeSeries = None, return_exog=None
     ) -> Union[TimeSeries, Tuple[TimeSeries, Union[TimeSeries, None]]]:
         train_data = super().train_pre_process(train_data)
+
         if self.dim == 1:
             self.config.target_seq_index = 0
-        elif self.target_seq_index is None:
+        elif self.target_seq_index is None and not self.support_multivariate_output:
             raise RuntimeError(
-                f"Attempting to use a forecaster on a {train_data.dim}-variable "
+                f"Attempting to use a forecaster that does not support multivariate outputs "
+                f"on a {train_data.dim}-variable "
                 f"time series, but didn't specify a `target_seq_index` "
                 f"indicating which univariate is the target."
             )
-        assert 0 <= self.target_seq_index < train_data.dim, (
-            f"Expected `target_seq_index` to be between 0 and {train_data.dim} "
-            f"(the dimension of the transformed data), but got {self.target_seq_index}"
+
+        assert self.support_multivariate_output or (0 <= self.target_seq_index < train_data.dim), (
+            f"Expected `support_multivariate_output = True`,"
+            f"or `target_seq_index` to be between 0 and {train_data.dim}"
+            f"(the dimension of the transformed data), but got {self.target_seq_index} "
         )
-        self.target_name = train_data.names[self.target_seq_index]
+
+        if self.support_multivariate_output and self.target_seq_index is None:
+            self.target_name = str(train_data.names)
+        else:
+            self.target_name = train_data.names[self.target_seq_index]
 
         # Handle exogenous data
         if return_exog is None:
@@ -315,7 +330,7 @@ class ForecasterBase(ModelBase):
         # Format the return values and reset the transform's inversion state
         if self.invert_transform and time_series_prev is None:
             time_series_prev = self.transform(self.train_data)
-        if time_series_prev is not None:
+        if time_series_prev is not None and self.target_seq_index is not None:
             time_series_prev = pd.DataFrame(time_series_prev.univariates[time_series_prev.names[self.target_seq_index]])
         ret = self._process_forecast(forecast, err, time_series_prev, return_prev=return_prev, return_iqr=return_iqr)
         self.transform.inversion_state = old_inversion_state

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -28,7 +28,6 @@ import_alias = dict(
     IsolationForest="merlion.models.anomaly.isolation_forest:IsolationForest",
     # Forecast-based anomaly detection models
     ETSDetector="merlion.models.anomaly.forecast_based.ets:ETSDetector",
-    LSTMDetector="merlion.models.anomaly.forecast_based.lstm:LSTMDetector",
     MSESDetector="merlion.models.anomaly.forecast_based.mses:MSESDetector",
     ProphetDetector="merlion.models.anomaly.forecast_based.prophet:ProphetDetector",
     RandomCutForest="merlion.models.anomaly.random_cut_forest:RandomCutForest",
@@ -47,7 +46,6 @@ import_alias = dict(
     # Forecasting models
     Arima="merlion.models.forecast.arima:Arima",
     ETS="merlion.models.forecast.ets:ETS",
-    LSTM="merlion.models.forecast.lstm:LSTM",
     MSES="merlion.models.forecast.smoother:MSES",
     Prophet="merlion.models.forecast.prophet:Prophet",
     Sarima="merlion.models.forecast.sarima:Sarima",
@@ -56,6 +54,11 @@ import_alias = dict(
     RandomForestForecaster="merlion.models.forecast.trees:RandomForestForecaster",
     ExtraTreesForecaster="merlion.models.forecast.trees:ExtraTreesForecaster",
     LGBMForecaster="merlion.models.forecast.trees:LGBMForecaster",
+    TransformerForecaster="merlion.models.forecast.transformer:TransformerForecaster",
+    InformerForecaster="merlion.models.forecast.informer:InformerForecaster",
+    AutoformerForecaster="merlion.models.forecast.autoformer:AutoformerForecaster",
+    ETSformerForecaster="merlion.models.forecast.etsformer:ETSformerForecaster",
+    DeepARForecaster="merlion.models.forecast.deep_ar:DeepARForecaster",
     # Ensembles
     DetectorEnsemble="merlion.models.ensemble.anomaly:DetectorEnsemble",
     ForecasterEnsemble="merlion.models.ensemble.forecast:ForecasterEnsemble",

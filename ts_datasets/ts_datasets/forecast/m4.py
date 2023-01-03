@@ -51,16 +51,8 @@ class M4(BaseDataset):
             download(rootdir, self.url, "M4-info")
 
         # extract starting date from meta-information of dataset
-        info_dataset = pd.read_csv(os.path.join(rootdir, "M4-info.csv"), delimiter=",").set_index("M4id")
-
-        if subset == "Yearly":
-            logger.warning(
-                "the max length of yearly data is 841 which is too big to convert to "
-                "timestamps, we fallback to quarterly frequency"
-            )
-            self.freq = "Q"
-        else:
-            self.freq = subset[0]
+        self.freq = subset[0]
+        self.info_dataset = pd.read_csv(os.path.join(rootdir, "M4-info.csv"), parse_dates=True).set_index("M4id")
 
         train_csv = os.path.join(rootdir, f"train/{subset}-train.csv")
         if not os.path.isfile(train_csv):
@@ -73,10 +65,19 @@ class M4(BaseDataset):
         self.test_set = pd.read_csv(test_csv).set_index("V1")
 
     def __getitem__(self, i):
-        train, test = self.train_set.iloc[i].dropna(), self.test_set.iloc[i].dropna()
+        id = self.train_set.index[i]
+        train, test = self.train_set.loc[id].dropna(), self.test_set.loc[id].dropna()
         ts = pd.concat((train, test)).to_frame()
         # raw data do not follow consistent timestamp format
-        ts.index = pd.date_range(start=0, periods=ts.shape[0], freq=self.freq)
+        t0 = self.info_dataset.loc[id, "StartingDate"]
+        try:
+            ts.index = pd.date_range(start=t0, periods=len(ts), freq=self.freq)
+        except Exception as e:
+            if self.freq == "Y":
+                logger.warning(f"Time series {i} too long for yearly granularity. Using quarterly instead.")
+                ts.index = pd.date_range(start=t0, periods=len(ts), freq="Q")
+            else:
+                raise e
         md = pd.DataFrame({"trainval": ts.index < ts.index[len(train)]}, index=ts.index)
         return ts, md
 

@@ -12,7 +12,6 @@ anomaly.forecast\_based
     sarima
     ets
     prophet
-    lstm
     mses
 
 anomaly.forecast\_based.base
@@ -51,14 +50,6 @@ anomaly.forecast\_based.prophet
 -------------------------------
 
 .. automodule:: merlion.models.anomaly.forecast_based.prophet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-anomaly.forecast\_based.lstm
-----------------------------
-
-.. automodule:: merlion.models.anomaly.forecast_based.lstm
    :members:
    :undoc-members:
    :show-inheritance:

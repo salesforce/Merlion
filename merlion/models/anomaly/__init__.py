@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -47,8 +47,8 @@ following interface, in addition to ``model.save`` and ``DetectorClass.load`` de
     -   trains the model on the time series ``train_data``
     -   ``anomaly_labels`` (optional): a time series aligned with ``train_data``, which indicates whether each
         time stamp is anomalous
-    -   ``train_config`` (optional): extra configuration describing how the model should be trained (e.g. learning rate
-        for the `LSTMDetector`). Not used for all models. Class-level default provided for models which do use it.
+    -   ``train_config`` (optional): extra configuration describing how the model should be trained. 
+        Not used for all models. Class-level default provided for models which do use it.
     -   ``post_rule_train_config``: extra configuration describing how to train the model's post-rule. Class-level
         default is provided for all models.
     -   returns a time series of anomaly scores produced by the model on ``train_data``.
