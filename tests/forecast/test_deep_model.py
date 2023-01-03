@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -40,7 +40,7 @@ class TestDeepModels(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         self.n_past = 16
-        self.max_forecast_steps = 16
+        self.max_forecast_steps = 8
         self.early_stop_patience = 4
         self.num_epochs = 2
         self.use_gpu = True
