@@ -110,6 +110,8 @@ class DeepARModel(TorchModel):
             nn.Linear(hidden_size, self.output_size * 2),
         )
 
+        self.loss_fn = self.config.loss_fn.value()
+
     @staticmethod
     def get_lagged_subsequences(
         sequence,
@@ -154,7 +156,7 @@ class DeepARModel(TorchModel):
 
         return outputs, states
 
-    def cal_loss(self, past, past_timestamp, future, future_timestamp, loss_fn):
+    def calculate_loss(self, past, past_timestamp, future, future_timestamp):
         rnn_outputs, _ = self.unroll_encoder(past, past_timestamp, future_timestamp, future)
         distr_proj_out = self.distr_proj(rnn_outputs)
 
@@ -163,7 +165,7 @@ class DeepARModel(TorchModel):
 
         target_future = torch.cat((past[:, (self.n_past - self.n_context) :, :], future), dim=1)
 
-        loss = loss_fn(mu, target_future, torch.square(sigma))
+        loss = self.loss_fn(mu, target_future, torch.square(sigma))
 
         return loss
 
@@ -241,7 +243,9 @@ class DeepARForecaster(DeepForecaster):
         if future is None:
             return None, model_output, None
 
-        loss = self.deep_model.cal_loss(past, past_timestamp, future, future_timestamp, self.loss_fn)
+        # Calcuating the loss with maximum likelihood,
+        # which is seperate from the sampling procedure of deep AR models
+        loss = self.deep_model.calculate_loss(past, past_timestamp, future, future_timestamp)
 
         if self.target_seq_index is not None:
             future = future[:, :, self.target_seq_index : self.target_seq_index + 1]
