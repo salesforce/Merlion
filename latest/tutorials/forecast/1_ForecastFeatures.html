@@ -1,42 +1,80 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>How to Use Forecasters in Merlion &mdash; Merlion 2.0.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Multivariate Time Series Forecasting" href="2_ForecastMultivariate.html" />
     <link rel="prev" title="A Gentle Introduction to Forecasting in Merlion" href="0_ForecastIntro.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> Merlion
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 latest
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,7 +82,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
@@ -73,31 +122,73 @@
 </li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Merlion</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../tutorials.html">Tutorials &amp; Example Code</a></li>
-      <li class="breadcrumb-item active">How to Use Forecasters in Merlion</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+        
+      <li>How to Use Forecasters in Merlion</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/tutorials/forecast/1_ForecastFeatures.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   
 <style>
 /* CSS for nbsphinx extension */
@@ -378,7 +469,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="How-to-Use-Forecasters-in-Merlion">
-<h1>How to Use Forecasters in Merlion<a class="headerlink" href="#How-to-Use-Forecasters-in-Merlion" title="Permalink to this heading"></a></h1>
+<h1>How to Use Forecasters in Merlion<a class="headerlink" href="#How-to-Use-Forecasters-in-Merlion" title="Permalink to this heading">¶</a></h1>
 <p>This notebook will guide you through using all the key features of forecasters in Merlion. Specifically, we will explain</p>
 <ol class="arabic simple">
 <li><p>Initializing a forecasting model (including ensembles and automatic model selectors)</p></li>
@@ -408,7 +499,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="c1"># Is there any missing data?</span>
 <span class="n">timedeltas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time_series</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has missing data: </span><span class="si">{</span><span class="nb">any</span><span class="p">(</span><span class="n">timedeltas</span> <span class="o">!=</span> <span class="n">timedeltas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has missing data: </span><span class="si">{</span><span class="nb">any</span><span class="p">(</span><span class="n">timedeltas</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">timedeltas</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Visualize the time series and draw a dotted line to indicate the train/test split</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
@@ -449,7 +540,7 @@ Has missing data: False
 </pre></div></div>
 </div>
 <section id="Model-Initialization">
-<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this heading"></a></h2>
+<h2>Model Initialization<a class="headerlink" href="#Model-Initialization" title="Permalink to this heading">¶</a></h2>
 <p>In this notebook, we will use three different forecasting models: 1. ARIMA (a classic stochastic process model) 2. Prophet (Facebook’s popular time series forecasting model) 3. MSES (the Multi-Scale Exponential Smoothing model, developed in-house)</p>
 <p>Let’s start by initializing each of them.</p>
 <div class="nbinput nblast docutils container">
@@ -533,7 +624,7 @@ Has missing data: False
 </div>
 </section>
 <section id="Model-Training">
-<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this heading"></a></h2>
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this heading">¶</a></h2>
 <p>All forecasting models (and ensembles) share the same API for training. The <code class="docutils literal notranslate"><span class="pre">train()</span></code> method returns the model’s predictions and standard error of those predictions on the training data. Note that the standard error is just <code class="docutils literal notranslate"><span class="pre">None</span></code> if the model doesn’t support uncertainty estimation (this is the case for MSES and ensembles).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -642,7 +733,7 @@ Done!
 </div>
 </section>
 <section id="Model-Inference">
-<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this heading"></a></h2>
+<h2>Model Inference<a class="headerlink" href="#Model-Inference" title="Permalink to this heading">¶</a></h2>
 <p>To obtain a forecast from a trained model, we simply call <code class="docutils literal notranslate"><span class="pre">model.forecast()</span></code> with the Unix timestamps at which we the model to generate a forecast. In many cases, you may obtain these directly from a time series as shown below.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -677,7 +768,7 @@ Done!
 </div>
 </section>
 <section id="Model-Visualization-and-Quantitative-Evaluation">
-<h2>Model Visualization and Quantitative Evaluation<a class="headerlink" href="#Model-Visualization-and-Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
+<h2>Model Visualization and Quantitative Evaluation<a class="headerlink" href="#Model-Visualization-and-Quantitative-Evaluation" title="Permalink to this heading">¶</a></h2>
 <p>It is fairly transparent to visualize a model’s forecast and also quantitatively evaluate the forecast, using standard metrics like sMAPE. We show examples for all five models below.</p>
 <p>Below, we quantitatively evaluate the models using the sMAPE metric. However, the <code class="docutils literal notranslate"><span class="pre">ForecastMetric</span></code> enum includes a number of other options as well. In general, you may use the syntax</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ForecastMetric.&lt;metric_name&gt;.value(ground_truth=ground_truth, predict=forecast)
@@ -848,7 +939,7 @@ Selector sMAPE is 3.472
 </div>
 </section>
 <section id="Saving-&amp;-Loading-Models">
-<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this heading"></a></h2>
+<h2>Saving &amp; Loading Models<a class="headerlink" href="#Saving-&-Loading-Models" title="Permalink to this heading">¶</a></h2>
 <p>All models have a <code class="docutils literal notranslate"><span class="pre">save()</span></code> method and <code class="docutils literal notranslate"><span class="pre">load()</span></code> class method. Models may also be loaded with the assistance of the <code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code>, which works for arbitrary models. The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method creates a new directory at the specified path, where it saves a <code class="docutils literal notranslate"><span class="pre">json</span></code> file representing the model’s config, as well as a binary file for the model’s state.</p>
 <p>We will demonstrate these behaviors using our <code class="docutils literal notranslate"><span class="pre">Prophet</span></code> model (<code class="docutils literal notranslate"><span class="pre">model2</span></code>) for concreteness.</p>
 <div class="nbinput docutils container">
@@ -1019,7 +1110,7 @@ Selector Config
 </div>
 </section>
 <section id="Simulating-Live-Model-Deployment">
-<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this heading"></a></h2>
+<h2>Simulating Live Model Deployment<a class="headerlink" href="#Simulating-Live-Model-Deployment" title="Permalink to this heading">¶</a></h2>
 <p>A typical model deployment scenario is as follows: 1. Train an initial model on some recent historical data 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">cadence</span></code>, obtain the model’s forecast for a certain <code class="docutils literal notranslate"><span class="pre">horizon</span></code> 1. At a regular interval <code class="docutils literal notranslate"><span class="pre">retrain_freq</span></code>, retrain the entire model on the most recent data 1. Optionally, specify a maximum amount of data (<code class="docutils literal notranslate"><span class="pre">train_window</span></code>) that the model should use for training</p>
 <p>We provide a <code class="docutils literal notranslate"><span class="pre">ForecastEvaluator</span></code> object which simulates the above deployment scenario, and also allows a user to evaluate the quality of the forecaster according to an evaluation metric of their choice. We illustrate two examples below, using ARIMA for the first example, and the model selector for the second.</p>
 <div class="nbinput nblast docutils container">
@@ -1156,27 +1247,37 @@ Ensemble RMSE:  211.616
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="0_ForecastIntro.html" class="btn btn-neutral float-left" title="A Gentle Introduction to Forecasting in Merlion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="2_ForecastMultivariate.html" class="btn btn-neutral float-right" title="Multivariate Time Series Forecasting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="0_ForecastIntro.html" class="btn btn-neutral float-left" title="A Gentle Introduction to Forecasting in Merlion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, salesforce.com, inc..
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   
 
@@ -1276,11 +1377,18 @@ Ensemble RMSE:  211.616
     </div>
   </div>
 
- <script>
+ 
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

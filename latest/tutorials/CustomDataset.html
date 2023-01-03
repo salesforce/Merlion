@@ -1,42 +1,80 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Loading Custom Datasets &mdash; Merlion 2.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion" href="anomaly/0_AnomalyIntro.html" />
     <link rel="prev" title="Merlion’s Data Format" href="TimeSeries.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> Merlion
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 latest
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,7 +82,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../merlion.html">merlion: Time Series Intelligence</a></li>
@@ -67,31 +116,73 @@
 </li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Merlion</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials &amp; Example Code</a></li>
-      <li class="breadcrumb-item active">Loading Custom Datasets</li>
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+        
+      <li>Loading Custom Datasets</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../_sources/tutorials/CustomDataset.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   
 <style>
 /* CSS for nbsphinx extension */
@@ -372,10 +463,10 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Loading-Custom-Datasets">
-<h1>Loading Custom Datasets<a class="headerlink" href="#Loading-Custom-Datasets" title="Permalink to this heading"></a></h1>
+<h1>Loading Custom Datasets<a class="headerlink" href="#Loading-Custom-Datasets" title="Permalink to this heading">¶</a></h1>
 <p>This notebook will explain how to load custom datasets saved to CSV files, for either anomaly detection or forecasting.</p>
 <section id="Anomaly-Detection-Datasets">
-<h2>Anomaly Detection Datasets<a class="headerlink" href="#Anomaly-Detection-Datasets" title="Permalink to this heading"></a></h2>
+<h2>Anomaly Detection Datasets<a class="headerlink" href="#Anomaly-Detection-Datasets" title="Permalink to this heading">¶</a></h2>
 <p>Let’s first look at a synthetic anomaly detection dataset. Note that this section just provides an alternative implementation of the dataset <code class="docutils literal notranslate"><span class="pre">ts_datasets.anomaly.Synthetic</span></code>. We begin by listing all the CSV files in the relevant directory.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -863,8 +954,8 @@ There are 18 time series in this dataset.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="mi">100</span> <span class="o">-</span> <span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is for testing.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is anomalous.&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is for testing.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is anomalous.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -879,7 +970,7 @@ There are 18 time series in this dataset.
 </div>
 </section>
 <section id="General-Purpose-(Forecasting)-Datasets">
-<h2>General Purpose (Forecasting) Datasets<a class="headerlink" href="#General-Purpose-(Forecasting)-Datasets" title="Permalink to this heading"></a></h2>
+<h2>General Purpose (Forecasting) Datasets<a class="headerlink" href="#General-Purpose-(Forecasting)-Datasets" title="Permalink to this heading">¶</a></h2>
 <p>Next, let’s load a more general-purpose dataset for forecasting. We will use this opportunity to show some of the more advanced features as well. Here, our dataset consists of a single CSV file which contains many multivariate time series. These time series are collected from a large retailer, and each individual time series corresonds to a different department within a different store. Let’s have a look at the data.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -1487,7 +1578,7 @@ There are 20 time series in this dataset.
 </div>
 </section>
 <section id="Broader-Takeaways">
-<h2>Broader Takeaways<a class="headerlink" href="#Broader-Takeaways" title="Permalink to this heading"></a></h2>
+<h2>Broader Takeaways<a class="headerlink" href="#Broader-Takeaways" title="Permalink to this heading">¶</a></h2>
 <p>In general, a dataset can contain any number of CSVs stored under a single root directory. Each CSV can contain one or more time series, where the different time series within a single file are indicated by different values of the index column. Note that this works for anomaly detection as well! You just need to make sure that your CSVs all contain the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column. In general, all features supported by <code class="docutils literal notranslate"><span class="pre">CustomDataset</span></code> are also supported by <code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset</span></code>, as long as your CSV
 files have the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column.</p>
 <p>If you want to either of the above custom datasets for benchmarking, you can call</p>
@@ -1510,27 +1601,37 @@ files have the <code class="docutils literal notranslate"><span class="pre">anom
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="TimeSeries.html" class="btn btn-neutral float-left" title="Merlion’s Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="anomaly/0_AnomalyIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Anomaly Detection in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TimeSeries.html" class="btn btn-neutral float-left" title="Merlion’s Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, salesforce.com, inc..
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   
 
@@ -1630,11 +1731,18 @@ files have the <code class="docutils literal notranslate"><span class="pre">anom
     </div>
   </div>
 
- <script>
+ 
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

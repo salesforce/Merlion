@@ -1,42 +1,80 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Adding New Anomaly Detection Models &mdash; Merlion 2.0.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="A Gentle Introduction to Forecasting in Merlion" href="../forecast/0_ForecastIntro.html" />
     <link rel="prev" title="Multivariate Time Series Anomaly Detection" href="2_AnomalyMultivariate.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> Merlion
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 latest
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,7 +82,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
@@ -72,31 +121,73 @@
 </li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Merlion</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../tutorials.html">Tutorials &amp; Example Code</a></li>
-      <li class="breadcrumb-item active">Adding New Anomaly Detection Models</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
+        
+      <li>Adding New Anomaly Detection Models</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/tutorials/anomaly/3_AnomalyNewModel.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   
 <style>
 /* CSS for nbsphinx extension */
@@ -377,12 +468,12 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 <section id="Adding-New-Anomaly-Detection-Models">
-<h1>Adding New Anomaly Detection Models<a class="headerlink" href="#Adding-New-Anomaly-Detection-Models" title="Permalink to this heading"></a></h1>
+<h1>Adding New Anomaly Detection Models<a class="headerlink" href="#Adding-New-Anomaly-Detection-Models" title="Permalink to this heading">¶</a></h1>
 <p>This notebook provides a minimal example on how to add a new anomaly detection model to Merlion. We follow the instructions in <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. We suggest you review this <a class="reference internal" href="1_AnomalyFeatures.html"><span class="doc">notebook</span></a> explaining how to use a Merlion anomaly detection model before reading this notebook.</p>
 <p>More specifically, let’s implement an anomaly detection model whose anomaly score is just equal to the value of the time series metric (after mean and variance normalization). By default, we want the model to fire an alarm when the value of the time series metric is more than 3 standard deviations away from the mean value.</p>
 <p>Note that this is already implemented <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/stat_threshold.py">here</a> as the <code class="docutils literal notranslate"><span class="pre">StatThreshold</span></code> algorithm. For a more complete example, see our implementation of <a class="reference external" href="https://github.com/salesforce/Merlion/blob/main/merlion/models/anomaly/isolation_forest.py">Isolation Forest</a>.</p>
 <section id="Model-Config-Class">
-<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this heading"></a></h2>
+<h2>Model Config Class<a class="headerlink" href="#Model-Config-Class" title="Permalink to this heading">¶</a></h2>
 <p>The first step of creating a new model is defining an appropriate config class, which inherits from <code class="docutils literal notranslate"><span class="pre">DetectorConfig</span></code>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -406,7 +497,7 @@ div.rendered_html tbody tr:hover {
     <span class="n">_default_threshold</span> <span class="o">=</span> <span class="n">Threshold</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Provide model-specific config parameters here, with kwargs to capture any</span>
 <span class="sd">        general-purpose arguments used by the base class. For DetectorConfig,</span>
 <span class="sd">        these are transform and post_rule.</span>
@@ -420,7 +511,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Model-Class">
-<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this heading"></a></h2>
+<h2>Model Class<a class="headerlink" href="#Model-Class" title="Permalink to this heading">¶</a></h2>
 <p>Next, we define the model itself, which must inherit from the <code class="docutils literal notranslate"><span class="pre">DetectorBase</span></code> base class and define all abstract methods. See the API docs for more details.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -443,7 +534,7 @@ div.rendered_html tbody tr:hover {
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">require_even_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Many models assume the input time series is sampled evenly.</span>
 <span class="sd">        That isn&#39;t a necessary assumption for this model, so override the property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -451,13 +542,13 @@ div.rendered_html tbody tr:hover {
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">require_univariate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Specify that this model only works for univariate data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StatThresholdConfig</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the model config and any other local variables. We include the</span>
 <span class="sd">        initializer here for clarity. In this case, it may be excluded, as it</span>
 <span class="sd">        only calls the superclass initializer.</span>
@@ -482,7 +573,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Running-the-Model:-A-Simple-Example">
-<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this heading"></a></h2>
+<h2>Running the Model: A Simple Example<a class="headerlink" href="#Running-the-Model:-A-Simple-Example" title="Permalink to this heading">¶</a></h2>
 <p>Let’s try running this model on some actual data! This next part assumes you’ve installed <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>. We’ll begin by getting a time series from the NAB dataset &amp; visualizing it.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -656,7 +747,7 @@ time
 </div>
 </section>
 <section id="Visualization">
-<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this heading"></a></h2>
+<h2>Visualization<a class="headerlink" href="#Visualization" title="Permalink to this heading">¶</a></h2>
 <p>Qualitatively, we can plot the anomaly score sequences to see the difference.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -712,7 +803,7 @@ with post rule
 </div>
 </section>
 <section id="Customizing-the-Post-Rule">
-<h2>Customizing the Post-Rule<a class="headerlink" href="#Customizing-the-Post-Rule" title="Permalink to this heading"></a></h2>
+<h2>Customizing the Post-Rule<a class="headerlink" href="#Customizing-the-Post-Rule" title="Permalink to this heading">¶</a></h2>
 <p>The example above uses a simple threshold as the post-processing rule. As a result, the model is continuously firing alerts when the differenced time series value is far from 0. We support an alternative option which combines successive alerts into a single alert. We demonstrate this below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -744,7 +835,7 @@ with post rule
 </div>
 </section>
 <section id="Quantitative-Evaluation">
-<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading"></a></h2>
+<h2>Quantitative Evaluation<a class="headerlink" href="#Quantitative-Evaluation" title="Permalink to this heading">¶</a></h2>
 <p>Finally, you may quantitatively evaluate the performance of your model as well. Here, we compute precision, recall, and F1 score for <code class="docutils literal notranslate"><span class="pre">model2</span></code> above.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -753,9 +844,9 @@ with post rule
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">anom_labels2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model Evaluation&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1 Score:  </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1 Score:  </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -775,27 +866,37 @@ F1 Score:  0.6667
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="2_AnomalyMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="../forecast/0_ForecastIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Forecasting in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="2_AnomalyMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, salesforce.com, inc..
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   
 
@@ -895,11 +996,18 @@ F1 Score:  0.6667
     </div>
   </div>
 
- <script>
+ 
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
