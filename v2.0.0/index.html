@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Welcome to Merlion’s documentation! &mdash; Merlion 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion: Time Series Intelligence" href="merlion.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> Merlion
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Merlion</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to Merlion’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="welcome-to-merlion-s-documentation">
+<h1>Welcome to Merlion’s documentation!<a class="headerlink" href="#welcome-to-merlion-s-documentation" title="Permalink to this heading">¶</a></h1>
+<p>Merlion is a Python library for time series intelligence. It features a unified interface for many commonly used
+<a class="reference internal" href="merlion.models.html"><span class="doc">models</span></a> and <a class="reference internal" href="ts_datasets.html"><span class="doc">datasets</span></a> for forecasting, anomaly detection, and change
+point detection on both univariate and multivariate time series, along with standard
+<a class="reference internal" href="merlion.transform.html"><span class="doc">pre-processing</span></a> and <a class="reference internal" href="merlion.post_process.html"><span class="doc">post-processing</span></a> layers.
+It has several modules to improve ease-of-use,
+including <a class="reference internal" href="merlion.plot.html"><span class="doc">visualization</span></a>,
+anomaly score <a class="reference internal" href="merlion.post_process.html#merlion-post-process-calibrate"><span class="std std-ref">calibration</span></a> to improve interpetability,
+<a class="reference internal" href="merlion.models.automl.html"><span class="doc">AutoML</span></a> for hyperparameter tuning and model selection,
+and <a class="reference internal" href="merlion.models.ensemble.html"><span class="doc">model ensembling</span></a>.
+Merlion also provides a unique <a class="reference internal" href="merlion.evaluate.html"><span class="doc">evaluation framework</span></a>
+that simulates the live deployment and re-training of a model in production.
+This library aims to provide engineers and researchers a one-stop solution to rapidly develop models
+for their specific time series needs, and benchmark them across multiple time series datasets.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<p>Merlion consists of two sub-packages: <a class="reference internal" href="merlion.html"><span class="doc">merlion</span></a> implements the library’s core time series intelligence features,
+and <a class="reference internal" href="ts_datasets.html"><span class="doc">ts_datasets</span></a> provides standardized data loaders for multiple time series datasets. These loaders load
+time series as <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> s with accompanying metadata.</p>
+<p>You can install <code class="docutils literal notranslate"><span class="pre">merlion</span></code> from PyPI by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion</span></code>. You may install from source by
+cloning the Merlion <a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Merlion/</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/</span></code> to install in editable mode. You may install additional optional dependencies via
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[all]</span></code>,  or by calling <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;Merlion/[all]&quot;</span></code> if installing from source.
+Individually, the optional dependencies include <code class="docutils literal notranslate"><span class="pre">dashboard</span></code> for a GUI dashboard,
+<code class="docutils literal notranslate"><span class="pre">spark</span></code> for a distributed computation backend with PySpark, and <code class="docutils literal notranslate"><span class="pre">deep-learning</span></code> for all deep learning models.</p>
+<p>To install the data loading package <code class="docutils literal notranslate"><span class="pre">ts_datasets</span></code>, clone the Merlion
+<a class="reference external" href="https://github.com/salesforce/Merlion">repo</a> and call <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">Merlion/ts_datasets/</span></code>. This package must be
+installed in editable mode (i.e. with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag) if you don’t want to manually specify the root directory of
+every dataset when initializing its data loader.</p>
+<p>Note the following external dependencies:</p>
+<ol class="arabic simple">
+<li><p>Some of our forecasting models depend on OpenMP. Some of our forecasting models depend on OpenMP.
+If using <code class="docutils literal notranslate"><span class="pre">conda</span></code>, please <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">lightgbm</span></code>
+before installing our package. This will ensure that OpenMP is configured to work with the <code class="docutils literal notranslate"><span class="pre">lightgbm</span></code> package
+(one of our dependencies) in your <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment.
+If using Mac, please install <a class="reference external" href="https://brew.sh/">Homebrew</a> and call <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">libomp</span></code> so that the
+OpenMP libary is available for the model.
+This is relevant for the
+<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>,
+which is also used as a part of the <a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultForecaster" title="merlion.models.defaults.DefaultForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultForecaster</span></code></a>.</p></li>
+<li><p>Some of our anomaly detection models depend on having the Java Development Kit (JDK) installed. For Ubuntu, call
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">openjdk-11-jdk</span></code>. For Mac OS, install <a class="reference external" href="https://brew.sh/">Homebrew</a> and call
+<code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">tap</span> <span class="pre">adoptopenjdk/openjdk</span> <span class="pre">&amp;&amp;</span> <span class="pre">brew</span> <span class="pre">install</span> <span class="pre">--cask</span> <span class="pre">adoptopenjdk11</span></code>. Also ensure that <code class="docutils literal notranslate"><span class="pre">java</span></code> can be found
+on your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>, and that the <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> environment variable is set.
+This is relevant for the <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.random_cut_forest.RandomCutForest" title="merlion.models.anomaly.random_cut_forest.RandomCutForest"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomCutForest</span></code></a>
+which is also used as a part of the <a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultDetector" title="merlion.models.defaults.DefaultDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultDetector</span></code></a>.</p></li>
+</ol>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h2>
+<p>The easiest way to get started is to use the GUI web-based <a class="reference internal" href="merlion.dashboard.html"><span class="doc">dashboard</span></a>.
+This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
+To use it, install Merlion with the optional <code class="docutils literal notranslate"><span class="pre">dashboard</span></code> dependency (i.e.
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">salesforce-merlion[dashboard]</span></code>), and call <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">merlion.dashboard</span></code> from the command line.
+You can view the dashboard at <a class="reference external" href="http://localhost:8050">http://localhost:8050</a>.</p>
+<p>For code resources, we recommend the linked tutorials on <a class="reference internal" href="tutorials/anomaly/0_AnomalyIntro.html"><span class="doc">anomaly detection</span></a>
+and <a class="reference internal" href="tutorials/forecast/0_ForecastIntro.html"><span class="doc">forecasting</span></a>. After that, you should read in more detail about Merlion’s
+main data structure for representing time series <a class="reference internal" href="tutorials/TimeSeries.html"><span class="doc">here</span></a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ts_datasets.html#module-ts_datasets.base">datasets.base module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="merlion.html" class="btn btn-neutral float-right" title="merlion: Time Series Intelligence" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, salesforce.com, inc..
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

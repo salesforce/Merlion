@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>merlion.dashboard package &mdash; Merlion 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.spark package" href="merlion.spark.html" />
+    <link rel="prev" title="utils" href="merlion.models.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Merlion
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="merlion.html">merlion: Time Series Intelligence</a> &raquo;</li>
+        
+      <li>merlion.dashboard package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/merlion.dashboard.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="merlion-dashboard-package">
+<h1>merlion.dashboard package<a class="headerlink" href="#merlion-dashboard-package" title="Permalink to this heading">¶</a></h1>
+<p>This package includes a GUI dashboard app for Merlion, providing a convenient way to train
+and test a time series forecasting or anomaly detection model supported in Merlion. To launch
+the dashboard app, type the following command: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">merlion.dashboard</span></code>.</p>
+<p>It will launch a Dash app on <a class="reference external" href="http://localhost:8050/">http://localhost:8050/</a> by default. After opening the link, the app
+will create a folder <code class="docutils literal notranslate"><span class="pre">merlion</span></code> in your home directory. This folder includes the datasets you want to
+analyze or train a model with (in the <code class="docutils literal notranslate"><span class="pre">data</span></code> folder), and the trained models for time series
+forecasting or anomaly detection (in the <code class="docutils literal notranslate"><span class="pre">models</span></code> folder).</p>
+<p>The app has three tabs. The first one is called “file manager” in which you can upload your datasets
+(the datasets will be stored in <code class="docutils literal notranslate"><span class="pre">~/merlion/data</span></code>), check basic statistics of the datasets, visualize
+the time series data, or download a particular trained model:</p>
+<img alt="_images/dashboard_file.png" src="_images/dashboard_file.png" />
+<p>You can click “Drag &amp; Drop” to upload the file to the <code class="docutils literal notranslate"><span class="pre">merlion</span></code> folder (our app is designed to support
+docker deployment, so it doesn’t allow to open a local file directly). If you use the app on a local
+machine, you can also copy the data to <code class="docutils literal notranslate"><span class="pre">~/merlion/data</span></code> directly. The supported data file is in
+the csv format, where the first column should be either integer Unix timestamps in milliseconds, or datetimes in a
+string format (e.g., “1970-01-01 00:00:00”). The other columns are the features/variables.</p>
+<p>Clicking the load button will load the dataset and show the time series figure on the right hand side.
+It will also show some basic statistics, e.g., time series length, mean/std for each variable.
+If you have already trained a model using the dashboard, you can select the model you want to download
+and click the download button. The model and its configuration file will be compressed into a zip file.</p>
+<p>The second tab is used to train a time series anomaly detection model:</p>
+<img alt="_images/dashboard_anomaly.png" src="_images/dashboard_anomaly.png" />
+<p>The app provides full support for these models, where you can choose different algorithms and set particular parameters
+according to your needs. To train a model, you need to:</p>
+<ul class="simple">
+<li><p><strong>Select the dataset</strong>: You can select a single training dataset if there is no test dataset, and then choose
+a train/test split fraction for splitting this dataset into training and test dataset for evaluation.
+If you have the test dataset, you can choose “Separate train/test files” and select the test dataset,
+and then the model will be trained with the training dataset and evaluated with the separate test dataset.
+The screenshot above uses a single data file, where we use the first 15% for training and the last 85% for testing.</p></li>
+<li><p><strong>Set the feature columns</strong>: Merlion supports both univariate and multivariate time series anomaly detection,
+so you can choose one or more features on which to train an anomaly detection model.</p></li>
+<li><p><strong>Set the label column</strong>: If the dataset has a label column, you can set it for evaluation. Otherwise,
+ignore this setting.</p></li>
+<li><p><strong>Select an anomaly detection algorithm</strong>: You need to choose an anomaly detection algorithm such as
+IsolationForest. You may modify the model’s hyperparameters if the default values do not work well.</p></li>
+<li><p><strong>Set threshold parameters</strong>: You can also test different settings for the detection threshold to
+determine which value is better for your specific application. Note that updating the threshold will
+not re-train the entire model; it will simply change the post-processing applied by the trained model.</p></li>
+</ul>
+<p>The training procedure begins after clicking the train button, and the trained model is saved in the
+folder <code class="docutils literal notranslate"><span class="pre">~/merlion/models/algorithm_name</span></code>. The figure on the right hand side shows the detection results
+on the test dataset, and the tables show the training and testing performance metrics if you set the
+label column.</p>
+<p>The third tab is used to train a time series forecasting model supported in Merlion:</p>
+<img alt="_images/dashboard_forecast.png" src="_images/dashboard_forecast.png" />
+<p>The app provides full support for these models, where you can choose different algorithms and set particular parameters
+according to your needs. To train a model, you need to:</p>
+<ul class="simple">
+<li><p><strong>Select the dataset</strong>: You can select a single training dataset if there is no test dataset, and then choose
+a train/test split fraction for splitting this dataset into training and test dataset for evaluation.
+If you have the test dataset, you can choose “Separate train/test files” and select the test dataset,
+and then the model will be trained with the training dataset and evaluated with the separate test dataset.
+The screenshot above uses separate train/test files.</p></li>
+<li><p><strong>Set the target column</strong>: You need to set the target column whose value you wish to forecast (required),
+any additional features to use for <a class="reference internal" href="tutorials/forecast/2_ForecastMultivariate.html"><span class="doc">multivariate forecasting</span></a> (optional),
+and the <a class="reference internal" href="tutorials/forecast/3_ForecastExogenous.html"><span class="doc">exogenous variables</span></a> whose values are known a priori (optional).</p></li>
+<li><p><strong>Select a forecasting algorithm</strong>: Finally, you need to choose a forecasting algorithm such as
+Arima, AutoETS. You may modify the model’s hyperparameters if the default values do not work well.</p></li>
+</ul>
+<p>The training procedure begins after clicking the train button. It may take some time to finish model
+training. After the model is trained, the model files will be saved in the folder <code class="docutils literal notranslate"><span class="pre">~/merlion/models/algorithm_name</span></code>.
+The figure on the right hand side shows the forecasting results on the test dataset, and the tables
+show the training and testing performance metrics.</p>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="merlion.spark.html" class="btn btn-neutral float-right" title="merlion.spark package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="merlion.models.utils.html" class="btn btn-neutral float-left" title="utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, salesforce.com, inc..
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
