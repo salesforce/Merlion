@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -23,7 +23,7 @@ class TestAnomalize(unittest.TestCase):
         super().__init__(*args, **kwargs)
         logger.info("Generating Data...\n")
         np.random.seed(111)
-        self.ts = TimeSeriesGenerator(f=lambda x: x ** 1.6, n=200, name="metric").generate(return_ts=True)
+        self.ts = TimeSeriesGenerator(f=lambda x: x**1.6, n=200, name="metric").generate(return_ts=True)
 
     def test_shock(self):
         print("-" * 80)

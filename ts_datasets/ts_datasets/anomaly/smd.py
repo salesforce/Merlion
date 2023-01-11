@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -102,7 +102,7 @@ def download(logger, datapath, url, filename):
         logger.info("Downloading " + url)
         with requests.get(url, stream=True) as r:
             with open(compressed_file, "wb") as f:
-                for chunk in r.iter_content(chunk_size=16 * 1024 ** 2):
+                for chunk in r.iter_content(chunk_size=16 * 1024**2):
                     if chunk:  # filter out keep-alive new chunks
                         f.write(chunk)
                         f.flush()

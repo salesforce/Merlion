@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -26,7 +26,7 @@ class TestTimeSeriesGenerator(unittest.TestCase):
         np.random.seed(1234)
         y_generated = GeneratorComposer(
             generators=[
-                TimeSeriesGenerator(f=lambda x: x ** 1.3, n=3),
+                TimeSeriesGenerator(f=lambda x: x**1.3, n=3),
                 TimeSeriesGenerator(f=lambda x: 4.5 / (1 + exp(-x)), scale=4.5, n=7),
                 TimeSeriesGenerator(f=lambda x: sin(x) * sin(3 * x), n=11),
             ],
@@ -48,7 +48,7 @@ class TestTimeSeriesGenerator(unittest.TestCase):
         np.random.seed(1234)
         y_generated = GeneratorConcatenator(
             generators=[
-                TimeSeriesGenerator(f=lambda x: x ** 2, n=3, x0=0),
+                TimeSeriesGenerator(f=lambda x: x**2, n=3, x0=0),
                 TimeSeriesGenerator(f=lambda x: exp(-(x % 5)), n=7, x0=10),
                 TimeSeriesGenerator(f=lambda x: 4 * log(x), n=11, x0=-99),
             ],
