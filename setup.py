@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -47,7 +47,7 @@ def read_file(fname):
 
 setup(
     name="salesforce-merlion",
-    version="2.0.0",
+    version="2.0.1",
     author=", ".join(read_file("AUTHORS.md").split("\n")),
     author_email="abhatnagar@salesforce.com",
     description="Merlion: A Machine Learning Framework for Time Series Intelligence",
