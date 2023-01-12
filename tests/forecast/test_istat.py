@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -68,7 +68,7 @@ class TestIStat(unittest.TestCase):
         # rwv normal data
         rwv = RecencyWeightedVariance(recency_weight=1e-4)
         rwv.add_batch(normal_data)
-        self.assertAlmostEqual(245.7, rwv.value ** 0.5, places=-1)
+        self.assertAlmostEqual(245.7, rwv.value**0.5, places=-1)
 
         for data in self.data1, self.data2, self.data3:
             left, right = data[:800], data[800:]

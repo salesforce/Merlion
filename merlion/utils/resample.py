@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -152,7 +152,7 @@ def infer_granularity(time_stamps, return_offset=False):
         return (freq, offset) if return_offset else freq
 
     # Otherwise, start with the most commonly occurring timedelta
-    dt = pd.to_timedelta(min(scipy.stats.mode(orig_t[1:] - orig_t[:-1], axis=None)[0]))
+    dt = pd.to_timedelta(scipy.stats.mode(orig_t[1:] - orig_t[:-1], axis=None)[0].item())
 
     # Check if the data could be sampled at a k-monthly granularity.
     candidate_freqs = [dt]

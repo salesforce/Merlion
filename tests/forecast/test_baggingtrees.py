@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -72,11 +72,7 @@ class TestRandomForestForecaster(unittest.TestCase):
         # self.assertAlmostEqual(rmse, 0.08, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        dataset = RollingWindowDataset(self.test_data,
-                                       self.i,
-                                       self.maxlags,
-                                       self.max_forecast_steps,
-                                       ts_index=True)
+        dataset = RollingWindowDataset(self.test_data, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
@@ -102,11 +98,7 @@ class TestRandomForestForecaster(unittest.TestCase):
         self.assertAlmostEqual(rmse, 0.01, delta=0.1)
 
         # Check look-ahead RMSE using time_series_prev
-        dataset = RollingWindowDataset(self.test_data_uni,
-                                       self.i,
-                                       self.maxlags,
-                                       self.max_forecast_steps,
-                                       ts_index=True)
+        dataset = RollingWindowDataset(self.test_data_uni, self.i, self.maxlags, self.max_forecast_steps, ts_index=True)
         testing_instance, testing_label = next(iter(dataset))
         pred, _ = self.model.forecast(testing_label.time_stamps, testing_instance)
         lookahead_rmse = ForecastMetric.RMSE.value(testing_label, pred, target_seq_index=self.i)
