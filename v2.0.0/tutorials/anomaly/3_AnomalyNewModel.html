@@ -1,100 +1,55 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Adding New Anomaly Detection Models &mdash; Merlion 2.0.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
+<meta charset="utf-8"/>
+<meta content="Docutils 0.19: https://docutils.sourceforge.io/" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Adding New Anomaly Detection Models — Merlion 2.0.0 documentation</title>
+<link href="../../_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="A Gentle Introduction to Forecasting in Merlion" href="../forecast/0_ForecastIntro.html" />
-    <link rel="prev" title="Multivariate Time Series Anomaly Detection" href="2_AnomalyMultivariate.html" /> 
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js" type="text/javascript"></script>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/sphinx_highlight.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../../_static/js/theme.js" type="text/javascript"></script>
+<link href="../../genindex.html" rel="index" title="Index"/>
+<link href="../../search.html" rel="search" title="Search"/>
+<link href="../forecast/0_ForecastIntro.html" rel="next" title="A Gentle Introduction to Forecasting in Merlion"/>
+<link href="2_AnomalyMultivariate.html" rel="prev" title="Multivariate Time Series Anomaly Detection"/>
 </head>
-
 <body class="wy-body-for-nav">
-
-   
-  <div class="wy-grid-for-nav">
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home"> Merlion
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../../index.html"> Merlion
           
 
           
           </a>
-
-          
-            
-            
-              <div class="version">
+<div class="version">
                 v2.0.0
               </div>
-            
-          
-
-          
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -120,75 +75,29 @@
 </ul>
 </li>
 </ul>
-
-            
-          
-        </div>
-        
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Merlion</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
-        
-      <li>Adding New Anomaly Detection Models</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="../../_sources/tutorials/anomaly/3_AnomalyNewModel.ipynb.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../../index.html">Merlion</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="../../index.html"></a> »</li>
+<li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> »</li>
+<li>Adding New Anomaly Detection Models</li>
+<li class="wy-breadcrumbs-aside">
+<a href="../../_sources/tutorials/anomaly/3_AnomalyNewModel.ipynb.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
 <style>
 /* CSS for nbsphinx extension */
 
@@ -489,7 +398,7 @@ div.rendered_html tbody tr:hover {
     <span class="c1"># not unit variance!)</span>
     <span class="n">_default_transform</span> <span class="o">=</span> <span class="n">MeanVarNormalize</span><span class="p">(</span><span class="n">normalize_scale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="c1"># When you call model.get_anomaly_label(), you will transform the model&#39;s</span>
+    <span class="c1"># When you call model.get_anomaly_label(), you will transform the model's</span>
     <span class="c1"># raw anomaly scores (returned by model.get_anomaly_score() into z-scores,</span>
     <span class="c1"># and you will apply a thresholding rule to suppress all anomaly scores</span>
     <span class="c1"># with magnitude smaller than the threshold. Here, we only wish to report</span>
@@ -497,14 +406,14 @@ div.rendered_html tbody tr:hover {
     <span class="n">_default_threshold</span> <span class="o">=</span> <span class="n">Threshold</span><span class="p">(</span><span class="n">alm_threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Provide model-specific config parameters here, with kwargs to capture any</span>
 <span class="sd">        general-purpose arguments used by the base class. For DetectorConfig,</span>
 <span class="sd">        these are transform and post_rule.</span>
 
 <span class="sd">        We include the initializer here for clarity. In this case, it may be</span>
 <span class="sd">        excluded, as it only calls the superclass initializer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -528,37 +437,37 @@ div.rendered_html tbody tr:hover {
     <span class="c1"># The config class for StatThreshold is StatThresholdConfig, defined above</span>
     <span class="n">config_class</span> <span class="o">=</span> <span class="n">StatThresholdConfig</span>
 
-    <span class="c1"># By default, we would like to train the model&#39;s post-rule (i.e. the threshold</span>
+    <span class="c1"># By default, we would like to train the model's post-rule (i.e. the threshold</span>
     <span class="c1"># at which we fire an alert) to maximize F1 score</span>
     <span class="n">_default_post_rule_train_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">require_even_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Many models assume the input time series is sampled evenly.</span>
-<span class="sd">        That isn&#39;t a necessary assumption for this model, so override the property.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        That isn't a necessary assumption for this model, so override the property.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">require_univariate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Specify that this model only works for univariate data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">StatThresholdConfig</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the model config and any other local variables. We include the</span>
 <span class="sd">        initializer here for clarity. In this case, it may be excluded, as it</span>
 <span class="sd">        only calls the superclass initializer.</span>
 
 <span class="sd">        :param config: model configuration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">train_config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="c1"># Since this model&#39;s anomaly scores are just the values of the time</span>
+        <span class="c1"># Since this model's anomaly scores are just the values of the time</span>
         <span class="c1"># series metric, there is no model to train.</span>
         <span class="c1"># In general, you should train your model here, and determine its</span>
         <span class="c1"># anomaly scores on the training data.</span>
@@ -588,7 +497,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="c1"># This is a time series with anomalies in both the train and test split.</span>
 <span class="c1"># time_series and metadata are both time-indexed pandas DataFrames.</span>
-<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;realKnownCause&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">NAB</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"realKnownCause"</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
 
 <span class="c1"># Visualize the full time series</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
@@ -596,7 +505,7 @@ div.rendered_html tbody tr:hover {
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
 
 <span class="c1"># Label the train/test split with a dashed line &amp; plot anomalies</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">"k"</span><span class="p">)</span>
 <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_pd</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -623,7 +532,7 @@ Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_te
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png" />
+<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_6_2.png"/>
 </div>
 </div>
 <p>Now, we’ll split the data into train &amp; test splits, and run our anomaly detection model on it.</p>
@@ -648,7 +557,7 @@ Time series /Users/abhatnagar/Desktop/Merlion/data/nab/realKnownCause/machine_te
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize a model &amp; train it. The dataframe returned &amp; printed</span>
-<span class="c1"># below is the model&#39;s anomaly scores on the training data.</span>
+<span class="c1"># below is the model's anomaly scores on the training data.</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">StatThreshold</span><span class="p">(</span><span class="n">StatThresholdConfig</span><span class="p">())</span>
 <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">anomaly_labels</span><span class="o">=</span><span class="n">train_labels</span><span class="p">)</span>
 </pre></div>
@@ -681,14 +590,14 @@ timestamp
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s run the our model on the test data, both with and without</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let's run the our model on the test data, both with and without</span>
 <span class="c1"># applying the post-rule. Notice that applying the post-rule filters out</span>
 <span class="c1"># a lot of entries!</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">anom_scores</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_anomaly_score</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
 <span class="n">anom_labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="n">to_pd</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;no post rule&quot;</span><span class="p">:</span> <span class="n">anom_scores</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="s2">&quot;with post rule&quot;</span><span class="p">:</span> <span class="n">anom_labels</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]}))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"no post rule"</span><span class="p">:</span> <span class="n">anom_scores</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="s2">"with post rule"</span><span class="p">:</span> <span class="n">anom_labels</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]}))</span>
 </pre></div>
 </div>
 </div>
@@ -753,7 +662,7 @@ time
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;no post rule&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"no post rule"</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -772,14 +681,14 @@ no post rule
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_13_1.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_13_1.png" />
+<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_13_1.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_13_1.png"/>
 </div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;with post rule&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"with post rule"</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -798,7 +707,7 @@ with post rule
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_14_1.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_14_1.png" />
+<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_14_1.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_14_1.png"/>
 </div>
 </div>
 </section>
@@ -819,7 +728,7 @@ with post rule
 <span class="c1"># Train the model as before</span>
 <span class="n">model2</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
 
-<span class="c1"># Visualize the model&#39;s anomaly scores with the new post-rule</span>
+<span class="c1"># Visualize the model's anomaly scores with the new post-rule</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">plot_anomaly</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">filter_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plot_anoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -830,7 +739,7 @@ with post rule
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_16_0.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_16_0.png" />
+<img alt="../../_images/tutorials_anomaly_3_AnomalyNewModel_16_0.png" src="../../_images/tutorials_anomaly_3_AnomalyNewModel_16_0.png"/>
 </div>
 </div>
 </section>
@@ -843,10 +752,10 @@ with post rule
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">anom_labels2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">get_anomaly_label</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model Evaluation&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Precision: </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recall:    </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1 Score:  </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Model Evaluation"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Precision: </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Precision</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Recall:    </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">Recall</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"F1 Score:  </span><span class="si">{</span><span class="n">TSADMetric</span><span class="o">.</span><span class="n">F1</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">test_labels</span><span class="p">,</span><span class="w"> </span><span class="n">predict</span><span class="o">=</span><span class="n">anom_labels2</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -863,25 +772,20 @@ F1 Score:  0.6667
 </div>
 </section>
 </section>
-
-
-           </div>
-           
-          </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../forecast/0_ForecastIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Forecasting in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="2_AnomalyMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, salesforce.com, inc..
+</div>
+</div>
+<footer>
+<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
+<a accesskey="n" class="btn btn-neutral float-right" href="../forecast/0_ForecastIntro.html" rel="next" title="A Gentle Introduction to Forecasting in Merlion">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+<a accesskey="p" class="btn btn-neutral float-left" href="2_AnomalyMultivariate.html" rel="prev" title="Multivariate Time Series Anomaly Detection"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>
+        © Copyright 2021, salesforce.com, inc..
 
     </p>
-  </div>
+</div>
     
     
     
@@ -892,127 +796,24 @@ F1 Score:  0.6667
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-  
-
-  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Versions</span>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span class="fa fa-book"> Versions</span>
       v2.0.0
       <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      
-      <dl>
-        <dt>Versions</dt>
-        
-          
-          
-          <dd><a href="../../../latest/index.html">latest</a></dd>
-          
-        
-           <strong> 
-          
-          <dd><a href="../../../v2.0.0/index.html">v2.0.0</a></dd>
-           </strong> 
-        
-          
-          
-          <dd><a href="../../../v1.3.1/index.html">v1.3.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd>
-          
-        
-      </dl>
-      
-    </div>
-  </div>
-
- 
-
-  <script type="text/javascript">
+</span>
+<div class="rst-other-versions">
+<dl><dt>Versions</dt><dd><a href="../../../latest/index.html">latest</a></dd><dd><strong><a href="../../../v2.0.0/index.html">v2.0.0</a></strong></dd><dd><a href="../../../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../../../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../../../v1.2.5/index.html">v1.2.5</a></dd><dd><a href="../../../v1.2.4/index.html">v1.2.4</a></dd><dd><a href="../../../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../../../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../../../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../../../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../../../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../../../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../../../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../../../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../../../v1.0.2/index.html">v1.0.2</a></dd><dd><a href="../../../v1.0.1/index.html">v1.0.1</a></dd><dd><a href="../../../v1.0.0/index.html">v1.0.0</a></dd></dl>
+</div>
+</div>
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
-  
-  
-    
-   
-
 </body>
 </html>
