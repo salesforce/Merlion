@@ -1,57 +1,50 @@
-
 <!DOCTYPE html>
-
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" >
 <head>
-<meta charset="utf-8"/>
-<meta content="Docutils 0.19: https://docutils.sourceforge.io/" name="generator"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>anomaly.forecast_based — Merlion 2.0.0 documentation</title>
-<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
-<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
-<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
-<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
-<!--[if lt IE 9]>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>anomaly.forecast_based &mdash; Merlion 2.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>
-<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-<script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="_static/js/theme.js" type="text/javascript"></script>
-<link href="genindex.html" rel="index" title="Index"/>
-<link href="search.html" rel="search" title="Search"/>
-<link href="merlion.models.anomaly.change_point.html" rel="next" title="anomaly.change_point"/>
-<link href="merlion.models.anomaly.html" rel="prev" title="anomaly"/>
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="anomaly.change_point" href="merlion.models.anomaly.change_point.html" />
+    <link rel="prev" title="anomaly" href="merlion.models.anomaly.html" /> 
 </head>
-<body class="wy-body-for-nav">
-<div class="wy-grid-for-nav">
-<nav class="wy-nav-side" data-toggle="wy-nav-shift">
-<div class="wy-side-scroll">
-<div class="wy-side-nav-search">
-<a class="icon icon-home" href="index.html"> Merlion
-          
 
-          
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
           </a>
-<div class="version">
+              <div class="version">
                 v2.0.0
               </div>
 <div role="search">
-<form action="search.html" class="wy-form" id="rtd-search-form" method="get">
-<input name="q" placeholder="Search docs" type="text"/>
-<input name="check_keywords" type="hidden" value="yes"/>
-<input name="area" type="hidden" value="default"/>
-</form>
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-</div>
-<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
@@ -214,31 +207,35 @@
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
 </ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.anomaly.html">anomaly</a></li>
+      <li class="breadcrumb-item active">anomaly.forecast_based</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.models.anomaly.forecast_based.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
 </div>
-</div>
-</nav>
-<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
-<nav aria-label="top navigation" class="wy-nav-top">
-<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
-<a href="index.html">Merlion</a>
-</nav>
-<div class="wy-nav-content">
-<div class="rst-content">
-<div aria-label="breadcrumbs navigation" role="navigation">
-<ul class="wy-breadcrumbs">
-<li><a class="icon icon-home" href="index.html"></a> »</li>
-<li><a href="merlion.html">merlion: Time Series Intelligence</a> »</li>
-<li><a href="merlion.models.html">merlion.models package</a> »</li>
-<li><a href="merlion.models.anomaly.html">anomaly</a> »</li>
-<li>anomaly.forecast_based</li>
-<li class="wy-breadcrumbs-aside">
-<a href="_sources/merlion.models.anomaly.forecast_based.rst.txt" rel="nofollow"> View page source</a>
-</li>
-</ul>
-<hr/>
-</div>
-<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
-<div itemprop="articleBody">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
 <style>
 /* CSS overrides for sphinx_rtd_theme */
 
@@ -262,8 +259,8 @@
     text-align: unset;
 }
 </style>
-<section id="module-merlion.models.anomaly.forecast_based">
-<span id="anomaly-forecast-based"></span><h1>anomaly.forecast_based<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="module-merlion.models.anomaly.forecast_based">
+<span id="anomaly-forecast-based"></span><h1>anomaly.forecast_based<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based" title="Permalink to this heading"></a></h1>
 <p>Contains all forecaster-based anomaly detectors. These models support all functionality
 of both anomaly detectors (<a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>) and forecasters
 (<a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>).</p>
@@ -274,6 +271,10 @@ the model’s uncertainty in its own prediction.</p>
 <p>Note that the model will detect anomalies in only one target univariate, though the underlying
 forecaster may model the full multivariate time series to predict said univariate.</p>
 <table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.forecast_based.base" title="merlion.models.anomaly.forecast_based.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
 <td><p>Base class for anomaly detectors based on forecasting models.</p></td>
@@ -295,133 +296,138 @@ forecaster may model the full multivariate time series to predict said univariat
 </tr>
 </tbody>
 </table>
-<section id="module-merlion.models.anomaly.forecast_based.base">
-<span id="anomaly-forecast-based-base"></span><h2>anomaly.forecast_based.base<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.base" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.base">
+<span id="anomaly-forecast-based-base"></span><h2>anomaly.forecast_based.base<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.base" title="Permalink to this heading"></a></h2>
 <p>Base class for anomaly detectors based on forecasting models.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.base.</span></span><span class="sig-name descname"><span class="pre">ForecastingDetectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.base.</span></span><span class="sig-name descname"><span class="pre">ForecastingDetectorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
 <p>Base class for a forecast-based anomaly detector.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>) – model configuration</p>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score">
-<span class="sig-name descname"><span class="pre">forecast_to_anom_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stderr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forecast_to_anom_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stderr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.forecast_to_anom_score" title="Permalink to this definition"></a></dt>
 <dd><p>Compare a model’s forecast to a ground truth time series, in order to compute anomaly scores. By default, we
 compute a z-score if model uncertainty (<code class="docutils literal notranslate"><span class="pre">stderr</span></code>) is given, or the residuals if there is no model uncertainty.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the ground truth time series.</p></li>
 <li><p><strong>forecast</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the model’s forecasted values for the time series</p></li>
 <li><p><strong>stderr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – the standard errors of the model’s forecast</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Anomaly scores based on the difference between the ground truth values and the model’s forecast.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train" title="Permalink to this definition"></a></dt>
 <dd><p>Trains the anomaly detector (unsupervised) and its post-rule (supervised, if labels are given) on train data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <cite>TimeSeries</cite> of metric values to train the model.</p></li>
 <li><p><strong>train_config</strong> – Additional training configs, if needed. Only required for some models.</p></li>
-<li><p><strong>anomaly_labels</strong> – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
+<li><p><strong>anomaly_labels</strong> – a <cite>TimeSeries</cite> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the model’s post-rule. The model’s default
 post-rule train config is used if none is supplied here.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of the model’s anomaly scores on the training data.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A <cite>TimeSeries</cite> of the model’s anomaly scores on the training data.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process">
-<span class="sig-name descname"><span class="pre">train_post_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">train_post_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_rule_train_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.train_post_process" title="Permalink to this definition"></a></dt>
 <dd><p>Converts the train result (anom scores on train data) into a TimeSeries object and trains the post-rule.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>train_result</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]) – Raw anomaly scores on the training data.</p></li>
-<li><p><strong>anomaly_labels</strong> – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> indicating which timestamps are anomalous. Optional.</p></li>
+<li><p><strong>anomaly_labels</strong> – a <cite>TimeSeries</cite> indicating which timestamps are anomalous. Optional.</p></li>
 <li><p><strong>post_rule_train_config</strong> – The config to use for training the model’s post-rule. The model’s default
 post-rule train config is used if none is supplied here.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score">
-<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_score" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the model’s predicted sequence of anomaly scores.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <cite>TimeSeries</cite> we wish to predict anomaly scores
 for.</p></li>
-<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <cite>TimeSeries</cite> immediately preceding
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
 anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
 immediately follows the training data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <cite>TimeSeries</cite> of anomaly scores</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label">
-<span class="sig-name descname"><span class="pre">get_anomaly_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_anomaly_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_anomaly_label" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the model’s predicted sequence of anomaly scores, processed
 by any relevant post-rules (calibration and/or thresholding).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <cite>TimeSeries</cite> we wish to predict anomaly scores
 for.</p></li>
-<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <cite>TimeSeries</cite> immediately preceding
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
 anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
 immediately follows the training data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores, filtered by the
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <cite>TimeSeries</cite> of anomaly scores, filtered by the
 model’s post-rule</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure">
-<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_anomaly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_anomaly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.get_figure" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – the time series over whose timestamps we wish to make a forecast. Exactly one of
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
@@ -432,7 +438,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_anomaly</strong> – Whether to plot the model’s predicted anomaly scores.</p></li>
 <li><p><strong>filter_scores</strong> – whether to filter the anomaly scores by the post-rule before plotting them.</p></li>
 <li><p><strong>plot_forecast</strong> – Whether to plot the model’s forecasted values.</p></li>
@@ -442,23 +448,24 @@ values. Not supported for all models.</p></li>
 <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions and/or forecast.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a <cite>Figure</cite> of the model’s anomaly score predictions and/or forecast.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly">
-<span class="sig-name descname"><span class="pre">plot_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_anomaly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly" title="Permalink to this definition"></a></dt>
 <dd><p>Plots the time series in matplotlib as a line graph, with points in the
 series overlaid as points color-coded to indicate their severity as
 anomalies. Optionally allows you to overlay the model’s forecast &amp; the
 model’s uncertainty in its forecast (if applicable).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the time series over whose timestamps we wish to make a forecast. Exactly one of
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
@@ -467,7 +474,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>filter_scores</strong> – whether to filter the anomaly scores by the post-rule before plotting them.</p></li>
 <li><p><strong>plot_forecast</strong> – Whether to plot the model’s forecast, in addition to the anomaly scores.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
@@ -478,20 +485,21 @@ values. Not supported for all models.</p></li>
 <li><p><strong>ax</strong> – matplotlib axis to add this plot to</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>matplotlib figure &amp; axes</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly">
-<span class="sig-name descname"><span class="pre">plot_anomaly_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_anomaly_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_anomaly_plotly" title="Permalink to this definition"></a></dt>
 <dd><p>Plots the time series in matplotlib as a line graph, with points in the
 series overlaid as points color-coded to indicate their severity as
 anomalies. Optionally allows you to overlay the model’s forecast &amp; the
 model’s uncertainty in its forecast (if applicable).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the time series over whose timestamps we wish to make a forecast. Exactly one of
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
@@ -500,7 +508,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>filter_scores</strong> – whether to filter the anomaly scores by the post-rule before plotting them.</p></li>
 <li><p><strong>plot_forecast</strong> – Whether to plot the model’s forecast, in addition to the anomaly scores.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
@@ -510,19 +518,20 @@ values. Not supported for all models.</p></li>
 <li><p><strong>figsize</strong> – figure size in pixels</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>plotly figure</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast">
-<span class="sig-name descname"><span class="pre">plot_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast" title="Permalink to this definition"></a></dt>
 <dd><p>Plots the forecast for the time series in matplotlib, optionally also
 plotting the uncertainty of the forecast, as well as the past values
 (both true and predicted) of the time series.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – the time series over whose timestamps we wish to make a forecast. Exactly one of
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
@@ -533,7 +542,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
 values. Not supported for all models.</p></li>
 <li><p><strong>plot_time_series_prev</strong> – whether to plot <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and the model’s fit for it). Only used if
@@ -542,19 +551,20 @@ values. Not supported for all models.</p></li>
 <li><p><strong>ax</strong> – matplotlib axis to add this plot to</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>(fig, ax): matplotlib figure &amp; axes the figure was plotted on</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly">
-<span class="sig-name descname"><span class="pre">plot_forecast_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_forecast_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_forecast_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1000,</span> <span class="pre">600)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase.plot_forecast_plotly" title="Permalink to this definition"></a></dt>
 <dd><p>Plots the forecast for the time series in plotly, optionally also
 plotting the uncertainty of the forecast, as well as the past values
 (both true and predicted) of the time series.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – the time series over whose timestamps we wish to make a forecast. Exactly one of
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
@@ -565,7 +575,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the
 inter-quartile range) for forecast values. Not supported for all
 models.</p></li>
@@ -576,20 +586,22 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 </dd>
 </dl>
 </dd></dl>
+
 </dd></dl>
-</section>
-<section id="module-merlion.models.anomaly.forecast_based.arima">
-<span id="anomaly-forecast-based-arima"></span><h2>anomaly.forecast_based.arima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.arima" title="Permalink to this heading">¶</a></h2>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.arima">
+<span id="anomaly-forecast-based-arima"></span><h2>anomaly.forecast_based.arima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.arima" title="Permalink to this heading"></a></h2>
 <p>Classic ARIMA (AutoRegressive Integrated Moving Average) forecasting model,
 adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">AggregationPolicy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">MissingValuePolicy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">AggregationPolicy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">MissingValuePolicy</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.arima.ArimaConfig" title="merlion.models.forecast.arima.ArimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArimaConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.arima.Arima" title="merlion.models.forecast.arima.Arima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Arima</span></code></a>. Just a <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> model with seasonal order <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
+<p>Configuration class for <cite>Arima</cite>. Just a <cite>Sarima</cite> model with seasonal order <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order</strong> – Order is (p, d, q) for an ARIMA(p, d, q) process. d must
 be an integer indicating the integration order of the process, while
@@ -601,7 +613,7 @@ all lags up to those orders are included).</p></li>
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -619,28 +631,31 @@ when post-processing anomaly scores</p></li>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.arima.Arima" title="merlion.models.forecast.arima.Arima"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arima</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig" title="merlion.models.anomaly.forecast_based.arima.ArimaDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArimaDetectorConfig</span></code></a></p>
 </dd></dl>
+
 </dd></dl>
-</section>
-<section id="module-merlion.models.anomaly.forecast_based.sarima">
-<span id="anomaly-forecast-based-sarima"></span><h2>anomaly.forecast_based.sarima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.sarima" title="Permalink to this heading">¶</a></h2>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.sarima">
+<span id="anomaly-forecast-based-sarima"></span><h2>anomaly.forecast_based.sarima<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.sarima" title="Permalink to this heading"></a></h2>
 <p>Seasonal ARIMA (SARIMA) forecasting model, adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SarimaConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
-<p>Config class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> (Seasonal AutoRegressive Integrated Moving Average).</p>
+<p>Config class for <cite>Sarima</cite> (Seasonal AutoRegressive Integrated Moving Average).</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Order is (p, d, q) for an ARIMA(p, d, q) process. d must
 be an integer indicating the integration order of the process, while
@@ -654,7 +669,7 @@ for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -672,23 +687,26 @@ when post-processing anomaly scores</p></li>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig" title="merlion.models.anomaly.forecast_based.sarima.SarimaDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SarimaDetectorConfig</span></code></a></p>
 </dd></dl>
+
 </dd></dl>
-</section>
-<section id="module-merlion.models.anomaly.forecast_based.ets">
-<span id="anomaly-forecast-based-ets"></span><h2>anomaly.forecast_based.ets<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.ets" title="Permalink to this heading">¶</a></h2>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.ets">
+<span id="anomaly-forecast-based-ets"></span><h2>anomaly.forecast_based.ets<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.ets" title="Permalink to this heading"></a></h2>
 <p>ETS (error, trend, seasonal) forecasting model, adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damped_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'add'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETSConfig" title="merlion.models.forecast.ets.ETSConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig</span></code></a></p>
 <p>Configuration class for <code class="xref py py-class docutils literal notranslate"><span class="pre">ETS</span></code> model. ETS model is an underlying state space
 model consisting of an error term (E), a trend component (T), a seasonal
@@ -698,7 +716,7 @@ Refer to <a class="reference external" href="https://otexts.com/fpp2/taxonomy.ht
 about ETS model.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Number of steps we would like to forecast for.</p></li>
 <li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all
@@ -724,29 +742,32 @@ when post-processing anomaly scores</p></li>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.ets.</span></span><span class="sig-name descname"><span class="pre">ETSDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS" title="merlion.models.forecast.ets.ETS"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETS</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.ets.ETSDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig" title="merlion.models.anomaly.forecast_based.ets.ETSDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSDetectorConfig</span></code></a></p>
 </dd></dl>
+
 </dd></dl>
-</section>
-<section id="module-merlion.models.anomaly.forecast_based.prophet">
-<span id="anomaly-forecast-based-prophet"></span><h2>anomaly.forecast_based.prophet<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.prophet" title="Permalink to this heading">¶</a></h2>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.prophet">
+<span id="anomaly-forecast-based-prophet"></span><h2>anomaly.forecast_based.prophet<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.prophet" title="Permalink to this heading"></a></h2>
 <p>Adaptation of Facebook’s Prophet forecasting model to anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonality_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'additive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holidays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonality_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'additive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holidays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProphetConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
-<p>Configuration class for Facebook’s <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a> model, as described by
+<p>Configuration class for Facebook’s <cite>Prophet</cite> model, as described by
 <a class="reference external" href="https://peerj.com/preprints/3190/">Taylor &amp; Letham, 2017</a>.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.</p></li>
 <li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all
@@ -793,23 +814,26 @@ when post-processing anomaly scores</p></li>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig" title="merlion.models.anomaly.forecast_based.prophet.ProphetDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProphetDetectorConfig</span></code></a></p>
 </dd></dl>
+
 </dd></dl>
-</section>
-<section id="module-merlion.models.anomaly.forecast_based.mses">
-<span id="anomaly-forecast-based-mses"></span><h2>anomaly.forecast_based.mses<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.mses" title="Permalink to this heading">¶</a></h2>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.forecast_based.mses">
+<span id="anomaly-forecast-based-mses"></span><h2>anomaly.forecast_based.mses<a class="headerlink" href="#module-merlion.models.anomaly.forecast_based.mses" title="Permalink to this heading"></a></h2>
 <p>MSES (Multi-Scale Exponential Smoother) forecasting model adapted for anomaly detection.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.mses.</span></span><span class="sig-name descname"><span class="pre">MSESDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recency_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accel_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.mses.</span></span><span class="sig-name descname"><span class="pre">MSESDetectorConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recency_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accel_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize_acc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSESConfig" title="merlion.models.forecast.smoother.MSESConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">MSESConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
 <p>Configuration class for an MSES forecasting model adapted for anomaly detection.</p>
 <p>Letting <code class="docutils literal notranslate"><span class="pre">w</span></code> be the recency weight, <code class="docutils literal notranslate"><span class="pre">B</span></code> the maximum backstep, <code class="docutils literal notranslate"><span class="pre">x_t</span></code> the last seen data point,
@@ -824,9 +848,9 @@ and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></c
 \text{if} &amp; \space\space  z_b = (b+h)^\phi \cdot \text{EMA}_w(l_{b+h,t}) \cdot \text{RWSE}_w(l_{b+h,t})\\
 \end{align*}\end{split}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>max_backstep</strong> – Max backstep to use in forecasting. If we train with x(0),…,x(t),
 Then, the b-th model MSES uses will forecast x(t+h) by anchoring at x(t-b) and 
 predicting xhat(t+h) = x(t-b) + delta_hat(b+h).</p></li>
@@ -863,92 +887,188 @@ when post-processing anomaly scores</p></li>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.mses.</span></span><span class="sig-name descname"><span class="pre">MSESDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.forecast_based.mses.</span></span><span class="sig-name descname"><span class="pre">MSESDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>, <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.smoother.MSESConfig" title="merlion.models.forecast.smoother.MSESConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">MSESConfig</span></code></a>) – model configuration</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class">
-<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.config_class" title="Permalink to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig" title="merlion.models.anomaly.forecast_based.mses.MSESDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">MSESDetectorConfig</span></code></a></p>
 </dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">online_updates</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">online_updates</span></span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.online_updates" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score">
-<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.forecast_based.mses.MSESDetector.get_anomaly_score" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the model’s predicted sequence of anomaly scores.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <cite>TimeSeries</cite> we wish to predict anomaly scores
 for.</p></li>
-<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <cite>TimeSeries</cite> immediately preceding
 <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
 anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
 immediately follows the training data.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <cite>TimeSeries</cite> of anomaly scores</p>
 </dd>
 </dl>
 </dd></dl>
-</dd></dl>
-</section>
-</section>
-</div>
-</div>
-<footer>
-<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
-<a accesskey="n" class="btn btn-neutral float-right" href="merlion.models.anomaly.change_point.html" rel="next" title="anomaly.change_point">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
-<a accesskey="p" class="btn btn-neutral float-left" href="merlion.models.anomaly.html" rel="prev" title="anomaly"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
-</div>
-<hr/>
-<div role="contentinfo">
-<p>
-        © Copyright 2021, salesforce.com, inc..
 
-    </p>
+</dd></dl>
+
 </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.models.anomaly.html" class="btn btn-neutral float-left" title="anomaly" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.anomaly.change_point.html" class="btn btn-neutral float-right" title="anomaly.change_point" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-</div>
-</div>
-</section>
-</div>
-<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
-<span class="rst-current-version" data-toggle="rst-current-version">
-<span class="fa fa-book"> Versions</span>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
       v2.0.0
       <span class="fa fa-caret-down"></span>
-</span>
-<div class="rst-other-versions">
-<dl><dt>Versions</dt><dd><a href="../latest/index.html">latest</a></dd><dd><strong><a href="../v2.0.0/index.html">v2.0.0</a></strong></dd><dd><a href="../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../v1.2.5/index.html">v1.2.5</a></dd><dd><a href="../v1.2.4/index.html">v1.2.4</a></dd><dd><a href="../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../v1.0.2/index.html">v1.0.2</a></dd><dd><a href="../v1.0.1/index.html">v1.0.1</a></dd><dd><a href="../v1.0.0/index.html">v1.0.0</a></dd></dl>
-</div>
-</div>
-<script type="text/javascript">
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
+
 </body>
 </html>
