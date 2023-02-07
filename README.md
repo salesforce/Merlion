@@ -21,6 +21,7 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
+1. [Comparison with Related Libraries](#comparison-with-related-libraries)
 1. [Installation](#installation)
 1. [Documentation](#documentation)
 1. [Getting Started](#getting-started)
@@ -57,28 +58,33 @@ Merlion's key features are
 -  Distributed computation [backend](https://opensource.salesforce.com/Merlion/merlion.spark.html) using PySpark,
    which can be used to serve time series applications at industrial scale.
 
+
+## Comparison with Related Libraries
+
 The table below provides a visual overview of how Merlion's key features compare to other libraries for time series
 anomaly detection and/or forecasting.
 
-|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
-:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
-| Univariate Forecasting | ✅ | ✅| | ✅ | ✅ | ✅ | ✅ | | |✅| ✅ 
-| Multivariate Forecasting | ✅ | | | ✅ | ✅| ✅ | ✅ | | | | |
-| Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | | | | ✅ | ✅ | ✅ | ✅ | 
-| Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | | | | ✅ | ✅ | | | |
-| AutoML | ✅ | | | ✅ | | | | | | | ✅ | | ✅ 
-| Ensembles | ✅ | | | ✅ | | | | | ✅ | | | | 
-| Benchmarking | ✅ | | | | ✅ | ✅ | | | | | 
-| Visualization | ✅ | ✅ | | ✅ | | | | | | ✅ | ✅ | | 
+|                     | Merlion | Prophet | Alibi Detect | Kats | darts | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
+:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
+| Univariate Forecasting | ✅ | ✅| | ✅ | ✅ | ✅ | ✅ | ✅ | | |✅| ✅ 
+| Multivariate Forecasting | ✅ | | | ✅ | ✅ | ✅| ✅ | ✅ | | | | |
+| Univariate Anomaly Detection | ✅ | ✅ | ✅ | ✅ | ✅ | | | | ✅ | ✅ | ✅ | ✅ | 
+| Multivariate Anomaly Detection | ✅ | | ✅ | ✅ | ✅ | | | | ✅ | ✅ | | | |
+| Pre Processing | ✅ | | ✅ | ✅ | ✅ | | ✅ | ✅ | | | ✅ | ✅
+| Post Processing | ✅ | | ✅ | | | | | | | | | |
+| AutoML | ✅ | | | ✅ | | | | | | | | ✅ | | ✅ 
+| Ensembles | ✅ | | | ✅ | ✅ | | | | | ✅ | | | | 
+| Benchmarking | ✅ | | | | ✅ | ✅ | ✅ | | | | ✅ | 
+| Visualization | ✅ | ✅ | | ✅ | ✅ | | | | | | ✅ | 
 
 The following features are new in Merlion 2.0:
 
-|                     | Merlion | Prophet | Alibi Detect | Kats | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
-:---                  | :---:     | :---:|  :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
-| Exogenous Regressors   | ✅ | ✅ | | | ✅ |  | | | | ✅ | ✅
-| Change Point Detection | ✅ | ✅ | ✅ | ✅ | | | | | | ✅ |
-| Clickable Visual UI    | ✅ | | | | | | | | | |
-| Distributed Backend    | ✅ | | | | | ✅ | | | | | 
+|                     | Merlion | Prophet | Alibi Detect | Kats | darts | statsmodels | nixtla | GluonTS | RRCF | STUMPY | Greykite |pmdarima 
+:---                  | :---:     | :---:|  :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :----: | :---:
+| Exogenous Regressors   | ✅ | ✅ | | |✅ | ✅ |  | | | | ✅ | ✅
+| Change Point Detection | ✅ | ✅ | ✅ | ✅ | | | | | | | ✅ |
+| Clickable Visual UI    | ✅ | | | | | | | | | | |
+| Distributed Backend    | ✅ | | | | | | ✅ | | | | | 
 
 ## Installation
 

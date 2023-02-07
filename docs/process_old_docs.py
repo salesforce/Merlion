@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -63,7 +63,7 @@ def main():
             for file in html_files:
                 with open(file) as f:
                     soup = bs(f, "html.parser")
-                version_dl = [dl for dl in soup.find_all("dl") if dl.find("dt", text="Versions")]
+                version_dl = [dl for dl in soup.find_all("dl") if dl.find("dt", string="Versions")]
                 if len(version_dl) == 0:
                     continue
                 version_dl[0].replace_with(create_version_dl(soup, prefix, version, versions))

@@ -54,17 +54,25 @@ The full API documentation is outlined below:
    :show-inheritance:
 
 .. toctree::
-   :maxdepth: 5
-
-   merlion.models
-
-.. toctree::
    :maxdepth: 3
 
+   merlion.models
    merlion.dashboard
    merlion.spark
    merlion.transform
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.post_process
    merlion.evaluate
+
+.. toctree::
+   :maxdepth: 1
+
    merlion.plot
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.utils

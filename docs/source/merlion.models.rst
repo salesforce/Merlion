@@ -78,11 +78,32 @@ Subpackages
    :maxdepth: 3
 
    merlion.models.anomaly
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.models.anomaly.change_point
    merlion.models.anomaly.forecast_based
+
+.. toctree::
+   :maxdepth: 3
+
    merlion.models.forecast
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.models.ensemble
+
+
+.. toctree::
+   :maxdepth: 3
+
    merlion.models.automl
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.models.utils
 
 

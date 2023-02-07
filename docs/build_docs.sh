@@ -55,6 +55,7 @@ docs_files=("${DIRNAME}/source/*.rst" "examples")
 checkout_files=("${docs_files[@]}" "merlion" "ts_datasets" "setup.py" "MANIFEST.in")
 for version in "${versions[@]}"; do
     if [[ ! -d "${DIRNAME}/build/html/${version}" ]]; then
+        rm -rf "${DIRNAME}/build/html/${version}"
         if [[ ${version} != "latest" ]]; then
             git checkout -b "${version}_local_docs_only"
             for f in $(git diff --name-only --diff-filter=AR "tags/${version}" "${DIRNAME}/source/*.rst" "examples"); do
