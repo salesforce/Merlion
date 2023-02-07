@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merlion: Time Series Intelligence &mdash; Merlion 2.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.models package" href="merlion.models.html" />
+    <link rel="prev" title="Welcome to Merlion’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v2.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">merlion: Time Series Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">merlion: Time Series Intelligence</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="merlion-time-series-intelligence">
+<h1>merlion: Time Series Intelligence<a class="headerlink" href="#merlion-time-series-intelligence" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="#module-merlion" title="merlion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion</span></code></a> is a Python library for time series intelligence. We support the following key features,
+each associated with its own sub-package:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="merlion.models.html#module-merlion.models" title="merlion.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models</span></code></a>: A library of models unified under a single shared interface, with specializations
+for anomaly detection and forecasting. More specifically, we have</p>
+<ul>
+<li><p><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults" title="merlion.models.defaults"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.defaults</span></code></a>: Default models for anomaly detection and forecasting. These are good models
+for getting started.</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly" title="merlion.models.anomaly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly</span></code></a>: Anomaly detection models</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point" title="merlion.models.anomaly.change_point"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.change_point</span></code></a>: Change point detection models</p></li>
+<li><p><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast" title="merlion.models.forecast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.forecast</span></code></a>: Forecasting models, including those which support exogenous regressors</p></li>
+<li><p><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based" title="merlion.models.anomaly.forecast_based"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.anomaly.forecast_based</span></code></a>: Forecasting models adapted for anomaly detection. Anomaly
+scores are based on the residual between the predicted and true value at each timestamp.</p></li>
+<li><p><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble" title="merlion.models.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.ensemble</span></code></a>: Ensembles &amp; automated model selection of models for both anomaly
+detection and forecasting.</p></li>
+<li><p><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl" title="merlion.models.automl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.automl</span></code></a>: AutoML layers for various models</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.dashboard</span></code>: A GUI dashboard app for Merlion, which can be started with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">merlion.dashboard</span></code>. This dashboard provides a good way to quickly experiment many models on a new
+time series.</p></li>
+<li><p><a class="reference internal" href="merlion.spark.html#module-merlion.spark" title="merlion.spark"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.spark</span></code></a>: APIs to integrate Merlion with PySpark for using distributed computing to run training
+and inference on multiple time series in parallel.</p></li>
+<li><p><a class="reference internal" href="merlion.transform.html#module-merlion.transform" title="merlion.transform"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.transform</span></code></a>: Data pre-processing layer which implements many standard data transformations used in
+time series analysis. Transforms are callable objects, and each model has its own configurable <code class="docutils literal notranslate"><span class="pre">model.transform</span></code>
+which it uses to pre-process all input time series for both training and inference.</p></li>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process" title="merlion.post_process"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process</span></code></a>: Post-processing rules to apply on the output of a model. Currently, these are
+specific to anomaly detection, and include</p>
+<ul>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.calibrate" title="merlion.post_process.calibrate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.calibrate</span></code></a>: Rules to calibrate the anomaly scores returned by a model, to
+be interpretable as z-scores, i.e. as standard deviations of a standard normal random variable. Each
+anomaly detection model has a <code class="docutils literal notranslate"><span class="pre">model.calibrator</span></code> from this module, which can optionally be applied to ensure
+that the model’s anomaly scores are calibrated.</p></li>
+<li><p><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.threshold" title="merlion.post_process.threshold"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.post_process.threshold</span></code></a>: Rules to reduce the noisiness of an anomaly detection model’s outputs.
+Each anomaly detection model has a <code class="docutils literal notranslate"><span class="pre">model.threshold</span></code> from this module, which can optionally be applied to
+filter the model’s predicted sequence of anomaly scores.</p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate" title="merlion.evaluate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.evaluate</span></code></a>: Evaluation metrics &amp; pipelines to simulate the live deployment of a time series model
+for any task.</p></li>
+<li><p><a class="reference internal" href="merlion.plot.html#module-merlion.plot" title="merlion.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.plot</span></code></a>: Automated visualization of model outputs for univariate time series</p></li>
+<li><p><a class="reference internal" href="merlion.utils.html#module-merlion.utils" title="merlion.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.utils</span></code></a>: Various utilities, including the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> class, resampling functions,
+Bayesian conjugate priors, reconciliation for hierarchical time series, and more.</p></li>
+</ul>
+<p>The key classes for input and output are <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">merlion.utils.time_series.TimeSeries</span></code></a> and
+<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">merlion.utils.time_series.UnivariateTimeSeries</span></code></a>. Notably, these classes have transparent inter-operability
+with <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> and <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>, respectively. Check this <a class="reference internal" href="tutorials/TimeSeries.html"><span class="doc">tutorial</span></a>
+for some examples on how to use these classes, or the API docs linked above for a full list of features.</p>
+<p>The full API documentation is outlined below:</p>
+<span class="target" id="module-merlion"></span><div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.utils.html">utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultDetectorConfig"><code class="docutils literal notranslate"><span class="pre">DefaultDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultDetector"><code class="docutils literal notranslate"><span class="pre">DefaultDetector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultForecasterConfig"><code class="docutils literal notranslate"><span class="pre">DefaultForecasterConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultForecaster"><code class="docutils literal notranslate"><span class="pre">DefaultForecaster</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.factory.ModelFactory"><code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.factory.instantiate_or_copy_model"><code class="docutils literal notranslate"><span class="pre">instantiate_or_copy_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.Config"><code class="docutils literal notranslate"><span class="pre">Config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig"><code class="docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase"><code class="docutils literal notranslate"><span class="pre">ModelBase</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.MultipleTimeseriesModelMixin"><code class="docutils literal notranslate"><span class="pre">MultipleTimeseriesModelMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.deep_base">deep_base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.Optimizer"><code class="docutils literal notranslate"><span class="pre">Optimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.LossFunction"><code class="docutils literal notranslate"><span class="pre">LossFunction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.DeepConfig"><code class="docutils literal notranslate"><span class="pre">DeepConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel"><code class="docutils literal notranslate"><span class="pre">TorchModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.DeepModelBase"><code class="docutils literal notranslate"><span class="pre">DeepModelBase</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModelConfig"><code class="docutils literal notranslate"><span class="pre">LayeredModelConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModel"><code class="docutils literal notranslate"><span class="pre">LayeredModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredDetector"><code class="docutils literal notranslate"><span class="pre">LayeredDetector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredForecaster"><code class="docutils literal notranslate"><span class="pre">LayeredForecaster</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredForecastingDetector"><code class="docutils literal notranslate"><span class="pre">LayeredForecastingDetector</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#setting-up-the-spark-on-k8s-operator">Setting up the spark-on-k8s-operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#specifying-a-spark-app">Specifying a Spark App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#api-documentation">API Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.dataset">merlion.spark.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.spark.html#module-merlion.spark.pandas_udf">merlion.spark.pandas_udf</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#base-primitives">Base primitives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.factory">transform.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.base">transform.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.sequence">transform.sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#resampling">Resampling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.resample">transform.resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.moving_average">transform.moving_average</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#normalization">Normalization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.normalize">transform.normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.bound">transform.bound</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html#miscellaneous">Miscellaneous</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.transform.html#module-merlion.transform.anomalize">transform.anomalize</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.base">merlion.post_process.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.factory">merlion.post_process.factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.sequence">merlion.post_process.sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#merlion-post-process-calibrate">merlion.post_process.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html#module-merlion.post_process.threshold">merlion.post_process.threshold</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.base">merlion.evaluate.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.anomaly">merlion.evaluate.anomaly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html#module-merlion.evaluate.forecast">merlion.evaluate.forecast</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.time_series">merlion.utils.time_series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.resample">merlion.utils.resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.data_io">merlion.utils.data_io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.hts">merlion.utils.hts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.ts_generator">merlion.utils.ts_generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.conj_priors">merlion.utils.conj_priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html#module-merlion.utils.istat">merlion.utils.istat</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Merlion’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.html" class="btn btn-neutral float-right" title="merlion.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.1/index.html">v2.0.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

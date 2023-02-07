@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading Custom Datasets &mdash; Merlion 2.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion" href="anomaly/0_AnomalyIntro.html" />
+    <link rel="prev" title="Merlion’s Data Format" href="TimeSeries.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v2.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials &amp; Example Code</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#basics">Basics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="TimeSeries.html">Merlion’s Data Format</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Loading Custom Datasets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Anomaly-Detection-Datasets">Anomaly Detection Datasets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#General-Purpose-(Forecasting)-Datasets">General Purpose (Forecasting) Datasets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Broader-Takeaways">Broader Takeaways</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#anomaly-detection">Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#forecasting">Forecasting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials &amp; Example Code</a></li>
+      <li class="breadcrumb-item active">Loading Custom Datasets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/CustomDataset.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars and line breaks on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+    white-space: pre;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Loading-Custom-Datasets">
+<h1>Loading Custom Datasets<a class="headerlink" href="#Loading-Custom-Datasets" title="Permalink to this heading"></a></h1>
+<p>This notebook will explain how to load custom datasets saved to CSV files, for either anomaly detection or forecasting.</p>
+<div class="section" id="Anomaly-Detection-Datasets">
+<h2>Anomaly Detection Datasets<a class="headerlink" href="#Anomaly-Detection-Datasets" title="Permalink to this heading"></a></h2>
+<p>Let’s first look at a synthetic anomaly detection dataset. Note that this section just provides an alternative implementation of the dataset <code class="docutils literal notranslate"><span class="pre">ts_datasets.anomaly.Synthetic</span></code>. We begin by listing all the CSV files in the relevant directory.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">anom_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;synthetic_anomaly&quot;</span><span class="p">)</span>
+<span class="n">csvs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">anom_dir</span><span class="si">}</span><span class="s2">/*.csv&quot;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">csv</span> <span class="ow">in</span> <span class="n">csvs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">csv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+../data/synthetic_anomaly/horizontal.csv
+../data/synthetic_anomaly/horizontal_dip_anomaly.csv
+../data/synthetic_anomaly/horizontal_level_anomaly.csv
+../data/synthetic_anomaly/horizontal_shock_anomaly.csv
+../data/synthetic_anomaly/horizontal_spike_anomaly.csv
+../data/synthetic_anomaly/horizontal_trend_anomaly.csv
+../data/synthetic_anomaly/seasonal.csv
+../data/synthetic_anomaly/seasonal_dip_anomaly.csv
+../data/synthetic_anomaly/seasonal_level_anomaly.csv
+../data/synthetic_anomaly/seasonal_shock_anomaly.csv
+../data/synthetic_anomaly/seasonal_spike_anomaly.csv
+../data/synthetic_anomaly/seasonal_trend_anomaly.csv
+../data/synthetic_anomaly/upward_downward.csv
+../data/synthetic_anomaly/upward_downward_dip_anomaly.csv
+../data/synthetic_anomaly/upward_downward_level_anomaly.csv
+../data/synthetic_anomaly/upward_downward_shock_anomaly.csv
+../data/synthetic_anomaly/upward_downward_spike_anomaly.csv
+../data/synthetic_anomaly/upward_downward_trend_anomaly.csv
+</pre></div></div>
+</div>
+<p>Let’s visualize what a couple of these CSVs look like.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="k">for</span> <span class="n">csv</span> <span class="ow">in</span> <span class="p">[</span><span class="n">csvs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">csvs</span><span class="p">[</span><span class="mi">8</span><span class="p">]]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">csv</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+../data/synthetic_anomaly/horizontal.csv
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>timestamp</th>
+      <th>horizontal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1.928031</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>300</td>
+      <td>-1.156620</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>600</td>
+      <td>-0.390650</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>900</td>
+      <td>0.400804</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1200</td>
+      <td>-0.874490</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>2998500</td>
+      <td>0.362724</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>2998800</td>
+      <td>2.657373</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>2999100</td>
+      <td>1.472341</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>2999400</td>
+      <td>1.033154</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>2999700</td>
+      <td>2.950466</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 2 columns</p>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+../data/synthetic_anomaly/seasonal_level_anomaly.csv
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>timestamp</th>
+      <th>seasonal</th>
+      <th>anomaly</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>-0.577883</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>300</td>
+      <td>1.059779</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>600</td>
+      <td>1.137609</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>900</td>
+      <td>0.743360</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1200</td>
+      <td>1.998400</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>2998500</td>
+      <td>-5.388685</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>2998800</td>
+      <td>-5.017828</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>2999100</td>
+      <td>-4.196791</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>2999400</td>
+      <td>-4.234555</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>2999700</td>
+      <td>-3.111685</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 3 columns</p>
+</div></div>
+</div>
+<p>Each CSV in the dataset has the following important characteristics:</p>
+<ul class="simple">
+<li><p>a time column <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> (here, a Unix timestamp expressed in units of seconds);</p></li>
+<li><p>a column <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> indicating whether a timestamp is anomalous or not (though this is absent for time series which don’t contain any anomalies);</p></li>
+<li><p>one or more columns for the actual data values</p></li>
+</ul>
+<p>We can create a data loader for all the CSV files in this dataset as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ts_datasets.anomaly</span> <span class="kn">import</span> <span class="n">CustomAnomalyDataset</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomAnomalyDataset</span><span class="p">(</span>
+    <span class="n">rootdir</span><span class="o">=</span><span class="n">anom_dir</span><span class="p">,</span>       <span class="c1"># where the data is stored</span>
+    <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>         <span class="c1"># use 75% of each time series for testing.</span>
+                            <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
+    <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>          <span class="c1"># the timestamp column (automatically detected) is in units of seconds</span>
+    <span class="n">assume_no_anomaly</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># if a CSV doesn&#39;t have the &quot;anomaly&quot; column, assume it has no anomalies</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset.&quot;</span><span class="p">)</span>
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+There are 18 time series in this dataset.
+</pre></div></div>
+</div>
+<p>This particular time series is univariate. Its variable is named “horizontal”.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>horizontal</th>
+    </tr>
+    <tr>
+      <th>timestamp</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1970-01-01 00:00:00</th>
+      <td>1.928031</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:05:00</th>
+      <td>-1.156620</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:10:00</th>
+      <td>-0.390650</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:15:00</th>
+      <td>0.400804</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:20:00</th>
+      <td>-0.874490</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 16:55:00</th>
+      <td>0.362724</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:00:00</th>
+      <td>2.657373</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:05:00</th>
+      <td>1.472341</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:10:00</th>
+      <td>1.033154</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:15:00</th>
+      <td>2.950466</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 1 columns</p>
+</div></div>
+</div>
+<p>The metadata has the same timestamps as the time series. It contains “anomaly” and “trainval” columns. These respectively indicate whether each timestamp is anomalous, and whether each timestamp is for training/validation or testing.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>anomaly</th>
+      <th>trainval</th>
+    </tr>
+    <tr>
+      <th>timestamp</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1970-01-01 00:00:00</th>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:05:00</th>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:10:00</th>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:15:00</th>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1970-01-01 00:20:00</th>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 16:55:00</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:00:00</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:05:00</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:10:00</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1970-02-04 17:15:00</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 2 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is for testing.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is anomalous.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+75.0% of the time series is for testing.
+19.57% of the time series is anomalous.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="General-Purpose-(Forecasting)-Datasets">
+<h2>General Purpose (Forecasting) Datasets<a class="headerlink" href="#General-Purpose-(Forecasting)-Datasets" title="Permalink to this heading"></a></h2>
+<p>Next, let’s load a more general-purpose dataset for forecasting. We will use this opportunity to show some of the more advanced features as well. Here, our dataset consists of a single CSV file which contains many multivariate time series. These time series are collected from a large retailer, and each individual time series corresonds to a different department within a different store. Let’s have a look at the data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart_mini.csv&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Store</th>
+      <th>Dept</th>
+      <th>Date</th>
+      <th>Weekly_Sales</th>
+      <th>Temperature</th>
+      <th>Fuel_Price</th>
+      <th>MarkDown1</th>
+      <th>MarkDown2</th>
+      <th>MarkDown3</th>
+      <th>MarkDown4</th>
+      <th>MarkDown5</th>
+      <th>CPI</th>
+      <th>Unemployment</th>
+      <th>IsHoliday</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>2010-02-05</td>
+      <td>24924.50</td>
+      <td>42.31</td>
+      <td>2.572</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.096358</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1</td>
+      <td>2010-02-12</td>
+      <td>46039.49</td>
+      <td>38.51</td>
+      <td>2.548</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.242170</td>
+      <td>8.106</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>1</td>
+      <td>2010-02-19</td>
+      <td>41595.55</td>
+      <td>39.93</td>
+      <td>2.514</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.289143</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>1</td>
+      <td>2010-02-26</td>
+      <td>19403.54</td>
+      <td>46.63</td>
+      <td>2.561</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.319643</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>1</td>
+      <td>2010-03-05</td>
+      <td>21827.90</td>
+      <td>46.50</td>
+      <td>2.625</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.350143</td>
+      <td>8.106</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2855</th>
+      <td>2</td>
+      <td>10</td>
+      <td>2012-09-28</td>
+      <td>37104.67</td>
+      <td>79.45</td>
+      <td>3.666</td>
+      <td>7106.05</td>
+      <td>1.91</td>
+      <td>1.65</td>
+      <td>1549.10</td>
+      <td>3946.03</td>
+      <td>222.616433</td>
+      <td>6.565</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2856</th>
+      <td>2</td>
+      <td>10</td>
+      <td>2012-10-05</td>
+      <td>36361.28</td>
+      <td>70.27</td>
+      <td>3.617</td>
+      <td>6037.76</td>
+      <td>NaN</td>
+      <td>10.04</td>
+      <td>3027.37</td>
+      <td>3853.40</td>
+      <td>222.815930</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2857</th>
+      <td>2</td>
+      <td>10</td>
+      <td>2012-10-12</td>
+      <td>35332.34</td>
+      <td>60.97</td>
+      <td>3.601</td>
+      <td>2145.50</td>
+      <td>NaN</td>
+      <td>33.31</td>
+      <td>586.83</td>
+      <td>10421.01</td>
+      <td>223.015426</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2858</th>
+      <td>2</td>
+      <td>10</td>
+      <td>2012-10-19</td>
+      <td>35721.09</td>
+      <td>68.08</td>
+      <td>3.594</td>
+      <td>4461.89</td>
+      <td>NaN</td>
+      <td>1.14</td>
+      <td>1579.67</td>
+      <td>2642.29</td>
+      <td>223.059808</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2859</th>
+      <td>2</td>
+      <td>10</td>
+      <td>2012-10-26</td>
+      <td>34260.76</td>
+      <td>69.79</td>
+      <td>3.506</td>
+      <td>6152.59</td>
+      <td>129.77</td>
+      <td>200.00</td>
+      <td>272.29</td>
+      <td>2924.15</td>
+      <td>223.078337</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>2860 rows × 14 columns</p>
+</div></div>
+</div>
+<p>As before, we have a column <code class="docutils literal notranslate"><span class="pre">Date</span></code> indicating the time. Note that in this case, we have a string rather than a timestamp; this is also okay. However, we now also have some index columns <code class="docutils literal notranslate"><span class="pre">Store</span></code> and <code class="docutils literal notranslate"><span class="pre">Dept</span></code> which are used to distinguish between different time series. We specify these to the data loader.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomDataset</span><span class="p">(</span>
+    <span class="n">rootdir</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>                  <span class="c1"># where the data is stored</span>
+    <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Store&quot;</span><span class="p">,</span> <span class="s2">&quot;Dept&quot;</span><span class="p">],</span> <span class="c1"># Individual time series are indexed by store &amp; department</span>
+    <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>               <span class="c1"># use 25% of each time series for testing.</span>
+                                  <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset.&quot;</span><span class="p">)</span>
+<span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+There are 20 time series in this dataset.
+</pre></div></div>
+</div>
+<p>This particular time series is multivariate.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Weekly_Sales</th>
+      <th>Temperature</th>
+      <th>Fuel_Price</th>
+      <th>MarkDown1</th>
+      <th>MarkDown2</th>
+      <th>MarkDown3</th>
+      <th>MarkDown4</th>
+      <th>MarkDown5</th>
+      <th>CPI</th>
+      <th>Unemployment</th>
+      <th>IsHoliday</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2010-02-05</th>
+      <td>69634.80</td>
+      <td>40.19</td>
+      <td>2.572</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>210.752605</td>
+      <td>8.324</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-02-12</th>
+      <td>63393.29</td>
+      <td>38.49</td>
+      <td>2.548</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>210.897994</td>
+      <td>8.324</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2010-02-19</th>
+      <td>66589.27</td>
+      <td>39.69</td>
+      <td>2.514</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>210.945160</td>
+      <td>8.324</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-02-26</th>
+      <td>61875.48</td>
+      <td>46.10</td>
+      <td>2.561</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>210.975957</td>
+      <td>8.324</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2010-03-05</th>
+      <td>67041.18</td>
+      <td>47.17</td>
+      <td>2.625</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>211.006754</td>
+      <td>8.324</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2012-09-28</th>
+      <td>57424.00</td>
+      <td>79.45</td>
+      <td>3.666</td>
+      <td>7106.05</td>
+      <td>1.91</td>
+      <td>1.65</td>
+      <td>1549.10</td>
+      <td>3946.03</td>
+      <td>222.616433</td>
+      <td>6.565</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-05</th>
+      <td>62955.51</td>
+      <td>70.27</td>
+      <td>3.617</td>
+      <td>6037.76</td>
+      <td>NaN</td>
+      <td>10.04</td>
+      <td>3027.37</td>
+      <td>3853.40</td>
+      <td>222.815930</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-12</th>
+      <td>63083.63</td>
+      <td>60.97</td>
+      <td>3.601</td>
+      <td>2145.50</td>
+      <td>NaN</td>
+      <td>33.31</td>
+      <td>586.83</td>
+      <td>10421.01</td>
+      <td>223.015426</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-19</th>
+      <td>60502.97</td>
+      <td>68.08</td>
+      <td>3.594</td>
+      <td>4461.89</td>
+      <td>NaN</td>
+      <td>1.14</td>
+      <td>1579.67</td>
+      <td>2642.29</td>
+      <td>223.059808</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2012-10-26</th>
+      <td>63992.36</td>
+      <td>69.79</td>
+      <td>3.506</td>
+      <td>6152.59</td>
+      <td>129.77</td>
+      <td>200.00</td>
+      <td>272.29</td>
+      <td>2924.15</td>
+      <td>223.078337</td>
+      <td>6.170</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>143 rows × 11 columns</p>
+</div></div>
+</div>
+<p>The metadata has the same timestamps as the time series. It has a “trainval” column as before, plus index columns “Store” and “Dept”.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>trainval</th>
+      <th>Store</th>
+      <th>Dept</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2010-02-05</th>
+      <td>True</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2010-02-12</th>
+      <td>True</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2010-02-19</th>
+      <td>True</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2010-02-26</th>
+      <td>True</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2010-03-05</th>
+      <td>True</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2012-09-28</th>
+      <td>False</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2012-10-05</th>
+      <td>False</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2012-10-12</th>
+      <td>False</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2012-10-19</th>
+      <td>False</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2012-10-26</th>
+      <td>False</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+<p>143 rows × 3 columns</p>
+</div></div>
+</div>
+</div>
+<div class="section" id="Broader-Takeaways">
+<h2>Broader Takeaways<a class="headerlink" href="#Broader-Takeaways" title="Permalink to this heading"></a></h2>
+<p>In general, a dataset can contain any number of CSVs stored under a single root directory. Each CSV can contain one or more time series, where the different time series within a single file are indicated by different values of the index column. Note that this works for anomaly detection as well! You just need to make sure that your CSVs all contain the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column. In general, all features supported by <code class="docutils literal notranslate"><span class="pre">CustomDataset</span></code> are also supported by <code class="docutils literal notranslate"><span class="pre">CustomAnomalyDataset</span></code>, as long as your CSV
+files have the <code class="docutils literal notranslate"><span class="pre">anomaly</span></code> column.</p>
+<p>If you want to either of the above custom datasets for benchmarking, you can call</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_anomaly.py --model IsolationForest --retrain_freq 7d \
+    --dataset CustomAnomalyDataset --data_root data/synthetic_anomaly \
+    --data_kwargs &#39;{&quot;assume_no_anomaly&quot;: true, &quot;test_frac&quot;: 0.75}&#39;
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_forecast.py --model AutoETS  \
+    --dataset CustomDataset --data_root data/walmart/walmart_mini.csv \
+    --data_kwargs &#39;{&quot;test_frac&quot;: 0.25, \
+                    &quot;index_cols&quot;: [&quot;Store&quot;, &quot;Dept&quot;], \
+                    &quot;data_cols&quot;: [&quot;Weekly_Sales&quot;]}&#39;
+</pre></div>
+</div>
+<p>Note in the example above, we specify “data_cols” as “Weekly_Sales”. This indicates that the only column we are modeling is Weekly_Sales. If you wanted to do multivariate prediction, you could also add “Temperature”, “Fuel_Price”, “CPI”, etc. We treat the first of the data columns as the target univariate whose value you wish to forecast.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="TimeSeries.html" class="btn btn-neutral float-left" title="Merlion’s Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="anomaly/0_AnomalyIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Anomaly Detection in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../../v2.0.1/index.html">v2.0.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../../v2.0.0/index.html">v2.0.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

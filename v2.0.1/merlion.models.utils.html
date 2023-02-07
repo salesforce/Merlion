@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils &mdash; Merlion 2.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="merlion.dashboard package" href="merlion.dashboard.html" />
+    <link rel="prev" title="automl" href="merlion.models.automl.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Merlion
+          </a>
+              <div class="version">
+                v2.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">utils</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.time_features">utils.time_features</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature"><code class="docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.SecondOfMinute"><code class="docutils literal notranslate"><span class="pre">SecondOfMinute</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.MinuteOfHour"><code class="docutils literal notranslate"><span class="pre">MinuteOfHour</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.HourOfDay"><code class="docutils literal notranslate"><span class="pre">HourOfDay</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.DayOfWeek"><code class="docutils literal notranslate"><span class="pre">DayOfWeek</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.DayOfMonth"><code class="docutils literal notranslate"><span class="pre">DayOfMonth</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.DayOfYear"><code class="docutils literal notranslate"><span class="pre">DayOfYear</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.MonthOfYear"><code class="docutils literal notranslate"><span class="pre">MonthOfYear</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.WeekOfYear"><code class="docutils literal notranslate"><span class="pre">WeekOfYear</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.time_features_from_frequency_str"><code class="docutils literal notranslate"><span class="pre">time_features_from_frequency_str()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.time_features.get_time_features"><code class="docutils literal notranslate"><span class="pre">get_time_features()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.rolling_window_dataset">utils.rolling_window_dataset</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.validation"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.validation</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.seed"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.seed</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_windows"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_windows</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_valid"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_valid</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_train"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_train</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_points"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.n_points</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch"><code class="docutils literal notranslate"><span class="pre">RollingWindowDataset.collate_batch()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.early_stopping">utils.early_stopping</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.early_stopping.EarlyStopping"><code class="docutils literal notranslate"><span class="pre">EarlyStopping</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.early_stopping.EarlyStopping.save_best_state_and_dict"><code class="docutils literal notranslate"><span class="pre">EarlyStopping.save_best_state_and_dict()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.utils.early_stopping.EarlyStopping.load_best_model"><code class="docutils literal notranslate"><span class="pre">EarlyStopping.load_best_model()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.utils.autosarima_utils">utils.autosarima_utils</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model"><code class="docutils literal notranslate"><span class="pre">detect_maxiter_sarima_model()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest"><code class="docutils literal notranslate"><span class="pre">seas_seasonalstationaritytest()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.nsdiffs"><code class="docutils literal notranslate"><span class="pre">nsdiffs()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.KPSS_stationaritytest"><code class="docutils literal notranslate"><span class="pre">KPSS_stationaritytest()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.utils.autosarima_utils.ndiffs"><code class="docutils literal notranslate"><span class="pre">ndiffs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.deep_base">deep_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
+      <li class="breadcrumb-item active">utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.models.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-merlion.models.utils">
+<span id="utils"></span><h1>utils<a class="headerlink" href="#module-merlion.models.utils" title="Permalink to this heading"></a></h1>
+<p>Contains various utility files &amp; functions useful for different models.</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.utils.time_features" title="merlion.models.utils.time_features"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_features</span></code></a></p></td>
+<td><p>Utils for converting pandas datetime to numerical vectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.utils.rolling_window_dataset" title="merlion.models.utils.rolling_window_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_window_dataset</span></code></a></p></td>
+<td><p>A rolling window dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.utils.early_stopping" title="merlion.models.utils.early_stopping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">early_stopping</span></code></a></p></td>
+<td><p>Earlying Stopping</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-merlion.models.utils.autosarima_utils" title="merlion.models.utils.autosarima_utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autosarima_utils</span></code></a></p></td>
+<td><p>Low-level utils for AutoML models.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="module-merlion.models.utils.time_features">
+<span id="utils-time-features"></span><h2>utils.time_features<a class="headerlink" href="#module-merlion.models.utils.time_features" title="Permalink to this heading"></a></h2>
+<p>Utils for converting pandas datetime to numerical vectors</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.TimeFeature">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">TimeFeature</span></span><a class="headerlink" href="#merlion.models.utils.time_features.TimeFeature" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.SecondOfMinute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">SecondOfMinute</span></span><a class="headerlink" href="#merlion.models.utils.time_features.SecondOfMinute" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Second of minute encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.MinuteOfHour">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">MinuteOfHour</span></span><a class="headerlink" href="#merlion.models.utils.time_features.MinuteOfHour" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Minute of hour encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.HourOfDay">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">HourOfDay</span></span><a class="headerlink" href="#merlion.models.utils.time_features.HourOfDay" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Hour of day encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.DayOfWeek">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">DayOfWeek</span></span><a class="headerlink" href="#merlion.models.utils.time_features.DayOfWeek" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Day of week encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.DayOfMonth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">DayOfMonth</span></span><a class="headerlink" href="#merlion.models.utils.time_features.DayOfMonth" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Day of month encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.DayOfYear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">DayOfYear</span></span><a class="headerlink" href="#merlion.models.utils.time_features.DayOfYear" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Day of year encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.MonthOfYear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">MonthOfYear</span></span><a class="headerlink" href="#merlion.models.utils.time_features.MonthOfYear" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Month of year encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.WeekOfYear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">WeekOfYear</span></span><a class="headerlink" href="#merlion.models.utils.time_features.WeekOfYear" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a></p>
+<p>Week of year encoded as value between [-0.5, 0.5]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.time_features_from_frequency_str">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">time_features_from_frequency_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.time_features.time_features_from_frequency_str" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>freq_str</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Frequency string of the form [multiple][granularity] such as “12H”, “5min”, “1D” etc.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#merlion.models.utils.time_features.TimeFeature" title="merlion.models.utils.time_features.TimeFeature"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeFeature</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of time features that will be appropriate for the given frequency string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.time_features.get_time_features">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.time_features.</span></span><span class="sig-name descname"><span class="pre">get_time_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.time_features.get_time_features" title="Permalink to this definition"></a></dt>
+<dd><p>Convert pandas Datetime to numerical vectors that can be used for training</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-merlion.models.utils.rolling_window_dataset">
+<span id="utils-rolling-window-dataset"></span><h2>utils.rolling_window_dataset<a class="headerlink" href="#module-merlion.models.utils.rolling_window_dataset" title="Permalink to this heading"></a></h2>
+<p>A rolling window dataset</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.rolling_window_dataset.</span></span><span class="sig-name descname"><span class="pre">RollingWindowDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_future</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A rolling window dataset which returns <code class="docutils literal notranslate"><span class="pre">(past,</span> <span class="pre">future)</span></code> windows for the whole time series.
+If <code class="docutils literal notranslate"><span class="pre">ts_index=True</span></code> is used, a batch size of 1 is employed, and each window returned by the dataset is
+<code class="docutils literal notranslate"><span class="pre">(past,</span> <span class="pre">future)</span></code>, where <code class="docutils literal notranslate"><span class="pre">past</span></code> and <code class="docutils literal notranslate"><span class="pre">future</span></code> are both <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> objects.
+If <code class="docutils literal notranslate"><span class="pre">ts_index=False</span></code> is used (default option, more efficient), each window returned by the dataset is
+<code class="docutils literal notranslate"><span class="pre">(past_np,</span> <span class="pre">past_time,</span> <span class="pre">future_np,</span> <span class="pre">future_time)</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">past_np</span></code> is a numpy array with shape <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n_past</span> <span class="pre">*</span> <span class="pre">dim)</span></code> if <code class="docutils literal notranslate"><span class="pre">flatten</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, otherwise
+<code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n_past,</span> <span class="pre">dim)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">past_time</span></code> is a numpy array of times with shape <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n_past)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">future_np</span></code> is a numpy array with shape <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">dim)</span></code> if <code class="docutils literal notranslate"><span class="pre">target_seq_index</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(autoregressive prediction), or shape <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n_future)</span></code> if <code class="docutils literal notranslate"><span class="pre">target_seq_index</span></code> is specified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">future_time</span></code> is a numpy array of times with shape <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n_future)</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>]) – time series data in the format of TimeSeries or pandas DataFrame with DatetimeIndex</p></li>
+<li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all univariates in a general multivariate time
+series) whose value we would like to use for the future labeling. If <code class="docutils literal notranslate"><span class="pre">target_seq_index</span> <span class="pre">=</span> <span class="pre">None</span></code>, it implies
+that all the sequences are required for the future labeling. In this case, we set <code class="docutils literal notranslate"><span class="pre">n_future</span> <span class="pre">=</span> <span class="pre">1</span></code> and
+use the time series for 1-step autoregressive prediction.</p></li>
+<li><p><strong>n_past</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of steps for past</p></li>
+<li><p><strong>n_future</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of steps for future. If <code class="docutils literal notranslate"><span class="pre">target_seq_index</span> <span class="pre">=</span> <span class="pre">None</span></code>, we manually set <code class="docutils literal notranslate"><span class="pre">n_future</span> <span class="pre">=</span> <span class="pre">1</span></code>.</p></li>
+<li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – exogenous data to as inputs for the model, but not as outputs to predict.
+We assume the future values of exogenous variables are known a priori at test time.</p></li>
+<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the windows of the time series should be shuffled.</p></li>
+<li><p><strong>ts_index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – keep original TimeSeries internally for all the slicing, and output TimeSeries.
+by default, Numpy array will handle the internal data workflow and Numpy array will be the output.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the number of windows to return in parallel. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, return the whole dataset.</p></li>
+<li><p><strong>flatten</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether the output time series arrays should be flattened to 2 dimensions.</p></li>
+<li><p><strong>ts_encoding</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – whether the timestamp should be encoded to a float vector, which can be used
+for training deep learning based time series models; if <code class="docutils literal notranslate"><span class="pre">None</span></code>, the timestamp is not encoded.
+If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, it represents the frequency for time features encoding options:[s:secondly, t:minutely, h:hourly,
+d:daily, b:business days, w:weekly, m:monthly]</p></li>
+<li><p><strong>valid_fraction</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Fraction of validation set splitted from training data. if <code class="docutils literal notranslate"><span class="pre">valid_fraction</span> <span class="pre">=</span> <span class="pre">0</span></code>
+or <code class="docutils literal notranslate"><span class="pre">valid_fraction</span> <span class="pre">=</span> <span class="pre">1</span></code>, we iterate over the entire dataset.</p></li>
+<li><p><strong>validation</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether the data is from the validation set or not. if <code class="docutils literal notranslate"><span class="pre">validation</span> <span class="pre">=</span> <span class="pre">None</span></code>, we iterate over
+the entire dataset.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.validation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validation</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.validation" title="Permalink to this definition"></a></dt>
+<dd><p>If set <code class="docutils literal notranslate"><span class="pre">False</span></code>, we only provide access to the training windows; if set <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+we only provide access to the validation windows. if set``None``, we iterate over
+the entire dataset.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.seed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seed</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.seed" title="Permalink to this definition"></a></dt>
+<dd><p>Set Random seed to perturb the training data</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_windows">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_windows</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_windows" title="Permalink to this definition"></a></dt>
+<dd><p>Number of total slides windows</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_valid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_valid</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_valid" title="Permalink to this definition"></a></dt>
+<dd><p>Number of slides windows in validation set</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_train">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_train</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_train" title="Permalink to this definition"></a></dt>
+<dd><p>Number of slides windows in training set</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_points</span></span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.n_points" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch">
+<span class="sig-name descname"><span class="pre">collate_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.rolling_window_dataset.RollingWindowDataset.collate_batch" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-merlion.models.utils.early_stopping">
+<span id="utils-early-stopping"></span><h2>utils.early_stopping<a class="headerlink" href="#module-merlion.models.utils.early_stopping" title="Permalink to this heading"></a></h2>
+<p>Earlying Stopping</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.utils.early_stopping.EarlyStopping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.utils.early_stopping.</span></span><span class="sig-name descname"><span class="pre">EarlyStopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patience</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.early_stopping.EarlyStopping" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Early stopping for deep model training</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patience</strong> – Number of epochs with no improvement after which training will be stopped.</p></li>
+<li><p><strong>delta</strong> – Minimum change in the monitored quantity to qualify as an improvement,
+i.e. an absolute change of less than min_delta, will count as no improvement.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.utils.early_stopping.EarlyStopping.save_best_state_and_dict">
+<span class="sig-name descname"><span class="pre">save_best_state_and_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.early_stopping.EarlyStopping.save_best_state_and_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.utils.early_stopping.EarlyStopping.load_best_model">
+<span class="sig-name descname"><span class="pre">load_best_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.early_stopping.EarlyStopping.load_best_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-merlion.models.utils.autosarima_utils">
+<span id="utils-autosarima-utils"></span><h2>utils.autosarima_utils<a class="headerlink" href="#module-merlion.models.utils.autosarima_utils" title="Permalink to this heading"></a></h2>
+<p>Low-level utils for AutoML models.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.diff">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">differences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.diff" title="Permalink to this definition"></a></dt>
+<dd><p>Return suitably lagged and iterated differences from the given 1D or 2D array x</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">detect_maxiter_sarima_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">information_criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.detect_maxiter_sarima_model" title="Permalink to this definition"></a></dt>
+<dd><p>run a zero model with SARIMA(2; d; 2)(1; D; 1) / ARIMA(2; d; 2) determine the optimal maxiter</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">seas_seasonalstationaritytest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.seas_seasonalstationaritytest" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the strength of seasonal component. The idea can be found in
+<a class="reference external" href="https://otexts.com/fpp2/seasonal-strength.html">https://otexts.com/fpp2/seasonal-strength.html</a>
+R implementation uses mstl instead of stl to deal with multiple seasonality</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.nsdiffs">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">nsdiffs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'seas'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.nsdiffs" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the seasonal differencing order D with statistical test</p>
+<p>Parameters:
+x : the time series to difference
+m : the number of seasonal periods
+max_D : the maximal number of seasonal differencing order allowed
+test: the type of test of seasonality to use to detect seasonal periodicity</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.KPSS_stationaritytest">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">KPSS_stationaritytest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.KPSS_stationaritytest" title="Permalink to this definition"></a></dt>
+<dd><p>The KPSS test is used with the null hypothesis that
+x has a stationary root against a unit-root alternative</p>
+<p>The KPSS test is used with the null hypothesis that
+x has a stationary root against a unit-root alternative.
+Then the test returns the least number of differences required to
+pass the test at the level alpha</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="merlion.models.utils.autosarima_utils.ndiffs">
+<span class="sig-prename descclassname"><span class="pre">merlion.models.utils.autosarima_utils.</span></span><span class="sig-name descname"><span class="pre">ndiffs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpss'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.utils.autosarima_utils.ndiffs" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the differencing order d with statistical test</p>
+<p>Parameters:
+x : the time series to difference
+alpha : level of the test, possible values range from 0.01 to 0.1
+max_d : the maximal number of differencing order allowed
+test: the type of test of seasonality to use to detect seasonal periodicity</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.models.automl.html" class="btn btn-neutral float-left" title="automl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.dashboard.html" class="btn btn-neutral float-right" title="merlion.dashboard package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.1/index.html">v2.0.1</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
