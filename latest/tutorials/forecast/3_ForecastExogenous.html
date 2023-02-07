@@ -1,80 +1,41 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Forecasting With Exogenous Regressors &mdash; Merlion 2.0.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Adding a New Forecasting Model" href="4_ForecastNewModel.html" />
     <link rel="prev" title="Multivariate Time Series Forecasting" href="2_ForecastMultivariate.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Merlion
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 latest
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -82,18 +43,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../merlion.html">merlion: Time Series Intelligence</a></li>
@@ -114,73 +64,31 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Merlion</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../tutorials.html">Tutorials &amp; Example Code</a> &raquo;</li>
-        
-      <li>Forecasting With Exogenous Regressors</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../tutorials.html">Tutorials &amp; Example Code</a></li>
+      <li class="breadcrumb-item active">Forecasting With Exogenous Regressors</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/tutorials/forecast/3_ForecastExogenous.ipynb.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   
 <style>
 /* CSS for nbsphinx extension */
@@ -460,8 +368,8 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Forecasting-With-Exogenous-Regressors">
-<h1>Forecasting With Exogenous Regressors<a class="headerlink" href="#Forecasting-With-Exogenous-Regressors" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="Forecasting-With-Exogenous-Regressors">
+<h1>Forecasting With Exogenous Regressors<a class="headerlink" href="#Forecasting-With-Exogenous-Regressors" title="Permalink to this heading"></a></h1>
 <p>Consider a multivariate time series <span class="math notranslate nohighlight">\(X^{(1)}, \ldots, X^{(t)}\)</span>, where each <span class="math notranslate nohighlight">\(X^{(i)} \in \mathbb{R}^d\)</span> is a d-dimensional vector. In multivariate forecasting, our goal is to predict the future values of the k’th univariate <span class="math notranslate nohighlight">\(X_k^{(t+1)}, \ldots, X_k^{(t+h)}\)</span>.</p>
 <p>Exogenous regressors <span class="math notranslate nohighlight">\(Y^{(i)}\)</span> are a set of additional variables whose values we know a priori. The task of forecasting with exogenous regressors is to predict our target univariate <span class="math notranslate nohighlight">\(X_k^{(t+1)}, \ldots, X_k^{(t+h)}\)</span>, conditioned on - The past values of the time series <span class="math notranslate nohighlight">\(X^{(1)}, \ldots, X^{(t)}\)</span> - The past values of the exogenous regressors <span class="math notranslate nohighlight">\(Y^{(1)}, \ldots, Y^{(t)}\)</span> - The <em>future</em> values of the exogenous regressors <span class="math notranslate nohighlight">\(Y^{(t+1)}, \ldots, Y^{(t+h)}\)</span></p>
 <p>For example, one can consider the task of predicting the sales of a specific item at a store. Endogenous variables <span class="math notranslate nohighlight">\(X^{(i)} \in \mathbb{R}^4\)</span> may contain the number of units sold (the target univariate), the temperature outside, the consumer price index, and the current unemployemnt rate. Exogenous variables <span class="math notranslate nohighlight">\(Y^{(i)} \in \mathbb{R}^6\)</span> are variables that the store has control over or prior knowledge of. They may include whether a particular day is a holiday, and various information
@@ -1004,41 +912,31 @@ Default exog_aggregation_policy:   AggregationPolicy.Mean
 </pre></div></div>
 </div>
 <p>So in this case, we first apply mean-variance normalization to the exogenous data. Then, we impute missing values by filling them with zeros (<code class="docutils literal notranslate"><span class="pre">ZFill</span></code>), and we downsample the exogenous data by taking the <code class="docutils literal notranslate"><span class="pre">Mean</span></code> of any relevant windows.</p>
-</section>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="4_ForecastNewModel.html" class="btn btn-neutral float-right" title="Adding a New Forecasting Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="2_ForecastMultivariate.html" class="btn btn-neutral float-left" title="Multivariate Time Series Forecasting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_ForecastNewModel.html" class="btn btn-neutral float-right" title="Adding a New Forecasting Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, salesforce.com, inc..
-
-    </p>
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   
 
@@ -1143,18 +1041,11 @@ Default exog_aggregation_policy:   AggregationPolicy.Mean
     </div>
   </div>
 
- 
-
-  <script type="text/javascript">
+ <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

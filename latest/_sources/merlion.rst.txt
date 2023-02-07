@@ -54,9 +54,41 @@ The full API documentation is outlined below:
    :show-inheritance:
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
 
    merlion.models
+
+.. toctree::
+   :maxdepth: 3
+
+   merlion.models.anomaly <merlion.models.anomaly>
+
+.. toctree::
+   :maxdepth: 2
+
+   merlion.models.anomaly.change_point <merlion.models.anomaly.change_point>
+   merlion.models.anomaly.forecast_based <merlion.models.anomaly.forecast_based>
+
+.. toctree::
+   :maxdepth: 3
+
+   merlion.models.forecast <merlion.models.forecast>
+
+.. toctree::
+   :maxdepth: 2
+
+   merlion.models.ensemble <merlion.models.ensemble>
+
+
+.. toctree::
+   :maxdepth: 3
+
+   merlion.models.automl <merlion.models.automl>
+
+.. toctree::
+   :maxdepth: 2
+
+   merlion.models.utils <merlion.models.utils>
 
 .. toctree::
    :maxdepth: 3
@@ -64,7 +96,19 @@ The full API documentation is outlined below:
    merlion.dashboard
    merlion.spark
    merlion.transform
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.post_process
    merlion.evaluate
+
+.. toctree::
+   :maxdepth: 1
+
    merlion.plot
+
+.. toctree::
+   :maxdepth: 2
+
    merlion.utils
