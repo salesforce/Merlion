@@ -46,13 +46,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">merlion: Time Series Intelligence</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="merlion.models.html">merlion.models package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.utils.html">merlion.models.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
@@ -168,144 +161,53 @@ for some examples on how to use these classes, or the API docs linked above for 
 <span class="target" id="module-merlion"></span><div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.deep_base">deep_base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.html">merlion.models.anomaly</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a></li>
 <li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.change_point.html">anomaly.change_point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.utils.html">utils</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#base-classes">Base classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.base">anomaly.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultDetectorConfig"><code class="docutils literal notranslate"><span class="pre">DefaultDetectorConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultDetector"><code class="docutils literal notranslate"><span class="pre">DefaultDetector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultForecasterConfig"><code class="docutils literal notranslate"><span class="pre">DefaultForecasterConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.defaults.DefaultForecaster"><code class="docutils literal notranslate"><span class="pre">DefaultForecaster</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#univariate-models">Univariate models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dbl">anomaly.dbl</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.windstats">anomaly.windstats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.spectral_residual">anomaly.spectral_residual</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.stat_threshold">anomaly.stat_threshold</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.zms">anomaly.zms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.factory.ModelFactory"><code class="docutils literal notranslate"><span class="pre">ModelFactory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.factory.instantiate_or_copy_model"><code class="docutils literal notranslate"><span class="pre">instantiate_or_copy_model()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.html#multivariate-models">Multivariate models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.isolation_forest">anomaly.isolation_forest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.random_cut_forest">anomaly.random_cut_forest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.autoencoder">anomaly.autoencoder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.vae">anomaly.vae</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.dagmm">anomaly.dagmm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.lstm_ed">anomaly.lstm_ed</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.anomaly.html#module-merlion.models.anomaly.deep_point_anomaly_detector">anomaly.deep_point_anomaly_detector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.Config"><code class="docutils literal notranslate"><span class="pre">Config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig"><code class="docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase"><code class="docutils literal notranslate"><span class="pre">ModelBase</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.base.MultipleTimeseriesModelMixin"><code class="docutils literal notranslate"><span class="pre">MultipleTimeseriesModelMixin</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.deep_base">deep_base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.Optimizer"><code class="docutils literal notranslate"><span class="pre">Optimizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.LossFunction"><code class="docutils literal notranslate"><span class="pre">LossFunction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.DeepConfig"><code class="docutils literal notranslate"><span class="pre">DeepConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel"><code class="docutils literal notranslate"><span class="pre">TorchModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.deep_base.DeepModelBase"><code class="docutils literal notranslate"><span class="pre">DeepModelBase</span></code></a></li>
 </ul>
 </li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.change_point.html">merlion.models.anomaly.change_point</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.change_point.html#module-merlion.models.anomaly.change_point.bocpd">anomaly.change_point.bocpd</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">merlion.models.anomaly.forecast_based</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.base">anomaly.forecast_based.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.arima">anomaly.forecast_based.arima</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.sarima">anomaly.forecast_based.sarima</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.ets">anomaly.forecast_based.ets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.prophet">anomaly.forecast_based.prophet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html#module-merlion.models.anomaly.forecast_based.mses">anomaly.forecast_based.mses</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.forecast.html">merlion.models.forecast</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#base-classes">Base classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.base">forecast.base</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.deep_base">forecast.deep_base</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.sklearn_base">forecast.sklearn_base</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#univariate-models">Univariate models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.arima">forecast.arima</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.sarima">forecast.sarima</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.ets">forecast.ets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.prophet">forecast.prophet</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.smoother">forecast.smoother</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.forecast.html#multivariate-models">Multivariate models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.vector_ar">forecast.vector_ar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.trees">forecast.trees</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.deep_ar">forecast.deep_ar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.autoformer">forecast.autoformer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.etsformer">forecast.etsformer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.informer">forecast.informer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.forecast.html#module-merlion.models.forecast.transformer">forecast.transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModelConfig"><code class="docutils literal notranslate"><span class="pre">LayeredModelConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModel"><code class="docutils literal notranslate"><span class="pre">LayeredModel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredDetector"><code class="docutils literal notranslate"><span class="pre">LayeredDetector</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredForecaster"><code class="docutils literal notranslate"><span class="pre">LayeredForecaster</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredForecastingDetector"><code class="docutils literal notranslate"><span class="pre">LayeredForecastingDetector</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.ensemble.html">merlion.models.ensemble</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.base">ensemble.base</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.combine">ensemble.combine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.anomaly">ensemble.anomaly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.forecast">ensemble.forecast</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.automl.html">merlion.models.automl</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#base-classes">Base classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.base">automl.base</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#models">Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.autoets">automl.autoets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.autoprophet">automl.autoprophet</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.autosarima">automl.autosarima</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.automl.html#utilities">Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.seasonality">automl.seasonality</a></li>
-<li class="toctree-l3"><a class="reference internal" href="merlion.models.automl.html#module-merlion.models.automl.search">automl.search</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="merlion.models.utils.html">merlion.models.utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.utils.html#module-merlion.models.utils.time_features">utils.time_features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.utils.html#module-merlion.models.utils.rolling_window_dataset">utils.rolling_window_dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.utils.html#module-merlion.models.utils.early_stopping">utils.early_stopping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="merlion.models.utils.html#module-merlion.models.utils.autosarima_utils">utils.autosarima_utils</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="merlion.spark.html#setting-up-the-spark-on-k8s-operator">Setting up the spark-on-k8s-operator</a></li>
