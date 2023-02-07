@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -657,7 +656,7 @@ also support exogenous regressors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -669,17 +668,17 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterConfig.max_forecast_steps">
-<span class="sig-name descname"><span class="pre">max_forecast_steps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.max_forecast_steps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">max_forecast_steps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.max_forecast_steps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterConfig.target_seq_index">
-<span class="sig-name descname"><span class="pre">target_seq_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.target_seq_index" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">target_seq_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code><span class="pre">]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.target_seq_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterConfig.invert_transform">
-<span class="sig-name descname"><span class="pre">invert_transform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.invert_transform" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">invert_transform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterConfig.invert_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -693,9 +692,9 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <p class="admonition-title">Note</p>
 <p>If your model depends on an evenly spaced time series, make sure to</p>
 <ol class="arabic simple">
-<li><p>Call <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.train_pre_process" title="merlion.models.forecast.base.ForecasterBase.train_pre_process"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train_pre_process</span></code></a> in <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.train" title="merlion.models.forecast.base.ForecasterBase.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.train</span></code></a></p></li>
-<li><p>Call <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.resample_time_stamps" title="merlion.models.forecast.base.ForecasterBase.resample_time_stamps"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.resample_time_stamps</span></code></a> at the start of
-<a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.forecast" title="merlion.models.forecast.base.ForecasterBase.forecast"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.forecast</span></code></a> to get a set of resampled time stamps, and
+<li><p>Call <cite>ForecasterBase.train_pre_process</cite> in <cite>ForecasterBase.train</cite></p></li>
+<li><p>Call <cite>ForecasterBase.resample_time_stamps</cite> at the start of
+<cite>ForecasterBase.forecast</cite> to get a set of resampled time stamps, and
 call <code class="docutils literal notranslate"><span class="pre">time_series.align(reference=time_stamps)</span></code> to align the forecast
 with the original time stamps.</p></li>
 </ol>
@@ -721,11 +720,8 @@ with the original time stamps.</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterBase.target_seq_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_seq_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterBase.target_seq_index" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the index of the univariate (amongst all univariates in a
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the index of the univariate (amongst all univariates in a
 general multivariate time series) whose value we would like to forecast.</p>
 </dd>
 </dl>
@@ -745,22 +741,12 @@ general multivariate time series) whose value we would like to forecast.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterBase.require_univariate">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterBase.require_univariate" title="Permalink to this definition">¶</a></dt>
 <dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterBase.support_multivariate_output">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">support_multivariate_output</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterBase.support_multivariate_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicating whether the forecasting model can forecast multivariate output.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -792,11 +778,11 @@ general multivariate time series) whose value we would like to forecast.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of metric values to train the model.</p></li>
+<li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – a <cite>TimeSeries</cite> of metric values to train the model.</p></li>
 <li><p><strong>train_config</strong> – Additional training configs, if needed. Only required for some models.</p></li>
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables, sampled at the same time stamps as <code class="docutils literal notranslate"><span class="pre">train_data</span></code>.
 Exogenous variables are known a priori, and they are independent of the variable being forecasted.
-Only supported for models which inherit from <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -804,7 +790,7 @@ Only supported for models which inherit from <a class="reference internal" href=
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the model’s prediction on <code class="docutils literal notranslate"><span class="pre">train_data</span></code>, in the same format as
-if you called <a class="reference internal" href="#merlion.models.forecast.base.ForecasterBase.forecast" title="merlion.models.forecast.base.ForecasterBase.forecast"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">ForecasterBase.forecast</span></code></a> on the time stamps of <code class="docutils literal notranslate"><span class="pre">train_data</span></code></p>
+if you called <cite>ForecasterBase.forecast</cite> on the time stamps of <code class="docutils literal notranslate"><span class="pre">train_data</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -847,7 +833,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>return_iqr</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to return the inter-quartile range for the forecast.
 Only supported for models which return error bars.</p></li>
 <li><p><strong>return_prev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – whether to return the forecast for <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and its stderr or IQR if relevant),
@@ -917,7 +903,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
 values. Not supported for all  models.</p></li>
 <li><p><strong>plot_time_series_prev</strong> – whether to plot <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and  the model’s fit for it).
@@ -928,7 +914,7 @@ Only used if <code class="docutils literal notranslate"><span class="pre">time_s
 <dd class="field-even"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s forecast.</p>
+<dd class="field-odd"><p>a <cite>Figure</cite> of the model’s forecast.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -951,7 +937,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
 values. Not supported for all models.</p></li>
 <li><p><strong>plot_time_series_prev</strong> – whether to plot <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and the model’s fit for it). Only used if
@@ -984,7 +970,7 @@ the forecaster’s state. Otherwise, we assume that <code class="docutils litera
 <li><p><strong>exog_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – A time series of exogenous variables. Exogenous variables are known a priori, and they are
 independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
 if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
-Optional. Only supported for models which inherit from <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+Optional. Only supported for models which inherit from <cite>ForecasterExogBase</cite>.</p></li>
 <li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the
 inter-quartile range) for forecast values. Not supported for all
 models.</p></li>
@@ -1010,7 +996,7 @@ the model’s fit for it). Only used if <code class="docutils literal notranslat
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -1022,7 +1008,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.base.ForecasterExogConfig.exog_transform">
-<span class="sig-name descname"><span class="pre">exog_transform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterExogConfig.exog_transform" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exog_transform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.forecast.base.ForecasterExogConfig.exog_transform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1124,7 +1110,7 @@ d:daily, b:business days, w:weekly, m:monthly]</p></li>
 <li><p><strong>early_stop_patience</strong> – Number of epochs with no improvement after which training will be stopped for
 early stopping function. If <code class="docutils literal notranslate"><span class="pre">early_stop_patience</span> <span class="pre">=</span> <span class="pre">None</span></code>, the training process will not stop early.</p></li>
 <li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -1150,22 +1136,12 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dt class="sig sig-object py" id="merlion.models.forecast.deep_base.DeepForecaster.support_multivariate_output">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">support_multivariate_output</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.deep_base.DeepForecaster.support_multivariate_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deep models support multivariate output by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.deep_base.DeepForecaster.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.deep_base.DeepForecaster.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1178,7 +1154,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sklearn_base.</span></span><span class="sig-name descname"><span class="pre">SKLearnForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecasterConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogConfig" title="merlion.models.forecast.base.ForecasterExogConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogConfig</span></code></a></p>
-<p>Configuration class for a <a class="reference internal" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster" title="merlion.models.forecast.sklearn_base.SKLearnForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SKLearnForecaster</span></code></a>.</p>
+<p>Configuration class for a <cite>SKLearnForecaster</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1241,43 +1217,23 @@ univariate (if <code class="docutils literal notranslate"><span class="pre">pred
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maxlags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.maxlags" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prediction_stride</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.prediction_stride" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.sklearn_base.SKLearnForecaster.require_univariate" title="Permalink to this definition">¶</a></dt>
 <dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1294,7 +1250,7 @@ Moving Average).</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.arima.ArimaConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.arima.</span></span><span class="sig-name descname"><span class="pre">ArimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">AggregationPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">MissingValuePolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.arima.ArimaConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.sarima.SarimaConfig" title="merlion.models.forecast.sarima.SarimaConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SarimaConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.forecast.arima.Arima" title="merlion.models.forecast.arima.Arima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Arima</span></code></a>. Just a <a class="reference internal" href="#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> model with seasonal order <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
+<p>Configuration class for <cite>Arima</cite>. Just a <cite>Sarima</cite> model with seasonal order <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1309,7 +1265,7 @@ all lags up to those orders are included).</p></li>
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -1330,11 +1286,8 @@ when post-processing anomaly scores</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.arima.ArimaConfig.seasonal_order">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seasonal_order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.forecast.arima.ArimaConfig.seasonal_order" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>(0, 0, 0, 0) because ARIMA has no seasonal order.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(0, 0, 0, 0) because ARIMA has no seasonal order.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1362,7 +1315,7 @@ when post-processing anomaly scores</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.SarimaConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.sarima.</span></span><span class="sig-name descname"><span class="pre">SarimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(4,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonal_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0,</span> <span class="pre">1,</span> <span class="pre">24)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sarima.SarimaConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogConfig" title="merlion.models.forecast.base.ForecasterExogConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogConfig</span></code></a></p>
-<p>Config class for <a class="reference internal" href="#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> (Seasonal AutoRegressive Integrated Moving Average).</p>
+<p>Config class for <cite>Sarima</cite> (Seasonal AutoRegressive Integrated Moving Average).</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1379,7 +1332,7 @@ for 24 hours on hourly granularity). P, D, Q are as for ARIMA.</p></li>
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
 series) whose value we would like to forecast.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
@@ -1414,22 +1367,14 @@ AutoRegressive Integrated Moving Average) for forecasting.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima.order">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima.order" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the order (p, d, q) of the model, where p is the AR order,
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the order (p, d, q) of the model, where p is the AR order,
 d is the integration order, and q is the MA order.</p>
 </dd>
 </dl>
@@ -1439,11 +1384,8 @@ d is the integration order, and q is the MA order.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima.seasonal_order">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seasonal_order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima.seasonal_order" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the seasonal order (P, D, Q, S) for the seasonal ARIMA
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the seasonal order (P, D, Q, S) for the seasonal ARIMA
 process, where p is the AR order, D is the integration order,
 Q is the MA order, and S is the length of the seasonality cycle.</p>
 </dd>
@@ -1454,11 +1396,11 @@ Q is the MA order, and S is the length of the seasonality cycle.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.sarima.Sarima.set_seasonality">
 <span class="sig-name descname"><span class="pre">set_seasonality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.sarima.Sarima.set_seasonality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement this method to do any model-specific adjustments on the seasonality that was provided by
-<a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p>
+<cite>SeasonalityLayer</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – Seasonality processed by <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p></li>
+<li><p><strong>theta</strong> – Seasonality processed by <cite>SeasonalityLayer</cite>.</p></li>
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>) – Training data (or numpy array representing the target univariate)
 for any model-specific adjustments you might want to make.</p></li>
 </ul>
@@ -1526,11 +1468,6 @@ when post-processing anomaly scores</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.ets.ETS.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1562,11 +1499,11 @@ when post-processing anomaly scores</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.ets.ETS.set_seasonality">
 <span class="sig-name descname"><span class="pre">set_seasonality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.ets.ETS.set_seasonality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement this method to do any model-specific adjustments on the seasonality that was provided by
-<a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p>
+<cite>SeasonalityLayer</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – Seasonality processed by <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p></li>
+<li><p><strong>theta</strong> – Seasonality processed by <cite>SeasonalityLayer</cite>.</p></li>
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>) – Training data (or numpy array representing the target univariate)
 for any model-specific adjustments you might want to make.</p></li>
 </ul>
@@ -1584,7 +1521,7 @@ for any model-specific adjustments you might want to make.</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.ProphetConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.prophet.</span></span><span class="sig-name descname"><span class="pre">ProphetConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yearly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seasonality_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'additive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holidays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.prophet.ProphetConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogConfig" title="merlion.models.forecast.base.ForecasterExogConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogConfig</span></code></a></p>
-<p>Configuration class for Facebook’s <a class="reference internal" href="#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a> model, as described by
+<p>Configuration class for Facebook’s <cite>Prophet</cite> model, as described by
 <a class="reference external" href="https://peerj.com/preprints/3190/">Taylor &amp; Letham, 2017</a>.</p>
 <p>Base class of the object used to configure an anomaly detection model.</p>
 <dl class="field-list simple">
@@ -1640,7 +1577,7 @@ when post-processing anomaly scores</p></li>
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.prophet.</span></span><span class="sig-name descname"><span class="pre">Prophet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.prophet.Prophet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>, <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityModel" title="merlion.models.automl.seasonality.SeasonalityModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityModel</span></code></a></p>
-<p>Facebook’s model for time series forecasting. See docs for <a class="reference internal" href="#merlion.models.forecast.prophet.ProphetConfig" title="merlion.models.forecast.prophet.ProphetConfig"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ProphetConfig</span></code></a>
+<p>Facebook’s model for time series forecasting. See docs for <cite>ProphetConfig</cite>
 and <a class="reference external" href="https://peerj.com/preprints/3190/">Taylor &amp; Letham, 2017</a> for more details.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet.config_class">
@@ -1652,11 +1589,6 @@ and <a class="reference external" href="https://peerj.com/preprints/3190/">Taylo
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.prophet.Prophet.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1698,11 +1630,11 @@ and <a class="reference external" href="https://peerj.com/preprints/3190/">Taylo
 <dt class="sig sig-object py" id="merlion.models.forecast.prophet.Prophet.set_seasonality">
 <span class="sig-name descname"><span class="pre">set_seasonality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.prophet.Prophet.set_seasonality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement this method to do any model-specific adjustments on the seasonality that was provided by
-<a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p>
+<cite>SeasonalityLayer</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – Seasonality processed by <a class="reference internal" href="merlion.models.automl.html#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p></li>
+<li><p><strong>theta</strong> – Seasonality processed by <cite>SeasonalityLayer</cite>.</p></li>
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>) – Training data (or numpy array representing the target univariate)
 for any model-specific adjustments you might want to make.</p></li>
 </ul>
@@ -1735,7 +1667,7 @@ and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></c
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>max_backstep</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Max backstep to use in forecasting. If we train with x(0),…,x(t),
 Then, the b-th model MSES uses will forecast x(t+h) by anchoring at x(t-b) and 
 predicting xhat(t+h) = x(t-b) + delta_hat(b+h).</p></li>
@@ -1847,11 +1779,6 @@ and <code class="docutils literal notranslate"><span class="pre">l_s,t</span></c
 <dt class="sig sig-object py" id="merlion.models.forecast.smoother.MSES.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.smoother.MSES.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -2124,7 +2051,7 @@ that associated with that scale.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorARConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.vector_ar.</span></span><span class="sig-name descname"><span class="pre">VectorARConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxlags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorARConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.forecast.base.ForecasterExogConfig" title="merlion.models.forecast.base.ForecasterExogConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogConfig</span></code></a></p>
-<p>Config object for <a class="reference internal" href="#merlion.models.forecast.vector_ar.VectorAR" title="merlion.models.forecast.vector_ar.VectorAR"><code class="xref any py py-class docutils literal notranslate"><span class="pre">VectorAR</span></code></a> forecaster.</p>
+<p>Config object for <cite>VectorAR</cite> forecaster.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2137,7 +2064,7 @@ would like to forecast.</p></li>
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
 <li><p><strong>exog_missing_value_policy</strong> – The policy to use for imputing missing values in exogenous data,
 to ensure it is sampled at the same timestamps as the endogenous data.</p></li>
-<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <a class="reference internal" href="#merlion.models.forecast.smoother.MSES" title="merlion.models.forecast.smoother.MSES"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MSES</span></code></a>.</p></li>
+<li><p><strong>max_forecast_steps</strong> – Max # of steps we would like to forecast for.  Required for some models like <cite>MSES</cite>.</p></li>
 <li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
 By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
 we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
@@ -2162,22 +2089,12 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorAR.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorAR.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.forecast.vector_ar.VectorAR.maxlags">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maxlags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.forecast.vector_ar.VectorAR.maxlags" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2189,7 +2106,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.RandomForestForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">RandomForestForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.RandomForestForecasterConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TreeEnsembleForecasterConfig</span></code></p>
-<p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.RandomForestForecaster" title="merlion.models.forecast.trees.RandomForestForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">RandomForestForecaster</span></code></a>.</p>
+<p>Config class for <cite>RandomForestForecaster</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2250,7 +2167,7 @@ the predictive accuracy and control over-fitting.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.ExtraTreesForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">ExtraTreesForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_samples_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.ExtraTreesForecasterConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TreeEnsembleForecasterConfig</span></code></p>
-<p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.ExtraTreesForecaster" title="merlion.models.forecast.trees.ExtraTreesForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ExtraTreesForecaster</span></code></a>.</p>
+<p>Config class for <cite>ExtraTreesForecaster</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2312,7 +2229,7 @@ control over-fitting.</p>
 <dt class="sig sig-object py" id="merlion.models.forecast.trees.LGBMForecasterConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.trees.</span></span><span class="sig-name descname"><span class="pre">LGBMForecasterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_estimators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_aggregation_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_missing_value_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ZFill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.trees.LGBMForecasterConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TreeEnsembleForecasterConfig</span></code></p>
-<p>Config class for <a class="reference internal" href="#merlion.models.forecast.trees.LGBMForecaster" title="merlion.models.forecast.trees.LGBMForecaster"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LGBMForecaster</span></code></a>.</p>
+<p>Config class for <cite>LGBMForecaster</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

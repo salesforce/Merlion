@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -926,11 +925,8 @@ same time stamps. The i’th item of the iterator is the tuple
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.dim">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.dim" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The dimension of the time series (the number of variables).</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dimension of the time series (the number of variables).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -953,11 +949,8 @@ of new univariate names.</p>
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.is_aligned">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_aligned</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.is_aligned" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Whether all individual variable time series are sampled at the same time stamps, i.e. they are aligned.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether all individual variable time series are sampled at the same time stamps, i.e. they are aligned.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1049,11 +1042,8 @@ of new univariate names.</p>
 <dt class="sig sig-object py" id="merlion.utils.time_series.TimeSeries.shape">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#merlion.utils.time_series.TimeSeries.shape" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the shape of this time series, i.e. <code class="docutils literal notranslate"><span class="pre">(self.dim,</span> <span class="pre">len(self))</span></code></p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the shape of this time series, i.e. <code class="docutils literal notranslate"><span class="pre">(self.dim,</span> <span class="pre">len(self))</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1390,7 +1380,7 @@ number of seconds it represents, truncated at the millisecond.</p>
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.resample.</span></span><span class="sig-name descname"><span class="pre">reindex_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_value_policy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.resample.reindex_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reindexes a Datetime-indexed dataframe <code class="docutils literal notranslate"><span class="pre">df</span></code> to have the same time stamps
 as a reference sequence of timestamps. Imputes missing values with the given
-<a class="reference internal" href="#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><code class="xref any py py-class docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a>.</p>
+<cite>MissingValuePolicy</cite>.</p>
 </dd></dl>
 
 </section>
@@ -1400,7 +1390,7 @@ as a reference sequence of timestamps. Imputes missing values with the given
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.data_io.df_to_time_series">
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.data_io.</span></span><span class="sig-name descname"><span class="pre">df_to_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.data_io.df_to_time_series" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a general <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> to a <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> object.</p>
+<dd><p>Converts a general <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> to a <cite>TimeSeries</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1426,7 +1416,7 @@ is used if it is a <code class="docutils literal notranslate"><span class="pre">
 <dl class="py function">
 <dt class="sig sig-object py" id="merlion.utils.data_io.csv_to_time_series">
 <span class="sig-prename descclassname"><span class="pre">merlion.utils.data_io.</span></span><span class="sig-name descname"><span class="pre">csv_to_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><span class="pre">TimeSeries</span></a></span></span><a class="headerlink" href="#merlion.utils.data_io.csv_to_time_series" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads a CSV file and converts it to a <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> object.</p>
+<dd><p>Reads a CSV file and converts it to a <cite>TimeSeries</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1597,7 +1587,7 @@ that f uses to generate its series.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.ts_generator.GeneratorConcatenator.y">
 <span class="sig-name descname"><span class="pre">y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.ts_generator.GeneratorConcatenator.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>A Generator Sequence has no method <a class="reference internal" href="#merlion.utils.ts_generator.GeneratorConcatenator.y" title="merlion.utils.ts_generator.GeneratorConcatenator.y"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">y</span></code></a>.</p>
+<dd><p>A Generator Sequence has no method <cite>y</cite>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1633,7 +1623,7 @@ that f uses to generate its series.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.utils.conj_priors.</span></span><span class="sig-name descname"><span class="pre">ConjPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Abstract base class for a Bayesian conjugate prior.
-Can be used with either <a class="reference internal" href="#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code> arrays directly.</p>
+Can be used with either <cite>TimeSeries</cite> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code> arrays directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sample</strong> – a sample used to initialize the prior.</p>
@@ -1647,12 +1637,7 @@ Can be used with either <a class="reference internal" href="#merlion.utils.time_
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.n_params">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.ConjPrior.n_params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.ConjPrior.from_dict">
@@ -1788,12 +1773,7 @@ X &amp;\sim \mathrm{Bernoulli}(\theta) \\
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.n_params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BetaBernoulli.n_params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BetaBernoulli.posterior">
@@ -1863,12 +1843,7 @@ n_0 &amp;= n_0 + n
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.n_params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.NormInvGamma.n_params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.NormInvGamma.update">
@@ -2033,12 +2008,7 @@ w_n &amp;= (\Lambda_0 + T^T T)^{-1} (\Lambda_0 w_0 + T^T T w_{OLS}) \\
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.n_params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BayesianLinReg.n_params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianLinReg.update">
@@ -2125,12 +2095,7 @@ V_n &amp;= V_0 + (X - TW_n)^T (X - TW_n) + (W_n - W_0)^T \Lambda_0 (W_n - W_0) \
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.n_params">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.utils.conj_priors.BayesianMVLinReg.n_params" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.utils.conj_priors.BayesianMVLinReg.process_time_series">

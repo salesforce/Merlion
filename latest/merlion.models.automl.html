@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -383,7 +382,7 @@
 <dt class="sig sig-object py" id="merlion.models.automl.base.AutoMLMixIn">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.base.</span></span><span class="sig-name descname"><span class="pre">AutoMLMixIn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.base.AutoMLMixIn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModel" title="merlion.models.layers.LayeredModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">LayeredModel</span></code></a></p>
-<p>Abstract base class which converts <a class="reference internal" href="merlion.models.html#merlion.models.layers.LayeredModel" title="merlion.models.layers.LayeredModel"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LayeredModel</span></code></a> into an AutoML model.</p>
+<p>Abstract base class which converts <cite>LayeredModel</cite> into an AutoML model.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.automl.base.AutoMLMixIn.generate_theta">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.base.AutoMLMixIn.generate_theta" title="Permalink to this definition">¶</a></dt>
@@ -391,13 +390,11 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Pre-processed training data to use for generation of hyperparameters <span class="math notranslate nohighlight">\(\theta\)</span></p>
 </dd>
-</dl>
-<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
 </dd>
 </dl>
+<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -411,13 +408,11 @@
 <li><p><strong>train_config</strong> – Training configuration</p></li>
 </ul>
 </dd>
-</dl>
-<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
 </dd>
 </dl>
+<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -540,13 +535,11 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <li><p><strong>train_config</strong> – Training configuration</p></li>
 </ul>
 </dd>
-</dl>
-<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]</p>
 </dd>
 </dl>
+<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
 </dd></dl>
 
 </dd></dl>
@@ -562,7 +555,7 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <dt class="sig sig-object py" id="merlion.models.automl.autoets.AutoETSConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autoets.</span></span><span class="sig-name descname"><span class="pre">AutoETSConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_seasonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_damped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PeriodicityStrategy.ACF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">information_criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">InformationCriterion.AIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additive_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_multiplicative_trend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autoets.AutoETSConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityConfig" title="merlion.models.automl.seasonality.SeasonalityConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityConfig</span></code></a>, <a class="reference internal" href="#merlion.models.automl.base.ICConfig" title="merlion.models.automl.base.ICConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.automl.autoets.AutoETS" title="merlion.models.automl.autoets.AutoETS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">AutoETS</span></code></a>. Act as a wrapper around a <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS" title="merlion.models.forecast.ets.ETS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ETS</span></code></a> model, which automatically detects
+<p>Configuration class for <cite>AutoETS</cite>. Act as a wrapper around a <cite>ETS</cite> model, which automatically detects
 the hyperparameters <code class="docutils literal notranslate"><span class="pre">seasonal_periods</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">trend</span></code>, <code class="docutils literal notranslate"><span class="pre">damped_trend</span></code> and <code class="docutils literal notranslate"><span class="pre">seasonal</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -595,7 +588,7 @@ not override arguments in either the <code class="docutils literal notranslate">
 <dt class="sig sig-object py" id="merlion.models.automl.autoets.AutoETS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autoets.</span></span><span class="sig-name descname"><span class="pre">AutoETS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autoets.AutoETS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.base.ICAutoMLForecaster" title="merlion.models.automl.base.ICAutoMLForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICAutoMLForecaster</span></code></a>, <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a></p>
-<p>Wrapper around a <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.ets.ETS" title="merlion.models.forecast.ets.ETS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ETS</span></code></a> model, which automatically detects
+<p>Wrapper around a <cite>ETS</cite> model, which automatically detects
 the hyperparameters <code class="docutils literal notranslate"><span class="pre">seasonal_periods</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">trend</span></code>, <code class="docutils literal notranslate"><span class="pre">damped_trend</span></code> and <code class="docutils literal notranslate"><span class="pre">seasonal</span></code>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.automl.autoets.AutoETS.config_class">
@@ -661,7 +654,7 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <dt class="sig sig-object py" id="merlion.models.automl.autoprophet.AutoProphetConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autoprophet.</span></span><span class="sig-name descname"><span class="pre">AutoProphetConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PeriodicityStrategy.All</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">information_criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">InformationCriterion.AIC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autoprophet.AutoProphetConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityConfig" title="merlion.models.automl.seasonality.SeasonalityConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityConfig</span></code></a>, <a class="reference internal" href="#merlion.models.automl.base.ICConfig" title="merlion.models.automl.base.ICConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICConfig</span></code></a></p>
-<p>Config class for <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a> with automatic seasonality detection &amp; other hyperparameter selection.</p>
+<p>Config class for <cite>Prophet</cite> with automatic seasonality detection &amp; other hyperparameter selection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -695,7 +688,7 @@ not override arguments in either the <code class="docutils literal notranslate">
 <dt class="sig sig-object py" id="merlion.models.automl.autoprophet.AutoProphet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autoprophet.</span></span><span class="sig-name descname"><span class="pre">AutoProphet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autoprophet.AutoProphet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.base.ICAutoMLForecaster" title="merlion.models.automl.base.ICAutoMLForecaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">ICAutoMLForecaster</span></code></a>, <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a></p>
-<p><a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.prophet.Prophet" title="merlion.models.forecast.prophet.Prophet"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Prophet</span></code></a> with automatic seasonality detection. Automatically detects and adds
+<p><cite>Prophet</cite> with automatic seasonality detection. Automatically detects and adds
 additional seasonalities that the existing Prophet may not detect (e.g. hourly).
 Also automatically chooses other hyperparameters.</p>
 <dl class="py attribute">
@@ -717,13 +710,11 @@ Also automatically chooses other hyperparameters.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Pre-processed training data to use for generation of hyperparameters <span class="math notranslate nohighlight">\(\theta\)</span></p>
 </dd>
-</dl>
-<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
 </dd>
 </dl>
+<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -773,7 +764,7 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <dt class="sig sig-object py" id="merlion.models.automl.autosarima.AutoSarimaConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.autosarima.</span></span><span class="sig-name descname"><span class="pre">AutoSarimaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_seasonality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodicity_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PeriodicityStrategy.ACF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_pqPQ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dur</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approximation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.autosarima.AutoSarimaConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityConfig" title="merlion.models.automl.seasonality.SeasonalityConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeasonalityConfig</span></code></a></p>
-<p>Configuration class for <a class="reference internal" href="#merlion.models.automl.autosarima.AutoSarima" title="merlion.models.automl.autosarima.AutoSarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">AutoSarima</span></code></a>. Acts as a wrapper around a <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a> model, which automatically detects
+<p>Configuration class for <cite>AutoSarima</cite>. Acts as a wrapper around a <cite>Sarima</cite> model, which automatically detects
 the seasonality, (seasonal) differencing order, and (seasonal) AR/MA orders. If a non-numeric value is specified
 for any of the relevant parameters in the order or seasonal order, we assume that the user wishes to detect that
 parameter automatically.</p>
@@ -862,13 +853,11 @@ theta is a list of parameter combination [order, seasonal_order, trend]</p>
 <li><p><strong>train_config</strong> – Training configuration</p></li>
 </ul>
 </dd>
-</dl>
-<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.sarima.Sarima" title="merlion.models.forecast.sarima.Sarima"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sarima</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
 </dd>
 </dl>
+<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -939,11 +928,11 @@ behavior for seasonality processing.</p>
 <dt class="sig sig-object py" id="merlion.models.automl.seasonality.SeasonalityModel.set_seasonality">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_seasonality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityModel.set_seasonality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement this method to do any model-specific adjustments on the seasonality that was provided by
-<a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p>
+<cite>SeasonalityLayer</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – Seasonality processed by <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityLayer" title="merlion.models.automl.seasonality.SeasonalityLayer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityLayer</span></code></a>.</p></li>
+<li><p><strong>theta</strong> – Seasonality processed by <cite>SeasonalityLayer</cite>.</p></li>
 <li><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.UnivariateTimeSeries" title="merlion.utils.time_series.UnivariateTimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnivariateTimeSeries</span></code></a>) – Training data (or numpy array representing the target univariate)
 for any model-specific adjustments you might want to make.</p></li>
 </ul>
@@ -988,11 +977,8 @@ not override arguments in either the <code class="docutils literal notranslate">
 <dt class="sig sig-object py" id="merlion.models.automl.seasonality.SeasonalityConfig.periodicity_strategy">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">periodicity_strategy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.automl.seasonality.PeriodicityStrategy" title="merlion.models.automl.seasonality.PeriodicityStrategy"><span class="pre">PeriodicityStrategy</span></a></em><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityConfig.periodicity_strategy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.automl.seasonality.PeriodicityStrategy" title="merlion.models.automl.seasonality.PeriodicityStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">PeriodicityStrategy</span></code></a></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Strategy to choose the seasonality if multiple candidates are detected.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Strategy to choose the seasonality if multiple candidates are detected.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1004,9 +990,9 @@ not override arguments in either the <code class="docutils literal notranslate">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.automl.seasonality.</span></span><span class="sig-name descname"><span class="pre">SeasonalityLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityLayer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#merlion.models.automl.base.AutoMLMixIn" title="merlion.models.automl.base.AutoMLMixIn"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoMLMixIn</span></code></a></p>
 <p>Seasonality Layer that uses automatically determines the seasonality of your data. Can be used directly on
-any model that implements <a class="reference internal" href="#merlion.models.automl.seasonality.SeasonalityModel" title="merlion.models.automl.seasonality.SeasonalityModel"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SeasonalityModel</span></code></a> class. The algorithmic idea is from the
+any model that implements <cite>SeasonalityModel</cite> class. The algorithmic idea is from the
 <a class="reference external" href="https://github.com/Mcompetitions/M4-methods/blob/master/4Theta%20method.R">theta method</a>. We find a set of
-multiple candidate seasonalites, and we return the best one(s) based on the <a class="reference internal" href="#merlion.models.automl.seasonality.PeriodicityStrategy" title="merlion.models.automl.seasonality.PeriodicityStrategy"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PeriodicityStrategy</span></code></a>.</p>
+multiple candidate seasonalites, and we return the best one(s) based on the <cite>PeriodicityStrategy</cite>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="merlion.models.automl.seasonality.SeasonalityLayer.config_class">
 <span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityLayer.config_class" title="Permalink to this definition">¶</a></dt>
@@ -1017,11 +1003,6 @@ multiple candidate seasonalites, and we return the best one(s) based on the <a c
 <dt class="sig sig-object py" id="merlion.models.automl.seasonality.SeasonalityLayer.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.automl.seasonality.SeasonalityLayer.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1116,13 +1097,11 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <li><p><strong>train_config</strong> – Training configuration</p></li>
 </ul>
 </dd>
-</dl>
-<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.models.html#merlion.models.base.ModelBase" title="merlion.models.base.ModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBase</span></code></a>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]]</p>
 </dd>
 </dl>
+<p>Return the optimal hyperparameter, as well as optionally a model and result of the training procedure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1132,13 +1111,11 @@ this behavior is custom to every model. Oftentimes in internal implementations, 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Pre-processed training data to use for generation of hyperparameters <span class="math notranslate nohighlight">\(\theta\)</span></p>
 </dd>
-</dl>
-<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></p>
 </dd>
 </dl>
+<p>Returns an iterator of hyperparameter candidates for consideration with th underlying model.</p>
 </dd></dl>
 
 </dd></dl>

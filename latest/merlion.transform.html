@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -458,7 +457,7 @@ the same as the dict expected by the class method <code class="docutils literal 
 <h2>Base primitives<a class="headerlink" href="#base-primitives" title="Permalink to this heading">¶</a></h2>
 <section id="module-merlion.transform.factory">
 <span id="transform-factory"></span><h3>transform.factory<a class="headerlink" href="#module-merlion.transform.factory" title="Permalink to this heading">¶</a></h3>
-<p>Contains the <a class="reference internal" href="#merlion.transform.factory.TransformFactory" title="merlion.transform.factory.TransformFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformFactory</span></code></a> for instantiating transforms.</p>
+<p>Contains the <cite>TransformFactory</cite> for instantiating transforms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.factory.TransformFactory">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.factory.</span></span><span class="sig-name descname"><span class="pre">TransformFactory</span></span><a class="headerlink" href="#merlion.transform.factory.TransformFactory" title="Permalink to this definition">¶</a></dt>
@@ -488,7 +487,7 @@ the same as the dict expected by the class method <code class="docutils literal 
 </section>
 <section id="module-merlion.transform.base">
 <span id="transform-base"></span><h3>transform.base<a class="headerlink" href="#module-merlion.transform.base" title="Permalink to this heading">¶</a></h3>
-<p>Transform base classes and the <a class="reference internal" href="#merlion.transform.base.Identity" title="merlion.transform.base.Identity"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Identity</span></code></a> transform.</p>
+<p>Transform base classes and the <cite>Identity</cite> transform.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.base.</span></span><span class="sig-name descname"><span class="pre">TransformBase</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase" title="Permalink to this definition">¶</a></dt>
@@ -500,17 +499,17 @@ the actual transform).</p>
 <p>Subclasses may also support a pseudo inverse transform (possibly using the
 implementation-specific <code class="docutils literal notranslate"><span class="pre">self.inversion_state</span></code>, which should be set
 in <code class="docutils literal notranslate"><span class="pre">__call__</span></code>). If an inversion state is not required, override the
-property <a class="reference internal" href="#merlion.transform.base.TransformBase.requires_inversion_state" title="merlion.transform.base.TransformBase.requires_inversion_state"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">requires_inversion_state</span></code></a> to return <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+property <cite>requires_inversion_state</cite> to return <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <p>Due to possible information loss in the forward pass, the inverse transform
-may be not be perfect/proper, and calling <a class="reference internal" href="#merlion.transform.base.TransformBase.invert" title="merlion.transform.base.TransformBase.invert"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">TransformBase.invert</span></code></a> will result
+may be not be perfect/proper, and calling <cite>TransformBase.invert</cite> will result
 in a warning. By default, the inverse transform (implemented in
-<a class="reference internal" href="#merlion.transform.base.TransformBase._invert" title="merlion.transform.base.TransformBase._invert"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">TransformBase._invert</span></code></a>) is just the identity.</p>
+<cite>TransformBase._invert</cite>) is just the identity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>inversion_state</strong> – Implementation-specific intermediate state that is
 used to compute the inverse transform for a particular time series. Only
-used if <a class="reference internal" href="#merlion.transform.base.TransformBase.requires_inversion_state" title="merlion.transform.base.TransformBase.requires_inversion_state"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">TransformBase.requires_inversion_state</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. The
-inversion state is destroyed upon calling <a class="reference internal" href="#merlion.transform.base.TransformBase.invert" title="merlion.transform.base.TransformBase.invert"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">TransformBase.invert</span></code></a>,
+used if <cite>TransformBase.requires_inversion_state</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. The
+inversion state is destroyed upon calling <cite>TransformBase.invert</cite>,
 unless the option the option <code class="docutils literal notranslate"><span class="pre">retain_inversion_state=True</span></code> is
 specified. This is to prevent potential user error.</p>
 </dd>
@@ -536,7 +535,7 @@ specified. This is to prevent potential user error.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.TransformBase.proper_inversion">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.TransformBase.proper_inversion" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformBase</span></code></a> objects do not support a proper inversion.</p>
+<dd><p><cite>TransformBase</cite> objects do not support a proper inversion.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -602,14 +601,14 @@ error of accidentally using a stale state.</p></li>
 <p>Abstract class for a callable data pre-processing transform with a proper
 inverse.</p>
 <p>In addition to overriding the <code class="docutils literal notranslate"><span class="pre">train</span></code> and <code class="docutils literal notranslate"><span class="pre">__call__</span></code> methods, subclasses
-<em>must</em> also override the <a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase._invert" title="merlion.transform.base.InvertibleTransformBase._invert"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">InvertibleTransformBase._invert</span></code></a> method to
+<em>must</em> also override the <cite>InvertibleTransformBase._invert</cite> method to
 implement the actual inverse transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>inversion_state</strong> – Implementation-specific intermediate state that is
 used to compute the inverse transform for a particular time series. Only
-used if <a class="reference internal" href="#merlion.transform.base.TransformBase.requires_inversion_state" title="merlion.transform.base.TransformBase.requires_inversion_state"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">TransformBase.requires_inversion_state</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. The
-inversion state is destroyed upon calling <a class="reference internal" href="#merlion.transform.base.TransformBase.invert" title="merlion.transform.base.TransformBase.invert"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">TransformBase.invert</span></code></a>,
+used if <cite>TransformBase.requires_inversion_state</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. The
+inversion state is destroyed upon calling <cite>TransformBase.invert</cite>,
 unless the option the option <code class="docutils literal notranslate"><span class="pre">retain_inversion_state=True</span></code> is
 specified. This is to prevent potential user error.</p>
 </dd>
@@ -635,7 +634,7 @@ specified. This is to prevent potential user error.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.base.InvertibleTransformBase.proper_inversion">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proper_inversion</span></span><a class="headerlink" href="#merlion.transform.base.InvertibleTransformBase.proper_inversion" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#merlion.transform.base.InvertibleTransformBase" title="merlion.transform.base.InvertibleTransformBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">InvertibleTransformBase</span></code></a> always supports a proper inversion.</p>
+<dd><p><cite>InvertibleTransformBase</cite> always supports a proper inversion.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -674,7 +673,7 @@ specified. This is to prevent potential user error.</p>
 </section>
 <section id="module-merlion.transform.sequence">
 <span id="transform-sequence"></span><h3>transform.sequence<a class="headerlink" href="#module-merlion.transform.sequence" title="Permalink to this heading">¶</a></h3>
-<p>Classes to compose (<a class="reference internal" href="#merlion.transform.sequence.TransformSequence" title="merlion.transform.sequence.TransformSequence"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformSequence</span></code></a>) or stack (<a class="reference internal" href="#merlion.transform.sequence.TransformStack" title="merlion.transform.sequence.TransformStack"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TransformStack</span></code></a>) multiple transforms.</p>
+<p>Classes to compose (<cite>TransformSequence</cite>) or stack (<cite>TransformStack</cite>) multiple transforms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.transform.sequence.TransformSequence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.transform.sequence.</span></span><span class="sig-name descname"><span class="pre">TransformSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transforms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.sequence.TransformSequence" title="Permalink to this definition">¶</a></dt>
@@ -851,22 +850,12 @@ invert the transform. Specific to each transform. <code class="docutils literal 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.aggregation_policy">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aggregation_policy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><span class="pre">AggregationPolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.aggregation_policy" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.AggregationPolicy" title="merlion.utils.resample.AggregationPolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregationPolicy</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.missing_value_policy">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">missing_value_policy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><span class="pre">MissingValuePolicy</span></a></em><a class="headerlink" href="#merlion.transform.resample.TemporalResample.missing_value_policy" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.resample.MissingValuePolicy" title="merlion.utils.resample.MissingValuePolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">MissingValuePolicy</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.resample.TemporalResample.train">
@@ -1232,12 +1221,7 @@ a particular time series must stay within.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Anomalize.is_trained">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_trained</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.transform.anomalize.Anomalize.is_trained" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Anomalize.random_is_anom">
@@ -1303,7 +1287,7 @@ standard deviation.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.Shock.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.Shock.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="#merlion.transform.anomalize.Shock" title="merlion.transform.anomalize.Shock"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Shock</span></code></a> transform doesn’t require training.</p>
+<dd><p>The <cite>Shock</cite> transform doesn’t require training.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1373,7 +1357,7 @@ a particular time series must stay within.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.transform.anomalize.TrendChange.train">
 <span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.transform.anomalize.TrendChange.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="#merlion.transform.anomalize.TrendChange" title="merlion.transform.anomalize.TrendChange"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TrendChange</span></code></a> transform doesn’t require training.</p>
+<dd><p>The <cite>TrendChange</cite> transform doesn’t require training.</p>
 </dd></dl>
 
 </dd></dl>

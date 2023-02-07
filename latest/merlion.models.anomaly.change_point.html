@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -367,12 +366,7 @@ when post-processing anomaly scores</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChangeKind</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -403,22 +397,12 @@ piecewise model on the relevant data.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate" title="Permalink to this definition">¶</a></dt>
 <dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -445,11 +429,8 @@ piecewise model on the relevant data.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChangeKind</span></code></a></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the kind of change points we would like to detect</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the kind of change points we would like to detect</p>
 </dd>
 </dl>
 </dd></dl>
@@ -458,11 +439,8 @@ piecewise model on the relevant data.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cp_prior</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>prior belief probability of how frequently changepoints occur</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>prior belief probability of how frequently changepoints occur</p>
 </dd>
 </dl>
 </dd></dl>
@@ -471,11 +449,8 @@ piecewise model on the relevant data.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.lag">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.lag" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the maximum amount of delay allowed for detecting change points. A higher lag can increase
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the maximum amount of delay allowed for detecting change points. A higher lag can increase
 recall, but it may decrease precision.</p>
 </dd>
 </dl>
@@ -485,11 +460,8 @@ recall, but it may decrease precision.</p>
 <dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_likelihood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>we will not consider any hypotheses (about whether a particular point is a change point)
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>we will not consider any hypotheses (about whether a particular point is a change point)
 with likelihood lower than this threshold</p>
 </dd>
 </dl>

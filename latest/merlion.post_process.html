@@ -31,12 +31,11 @@
   <![endif]-->
   
     
-<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-<script src="_static/jquery.js"></script>
-<script src="_static/underscore.js"></script>
-<script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-<script src="_static/doctools.js"></script>
-<script src="_static/sphinx_highlight.js"></script>        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -342,7 +341,7 @@ which may accept additional implementation-specific keyword arguments.</p>
 </section>
 <section id="module-merlion.post_process.factory">
 <span id="merlion-post-process-factory"></span><h2>merlion.post_process.factory<a class="headerlink" href="#module-merlion.post_process.factory" title="Permalink to this heading">¶</a></h2>
-<p>Contains the <a class="reference internal" href="#merlion.post_process.factory.PostRuleFactory" title="merlion.post_process.factory.PostRuleFactory"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PostRuleFactory</span></code></a>.</p>
+<p>Contains the <cite>PostRuleFactory</cite>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="merlion.post_process.factory.PostRuleFactory">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.post_process.factory.</span></span><span class="sig-name descname"><span class="pre">PostRuleFactory</span></span><a class="headerlink" href="#merlion.post_process.factory.PostRuleFactory" title="Permalink to this definition">¶</a></dt>
@@ -419,7 +418,7 @@ many diverse models interpretable as z-scores.</p>
 anomaly scores, rather than the raw value.</p></li>
 <li><p><strong>anchors</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – a sequence of (x, y) pairs mapping an uncalibrated
 anomaly score to a calibrated anomaly score. Optional, as this
-will be set by <a class="reference internal" href="#merlion.post_process.calibrate.AnomScoreCalibrator.train" title="merlion.post_process.calibrate.AnomScoreCalibrator.train"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">AnomScoreCalibrator.train</span></code></a>.</p></li>
+will be set by <cite>AnomScoreCalibrator.train</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -434,7 +433,7 @@ will be set by <a class="reference internal" href="#merlion.post_process.calibra
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of raw anomaly scores that we will use
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <cite>TimeSeries</cite> of raw anomaly scores that we will use
 to train the calibrator.</p></li>
 <li><p><strong>retrain_calibrator</strong> – Whether to re-train the calibrator on a new
 sequence of anomaly scores, if it has already been trained once.
@@ -561,8 +560,8 @@ uses the default threshold specified in <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <cite>TimeSeries</cite> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <cite>TimeSeries</cite> of ground truth anomaly labels.</p></li>
 <li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
 <li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
 <li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
@@ -658,8 +657,8 @@ uses the default threshold specified in <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <cite>TimeSeries</cite> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <cite>TimeSeries</cite> of ground truth anomaly labels.</p></li>
 <li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
 <li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
 <li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
@@ -716,8 +715,8 @@ uses the default threshold specified in <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores returned by the model.</p></li>
-<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of ground truth anomaly labels.</p></li>
+<li><p><strong>anomaly_scores</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <cite>TimeSeries</cite> of anomaly scores returned by the model.</p></li>
+<li><p><strong>anomaly_labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – <cite>TimeSeries</cite> of ground truth anomaly labels.</p></li>
 <li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.evaluate.html#merlion.evaluate.anomaly.TSADMetric" title="merlion.evaluate.anomaly.TSADMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSADMetric</span></code></a>]) – Metric used to evaluate the performance of candidate thresholds.</p></li>
 <li><p><strong>unsup_quantile</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – User-specified quantile to use as a candidate.</p></li>
 <li><p><strong>max_early_sec</strong> – Maximum allowed lead time (in seconds) from a detection
