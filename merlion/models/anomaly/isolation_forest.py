@@ -29,7 +29,7 @@ class IsolationForestConfig(DetectorConfig):
 
     _default_transform = TransformSequence([DifferenceTransform(), Shingle(size=2, stride=1)])
 
-    def __init__(self, max_n_samples: int = None, n_estimators: int = 100, **kwargs):
+    def __init__(self, max_n_samples: int = None, n_estimators: int = 100, n_jobs=-1, **kwargs):
         """
         :param max_n_samples: Maximum number of samples to allow the isolation
             forest to train on. Specify ``None`` to use all samples in the
@@ -38,6 +38,7 @@ class IsolationForestConfig(DetectorConfig):
         """
         self.max_n_samples = 1.0 if max_n_samples is None else max_n_samples
         self.n_estimators = n_estimators
+        self.n_jobs = n_jobs
         # Isolation forest's uncalibrated scores are between 0 and 1
         kwargs["max_score"] = 1.0
         super().__init__(**kwargs)
@@ -54,7 +55,7 @@ class IsolationForest(DetectorBase):
     def __init__(self, config: IsolationForestConfig):
         super().__init__(config)
         self.model = skl_IsolationForest(
-            max_samples=config.max_n_samples, n_estimators=config.n_estimators, random_state=0
+            max_samples=config.max_n_samples, n_estimators=config.n_estimators, random_state=0, n_jobs=config.n_jobs
         )
 
     @property
