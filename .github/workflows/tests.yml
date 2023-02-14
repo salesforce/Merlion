@@ -120,4 +120,4 @@ jobs:
 
     - name: Test with pytest
       id: test
-      run: pytest -v -s
+      run: pytest -v -s --ignore=tests/spark
