@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -680,7 +680,7 @@ class DeltaEstimator:
         stat = self.stats.get(scale)
         if stat is None or stat.loss.value is None:
             return np.inf
-        return (scale ** self.phi) * stat.loss.value * stat.loss_var.se
+        return (scale**self.phi) * stat.loss.value * stat.loss_var.se
 
     def delta_hat(self, scale: int) -> float:
         return self.velocity(scale) + self.accel_weight * self.acceleration(scale)

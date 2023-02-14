@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -118,7 +118,7 @@ class TSADScoreAccumulator:
             prec_score_type = rec_score_type = score_type
         p = self.precision(prec_score_type)
         r = self.recall(rec_score_type)
-        return 0.0 if p == 0 or r == 0 else (1 + beta ** 2) * p * r / (beta ** 2 * p + r)
+        return 0.0 if p == 0 or r == 0 else (1 + beta**2) * p * r / (beta**2 * p + r)
 
     def mean_time_to_detect(self):
         t = np.mean(self.tp_detection_delays) if self.tp_detection_delays else 0

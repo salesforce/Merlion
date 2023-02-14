@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -143,7 +143,7 @@ class VAE(DetectorBase):
                 x = torch.tensor(batch, dtype=torch.float, device=self.device)
                 recon_x, mu, log_var, _ = self.model(x, None)
                 recon_loss = loss_func(x, recon_x)
-                kld_loss = -0.5 * torch.mean(torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=1), dim=0)
+                kld_loss = -0.5 * torch.mean(torch.sum(1 + log_var - mu**2 - log_var.exp(), dim=1), dim=0)
                 loss = recon_loss + kld_loss * self.kld_weight
                 optimizer.zero_grad()
                 loss.backward()

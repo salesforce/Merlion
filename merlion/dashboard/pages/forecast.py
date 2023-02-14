@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -96,7 +96,7 @@ def create_control_panel() -> html.Div:
             html.Br(),
             html.P("Algorithm Setting"),
             html.Div(id="forecasting-param-table", children=[create_param_table()]),
-            html.Progress(id="forecasting-progressbar", style={"width": "100%", 'color':'#1AB9FF'}),
+            html.Progress(id="forecasting-progressbar", style={"width": "100%", "color": "#1AB9FF"}),
             html.Br(),
             html.Div(
                 children=[

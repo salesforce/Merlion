@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -342,7 +342,7 @@ class NormInvGamma(ScalarConjPrior):
         r"""
         The posterior for :math:`\mu` is :math:`\text{Student-t}_{2\alpha}(\mu_0, \beta / (n \alpha))`
         """
-        scale = self.beta / (2 * self.alpha ** 2)
+        scale = self.beta / (2 * self.alpha**2)
         rv = student_t(loc=self.mu_0, scale=np.sqrt(scale), df=2 * self.alpha)
         return self._process_return(x=mu, rv=rv, return_rv=return_rv, log=log)
 
@@ -358,7 +358,7 @@ class NormInvGamma(ScalarConjPrior):
         The posterior for :math:`x` is :math:`\text{Student-t}_{2\alpha}(\mu_0, (n+1) \beta / (n \alpha))`
         """
         t, x_np = self.process_time_series(x)
-        scale = (self.beta * (2 * self.alpha + 1)) / (2 * self.alpha ** 2)
+        scale = (self.beta * (2 * self.alpha + 1)) / (2 * self.alpha**2)
         rv = student_t(loc=self.mu_0, scale=np.sqrt(scale), df=2 * self.alpha)
         ret = self._process_return(x=x_np, rv=rv, return_rv=return_rv, log=log)
         if return_updated:

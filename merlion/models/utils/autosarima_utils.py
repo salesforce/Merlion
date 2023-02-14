@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -187,7 +187,14 @@ def detect_maxiter_sarima_model(y, d, D, m, method, information_criterion, exog=
     maxiter = 10
     ic = np.inf
     model_spec = sm.tsa.SARIMAX(
-        endog=y, exog=exog, order=order, seasonal_order=seasonal_order, trend="c", validate_specification=False, enforce_stationarity=False, enforce_invertibility=False
+        endog=y,
+        exog=exog,
+        order=order,
+        seasonal_order=seasonal_order,
+        trend="c",
+        validate_specification=False,
+        enforce_stationarity=False,
+        enforce_invertibility=False,
     )
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

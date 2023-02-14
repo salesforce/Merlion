@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -9,8 +9,8 @@ from dash import html
 
 
 tab_style = {
-    "borderBottom": "1px solid #d6d6d6", 
-    "padding": "6px", 
+    "borderBottom": "1px solid #d6d6d6",
+    "padding": "6px",
     "fontWeight": "bold",
     "backgroundColor": "#1B96FF",
     "color": "white",
