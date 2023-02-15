@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -139,7 +139,7 @@ class Variance(IStat):
             \\text{Var}(x_i) = \\text{E}(x_i^2) - \\text{E}(x_i)^2
         """
         if ex_value is not None and ex2_value is not None:
-            super().__init__(value=ex2_value - ex_value ** 2, n=n)
+            super().__init__(value=ex2_value - ex_value**2, n=n)
         else:
             super().__init__()
         self.ex = self.mean_class(value=ex_value, n=n)
@@ -149,20 +149,20 @@ class Variance(IStat):
     def add(self, x):
         self.n += 1
         self.ex.add(x)
-        self.ex2.add(x ** 2)
+        self.ex2.add(x**2)
 
     def drop(self, x):
         if self.n == 0:
             return
         self.n -= 1
         self.ex.drop(x)
-        self.ex2.drop(x ** 2)
+        self.ex2.drop(x**2)
 
     @property
     def true_value(self):
         if self.ex2.value is None or self.ex.value is None:
             return None
-        return max(0, self.ex2.value - self.ex.value ** 2)
+        return max(0, self.ex2.value - self.ex.value**2)
 
     @property
     def corrected_value(self):

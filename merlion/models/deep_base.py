@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -76,7 +76,7 @@ class DeepConfig(Config):
         optimizer: Union[str, Optimizer] = Optimizer.Adam,
         loss_fn: Union[str, LossFunction] = LossFunction.mse,
         clip_gradient: Optional[float] = None,
-        use_gpu: bool = False,
+        use_gpu: bool = True,
         ts_encoding: Union[None, str] = "h",
         lr: float = 1e-4,
         weight_decay: float = 0.0,

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -84,7 +84,7 @@ class ZMSConfig(DetectorConfig, NormalizingConfig):
         the output dimension (number of lags) will change.
         """
         self._n_lags = n
-        lags = [LagTransform(self.base ** k, pad=True) for k in range(n)] if n is not None else []
+        lags = [LagTransform(self.base**k, pad=True) for k in range(n)] if n is not None else []
         self.lags = TransformStack([Identity(), *lags])
         self.normalize = MeanVarNormalize()
 

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -197,7 +197,7 @@ def initializer(func):
 
 
 class ProgressBar:
-    def __init__(self, total: int, length: int = 40, decimals: int = 1, fill: str = "█"):
+    def __init__(self, total: int, length: int = 40, decimals: int = 1, fill: str = "="):
         """
         :param total: total iterations
         :param length: character length of bar
@@ -218,7 +218,7 @@ class ProgressBar:
         """
         percent = ("{0:." + str(self.decimals) + "f}").format(100 * (iteration / float(self.total)))
         fill_len = self.length * iteration // self.total
-        bar = self.fill * fill_len + "-" * (self.length - fill_len)
+        bar = self.fill * fill_len + " " * (self.length - fill_len)
         print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=end)
         if iteration >= self.total:
             print()

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 salesforce.com, inc.
+# Copyright (c) 2023 salesforce.com, inc.
 # All rights reserved.
 # SPDX-License-Identifier: BSD-3-Clause
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -239,7 +239,7 @@ def reconciliation(pdf: pd.DataFrame, hier_matrix: np.ndarray, target_col: str):
         # P * W.diagonal() is a faster way to compute P @ W, since W is diagonal
         rec_errs = hier_matrix @ (P * W.diagonal())  # m by m
         # np.sum(rec_errs ** 2, axis=1) is a faster way to compute (rec_errs @ rec_errs.T).diagonal()
-        rec_errs = np.sqrt(np.sum(rec_errs ** 2, axis=1))
+        rec_errs = np.sqrt(np.sum(rec_errs**2, axis=1))
 
     # Replace original forecasts & errors with reconciled ones
     reconciled = pd.DataFrame(np.stack([rec, rec_errs], axis=1), index=pdf.index, columns=[target_col, errname])

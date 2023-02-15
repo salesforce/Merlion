@@ -8,7 +8,6 @@ on:
 
 jobs:
   tests:
-
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,15 +21,19 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: adopt
+        java-version: 17
+
     - name: Install Merlion
       run: |
-        sudo apt-get update -y
-        sudo apt-get install bc openjdk-11-jre-headless -y --fix-missing
         python -m pip install --upgrade pip setuptools wheel build
         python -m pip install pytest coverage
         python -m build
-        for f in dist/*.whl; do pip install $f[all]; done
-        pip install -e ts_datasets/
+        for f in dist/*.whl; do python -m pip install $f[all]; done
+        python -m pip install -e ts_datasets/
 
     - name: Test with pytest
       id: test
@@ -86,3 +89,35 @@ jobs:
         BRANCH: badges
         FOLDER: .github/badges
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tests_windows:
+
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: microsoft
+        java-version: 17
+
+    - name: Install Merlion
+      run: |
+        python -m pip install --upgrade pip setuptools wheel build pytest
+        python -m pip install ".[all]"
+        python -m pip install -e ts_datasets/
+
+    - name: Test with pytest
+      id: test
+      run: pytest -v -s --ignore=tests/spark
