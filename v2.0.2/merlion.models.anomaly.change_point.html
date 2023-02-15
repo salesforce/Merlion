@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>anomaly.change_point &mdash; Merlion 2.0.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="forecast" href="merlion.models.forecast.html" />
+    <link rel="prev" title="anomaly.forecast_based" href="merlion.models.anomaly.forecast_based.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Merlion
+          </a>
+              <div class="version">
+                v2.0.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="merlion.models.html">merlion.models package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="merlion.models.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="merlion.models.anomaly.html">anomaly</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="merlion.models.anomaly.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">anomaly.change_point</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#module-merlion.models.anomaly.change_point.bocpd">anomaly.change_point.bocpd</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="docutils literal notranslate"><span class="pre">ChangeKind</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto"><code class="docutils literal notranslate"><span class="pre">ChangeKind.Auto</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift"><code class="docutils literal notranslate"><span class="pre">ChangeKind.LevelShift</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.TrendChange"><code class="docutils literal notranslate"><span class="pre">ChangeKind.TrendChange</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig.change_kind</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="docutils literal notranslate"><span class="pre">BOCPD</span></code></a><ul>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.config_class"><code class="docutils literal notranslate"><span class="pre">BOCPD.config_class</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_even_sampling</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_univariate</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.last_train_time"><code class="docutils literal notranslate"><span class="pre">BOCPD.last_train_time</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.n_seen"><code class="docutils literal notranslate"><span class="pre">BOCPD.n_seen</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPD.change_kind</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior"><code class="docutils literal notranslate"><span class="pre">BOCPD.cp_prior</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.lag"><code class="docutils literal notranslate"><span class="pre">BOCPD.lag</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood"><code class="docutils literal notranslate"><span class="pre">BOCPD.min_likelihood</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.train_pre_process"><code class="docutils literal notranslate"><span class="pre">BOCPD.train_pre_process()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.update"><code class="docutils literal notranslate"><span class="pre">BOCPD.update()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l9"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_figure"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_figure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#base-classes">Base classes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#univariate-models">Univariate models</a></li>
+<li class="toctree-l5"><a class="reference internal" href="merlion.models.anomaly.html#multivariate-models">Multivariate models</a></li>
+</ul>
+</li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">anomaly.change_point</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#module-merlion.models.anomaly.change_point.bocpd">anomaly.change_point.bocpd</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="docutils literal notranslate"><span class="pre">ChangeKind</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto"><code class="docutils literal notranslate"><span class="pre">ChangeKind.Auto</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift"><code class="docutils literal notranslate"><span class="pre">ChangeKind.LevelShift</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.TrendChange"><code class="docutils literal notranslate"><span class="pre">ChangeKind.TrendChange</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPDConfig.change_kind</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="docutils literal notranslate"><span class="pre">BOCPD</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.config_class"><code class="docutils literal notranslate"><span class="pre">BOCPD.config_class</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_even_sampling</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate"><code class="docutils literal notranslate"><span class="pre">BOCPD.require_univariate</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.last_train_time"><code class="docutils literal notranslate"><span class="pre">BOCPD.last_train_time</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.n_seen"><code class="docutils literal notranslate"><span class="pre">BOCPD.n_seen</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind"><code class="docutils literal notranslate"><span class="pre">BOCPD.change_kind</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior"><code class="docutils literal notranslate"><span class="pre">BOCPD.cp_prior</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.lag"><code class="docutils literal notranslate"><span class="pre">BOCPD.lag</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood"><code class="docutils literal notranslate"><span class="pre">BOCPD.min_likelihood</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.train_pre_process"><code class="docutils literal notranslate"><span class="pre">BOCPD.train_pre_process()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.update"><code class="docutils literal notranslate"><span class="pre">BOCPD.update()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_anomaly_score"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_anomaly_score()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_figure"><code class="docutils literal notranslate"><span class="pre">BOCPD.get_figure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.anomaly.forecast_based.html">anomaly.forecast_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.forecast.html">forecast</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.ensemble.html">ensemble</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.automl.html">automl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="merlion.models.utils.html">utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.defaults">defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.factory">factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.base">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.deep_base">deep_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merlion.models.html#module-merlion.models.layers">layers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.dashboard.html">merlion.dashboard package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.spark.html">merlion.spark package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.transform.html">merlion.transform package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.post_process.html">merlion.post_process package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.evaluate.html">merlion.evaluate package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.plot.html">merlion.plot package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merlion.utils.html">merlion.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="merlion.html">merlion: Time Series Intelligence</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.html">merlion.models package</a></li>
+          <li class="breadcrumb-item"><a href="merlion.models.anomaly.html">anomaly</a></li>
+      <li class="breadcrumb-item active">anomaly.change_point</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/merlion.models.anomaly.change_point.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-merlion.models.anomaly.change_point">
+<span id="anomaly-change-point"></span><h1>anomaly.change_point<a class="headerlink" href="#module-merlion.models.anomaly.change_point" title="Permalink to this heading"></a></h1>
+<p>Contains all change point detection algorithms. These models implement the anomaly detector interface, but
+they are specialized for detecting change points in time series.</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-merlion.models.anomaly.change_point.bocpd" title="merlion.models.anomaly.change_point.bocpd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bocpd</span></code></a></p></td>
+<td><p>Bayesian online change point detection algorithm.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="module-merlion.models.anomaly.change_point.bocpd">
+<span id="anomaly-change-point-bocpd"></span><h2>anomaly.change_point.bocpd<a class="headerlink" href="#module-merlion.models.anomaly.change_point.bocpd" title="Permalink to this heading"></a></h2>
+<p>Bayesian online change point detection algorithm.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.ChangeKind">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">ChangeKind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enum representing the kinds of changes points we would like to detect.
+Enum values correspond to the Bayesian <a class="reference internal" href="merlion.utils.html#merlion.utils.conj_priors.ConjPrior" title="merlion.utils.conj_priors.ConjPrior"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ConjPrior</span></code></a> class used to detect each sort of change point.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto">
+<span class="sig-name descname"><span class="pre">Auto</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.Auto" title="Permalink to this definition"></a></dt>
+<dd><p>Automatically choose the Bayesian conjugate prior we would like to use.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift">
+<span class="sig-name descname"><span class="pre">LevelShift</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;class</span> <span class="pre">'merlion.utils.conj_priors.MVNormInvWishart'&gt;</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.LevelShift" title="Permalink to this definition"></a></dt>
+<dd><p>Model data points with a normal distribution, to detect level shifts.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.ChangeKind.TrendChange">
+<span class="sig-name descname"><span class="pre">TrendChange</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;class</span> <span class="pre">'merlion.utils.conj_priors.BayesianMVLinReg'&gt;</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind.TrendChange" title="Permalink to this definition"></a></dt>
+<dd><p>Model data points as a linear function of time, to detect trend changes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPDConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChangeKind.Auto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_forecast_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seq_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterConfig" title="merlion.models.forecast.base.ForecasterConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterConfig</span></code></a>, <a class="reference internal" href="merlion.models.anomaly.html#merlion.models.anomaly.base.NoCalibrationDetectorConfig" title="merlion.models.anomaly.base.NoCalibrationDetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoCalibrationDetectorConfig</span></code></a></p>
+<p>Config class for <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPD" title="merlion.models.anomaly.change_point.bocpd.BOCPD"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BOCPD</span></code></a> (Bayesian Online Change Point Detection).</p>
+<p>Base class of the object used to configure an anomaly detection model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>change_kind</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChangeKind</span></code></a>]) – the kind of change points we would like to detect</p></li>
+<li><p><strong>cp_prior</strong> – prior belief probability of how frequently changepoints occur</p></li>
+<li><p><strong>lag</strong> – the maximum amount of delay/lookback (in number of steps) allowed for detecting change points.
+If <code class="docutils literal notranslate"><span class="pre">lag</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, we will consider the entire history. Note: we do not recommend <code class="docutils literal notranslate"><span class="pre">lag</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>min_likelihood</strong> – we will discard any hypotheses whose probability of being a change point is
+lower than this threshold. Lower values improve accuracy at the cost of time and space complexity.</p></li>
+<li><p><strong>max_forecast_steps</strong> – the maximum number of steps the model is allowed to forecast. Ignored.</p></li>
+<li><p><strong>target_seq_index</strong> – The index of the univariate (amongst all univariates in a general multivariate time
+series) whose value we would like to forecast.</p></li>
+<li><p><strong>invert_transform</strong> – Whether to automatically invert the <code class="docutils literal notranslate"><span class="pre">transform</span></code> before returning a forecast.
+By default, we will invert the transform for all base forecasters if it supports a proper inversion, but
+we will not invert it for forecaster-based anomaly detectors or transforms without proper inversions.</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+<li><p><strong>enable_calibrator</strong> – <code class="docutils literal notranslate"><span class="pre">False</span></code> because this config assumes calibrated outputs from the model.</p></li>
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig.change_kind" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.change_point.bocpd.</span></span><span class="sig-name descname"><span class="pre">BOCPD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a></p>
+<p>Bayesian online change point detection algorithm described by
+<a class="reference external" href="https://arxiv.org/abs/0710.3742">Adams &amp; MacKay (2007)</a>.
+At a high level, this algorithm models the observed data using Bayesian conjugate priors. If an observed value
+deviates too much from the current posterior distribution, it is likely a change point, and we should start
+modeling the time series from that point forwards with a freshly initialized Bayesian conjugate prior.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_anomaly_score()</span></code> method returns a z-score corresponding to the probability of each point being
+a change point. The <code class="docutils literal notranslate"><span class="pre">forecast()</span></code> method returns the predicted values (and standard error) of the underlying
+piecewise model on the relevant data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a>]) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.BOCPDConfig" title="merlion.models.anomaly.change_point.bocpd.BOCPDConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">BOCPDConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>All forecasters can work on multivariate data, since they only forecast a single target univariate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.last_train_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_train_time</span></span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.last_train_time" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the last time (as a <code class="docutils literal notranslate"><span class="pre">pandas.Timestamp</span></code>) that the model was trained on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.n_seen">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_seen</span></span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.n_seen" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the number of data points seen so far</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_kind</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#merlion.models.anomaly.change_point.bocpd.ChangeKind" title="merlion.models.anomaly.change_point.bocpd.ChangeKind"><span class="pre">ChangeKind</span></a></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.change_kind" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the kind of change points we would like to detect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cp_prior</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.cp_prior" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>prior belief probability of how frequently changepoints occur</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.lag">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.lag" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the maximum amount of delay allowed for detecting change points. A higher lag can increase
+recall, but it may decrease precision.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_likelihood</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.min_likelihood" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>we will not consider any hypotheses (about whether a particular point is a change point)
+with likelihood lower than this threshold</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.train_pre_process">
+<span class="sig-name descname"><span class="pre">train_pre_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_exog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.train_pre_process" title="Permalink to this definition"></a></dt>
+<dd><p>Applies pre-processing steps common for training most models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>train_data</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the original time series of training data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the training data, after any necessary pre-processing has been applied</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.update" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the BOCPD model’s internal state using the time series values provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – time series whose values we are using to update the internal state of the model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>anomaly score associated with each point (based on the probability of it being a change point)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.get_anomaly_score">
+<span class="sig-name descname"><span class="pre">get_anomaly_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exog_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_anomaly_score" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the model’s predicted sequence of anomaly scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series</strong> (<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – the <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> we wish to predict anomaly scores
+for.</p></li>
+<li><p><strong>time_series_prev</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – a <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> immediately preceding
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize the time series
+anomaly detection model. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code>
+immediately follows the training data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a univariate <a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref any py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a> of anomaly scores</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="merlion.models.anomaly.change_point.bocpd.BOCPD.get_figure">
+<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.change_point.bocpd.BOCPD.get_figure" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_series</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="merlion.utils.html#merlion.utils.time_series.TimeSeries" title="merlion.utils.time_series.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – the time series over whose timestamps we wish to make a forecast. Exactly one of
+<code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
+<li><p><strong>time_stamps</strong> – Either a <code class="docutils literal notranslate"><span class="pre">list</span></code> of timestamps we wish to forecast for, or the number of steps (<code class="docutils literal notranslate"><span class="pre">int</span></code>)
+we wish to forecast for. Exactly one of <code class="docutils literal notranslate"><span class="pre">time_series</span></code> or <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code> should be provided.</p></li>
+<li><p><strong>time_series_prev</strong> – a time series immediately preceding <code class="docutils literal notranslate"><span class="pre">time_series</span></code>. If given, we use it to initialize
+the forecaster’s state. Otherwise, we assume that <code class="docutils literal notranslate"><span class="pre">time_series</span></code> immediately follows the training data.</p></li>
+<li><p><strong>exog_data</strong> – A time series of exogenous variables. Exogenous variables are known a priori, and they are
+independent of the variable being forecasted. <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> must include data for all of <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>;
+if <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given, it must include data for all of <code class="docutils literal notranslate"><span class="pre">time_series_prev.time_stamps</span></code> as well.
+Optional. Only supported for models which inherit from <a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a>.</p></li>
+<li><p><strong>plot_anomaly</strong> – Whether to plot the model’s predicted anomaly scores.</p></li>
+<li><p><strong>filter_scores</strong> – whether to filter the anomaly scores by the post-rule before plotting them.</p></li>
+<li><p><strong>plot_forecast</strong> – Whether to plot the model’s forecasted values.</p></li>
+<li><p><strong>plot_forecast_uncertainty</strong> – whether to plot uncertainty estimates (the inter-quartile range) for forecast
+values. Not supported for all models.</p></li>
+<li><p><strong>plot_time_series_prev</strong> – whether to plot <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (and the model’s fit for it). Only used if
+<code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> is given.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a <a class="reference internal" href="merlion.plot.html#merlion.plot.Figure" title="merlion.plot.Figure"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> of the model’s anomaly score predictions and/or forecast.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merlion.models.anomaly.forecast_based.html" class="btn btn-neutral float-left" title="anomaly.forecast_based" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="merlion.models.forecast.html" class="btn btn-neutral float-right" title="forecast" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      v2.0.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+          
+        
+           <strong> 
+          
+          <dd><a href="../v2.0.2/index.html">v2.0.2</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v2.0.1/index.html">v2.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
