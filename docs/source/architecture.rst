@@ -1,7 +1,8 @@
 Merlion Architecture
 ====================
 This document is intended for Merlion developers. It outlines the architecture of Merlion's key components,
-and how they interact with each other.
+and how they interact with each other. In general, everything in this document describes the ``base.py`` files
+of the modules being discussed.
 
 Transforms
 ----------
@@ -56,6 +57,8 @@ Pre-Processing
 Each ``model`` has a ``model.transform`` which pre-processes the data. Automatically applying this transform at both
 training and inference time (and inverting the transform for forecasting) is a key feature of Merlion models. In
 reality, it is worth noting that ``model.transform`` is generally a reference to ``model.config.transform``.
+If your data is already pre-processed, then you can set ``model.transform`` to be the
+:py:class:`Identity <merlion.transform.base.Identity>`.
 
 When ``model.train()`` is called, the first step is to call ``model.train_pre_process()``. This method
 
@@ -81,6 +84,7 @@ includes the following pre-processing steps:
 * If ``exog_data`` is given, apply ``model.exog_transform`` to ``exog_data``, and
   resample ``exog_data`` to the same time stamps as ``time_series_prev`` (after the transform) and ``time_stamps``.
 * Ensure that the dimensions of ``time_series_prev`` and ``exog_data`` match the training data.
+  See `tutorials/forecast/3_ForecastExogenous` for more details on exogenous regressors.
 
 User-Defined Implementations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -105,17 +109,27 @@ If we extend Merlion to accommodate training models on multiple time series, we 
 models handle transforms. In particular,
 
 * ``model.transform`` should be re-trained for each time series individually.
-    * At training time, we will probably need to rewrite ``model.train_pre_process()`` to use a different copy of
-      ``model.transform`` for each time series.
+
+    * At training time, we will probably need to write a new method ``model.train_pre_process_multiple()`` which
+      uses a different copy of ``model.transform`` for each time series. The other functionality should be similar to
+      ``model.train_pre_process()``.
     * At inference time, ``time_series_prev`` must be a required parameter, and a copy of ``model.transform``
       should be trained on ``time_series_prev``.
-* To make training code easier to write, ``model.train()`` probably doesn't need to return anything when trained on
-  multiple time series. This also removes the need to invert the transform on the training data.
+* To make training code easier to write, ``model.train_multiple()`` probably doesn't need to return anything when
+  trained on multiple time series. This also removes the need to invert the transform on the training data.
 * For anomaly detection, the :doc:`post-processing transforms <merlion.post_process>` should be updated to accommodate
-  multiple time series. This is especially important for calibration.
+  multiple time series. This is especially important for calibration. For example, if we receive 10 time series of
+  of anomaly scores, we should use all 10 to learn a single calibrator, rather than learning one calibrator per time
+  series. The underlying assumption is that the anomaly score distributions should be similar across all time series.
 * For forecasting, ``model.transform`` can be trained and applied on ``time_series_prev``, and then inverted on the
   concatenation of ``time_series_prev`` and ``forecast`` as it is done now, via a call to ``model._process_forecast()``.
   ``model.exog_transform`` should also be handled similarly (minus the inversion).
+  See `tutorials/forecast/3_ForecastExogenous` for more details on exogenous regressors.
+
+In general, the code changes to ``model.forecast()`` and ``model.get_anomaly_score()`` are relatively minor.
+If the flag ``model.multi_series `` is set, then make sure that ``time_series_prev`` is given and then train
+``model.transform`` and ``model.exog_transform`` on ``time_series_prev`` and ``exog_data`` respectively. After this
+point, the functions should be unchanged.
 
 Model Variants
 --------------
@@ -137,17 +151,21 @@ Below are some simpler model variants that are useful to understand:
   ``MeanVarNormalize`` after any other pre-processing (specified by the user in ``transform``) has been applied.
   The full transform is accessed via ``config.full_transform``. Models automatically understand how this works because
   the property ``model.transform`` tries to get ``model.config.full_transform`` if possible and defaults to
-  ``model.config.transform`` otherwise.
+  ``model.config.transform`` otherwise. When using this class to implement models, simply add the ``NormalizingConfig``
+  as a base class for your model.
 
 Ensembles
 ^^^^^^^^^
 Merlion supports ensembles of both anomaly detectors and forecasters. The ensemble config has two key components
 which make this possible: ``ensemble.config.models`` contains all the models present in the ensemble, while
 ``ensemble.config.combiner`` contains a :py:mod:`combiner <merlion.models.ensemble.combine>` object which defines
-a way of combining the outputs of multiple models. This includes Mean, Median, and ModelSelection based on an evaluation
+a way of combining the outputs of multiple models. This includes Mean, Median, and ModelSelector based on an evaluation
 metric. When doing model selection, the ``ensemble.train()`` method automatically splits the train data into training
 and validation splits, and it evaluates the performance of each model on the validation split.
 It then re-trains each model on the full training data afterwards.
+
+One possible improvement is to parallelize the training of each models in the models. We can probably just use
+Python's native ``multiprocessing`` library.
 
 Layered Models
 ^^^^^^^^^^^^^^
@@ -158,8 +176,8 @@ lowest level of the hierarchy.
 
 There are a number of dirty tricks used to (1) ensure that layered anomaly detectors and forecasters inherit from the
 right base classes, (2) config parameters are not duplicated between different levels of the hierarchy, and (3) users
-can call a parameter like ``layered_model.max_forecast_steps`` (which should only be defined for the base model) and
-receive ``layered_model.base_model.max_forecast_steps`` directly.
+can call a parameter like ``layered_model.config.max_forecast_steps`` (which should only be defined for the base model)
+and receive ``layered_model.base_model.config.max_forecast_steps`` directly.
 
 The documentation for :py:mod:`merlion.models.layers` has some more details.
 
@@ -173,4 +191,4 @@ so that they can be trained on multiple time series simultaneously is a worthwhi
 Other Modules
 -------------
 Most other modules are stand-alone pieces that don't directly interact with each other, except in longer pipelines. We
-defer to the main documentation in :doc:`merlion`. 
+defer to the main documentation in :doc:`merlion`.
