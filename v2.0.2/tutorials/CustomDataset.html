@@ -1,54 +1,50 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Loading Custom Datasets &mdash; Merlion 2.0.2 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loading Custom Datasets — Merlion 2.0.2 documentation</title>
+<link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion" href="anomaly/0_AnomalyIntro.html" />
-    <link rel="prev" title="Merlion’s Data Format" href="TimeSeries.html" /> 
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/sphinx_highlight.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+<script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../_static/js/theme.js"></script>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="anomaly/0_AnomalyIntro.html" rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion"/>
+<link href="TimeSeries.html" rel="prev" title="Merlion’s Data Format"/>
 </head>
-
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../index.html" class="icon icon-home">
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../index.html">
             Merlion
           </a>
-              <div class="version">
+<div class="version">
                 v2.0.2
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</div><div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../merlion.html">merlion: Time Series Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
@@ -69,33 +65,28 @@
 </ul>
 </li>
 </ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Merlion</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials &amp; Example Code</a></li>
-      <li class="breadcrumb-item active">Loading Custom Datasets</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/CustomDataset.ipynb.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift"><nav aria-label="Mobile navigation menu" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../index.html">Merlion</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="Page navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+<li class="breadcrumb-item"><a href="../tutorials.html">Tutorials &amp; Example Code</a></li>
+<li class="breadcrumb-item active">Loading Custom Datasets</li>
+<li class="wy-breadcrumbs-aside">
+<a href="../_sources/tutorials/CustomDataset.ipynb.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
 <style>
 /* CSS for nbsphinx extension */
 
@@ -386,8 +377,8 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="n">anom_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;synthetic_anomaly&quot;</span><span class="p">)</span>
-<span class="n">csvs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">anom_dir</span><span class="si">}</span><span class="s2">/*.csv&quot;</span><span class="p">))</span>
+<span class="n">anom_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">".."</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">,</span> <span class="s2">"synthetic_anomaly"</span><span class="p">)</span>
+<span class="n">csvs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">anom_dir</span><span class="si">}</span><span class="s2">/*.csv"</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">csv</span> <span class="ow">in</span> <span class="n">csvs</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">csv</span><span class="p">)</span>
 </pre></div>
@@ -445,7 +436,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -459,70 +450,70 @@ div.rendered_html tbody tr:hover {
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>timestamp</th>
-      <th>horizontal</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>1.928031</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>300</td>
-      <td>-1.156620</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>600</td>
-      <td>-0.390650</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>900</td>
-      <td>0.400804</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1200</td>
-      <td>-0.874490</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>9995</th>
-      <td>2998500</td>
-      <td>0.362724</td>
-    </tr>
-    <tr>
-      <th>9996</th>
-      <td>2998800</td>
-      <td>2.657373</td>
-    </tr>
-    <tr>
-      <th>9997</th>
-      <td>2999100</td>
-      <td>1.472341</td>
-    </tr>
-    <tr>
-      <th>9998</th>
-      <td>2999400</td>
-      <td>1.033154</td>
-    </tr>
-    <tr>
-      <th>9999</th>
-      <td>2999700</td>
-      <td>2.950466</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>timestamp</th>
+<th>horizontal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>0</td>
+<td>1.928031</td>
+</tr>
+<tr>
+<th>1</th>
+<td>300</td>
+<td>-1.156620</td>
+</tr>
+<tr>
+<th>2</th>
+<td>600</td>
+<td>-0.390650</td>
+</tr>
+<tr>
+<th>3</th>
+<td>900</td>
+<td>0.400804</td>
+</tr>
+<tr>
+<th>4</th>
+<td>1200</td>
+<td>-0.874490</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>9995</th>
+<td>2998500</td>
+<td>0.362724</td>
+</tr>
+<tr>
+<th>9996</th>
+<td>2998800</td>
+<td>2.657373</td>
+</tr>
+<tr>
+<th>9997</th>
+<td>2999100</td>
+<td>1.472341</td>
+</tr>
+<tr>
+<th>9998</th>
+<td>2999400</td>
+<td>1.033154</td>
+</tr>
+<tr>
+<th>9999</th>
+<td>2999700</td>
+<td>2.950466</td>
+</tr>
+</tbody>
 </table>
 <p>10000 rows × 2 columns</p>
 </div></div>
@@ -540,7 +531,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -554,82 +545,82 @@ div.rendered_html tbody tr:hover {
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>timestamp</th>
-      <th>seasonal</th>
-      <th>anomaly</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>-0.577883</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>300</td>
-      <td>1.059779</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>600</td>
-      <td>1.137609</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>900</td>
-      <td>0.743360</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1200</td>
-      <td>1.998400</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>9995</th>
-      <td>2998500</td>
-      <td>-5.388685</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>9996</th>
-      <td>2998800</td>
-      <td>-5.017828</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>9997</th>
-      <td>2999100</td>
-      <td>-4.196791</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>9998</th>
-      <td>2999400</td>
-      <td>-4.234555</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>9999</th>
-      <td>2999700</td>
-      <td>-3.111685</td>
-      <td>0.0</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>timestamp</th>
+<th>seasonal</th>
+<th>anomaly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>0</td>
+<td>-0.577883</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>1</th>
+<td>300</td>
+<td>1.059779</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>2</th>
+<td>600</td>
+<td>1.137609</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>3</th>
+<td>900</td>
+<td>0.743360</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>4</th>
+<td>1200</td>
+<td>1.998400</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>9995</th>
+<td>2998500</td>
+<td>-5.388685</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>9996</th>
+<td>2998800</td>
+<td>-5.017828</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>9997</th>
+<td>2999100</td>
+<td>-4.196791</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>9998</th>
+<td>2999400</td>
+<td>-4.234555</td>
+<td>0.0</td>
+</tr>
+<tr>
+<th>9999</th>
+<td>2999700</td>
+<td>-3.111685</td>
+<td>0.0</td>
+</tr>
+</tbody>
 </table>
 <p>10000 rows × 3 columns</p>
 </div></div>
@@ -650,8 +641,8 @@ div.rendered_html tbody tr:hover {
     <span class="n">rootdir</span><span class="o">=</span><span class="n">anom_dir</span><span class="p">,</span>       <span class="c1"># where the data is stored</span>
     <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>         <span class="c1"># use 75% of each time series for testing.</span>
                             <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
-    <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>          <span class="c1"># the timestamp column (automatically detected) is in units of seconds</span>
-    <span class="n">assume_no_anomaly</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># if a CSV doesn&#39;t have the &quot;anomaly&quot; column, assume it has no anomalies</span>
+    <span class="n">time_unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">,</span>          <span class="c1"># the timestamp column (automatically detected) is in units of seconds</span>
+    <span class="n">assume_no_anomaly</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># if a CSV doesn't have the "anomaly" column, assume it has no anomalies</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -660,7 +651,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset.&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset."</span><span class="p">)</span>
 <span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -687,7 +678,7 @@ There are 18 time series in this dataset.
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -701,62 +692,62 @@ There are 18 time series in this dataset.
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>horizontal</th>
-    </tr>
-    <tr>
-      <th>timestamp</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1970-01-01 00:00:00</th>
-      <td>1.928031</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:05:00</th>
-      <td>-1.156620</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:10:00</th>
-      <td>-0.390650</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:15:00</th>
-      <td>0.400804</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:20:00</th>
-      <td>-0.874490</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 16:55:00</th>
-      <td>0.362724</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:00:00</th>
-      <td>2.657373</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:05:00</th>
-      <td>1.472341</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:10:00</th>
-      <td>1.033154</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:15:00</th>
-      <td>2.950466</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>horizontal</th>
+</tr>
+<tr>
+<th>timestamp</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1970-01-01 00:00:00</th>
+<td>1.928031</td>
+</tr>
+<tr>
+<th>1970-01-01 00:05:00</th>
+<td>-1.156620</td>
+</tr>
+<tr>
+<th>1970-01-01 00:10:00</th>
+<td>-0.390650</td>
+</tr>
+<tr>
+<th>1970-01-01 00:15:00</th>
+<td>0.400804</td>
+</tr>
+<tr>
+<th>1970-01-01 00:20:00</th>
+<td>-0.874490</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+</tr>
+<tr>
+<th>1970-02-04 16:55:00</th>
+<td>0.362724</td>
+</tr>
+<tr>
+<th>1970-02-04 17:00:00</th>
+<td>2.657373</td>
+</tr>
+<tr>
+<th>1970-02-04 17:05:00</th>
+<td>1.472341</td>
+</tr>
+<tr>
+<th>1970-02-04 17:10:00</th>
+<td>1.033154</td>
+</tr>
+<tr>
+<th>1970-02-04 17:15:00</th>
+<td>2.950466</td>
+</tr>
+</tbody>
 </table>
 <p>10000 rows × 1 columns</p>
 </div></div>
@@ -775,7 +766,7 @@ There are 18 time series in this dataset.
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -789,75 +780,75 @@ There are 18 time series in this dataset.
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>anomaly</th>
-      <th>trainval</th>
-    </tr>
-    <tr>
-      <th>timestamp</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1970-01-01 00:00:00</th>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:05:00</th>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:10:00</th>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:15:00</th>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>1970-01-01 00:20:00</th>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 16:55:00</th>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:00:00</th>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:05:00</th>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:10:00</th>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1970-02-04 17:15:00</th>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>anomaly</th>
+<th>trainval</th>
+</tr>
+<tr>
+<th>timestamp</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1970-01-01 00:00:00</th>
+<td>False</td>
+<td>True</td>
+</tr>
+<tr>
+<th>1970-01-01 00:05:00</th>
+<td>False</td>
+<td>True</td>
+</tr>
+<tr>
+<th>1970-01-01 00:10:00</th>
+<td>False</td>
+<td>True</td>
+</tr>
+<tr>
+<th>1970-01-01 00:15:00</th>
+<td>False</td>
+<td>True</td>
+</tr>
+<tr>
+<th>1970-01-01 00:20:00</th>
+<td>False</td>
+<td>True</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>1970-02-04 16:55:00</th>
+<td>False</td>
+<td>False</td>
+</tr>
+<tr>
+<th>1970-02-04 17:00:00</th>
+<td>False</td>
+<td>False</td>
+</tr>
+<tr>
+<th>1970-02-04 17:05:00</th>
+<td>False</td>
+<td>False</td>
+</tr>
+<tr>
+<th>1970-02-04 17:10:00</th>
+<td>False</td>
+<td>False</td>
+</tr>
+<tr>
+<th>1970-02-04 17:15:00</th>
+<td>False</td>
+<td>False</td>
+</tr>
+</tbody>
 </table>
 <p>10000 rows × 2 columns</p>
 </div></div>
@@ -866,8 +857,8 @@ There are 18 time series in this dataset.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is for testing.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is anomalous.&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">metadata</span><span class="o">.</span><span class="n">trainval</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is for testing."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">anomaly</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">% of the time series is anomalous."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -888,7 +879,7 @@ There are 18 time series in this dataset.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart&quot;</span><span class="p">,</span> <span class="s2">&quot;walmart_mini.csv&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">".."</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">,</span> <span class="s2">"walmart"</span><span class="p">,</span> <span class="s2">"walmart_mini.csv"</span><span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -898,7 +889,7 @@ There are 18 time series in this dataset.
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -912,214 +903,214 @@ There are 18 time series in this dataset.
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Store</th>
-      <th>Dept</th>
-      <th>Date</th>
-      <th>Weekly_Sales</th>
-      <th>Temperature</th>
-      <th>Fuel_Price</th>
-      <th>MarkDown1</th>
-      <th>MarkDown2</th>
-      <th>MarkDown3</th>
-      <th>MarkDown4</th>
-      <th>MarkDown5</th>
-      <th>CPI</th>
-      <th>Unemployment</th>
-      <th>IsHoliday</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>1</td>
-      <td>2010-02-05</td>
-      <td>24924.50</td>
-      <td>42.31</td>
-      <td>2.572</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.096358</td>
-      <td>8.106</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>1</td>
-      <td>2010-02-12</td>
-      <td>46039.49</td>
-      <td>38.51</td>
-      <td>2.548</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.242170</td>
-      <td>8.106</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1</td>
-      <td>1</td>
-      <td>2010-02-19</td>
-      <td>41595.55</td>
-      <td>39.93</td>
-      <td>2.514</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.289143</td>
-      <td>8.106</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1</td>
-      <td>1</td>
-      <td>2010-02-26</td>
-      <td>19403.54</td>
-      <td>46.63</td>
-      <td>2.561</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.319643</td>
-      <td>8.106</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1</td>
-      <td>1</td>
-      <td>2010-03-05</td>
-      <td>21827.90</td>
-      <td>46.50</td>
-      <td>2.625</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.350143</td>
-      <td>8.106</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>2855</th>
-      <td>2</td>
-      <td>10</td>
-      <td>2012-09-28</td>
-      <td>37104.67</td>
-      <td>79.45</td>
-      <td>3.666</td>
-      <td>7106.05</td>
-      <td>1.91</td>
-      <td>1.65</td>
-      <td>1549.10</td>
-      <td>3946.03</td>
-      <td>222.616433</td>
-      <td>6.565</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2856</th>
-      <td>2</td>
-      <td>10</td>
-      <td>2012-10-05</td>
-      <td>36361.28</td>
-      <td>70.27</td>
-      <td>3.617</td>
-      <td>6037.76</td>
-      <td>NaN</td>
-      <td>10.04</td>
-      <td>3027.37</td>
-      <td>3853.40</td>
-      <td>222.815930</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2857</th>
-      <td>2</td>
-      <td>10</td>
-      <td>2012-10-12</td>
-      <td>35332.34</td>
-      <td>60.97</td>
-      <td>3.601</td>
-      <td>2145.50</td>
-      <td>NaN</td>
-      <td>33.31</td>
-      <td>586.83</td>
-      <td>10421.01</td>
-      <td>223.015426</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2858</th>
-      <td>2</td>
-      <td>10</td>
-      <td>2012-10-19</td>
-      <td>35721.09</td>
-      <td>68.08</td>
-      <td>3.594</td>
-      <td>4461.89</td>
-      <td>NaN</td>
-      <td>1.14</td>
-      <td>1579.67</td>
-      <td>2642.29</td>
-      <td>223.059808</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2859</th>
-      <td>2</td>
-      <td>10</td>
-      <td>2012-10-26</td>
-      <td>34260.76</td>
-      <td>69.79</td>
-      <td>3.506</td>
-      <td>6152.59</td>
-      <td>129.77</td>
-      <td>200.00</td>
-      <td>272.29</td>
-      <td>2924.15</td>
-      <td>223.078337</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Store</th>
+<th>Dept</th>
+<th>Date</th>
+<th>Weekly_Sales</th>
+<th>Temperature</th>
+<th>Fuel_Price</th>
+<th>MarkDown1</th>
+<th>MarkDown2</th>
+<th>MarkDown3</th>
+<th>MarkDown4</th>
+<th>MarkDown5</th>
+<th>CPI</th>
+<th>Unemployment</th>
+<th>IsHoliday</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>1</td>
+<td>1</td>
+<td>2010-02-05</td>
+<td>24924.50</td>
+<td>42.31</td>
+<td>2.572</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.096358</td>
+<td>8.106</td>
+<td>False</td>
+</tr>
+<tr>
+<th>1</th>
+<td>1</td>
+<td>1</td>
+<td>2010-02-12</td>
+<td>46039.49</td>
+<td>38.51</td>
+<td>2.548</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.242170</td>
+<td>8.106</td>
+<td>True</td>
+</tr>
+<tr>
+<th>2</th>
+<td>1</td>
+<td>1</td>
+<td>2010-02-19</td>
+<td>41595.55</td>
+<td>39.93</td>
+<td>2.514</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.289143</td>
+<td>8.106</td>
+<td>False</td>
+</tr>
+<tr>
+<th>3</th>
+<td>1</td>
+<td>1</td>
+<td>2010-02-26</td>
+<td>19403.54</td>
+<td>46.63</td>
+<td>2.561</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.319643</td>
+<td>8.106</td>
+<td>False</td>
+</tr>
+<tr>
+<th>4</th>
+<td>1</td>
+<td>1</td>
+<td>2010-03-05</td>
+<td>21827.90</td>
+<td>46.50</td>
+<td>2.625</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.350143</td>
+<td>8.106</td>
+<td>False</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>2855</th>
+<td>2</td>
+<td>10</td>
+<td>2012-09-28</td>
+<td>37104.67</td>
+<td>79.45</td>
+<td>3.666</td>
+<td>7106.05</td>
+<td>1.91</td>
+<td>1.65</td>
+<td>1549.10</td>
+<td>3946.03</td>
+<td>222.616433</td>
+<td>6.565</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2856</th>
+<td>2</td>
+<td>10</td>
+<td>2012-10-05</td>
+<td>36361.28</td>
+<td>70.27</td>
+<td>3.617</td>
+<td>6037.76</td>
+<td>NaN</td>
+<td>10.04</td>
+<td>3027.37</td>
+<td>3853.40</td>
+<td>222.815930</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2857</th>
+<td>2</td>
+<td>10</td>
+<td>2012-10-12</td>
+<td>35332.34</td>
+<td>60.97</td>
+<td>3.601</td>
+<td>2145.50</td>
+<td>NaN</td>
+<td>33.31</td>
+<td>586.83</td>
+<td>10421.01</td>
+<td>223.015426</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2858</th>
+<td>2</td>
+<td>10</td>
+<td>2012-10-19</td>
+<td>35721.09</td>
+<td>68.08</td>
+<td>3.594</td>
+<td>4461.89</td>
+<td>NaN</td>
+<td>1.14</td>
+<td>1579.67</td>
+<td>2642.29</td>
+<td>223.059808</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2859</th>
+<td>2</td>
+<td>10</td>
+<td>2012-10-26</td>
+<td>34260.76</td>
+<td>69.79</td>
+<td>3.506</td>
+<td>6152.59</td>
+<td>129.77</td>
+<td>200.00</td>
+<td>272.29</td>
+<td>2924.15</td>
+<td>223.078337</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+</tbody>
 </table>
 <p>2860 rows × 14 columns</p>
 </div></div>
@@ -1132,7 +1123,7 @@ There are 18 time series in this dataset.
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ts_datasets.forecast</span> <span class="kn">import</span> <span class="n">CustomDataset</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">CustomDataset</span><span class="p">(</span>
     <span class="n">rootdir</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>                  <span class="c1"># where the data is stored</span>
-    <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Store&quot;</span><span class="p">,</span> <span class="s2">&quot;Dept&quot;</span><span class="p">],</span> <span class="c1"># Individual time series are indexed by store &amp; department</span>
+    <span class="n">index_cols</span><span class="o">=</span><span class="p">[</span><span class="s2">"Store"</span><span class="p">,</span> <span class="s2">"Dept"</span><span class="p">],</span> <span class="c1"># Individual time series are indexed by store &amp; department</span>
     <span class="n">test_frac</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>               <span class="c1"># use 25% of each time series for testing.</span>
                                   <span class="c1"># overridden if the column `trainval` is in the actual CSV.</span>
 <span class="p">)</span>
@@ -1143,7 +1134,7 @@ There are 18 time series in this dataset.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset.&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series in this dataset."</span><span class="p">)</span>
 <span class="n">time_series</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1170,7 +1161,7 @@ There are 20 time series in this dataset.
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -1184,192 +1175,192 @@ There are 20 time series in this dataset.
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Weekly_Sales</th>
-      <th>Temperature</th>
-      <th>Fuel_Price</th>
-      <th>MarkDown1</th>
-      <th>MarkDown2</th>
-      <th>MarkDown3</th>
-      <th>MarkDown4</th>
-      <th>MarkDown5</th>
-      <th>CPI</th>
-      <th>Unemployment</th>
-      <th>IsHoliday</th>
-    </tr>
-    <tr>
-      <th>Date</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2010-02-05</th>
-      <td>69634.80</td>
-      <td>40.19</td>
-      <td>2.572</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>210.752605</td>
-      <td>8.324</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2010-02-12</th>
-      <td>63393.29</td>
-      <td>38.49</td>
-      <td>2.548</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>210.897994</td>
-      <td>8.324</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>2010-02-19</th>
-      <td>66589.27</td>
-      <td>39.69</td>
-      <td>2.514</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>210.945160</td>
-      <td>8.324</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2010-02-26</th>
-      <td>61875.48</td>
-      <td>46.10</td>
-      <td>2.561</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>210.975957</td>
-      <td>8.324</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2010-03-05</th>
-      <td>67041.18</td>
-      <td>47.17</td>
-      <td>2.625</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>211.006754</td>
-      <td>8.324</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>2012-09-28</th>
-      <td>57424.00</td>
-      <td>79.45</td>
-      <td>3.666</td>
-      <td>7106.05</td>
-      <td>1.91</td>
-      <td>1.65</td>
-      <td>1549.10</td>
-      <td>3946.03</td>
-      <td>222.616433</td>
-      <td>6.565</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2012-10-05</th>
-      <td>62955.51</td>
-      <td>70.27</td>
-      <td>3.617</td>
-      <td>6037.76</td>
-      <td>NaN</td>
-      <td>10.04</td>
-      <td>3027.37</td>
-      <td>3853.40</td>
-      <td>222.815930</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2012-10-12</th>
-      <td>63083.63</td>
-      <td>60.97</td>
-      <td>3.601</td>
-      <td>2145.50</td>
-      <td>NaN</td>
-      <td>33.31</td>
-      <td>586.83</td>
-      <td>10421.01</td>
-      <td>223.015426</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2012-10-19</th>
-      <td>60502.97</td>
-      <td>68.08</td>
-      <td>3.594</td>
-      <td>4461.89</td>
-      <td>NaN</td>
-      <td>1.14</td>
-      <td>1579.67</td>
-      <td>2642.29</td>
-      <td>223.059808</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2012-10-26</th>
-      <td>63992.36</td>
-      <td>69.79</td>
-      <td>3.506</td>
-      <td>6152.59</td>
-      <td>129.77</td>
-      <td>200.00</td>
-      <td>272.29</td>
-      <td>2924.15</td>
-      <td>223.078337</td>
-      <td>6.170</td>
-      <td>False</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Weekly_Sales</th>
+<th>Temperature</th>
+<th>Fuel_Price</th>
+<th>MarkDown1</th>
+<th>MarkDown2</th>
+<th>MarkDown3</th>
+<th>MarkDown4</th>
+<th>MarkDown5</th>
+<th>CPI</th>
+<th>Unemployment</th>
+<th>IsHoliday</th>
+</tr>
+<tr>
+<th>Date</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>2010-02-05</th>
+<td>69634.80</td>
+<td>40.19</td>
+<td>2.572</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>210.752605</td>
+<td>8.324</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2010-02-12</th>
+<td>63393.29</td>
+<td>38.49</td>
+<td>2.548</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>210.897994</td>
+<td>8.324</td>
+<td>True</td>
+</tr>
+<tr>
+<th>2010-02-19</th>
+<td>66589.27</td>
+<td>39.69</td>
+<td>2.514</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>210.945160</td>
+<td>8.324</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2010-02-26</th>
+<td>61875.48</td>
+<td>46.10</td>
+<td>2.561</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>210.975957</td>
+<td>8.324</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2010-03-05</th>
+<td>67041.18</td>
+<td>47.17</td>
+<td>2.625</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>211.006754</td>
+<td>8.324</td>
+<td>False</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>2012-09-28</th>
+<td>57424.00</td>
+<td>79.45</td>
+<td>3.666</td>
+<td>7106.05</td>
+<td>1.91</td>
+<td>1.65</td>
+<td>1549.10</td>
+<td>3946.03</td>
+<td>222.616433</td>
+<td>6.565</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2012-10-05</th>
+<td>62955.51</td>
+<td>70.27</td>
+<td>3.617</td>
+<td>6037.76</td>
+<td>NaN</td>
+<td>10.04</td>
+<td>3027.37</td>
+<td>3853.40</td>
+<td>222.815930</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2012-10-12</th>
+<td>63083.63</td>
+<td>60.97</td>
+<td>3.601</td>
+<td>2145.50</td>
+<td>NaN</td>
+<td>33.31</td>
+<td>586.83</td>
+<td>10421.01</td>
+<td>223.015426</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2012-10-19</th>
+<td>60502.97</td>
+<td>68.08</td>
+<td>3.594</td>
+<td>4461.89</td>
+<td>NaN</td>
+<td>1.14</td>
+<td>1579.67</td>
+<td>2642.29</td>
+<td>223.059808</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+<tr>
+<th>2012-10-26</th>
+<td>63992.36</td>
+<td>69.79</td>
+<td>3.506</td>
+<td>6152.59</td>
+<td>129.77</td>
+<td>200.00</td>
+<td>272.29</td>
+<td>2924.15</td>
+<td>223.078337</td>
+<td>6.170</td>
+<td>False</td>
+</tr>
+</tbody>
 </table>
 <p>143 rows × 11 columns</p>
 </div></div>
@@ -1388,7 +1379,7 @@ There are 20 time series in this dataset.
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped>
+<style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -1402,88 +1393,88 @@ There are 20 time series in this dataset.
     }
 </style>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>trainval</th>
-      <th>Store</th>
-      <th>Dept</th>
-    </tr>
-    <tr>
-      <th>Date</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2010-02-05</th>
-      <td>True</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2010-02-12</th>
-      <td>True</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2010-02-19</th>
-      <td>True</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2010-02-26</th>
-      <td>True</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2010-03-05</th>
-      <td>True</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>2012-09-28</th>
-      <td>False</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2012-10-05</th>
-      <td>False</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2012-10-12</th>
-      <td>False</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2012-10-19</th>
-      <td>False</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-    <tr>
-      <th>2012-10-26</th>
-      <td>False</td>
-      <td>2</td>
-      <td>8</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>trainval</th>
+<th>Store</th>
+<th>Dept</th>
+</tr>
+<tr>
+<th>Date</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>2010-02-05</th>
+<td>True</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2010-02-12</th>
+<td>True</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2010-02-19</th>
+<td>True</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2010-02-26</th>
+<td>True</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2010-03-05</th>
+<td>True</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>2012-09-28</th>
+<td>False</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2012-10-05</th>
+<td>False</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2012-10-12</th>
+<td>False</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2012-10-19</th>
+<td>False</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<th>2012-10-26</th>
+<td>False</td>
+<td>2</td>
+<td>8</td>
+</tr>
+</tbody>
 </table>
 <p>143 rows × 3 columns</p>
 </div></div>
@@ -1496,34 +1487,30 @@ files have the <code class="docutils literal notranslate"><span class="pre">anom
 <p>If you want to either of the above custom datasets for benchmarking, you can call</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_anomaly.py --model IsolationForest --retrain_freq 7d \
     --dataset CustomAnomalyDataset --data_root data/synthetic_anomaly \
-    --data_kwargs &#39;{&quot;assume_no_anomaly&quot;: true, &quot;test_frac&quot;: 0.75}&#39;
+    --data_kwargs '{"assume_no_anomaly": true, "test_frac": 0.75}'
 </pre></div>
 </div>
 <p>or</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python benchmark_forecast.py --model AutoETS  \
     --dataset CustomDataset --data_root data/walmart/walmart_mini.csv \
-    --data_kwargs &#39;{&quot;test_frac&quot;: 0.25, \
-                    &quot;index_cols&quot;: [&quot;Store&quot;, &quot;Dept&quot;], \
-                    &quot;data_cols&quot;: [&quot;Weekly_Sales&quot;]}&#39;
+    --data_kwargs '{"test_frac": 0.25, \
+                    "index_cols": ["Store", "Dept"], \
+                    "data_cols": ["Weekly_Sales"]}'
 </pre></div>
 </div>
 <p>Note in the example above, we specify “data_cols” as “Weekly_Sales”. This indicates that the only column we are modeling is Weekly_Sales. If you wanted to do multivariate prediction, you could also add “Temperature”, “Fuel_Price”, “CPI”, etc. We treat the first of the data columns as the target univariate whose value you wish to forecast.</p>
 </div>
 </div>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="TimeSeries.html" class="btn btn-neutral float-left" title="Merlion’s Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="anomaly/0_AnomalyIntro.html" class="btn btn-neutral float-right" title="A Gentle Introduction to Anomaly Detection in Merlion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
-  </div>
+</div>
+</div>
+<footer><div aria-label="Footer" class="rst-footer-buttons" role="navigation">
+<a accesskey="p" class="btn btn-neutral float-left" href="TimeSeries.html" rel="prev" title="Merlion’s Data Format"><span aria-hidden="true" class="fa fa-arrow-circle-left"></span> Previous</a>
+<a accesskey="n" class="btn btn-neutral float-right" href="anomaly/0_AnomalyIntro.html" rel="next" title="A Gentle Introduction to Anomaly Detection in Merlion">Next <span aria-hidden="true" class="fa fa-arrow-circle-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<p>© Copyright 2021, salesforce.com, inc..</p>
+</div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
@@ -1531,128 +1518,24 @@ files have the <code class="docutils literal notranslate"><span class="pre">anom
    
 
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  
-
-  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Versions</span>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" data-toggle="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span class="fa fa-book"> Versions</span>
       v2.0.2
       <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      
-      <dl>
-        <dt>Versions</dt>
-        
-          
-          
-          <dd><a href="../../latest/index.html">latest</a></dd>
-          
-        
-           <strong> 
-          
-          <dd><a href="../../v2.0.2/index.html">v2.0.2</a></dd>
-           </strong> 
-        
-          
-          
-          <dd><a href="../../v2.0.1/index.html">v2.0.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v2.0.0/index.html">v2.0.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.3.1/index.html">v1.3.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.3.0/index.html">v1.3.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.5/index.html">v1.2.5</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.4/index.html">v1.2.4</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.3/index.html">v1.2.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.2.0/index.html">v1.2.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.1.3/index.html">v1.1.3</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.1.2/index.html">v1.1.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.1.1/index.html">v1.1.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.1.0/index.html">v1.1.0</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.0.2/index.html">v1.0.2</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
-          
-        
-          
-          
-          <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
-          
-        
-      </dl>
-      
-    </div>
-  </div>
-
- <script>
+</span>
+<div class="rst-other-versions">
+<dl><dt>Versions</dt><dd><a href="../../latest/index.html">latest</a></dd><dd><strong><a href="../../v2.0.2/index.html">v2.0.2</a></strong></dd><dd><a href="../../v2.0.1/index.html">v2.0.1</a></dd><dd><a href="../../v2.0.0/index.html">v2.0.0</a></dd><dd><a href="../../v1.3.1/index.html">v1.3.1</a></dd><dd><a href="../../v1.3.0/index.html">v1.3.0</a></dd><dd><a href="../../v1.2.5/index.html">v1.2.5</a></dd><dd><a href="../../v1.2.4/index.html">v1.2.4</a></dd><dd><a href="../../v1.2.3/index.html">v1.2.3</a></dd><dd><a href="../../v1.2.2/index.html">v1.2.2</a></dd><dd><a href="../../v1.2.1/index.html">v1.2.1</a></dd><dd><a href="../../v1.2.0/index.html">v1.2.0</a></dd><dd><a href="../../v1.1.3/index.html">v1.1.3</a></dd><dd><a href="../../v1.1.2/index.html">v1.1.2</a></dd><dd><a href="../../v1.1.1/index.html">v1.1.1</a></dd><dd><a href="../../v1.1.0/index.html">v1.1.0</a></dd><dd><a href="../../v1.0.2/index.html">v1.0.2</a></dd><dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd><dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd></dl>
+</div>
+</div>
+<script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
-
+  </script>
 </body>
 </html>

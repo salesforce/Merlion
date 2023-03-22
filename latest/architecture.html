@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merlion Architecture &mdash; Merlion 2.0.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Proof of Concept: Inverse Transforms for Forecasters" href="tutorials/advanced/2_ForecastInvertPOC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Merlion
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Merlion Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#transforms">Transforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inversion">Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multivariate-time-series">Multivariate Time Series</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pre-processing">Pre-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-defined-implementations">User-Defined Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-processing">Post-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-time-series">Multiple Time Series</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#model-variants">Model Variants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-variants">Simple Variants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensembles">Ensembles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#layered-models">Layered Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Post-Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-modules">Other Modules</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Merlion</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Merlion Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="merlion-architecture">
+<h1>Merlion Architecture<a class="headerlink" href="#merlion-architecture" title="Permalink to this heading"></a></h1>
+<p>This document is intended for Merlion developers. It outlines the architecture of Merlion’s key components,
+and how they interact with each other. In general, everything in this document describes the <code class="docutils literal notranslate"><span class="pre">base.py</span></code> files
+of the modules being discussed.</p>
+<div class="section" id="transforms">
+<h2>Transforms<a class="headerlink" href="#transforms" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="merlion.transform.html"><span class="doc">Transforms</span></a> in Merlion apply various useful pre-processing to time series data.</p>
+<div class="section" id="training">
+<h3>Training<a class="headerlink" href="#training" title="Permalink to this heading"></a></h3>
+<p>Many transforms are <em>trainable</em>.
+For example, if we want to normalize the data to have zero mean and unit variance, we use training data to learn the
+mean and variance of each variable in the time series. If we wish to resample the data to a fixed granularity, we use
+the most commonly observed timedelta in the training data.</p>
+</div>
+<div class="section" id="inversion">
+<h3>Inversion<a class="headerlink" href="#inversion" title="Permalink to this heading"></a></h3>
+<p>Many transforms are <em>invertible</em>.
+For example, one may invert the normalization <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">(x</span> <span class="pre">-</span> <span class="pre">mu)</span> <span class="pre">/</span> <span class="pre">sigma</span></code> via <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">sigma</span> <span class="pre">*</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">mu</span></code>.
+However, other transforms are lossy, and the input cannot be recovered without a <em>state</em>. For example, consider the
+difference transform <code class="docutils literal notranslate"><span class="pre">y[i+1]</span> <span class="pre">=</span> <span class="pre">x[i+1]</span> <span class="pre">-</span> <span class="pre">x[i]</span></code>. We need to record <code class="docutils literal notranslate"><span class="pre">x[0]</span></code> as the <code class="docutils literal notranslate"><span class="pre">transform.inversion_state</span></code>
+in order invert the difference transform and recover <code class="docutils literal notranslate"><span class="pre">x</span></code> from <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<p>For invertible transforms which require an inversion state, we handle the inversion state as follows:</p>
+<ul class="simple">
+<li><p>When the transform is called, the inversion state is set. For example, if <code class="docutils literal notranslate"><span class="pre">diff</span> <span class="pre">=</span> <span class="pre">DifferenceTransform()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">diff(x)</span></code> will record the first observation of each univariate in <code class="docutils literal notranslate"><span class="pre">x</span></code> as its inversion state.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">transform.invert(y)</span></code> is called, the inversion state is reset to <code class="docutils literal notranslate"><span class="pre">None</span></code>, unless the user explicitly
+invokes <code class="docutils literal notranslate"><span class="pre">transform.invert(y,</span> <span class="pre">retain_inversion_state=True)</span></code>. This ensures that the user doesn’t inadvertently
+apply a stale inversion state to a new time series.</p></li>
+</ul>
+<p>Some transforms are not invertible at all (e.g. resampling). In these case, <code class="docutils literal notranslate"><span class="pre">transform.invert(y)</span></code> simply returns
+<code class="docutils literal notranslate"><span class="pre">y</span></code>, and a warning is emitted.</p>
+</div>
+<div class="section" id="multivariate-time-series">
+<h3>Multivariate Time Series<a class="headerlink" href="#multivariate-time-series" title="Permalink to this heading"></a></h3>
+<p>For the time being, all transforms are applied identically to all univariates in a time series.
+We generally track the variables required for each univariate via a dictionary that maps the name of the univariate to
+the variables relevant for it. We explicitly use the names of each univariate to ensure robustness to ensure that
+everything behaves as expected even if the individual variables are reordered.</p>
+<p>A notable limitation of the current implementation is the fact that we cannot currently apply different transforms to
+different univariates. For example, we cannot mean-variance normalize univariate 0 and apply a difference transform
+to univariate 1. If there is demand for this sort of behavior in the future, we may consider adding a parameter to
+each transform which indicates the names of the univariates it should be applied to. This may be combined with a
+<a class="reference internal" href="merlion.transform.html#merlion.transform.sequence.TransformStack" title="merlion.transform.sequence.TransformStack"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformStack</span></code></a> to apply different transforms to different
+univariates. A new tutorial should be written if this feature is added.</p>
+</div>
+</div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="merlion.models.html"><span class="doc">Models</span></a> are the central object in Merlion.</p>
+<div class="section" id="pre-processing">
+<h3>Pre-Processing<a class="headerlink" href="#pre-processing" title="Permalink to this heading"></a></h3>
+<p>Each <code class="docutils literal notranslate"><span class="pre">model</span></code> has a <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> which pre-processes the data. Automatically applying this transform at both
+training and inference time (and inverting the transform for forecasting) is a key feature of Merlion models. In
+reality, it is worth noting that <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> is generally a reference to <code class="docutils literal notranslate"><span class="pre">model.config.transform</span></code>.
+If your data is already pre-processed, then you can set <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> to be the
+<a class="reference internal" href="merlion.transform.html#merlion.transform.base.Identity" title="merlion.transform.base.Identity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Identity</span></code></a>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">model.train()</span></code> is called, the first step is to call <code class="docutils literal notranslate"><span class="pre">model.train_pre_process()</span></code>. This method</p>
+<ul class="simple">
+<li><p>Records the dimension of the training data as <code class="docutils literal notranslate"><span class="pre">model.dim</span></code></p></li>
+<li><p>Trains <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> and applies it to the training data</p></li>
+<li><p>Records the sampling frequency of the transformed training data as <code class="docutils literal notranslate"><span class="pre">model.timedelta</span></code>
+(as well as the offset <code class="docutils literal notranslate"><span class="pre">model.timedelta_offset</span></code>)</p></li>
+<li><p>For forecasters, we additionally train and apply <code class="docutils literal notranslate"><span class="pre">model.exog_transform</span></code> on the exogenous data if any are given.
+We also record the dimension of the exogenous data as <code class="docutils literal notranslate"><span class="pre">model.exog_dim</span></code>.</p></li>
+</ul>
+<p>For anomaly detection, <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_score(time_series,</span> <span class="pre">time_series_prev)</span></code>
+includes the following pre-processing steps:</p>
+<ul class="simple">
+<li><p>Apply <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> to the concatenation of <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> and <code class="docutils literal notranslate"><span class="pre">time_series</span></code>.</p></li>
+<li><p>Ensure that the data’s dimension matches the dimension of the training data.</p></li>
+</ul>
+<p>For forecasting, <code class="docutils literal notranslate"><span class="pre">model.forecast(time_stamps,</span> <span class="pre">time_series_prev,</span> <span class="pre">exog_data)</span></code>
+includes the following pre-processing steps:</p>
+<ul class="simple">
+<li><p>If the model expects time series to be sampled at a fixed frequency, resample <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>
+to the frequency specified by <code class="docutils literal notranslate"><span class="pre">model.timedelta</span></code> and <code class="docutils literal notranslate"><span class="pre">model.timedelta_offset</span></code>.</p></li>
+<li><p>Save the current inversion state of <code class="docutils literal notranslate"><span class="pre">model.transform</span></code>, and then apply <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> to <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> is given, apply <code class="docutils literal notranslate"><span class="pre">model.exog_transform</span></code> to <code class="docutils literal notranslate"><span class="pre">exog_data</span></code>, and
+resample <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> to the same time stamps as <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> (after the transform) and <code class="docutils literal notranslate"><span class="pre">time_stamps</span></code>.</p></li>
+<li><p>Ensure that the dimensions of <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> and <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> match the training data.
+See <a class="reference internal" href="tutorials/forecast/3_ForecastExogenous.html"><span class="doc">Forecasting With Exogenous Regressors</span></a> for more details on exogenous regressors.</p></li>
+</ul>
+</div>
+<div class="section" id="user-defined-implementations">
+<h3>User-Defined Implementations<a class="headerlink" href="#user-defined-implementations" title="Permalink to this heading"></a></h3>
+<p>After pre-processing the input data, we pass it to the user-defined implementations <code class="docutils literal notranslate"><span class="pre">model._train()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">model._train_with_exog()</span></code>, <code class="docutils literal notranslate"><span class="pre">model._get_anomaly_score()</span></code>, or <code class="docutils literal notranslate"><span class="pre">model._forecast()</span></code>. These methods do the real work
+of training or inference for the underlying model, and these are the methods that must be manually defined for each new model.</p>
+</div>
+<div class="section" id="post-processing">
+<h3>Post-Processing<a class="headerlink" href="#post-processing" title="Permalink to this heading"></a></h3>
+<p>After training, both anomaly detectors and forecasters apply <code class="docutils literal notranslate"><span class="pre">model.train_post_process()</span></code> on the output of
+<code class="docutils literal notranslate"><span class="pre">model._train()</span></code>. For anomaly detectors, this involves training their post-rule (calibrator and threshold) and then
+returning the anomaly scores returned by <code class="docutils literal notranslate"><span class="pre">model._train()</span></code>. For forecasters, this involves applying the inverse of
+<code class="docutils literal notranslate"><span class="pre">model.transform</span></code> on the forecast returned by <code class="docutils literal notranslate"><span class="pre">model._train()</span></code>.</p>
+<p>For anomaly detectors, the final step of calling <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_label()</span></code> is to apply the post-rule on the
+unprocessed anomaly scores. For forecasters, we apply the inverse transform on the forecast and then set the inversion
+state of <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> to be what it was before <code class="docutils literal notranslate"><span class="pre">model.forecast()</span></code> was called.</p>
+</div>
+<div class="section" id="multiple-time-series">
+<h3>Multiple Time Series<a class="headerlink" href="#multiple-time-series" title="Permalink to this heading"></a></h3>
+<p>If we extend Merlion to accommodate training models on multiple time series, we must make some changes to the way that
+models handle transforms. In particular,</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">model.transform</span></code> should be re-trained for each time series individually.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>At training time, we will probably need to write a new method <code class="docutils literal notranslate"><span class="pre">model.train_pre_process_multiple()</span></code> which
+uses a different copy of <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> for each time series. The other functionality should be similar to
+<code class="docutils literal notranslate"><span class="pre">model.train_pre_process()</span></code>.</p></li>
+<li><p>At inference time, <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> must be a required parameter, and a copy of <code class="docutils literal notranslate"><span class="pre">model.transform</span></code>
+should be trained on <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>To make training code easier to write, <code class="docutils literal notranslate"><span class="pre">model.train_multiple()</span></code> probably doesn’t need to return anything when
+trained on multiple time series. This also removes the need to invert the transform on the training data.</p></li>
+<li><p>For anomaly detection, the <a class="reference internal" href="merlion.post_process.html"><span class="doc">post-processing transforms</span></a> should be updated to accommodate
+multiple time series. This is especially important for calibration. For example, if we receive 10 time series of
+of anomaly scores, we should use all 10 to learn a single calibrator, rather than learning one calibrator per time
+series. The underlying assumption is that the anomaly score distributions should be similar across all time series.</p></li>
+<li><p>For forecasting, <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> can be trained and applied on <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code>, and then inverted on the
+concatenation of <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> and <code class="docutils literal notranslate"><span class="pre">forecast</span></code> as it is done now, via a call to <code class="docutils literal notranslate"><span class="pre">model._process_forecast()</span></code>.
+<code class="docutils literal notranslate"><span class="pre">model.exog_transform</span></code> should also be handled similarly (minus the inversion).
+See <a class="reference internal" href="tutorials/forecast/3_ForecastExogenous.html"><span class="doc">Forecasting With Exogenous Regressors</span></a> for more details on exogenous regressors.</p></li>
+</ul>
+<p>In general, the code changes to <code class="docutils literal notranslate"><span class="pre">model.forecast()</span></code> and <code class="docutils literal notranslate"><span class="pre">model.get_anomaly_score()</span></code> are relatively minor.
+If the flag <code class="docutils literal notranslate"><span class="pre">model.multi_series</span> <span class="pre">``</span> <span class="pre">is</span> <span class="pre">set,</span> <span class="pre">then</span> <span class="pre">make</span> <span class="pre">sure</span> <span class="pre">that</span> <span class="pre">``time_series_prev</span></code> is given and then train
+<code class="docutils literal notranslate"><span class="pre">model.transform</span></code> and <code class="docutils literal notranslate"><span class="pre">model.exog_transform</span></code> on <code class="docutils literal notranslate"><span class="pre">time_series_prev</span></code> and <code class="docutils literal notranslate"><span class="pre">exog_data</span></code> respectively. After this
+point, the functions should be unchanged.</p>
+</div>
+</div>
+<div class="section" id="model-variants">
+<h2>Model Variants<a class="headerlink" href="#model-variants" title="Permalink to this heading"></a></h2>
+<p>There are a number of model variants which either build upon the above model classes or modify them slightly.</p>
+<div class="section" id="simple-variants">
+<h3>Simple Variants<a class="headerlink" href="#simple-variants" title="Permalink to this heading"></a></h3>
+<p>Below are some simpler model variants that are useful to understand:</p>
+<ul class="simple">
+<li><p>In order to support forecasting with exogenous regressors, we implement the
+<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterExogBase" title="merlion.models.forecast.base.ForecasterExogBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterExogBase</span></code></a> base class.
+Most of the functionality to support exogenous regressors is actually implemented in
+<a class="reference internal" href="merlion.models.forecast.html#merlion.models.forecast.base.ForecasterBase" title="merlion.models.forecast.base.ForecasterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecasterBase</span></code></a>, which this class inherits from. The only
+real difference is that a few internal fields have been changed to indicate that exogenous regressors are supported.</p></li>
+<li><p>We support using basic forecasters as the basis for anomaly detection models. The key piece is the mixin class
+<a class="reference internal" href="merlion.models.anomaly.forecast_based.html#merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase" title="merlion.models.anomaly.forecast_based.base.ForecastingDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ForecastingDetectorBase</span></code></a>.</p></li>
+<li><p>Some models don’t work unless the input is pre-normalized. To support these models, we implement the
+<a class="reference internal" href="merlion.models.html#merlion.models.base.NormalizingConfig" title="merlion.models.base.NormalizingConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">NormalizingConfig</span></code></a>. This config class applies a
+<code class="docutils literal notranslate"><span class="pre">MeanVarNormalize</span></code> after any other pre-processing (specified by the user in <code class="docutils literal notranslate"><span class="pre">transform</span></code>) has been applied.
+The full transform is accessed via <code class="docutils literal notranslate"><span class="pre">config.full_transform</span></code>. Models automatically understand how this works because
+the property <code class="docutils literal notranslate"><span class="pre">model.transform</span></code> tries to get <code class="docutils literal notranslate"><span class="pre">model.config.full_transform</span></code> if possible and defaults to
+<code class="docutils literal notranslate"><span class="pre">model.config.transform</span></code> otherwise. When using this class to implement models, simply add the <code class="docutils literal notranslate"><span class="pre">NormalizingConfig</span></code>
+as a base class for your model.</p></li>
+</ul>
+</div>
+<div class="section" id="ensembles">
+<h3>Ensembles<a class="headerlink" href="#ensembles" title="Permalink to this heading"></a></h3>
+<p>Merlion supports ensembles of both anomaly detectors and forecasters. The ensemble config has two key components
+which make this possible: <code class="docutils literal notranslate"><span class="pre">ensemble.config.models</span></code> contains all the models present in the ensemble, while
+<code class="docutils literal notranslate"><span class="pre">ensemble.config.combiner</span></code> contains a <a class="reference internal" href="merlion.models.ensemble.html#module-merlion.models.ensemble.combine" title="merlion.models.ensemble.combine"><code class="xref py py-mod docutils literal notranslate"><span class="pre">combiner</span></code></a> object which defines
+a way of combining the outputs of multiple models. This includes Mean, Median, and ModelSelector based on an evaluation
+metric. When doing model selection, the <code class="docutils literal notranslate"><span class="pre">ensemble.train()</span></code> method automatically splits the train data into training
+and validation splits, and it evaluates the performance of each model on the validation split.
+It then re-trains each model on the full training data afterwards.</p>
+<p>One possible improvement is to parallelize the training of each models in the models. We can probably just use
+Python’s native <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> library.</p>
+</div>
+<div class="section" id="layered-models">
+<h3>Layered Models<a class="headerlink" href="#layered-models" title="Permalink to this heading"></a></h3>
+<p>Layered models are a useful abstraction for models that act as a wrapper around another model. This feature is
+especially useful for AutoML. Like ensembles, we store the wrapped model in <code class="docutils literal notranslate"><span class="pre">layered_model.config.model</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">layered_model.model</span></code> is a reference to <code class="docutils literal notranslate"><span class="pre">layered_model.config.model</span></code>. The <em>base model</em> is the model at the
+lowest level of the hierarchy.</p>
+<p>There are a number of dirty tricks used to (1) ensure that layered anomaly detectors and forecasters inherit from the
+right base classes, (2) config parameters are not duplicated between different levels of the hierarchy, and (3) users
+can call a parameter like <code class="docutils literal notranslate"><span class="pre">layered_model.config.max_forecast_steps</span></code> (which should only be defined for the base model)
+and receive <code class="docutils literal notranslate"><span class="pre">layered_model.base_model.config.max_forecast_steps</span></code> directly.</p>
+<p>The documentation for <a class="reference internal" href="merlion.models.html#module-merlion.models.layers" title="merlion.models.layers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">merlion.models.layers</span></code></a> has some more details.</p>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Post-Processing<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p>Distinct <a class="reference internal" href="merlion.post_process.html"><span class="doc">post-rules</span></a> are only relevant for anomaly detection.
+There are two types of post-rules: calibration and thresholding. Similar to transforms, post-rules may be trained by
+calling <code class="docutils literal notranslate"><span class="pre">post_rule.train(train_anom_scores)</span></code> and applied by calling <code class="docutils literal notranslate"><span class="pre">post_rule(anom_scores)</span></code>. Extending post-rules
+so that they can be trained on multiple time series simultaneously is a worthwhile direction to investigate.</p>
+</div>
+<div class="section" id="other-modules">
+<h2>Other Modules<a class="headerlink" href="#other-modules" title="Permalink to this heading"></a></h2>
+<p>Most other modules are stand-alone pieces that don’t directly interact with each other, except in longer pipelines. We
+defer to the main documentation in <a class="reference internal" href="merlion.html"><span class="doc">merlion: Time Series Intelligence</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials/advanced/2_ForecastInvertPOC.html" class="btn btn-neutral float-left" title="Proof of Concept: Inverse Transforms for Forecasters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, salesforce.com, inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Versions</span>
+      latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Versions</dt>
+        
+           <strong> 
+          
+          <dd><a href="../latest/index.html">latest</a></dd>
+           </strong> 
+        
+          
+          
+          <dd><a href="../v2.0.2/index.html">v2.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v2.0.1/index.html">v2.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v2.0.0/index.html">v2.0.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.1/index.html">v1.3.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.3.0/index.html">v1.3.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.5/index.html">v1.2.5</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.4/index.html">v1.2.4</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.3/index.html">v1.2.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.2/index.html">v1.2.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.1/index.html">v1.2.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.2.0/index.html">v1.2.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.3/index.html">v1.1.3</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.2/index.html">v1.1.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.1/index.html">v1.1.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.1.0/index.html">v1.1.0</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.2/index.html">v1.0.2</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.1/index.html">v1.0.1</a></dd>
+          
+        
+          
+          
+          <dd><a href="../v1.0.0/index.html">v1.0.0</a></dd>
+          
+        
+      </dl>
+      
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="merlion.html">merlion: Time Series Intelligence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ts_datasets.html">ts_datasets: Easy Data Loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials &amp; Example Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Merlion Architecture</a></li>
 </ul>
 
         </div>
@@ -76,31 +77,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="welcome-to-merlion-s-documentation">
+  <div class="section" id="welcome-to-merlion-s-documentation">
 <h1>Welcome to Merlion’s documentation!<a class="headerlink" href="#welcome-to-merlion-s-documentation" title="Permalink to this heading"></a></h1>
 <p>Merlion is a Python library for time series intelligence. It features a unified interface for many commonly used
 <a class="reference internal" href="merlion.models.html"><span class="doc">models</span></a> and <a class="reference internal" href="ts_datasets.html"><span class="doc">datasets</span></a> for forecasting, anomaly detection, and change
@@ -159,6 +136,8 @@ You can view the dashboard at <a class="reference external" href="http://localho
 <p>For code resources, we recommend the linked tutorials on <a class="reference internal" href="tutorials/anomaly/0_AnomalyIntro.html"><span class="doc">anomaly detection</span></a>
 and <a class="reference internal" href="tutorials/forecast/0_ForecastIntro.html"><span class="doc">forecasting</span></a>. After that, you should read in more detail about Merlion’s
 main data structure for representing time series <a class="reference internal" href="tutorials/TimeSeries.html"><span class="doc">here</span></a>.</p>
+<p>Finally, developers should look at the <a class="reference internal" href="architecture.html"><span class="doc">architecture</span></a> document to better understand how Merlion’s
+key components interact with each other.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -183,6 +162,14 @@ main data structure for representing time series <a class="reference internal" h
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#anomaly-detection">Anomaly Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#forecasting">Forecasting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Merlion Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#transforms">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#models">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#model-variants">Model Variants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#id1">Post-Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#other-modules">Other Modules</a></li>
 </ul>
 </li>
 </ul>
