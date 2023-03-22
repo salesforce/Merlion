@@ -175,7 +175,7 @@ class LayeredModel(ModelBase, metaclass=AutodocABCMeta):
     We define the *base model* as the non-layered model at the base of the overall model hierarchy.
 
     The layered model is allowed to access any callable attribute of the base model,
-    e.g. ``model.set_seasonality(...)`` resolves to``model.base_model.set_seasonality(...)`` for a `SeasonalityModel`.
+    e.g. ``model.set_seasonality(...)`` resolves to ``model.base_model.set_seasonality(...)`` for a `SeasonalityModel`.
     If the base model is a forecaster, the layered model will automatically inherit from `ForecasterBase`; similarly
     for `DetectorBase` or `ForecastingDetectorBase`. The abstract methods (``forecast`` and ``get_anomaly_score``)
     are overridden to call the underlying model.

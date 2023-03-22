@@ -69,6 +69,9 @@ For code resources, we recommend the linked tutorials on `anomaly detection <tut
 and `forecasting <tutorials/forecast/0_ForecastIntro>`. After that, you should read in more detail about Merlion's
 main data structure for representing time series `here <tutorials/TimeSeries>`.
 
+Finally, developers should look at the `architecture <architecture>` document to better understand how Merlion's
+key components interact with each other.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -76,6 +79,7 @@ main data structure for representing time series `here <tutorials/TimeSeries>`.
    merlion
    ts_datasets
    tutorials
+   architecture
 
 
 Indices and tables
