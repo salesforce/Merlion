@@ -130,7 +130,7 @@ The easiest way to get started is to use the GUI web-based
 [dashboard](https://opensource.salesforce.com/Merlion/merlion.dashboard.html).
 This dashboard provides a great way to quickly experiment with many models on your own custom datasets.
 To use it, install Merlion with the optional ``dashboard`` dependency (i.e.
-``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line.
+``pip install salesforce-merlion[dashboard]``), and call ``python -m merlion.dashboard`` from the command line. The ``dashboard`` expects conda to be installed on your system.
 You can view the dashboard at http://localhost:8050.
 Below, we show some screenshots of the dashboard for both anomaly detection and forecasting.
 
