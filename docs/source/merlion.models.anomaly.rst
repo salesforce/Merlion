@@ -133,6 +133,13 @@ anomaly.lstm_ed
    :undoc-members:
    :show-inheritance:
 
+anomaly.lof
+^^^^^^^^^^^^^^^
+.. automodule:: merlion.models.anomaly.lof
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 anomaly.deep\_point\_anomaly\_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: merlion.models.anomaly.deep_point_anomaly_detector

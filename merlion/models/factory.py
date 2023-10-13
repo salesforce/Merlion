@@ -26,6 +26,7 @@ import_alias = dict(
     ArimaDetector="merlion.models.anomaly.forecast_based.arima:ArimaDetector",
     DynamicBaseline="merlion.models.anomaly.dbl:DynamicBaseline",
     IsolationForest="merlion.models.anomaly.isolation_forest:IsolationForest",
+    LocalOutlierFactor="merlion.models.anomaly.lof:LOF",
     # Forecast-based anomaly detection models
     ETSDetector="merlion.models.anomaly.forecast_based.ets:ETSDetector",
     MSESDetector="merlion.models.anomaly.forecast_based.mses:MSESDetector",

@@ -24,6 +24,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         "ArimaDetector",
         "DynamicBaseline",
         "IsolationForest",
+        "LocalOutlierFactor"
         "ETSDetector",
         "MSESDetector",
         "ProphetDetector",
@@ -34,7 +35,7 @@ class AnomalyModel(ModelMixin, DataMixin):
         "ZMS",
         "DeepPointAnomalyDetector",
     ]
-    multivariate_algorithms = ["IsolationForest", "AutoEncoder", "VAE", "DAGMM", "LSTMED"]
+    multivariate_algorithms = ["IsolationForest", "AutoEncoder", "VAE", "DAGMM", "LSTMED","LocalOutlierFactor"]
     thresholds = ["Threshold", "AggregateAlarms"]
 
     def __init__(self):
