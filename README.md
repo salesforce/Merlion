@@ -299,3 +299,6 @@ If you're using Merlion in your research or applications, please cite using this
       primaryClass={cs.LG}
 }
 ```
+## To Dos
+We are striving to leverage the time-series modeling from GPUs to further improve the speed and throughput of Merlion. 
+Stay tuned ...   
