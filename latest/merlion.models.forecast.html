@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>forecast &mdash; Merlion 2.0.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -2250,7 +2252,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.deep_ar.</span></span><span class="sig-name descname"><span class="pre">DeepARModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.deep_ar.DeepARModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel" title="merlion.models.deep_base.TorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchModel</span></code></a></p>
 <p>Implementaion of Deep AR model</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.deep_ar.DeepARModel.get_lagged_subsequences">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_lagged_subsequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsequences_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.deep_ar.DeepARModel.get_lagged_subsequences" title="Permalink to this definition"></a></dt>
@@ -2279,7 +2281,7 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.deep_ar.DeepARModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.deep_ar.DeepARModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
+<dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2378,11 +2380,11 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.autoformer.</span></span><span class="sig-name descname"><span class="pre">AutoformerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.autoformer.AutoformerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel" title="merlion.models.deep_base.TorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchModel</span></code></a></p>
 <p>Implementaion of Autoformer deep torch model.</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.autoformer.AutoformerModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_enc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.autoformer.AutoformerModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
+<dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2477,11 +2479,11 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.etsformer.</span></span><span class="sig-name descname"><span class="pre">ETSformerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.etsformer.ETSformerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel" title="merlion.models.deep_base.TorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchModel</span></code></a></p>
 <p>Implementaion of ETSformer deep torch model.</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.etsformer.ETSformerModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_enc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.etsformer.ETSformerModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
+<dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2600,11 +2602,11 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.informer.</span></span><span class="sig-name descname"><span class="pre">InformerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.informer.InformerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel" title="merlion.models.deep_base.TorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchModel</span></code></a></p>
 <p>Implementaion of informer deep torch model.</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.informer.InformerModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_enc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.informer.InformerModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
+<dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2703,11 +2705,11 @@ we will not invert it for forecaster-based anomaly detectors or transforms witho
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.forecast.transformer.</span></span><span class="sig-name descname"><span class="pre">TransformerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.transformer.TransformerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="merlion.models.html#merlion.models.deep_base.TorchModel" title="merlion.models.deep_base.TorchModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchModel</span></code></a></p>
 <p>Implementaion of Transformer deep torch model.</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="merlion.models.forecast.transformer.TransformerModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enc_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_self_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_enc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.forecast.transformer.TransformerModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
+<dd><p>Define the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
