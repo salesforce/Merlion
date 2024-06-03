@@ -5,7 +5,7 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 """
-Window Statistics anomaly detection model for data with weekly seasonality.
+Window Statistics anomaly detection model for data with monthly seasonality.
 """
 import datetime
 import logging
@@ -39,9 +39,9 @@ class WindStatsConfig(DetectorConfig):
     def __init__(self, wind_sz=30, max_day=4, **kwargs):
         """
         :param wind_sz: the window size in minutes, default is 30 minute window
-        :param max_day: maximum number of week days stored in memory (only mean
+        :param max_day: maximum number of month days stored in memory (only mean
             and std of each window are stored). Here, the days are first
-            bucketed by weekday and then by window id.
+            bucketed by month day and then by window id.
         """
         self.wind_sz = wind_sz
         self.max_day = max_day
