@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This is the running file that implements windstats with both weekly and monthly seasonalities.
-For the implementation of only weekly/monthly seasonality, refer to winstats.py or windstats_monthly.py.
+For the implementation of only weekly/monthly seasonality, specify "enable_weekly" of "enable_monthly" arguments of RunWindStats().
 """
 
 from windstats import WindStats, WindStatsConfig
