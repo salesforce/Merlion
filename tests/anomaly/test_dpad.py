@@ -79,7 +79,10 @@ class TestDPAD(unittest.TestCase):
         self.model.save(dirname=join(rootdir, "tmp", "dpad"))
         loaded_model = DeepPointAnomalyDetector.load(dirname=join(rootdir, "tmp", "dpad"))
         loaded_alarms = loaded_model.get_anomaly_label(self.test_data)
-        n_loaded_alarms = np.sum(loaded_alarms.to_pd().values != 0)
+        try:
+            n_loaded_alarms = np.sum(loaded_alarms.to_pd().values != 0)
+        except:
+            n_loaded_alarms = sum(loaded_alarms.to_pd().values != 0)
         self.assertAlmostEqual(n_loaded_alarms, n_alarms, delta=1)
 
         # Evaluation
