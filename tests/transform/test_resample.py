@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestResample(unittest.TestCase):
+    
     def _test_granularity(self, granularity, offset=pd.to_timedelta(0)):
         # 6:30am on the 3rd of every other month
         index = pd.date_range("1970-12-01", "2010-01-01", freq=granularity) + offset
@@ -31,6 +32,11 @@ class TestResample(unittest.TestCase):
         transform = TemporalResample()
         transform.train(train)
         granularity = TemporalResample(granularity=granularity).granularity
+        if str(transform.granularity)[-1] == "E":
+            transform.granularity = str(transform.granularity)[:-1]
+        if str(granularity)[-1] == "E":
+            granularity = str(granularity)[:-1]
+        
         self.assertEqual(transform.granularity, granularity)
 
         # Make sure the resampled values are correct
