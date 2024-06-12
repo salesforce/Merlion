@@ -63,10 +63,7 @@ class TestResample(unittest.TestCase):
         logger.info("Testing start-of-year resampling...")
         self._test_granularity(granularity="12MS", offset=pd.to_timedelta(0))
         logger.info("Testing end-of-year resampling...")
-        if sys.version_info[1] < 8:
-            self._test_granularity(granularity="12M", offset=pd.to_timedelta(0))
-        else:
-            self._test_granularity(granularity="12ME", offset=pd.to_timedelta(0))
+        self._test_granularity(granularity="12M", offset=pd.to_timedelta(0))
 
 
 class TestShingle(unittest.TestCase):
