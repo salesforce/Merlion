@@ -49,12 +49,14 @@ class TestResample(unittest.TestCase):
         logger.info("Testing start-of-month resampling with an offset...")
         self._test_granularity(granularity="2MS", offset=pd.Timedelta(days=3, hours=6, minutes=30))
         logger.info("Testing end-of-month resampling...")
-        self._test_granularity(granularity="2ME")
+        if sys.version_info[1] < 8:
+            self._test_granularity(granularity="2M")
+        else:
+            self._test_granularity(granularity="2ME")
         logger.info("Testing end-of-month resampling...")
         if sys.version_info[1] < 8:
             self._test_granularity(granularity="2M", offset=-pd.Timedelta(days=7, hours=7))
-
-        if sys.version_info[1] >= 8:
+        else:
             self._test_granularity(granularity="2ME", offset=-pd.Timedelta(days=7, hours=7))
 
     def test_yearly(self):
@@ -63,8 +65,7 @@ class TestResample(unittest.TestCase):
         logger.info("Testing end-of-year resampling...")
         if sys.version_info[1] < 8:
             self._test_granularity(granularity="12M", offset=pd.to_timedelta(0))
-
-        if sys.version_info[1] >= 8:
+        else:
             self._test_granularity(granularity="12ME", offset=pd.to_timedelta(0))
 
 
