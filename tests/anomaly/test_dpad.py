@@ -19,6 +19,7 @@ from merlion.transform.moving_average import DifferenceTransform
 from merlion.transform.resample import Shingle, TemporalResample
 from merlion.transform.sequence import TransformSequence
 from merlion.utils import TimeSeries
+from merlion.post_process.threshold import AdaptiveAggregateAlarms
 
 rootdir = dirname(dirname(dirname(abspath(__file__))))
 logger = logging.getLogger(__name__)
@@ -49,7 +50,8 @@ class TestDPAD(unittest.TestCase):
             DeepPointAnomalyDetectorConfig(
                 transform=TransformSequence(
                     [TemporalResample("15min"), Shingle(size=3, stride=2), DifferenceTransform()]
-                )
+                ),
+                threshold = AdaptiveAggregateAlarms(0.1)
             )
         )
 
