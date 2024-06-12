@@ -80,9 +80,15 @@ class TestDPAD(unittest.TestCase):
         loaded_model = DeepPointAnomalyDetector.load(dirname=join(rootdir, "tmp", "dpad"))
         loaded_alarms = loaded_model.get_anomaly_label(self.test_data)
         try:
+            n_loaded_alarms = sum(loaded_alarms.to_pd().values != 0)
+        except:
+            print("An exception occurred. Might due to version issue")
+            
+        try:
             n_loaded_alarms = np.sum(loaded_alarms.to_pd().values != 0)
         except:
-            n_loaded_alarms = sum(loaded_alarms.to_pd().values != 0)
+            print("An exception occurred. Might due to version issue")
+            
         self.assertAlmostEqual(n_loaded_alarms, n_alarms, delta=1)
 
         # Evaluation
