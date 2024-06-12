@@ -51,28 +51,21 @@ class TestResample(unittest.TestCase):
         logger.info("Testing end-of-month resampling...")
         self._test_granularity(granularity="2ME")
         logger.info("Testing end-of-month resampling...")
-        try:
+        if sys.version_info[1] < 8:
             self._test_granularity(granularity="2M", offset=-pd.Timedelta(days=7, hours=7))
-        except:
-            print("An exception occurred. Might due to version issue")
-        try:
+
+        if sys.version_info[1] >= 8:
             self._test_granularity(granularity="2ME", offset=-pd.Timedelta(days=7, hours=7))
-        except:
-            print("An exception occurred. Might due to version issue")
 
     def test_yearly(self):
         logger.info("Testing start-of-year resampling...")
         self._test_granularity(granularity="12MS", offset=pd.to_timedelta(0))
         logger.info("Testing end-of-year resampling...")
-        try:
+        if sys.version_info[1] < 8:
             self._test_granularity(granularity="12M", offset=pd.to_timedelta(0))
-        except:
-            print("An exception occurred. Might due to version issue")
-            
-        try:
+
+        if sys.version_info[1] >= 8:
             self._test_granularity(granularity="12ME", offset=pd.to_timedelta(0))
-        except:
-            print("An exception occurred. Might due to version issue")
 
 
 class TestShingle(unittest.TestCase):
