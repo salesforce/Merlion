@@ -10,13 +10,23 @@ from merlion.models.anomaly.windstats_monthly import MonthlyWindStats, MonthlyWi
 from merlion.utils import TimeSeries
 
 class RunWindStats:
-    def __init__(self, threshold, enable_weekly = True, enable_monthly = True, post_rule_on_anom_score = False, WeeklyWindStatsConfig = WindStatsConfig(), MonthlyWindStatsConfig = MonthlyWindStatsConfig()):
+    def __init__(
+            self, 
+            threshold,
+            enable_weekly = True, 
+            enable_monthly = True, 
+            post_rule_on_anom_score = False, 
+            WeeklyWindStatsConfig = WindStatsConfig(), 
+            MonthlyWindStatsConfig = MonthlyWindStatsConfig(),
+            return_score = True
+    ):
         """
         Users can customize the configuration for weekly or monthly-based windstats. If not, then the default configuration will apply.
         """
                 
         self.enable_weekly = enable_weekly
         self.enable_monthly = enable_monthly
+        self.return_score = return_score
         assert self.enable_weekly == True or self.enable_monthly == True, "Must enable either weekly or monthly seasonality, or both!"
         
         # Threshold on identifying anomaly based on anomaly score.
@@ -61,8 +71,17 @@ class RunWindStats:
             
         # Anomaly is identified if and only if it's detected in both weekly and monthly patterns.
         if self.enable_weekly and self.enable_monthly:
-            return scores_weekly, scores_monthly, labels_weekly * labels_monthly
+            if self.return_score:
+                return scores_weekly, scores_monthly, scores_weekly * scores_monthly
+            else:
+                return scores_weekly, scores_monthly, labels_weekly * labels_monthly
         elif self.enable_weekly:
-            return scores_weekly, None, labels_weekly
+            if self.return_score:
+                return scores_weekly, None, scores_weekly
+            else:
+                return scores_weekly, None, labels_weekly
         else:
-            return None, scores_monthly, labels_monthly
+            if self.return_score:
+                return None, scores_monthly, scores_monthly
+            else:
+                return None, scores_monthly, labels_monthly
