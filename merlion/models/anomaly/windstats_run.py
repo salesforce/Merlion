@@ -24,12 +24,13 @@ class RunWindStats:
         # If apply post rules on anomaly score
         self.post_rule = post_rule_on_anom_score
         
+        # Intialize according model if enable weekly/monthly analysis
         if self.enable_weekly:
             self.model_weekly  = WindStats(WeeklyWindStatsConfig)
-            
         if self.enable_monthly:
             self.model_monthly = MonthlyWindStats(MonthlyWindStatsConfig)
 
+    # Identify anomaly based on the hard threshold.
     def anomalyByScore(self, scores, threshold):
         labels = scores.copy()
         labels.loc[abs(labels["anom_score"]) <= threshold] = 0
@@ -38,6 +39,7 @@ class RunWindStats:
         labels.rename(columns = {"anom_score": "anomaly"}, inplace = True)
         return labels
     
+    # Filter anomaly scores based on post rules. Same as "get_anomaly_label" in WindStats
     def get_anomaly_label(self, model, ts):
         scores = model.train(ts)
         return model.post_rule(scores) if model.post_rule is not None else scores
@@ -48,9 +50,7 @@ class RunWindStats:
                 scores_weekly = self.get_anomaly_label(self.model_weekly, ts).to_pd()
             else:
                 scores_weekly = self.model_weekly.train(ts).to_pd()
-                print(scores_weekly)
             labels_weekly = self.anomalyByScore(scores_weekly, self.threshold)
-            print(scores_weekly)
         
         if self.enable_monthly:
             if self.post_rule:
@@ -59,6 +59,7 @@ class RunWindStats:
                 scores_monthly = self.model_monthly.train(ts).to_pd()
             labels_monthly = self.anomalyByScore(scores_monthly, self.threshold)
             
+        # Anomaly is identified if and only if it's detected in both weekly and monthly patterns.
         if self.enable_weekly and self.enable_monthly:
             return scores_weekly, scores_monthly, labels_weekly * labels_monthly
         elif self.enable_weekly:
