@@ -67,7 +67,7 @@ setup(
         "py4j",
         "matplotlib",
         "plotly>=4.13",
-        "numpy>=1.21",  # 1.21 remediates a security risk
+        "numpy>=1.21,<2.0",  # 1.21 remediates a security risk
         "packaging",
         "pandas>=1.1.0",  # >=1.1.0 for origin kwarg to df.resample()
         "prophet>=1.1",  # 1.1 removes dependency on pystan
