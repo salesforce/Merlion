@@ -35,7 +35,7 @@ import_alias = dict(
     WindStats="merlion.models.anomaly.windstats:WindStats",
     SpectralResidual="merlion.models.anomaly.spectral_residual:SpectralResidual",
     ZMS="merlion.models.anomaly.zms:ZMS",
-    DeepPointAnomalyDetector="merlion.models.anomaly.deep_point_anomaly_detector:DeepPointAnomalyDetector",
+    # DeepPointAnomalyDetector="merlion.models.anomaly.deep_point_anomaly_detector:DeepPointAnomalyDetector",
     # Multivariate Anomaly Detection models
     AutoEncoder="merlion.models.anomaly.autoencoder:AutoEncoder",
     VAE="merlion.models.anomaly.vae:VAE",
