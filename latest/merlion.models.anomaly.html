@@ -278,6 +278,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.lof">anomaly.lof</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lof.LOFConfig"><code class="docutils literal notranslate"><span class="pre">LOFConfig</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.lof.LOF"><code class="docutils literal notranslate"><span class="pre">LOF</span></code></a><ul>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lof.LOF.config_class"><code class="docutils literal notranslate"><span class="pre">LOF.config_class</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lof.LOF.require_even_sampling"><code class="docutils literal notranslate"><span class="pre">LOF.require_even_sampling</span></code></a></li>
+<li class="toctree-l8"><a class="reference internal" href="#merlion.models.anomaly.lof.LOF.require_univariate"><code class="docutils literal notranslate"><span class="pre">LOF.require_univariate</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l6"><a class="reference internal" href="#module-merlion.models.anomaly.deep_point_anomaly_detector">anomaly.deep_point_anomaly_detector</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetectorConfig"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetectorConfig</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="#merlion.models.anomaly.deep_point_anomaly_detector.DeepPointAnomalyDetector"><code class="docutils literal notranslate"><span class="pre">DeepPointAnomalyDetector</span></code></a><ul>
@@ -2069,6 +2079,128 @@ is estimated for anomaly detection.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="merlion.models.anomaly.lstm_ed.LSTMED.require_univariate">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.lstm_ed.LSTMED.require_univariate" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model only works with univariate time series.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-merlion.models.anomaly.lof">
+<span id="anomaly-lof"></span><h3>anomaly.lof<a class="headerlink" href="#module-merlion.models.anomaly.lof" title="Permalink to this heading"></a></h3>
+<p>The classic LocalOutlierFactor model for anomaly detection.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.lof.LOFConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.lof.</span></span><span class="sig-name descname"><span class="pre">LOFConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'minkowski'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contamination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">novelty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_calibrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merlion.transform.html#merlion.transform.base.TransformBase" title="merlion.transform.base.TransformBase"><span class="pre">TransformBase</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.lof.LOFConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorConfig" title="merlion.models.anomaly.base.DetectorConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorConfig</span></code></a></p>
+<p>Configuration class for <cite>LocalOutlierFactor</cite>.</p>
+<dl>
+<dt>n_neighbors<span class="classifier">int, optional (default=20)</span></dt><dd><p>Number of neighbors to use by default for <cite>kneighbors</cite> queries.
+If n_neighbors is larger than the number of samples provided,
+all samples will be used.</p>
+</dd>
+<dt>algorithm<span class="classifier">{‘auto’, ‘ball_tree’, ‘kd_tree’, ‘brute’}, optional</span></dt><dd><p>Algorithm used to compute the nearest neighbors:</p>
+<ul class="simple">
+<li><p>‘ball_tree’ will use BallTree</p></li>
+<li><p>‘kd_tree’ will use KDTree</p></li>
+<li><p>‘brute’ will use a brute-force search.</p></li>
+<li><p>‘auto’ will attempt to decide the most appropriate algorithm
+based on the values passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code> method.</p></li>
+</ul>
+<p>Note: fitting on sparse input will override the setting of
+this parameter, using brute force.</p>
+</dd>
+<dt>leaf_size<span class="classifier">int, optional (default=30)</span></dt><dd><p>Leaf size passed to <cite>BallTree</cite> or <cite>KDTree</cite>. This can
+affect the speed of the construction and query, as well as the memory
+required to store the tree. The optimal value depends on the
+nature of the problem.</p>
+</dd>
+<dt>metric<span class="classifier">string or callable, default ‘minkowski’</span></dt><dd><p>metric used for the distance computation. Any metric from scikit-learn
+or scipy.spatial.distance can be used.</p>
+<p>If ‘precomputed’, the training input X is expected to be a distance
+matrix.</p>
+<p>If metric is a callable function, it is called on each
+pair of instances (rows) and the resulting value recorded. The callable
+should take two arrays as input and return one value indicating the
+distance between them. This works for Scipy’s metrics, but is less
+efficient than passing the metric name as a string.</p>
+<p>Valid values for metric are:</p>
+<ul class="simple">
+<li><p>from scikit-learn: [‘cityblock’, ‘cosine’, ‘euclidean’, ‘l1’, ‘l2’,
+‘manhattan’]</p></li>
+<li><p>from scipy.spatial.distance: [‘braycurtis’, ‘canberra’, ‘chebyshev’,
+‘correlation’, ‘dice’, ‘hamming’, ‘jaccard’, ‘kulsinski’,
+‘mahalanobis’, ‘matching’, ‘minkowski’, ‘rogerstanimoto’,
+‘russellrao’, ‘seuclidean’, ‘sokalmichener’, ‘sokalsneath’,
+‘sqeuclidean’, ‘yule’]</p></li>
+</ul>
+<p>See the documentation for scipy.spatial.distance for details on these
+metrics:
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/spatial.distance.html">http://docs.scipy.org/doc/scipy/reference/spatial.distance.html</a></p>
+</dd>
+<dt>p<span class="classifier">integer, optional (default = 2)</span></dt><dd><p>Parameter for the Minkowski metric from
+sklearn.metrics.pairwise.pairwise_distances. When p = 1, this is
+equivalent to using manhattan_distance (l1), and euclidean_distance
+(l2) for p = 2. For arbitrary p, minkowski_distance (l_p) is used.
+See <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.pairwise_distances">http://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.pairwise_distances</a></p>
+</dd>
+<dt>metric_params<span class="classifier">dict, optional (default = None)</span></dt><dd><p>Additional keyword arguments for the metric function.</p>
+</dd>
+<dt>contamination<span class="classifier">float in (0., 0.5), optional (default=0.1)</span></dt><dd><p>The amount of contamination of the data set, i.e. the proportion
+of outliers in the data set. When fitting this is used to define the
+threshold on the decision function.</p>
+</dd>
+<dt>n_jobs<span class="classifier">int, optional (default = 1)</span></dt><dd><p>The number of parallel jobs to run for neighbors search.
+If <code class="docutils literal notranslate"><span class="pre">-1</span></code>, then the number of jobs is set to the number of CPU cores.
+Affects only kneighbors and kneighbors_graph methods.</p>
+</dd>
+<dt>novelty<span class="classifier">bool (default=False)</span></dt><dd><p>By default, LocalOutlierFactor is only meant to be used for outlier
+detection (novelty=False). Set novelty to True if you want to use
+LocalOutlierFactor for novelty detection. In this case be aware that
+that you should only use predict, decision_function and score_samples
+on new unseen data and not on the training set.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_score</strong> – maximum possible uncalibrated anomaly score</p></li>
+<li><p><strong>threshold</strong> – the rule to use for thresholding anomaly scores</p></li>
+<li><p><strong>enable_calibrator</strong> – whether to enable a calibrator which
+automatically transforms all raw anomaly scores to be z-scores
+(i.e. distributed as N(0, 1)).</p></li>
+<li><p><strong>enable_threshold</strong> – whether to enable the thresholding rule
+when post-processing anomaly scores</p></li>
+<li><p><strong>transform</strong> – Transformation to pre-process input time series.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="merlion.models.anomaly.lof.LOF">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">merlion.models.anomaly.lof.</span></span><span class="sig-name descname"><span class="pre">LOF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#merlion.models.anomaly.lof.LOF" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#merlion.models.anomaly.base.DetectorBase" title="merlion.models.anomaly.base.DetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DetectorBase</span></code></a></p>
+<p>The classic LocalOutlierFactor sklearn implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#merlion.models.anomaly.lof.LOFConfig" title="merlion.models.anomaly.lof.LOFConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">LOFConfig</span></code></a>) – model configuration</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="merlion.models.anomaly.lof.LOF.config_class">
+<span class="sig-name descname"><span class="pre">config_class</span></span><a class="headerlink" href="#merlion.models.anomaly.lof.LOF.config_class" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#merlion.models.anomaly.lof.LOFConfig" title="merlion.models.anomaly.lof.LOFConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">LOFConfig</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.lof.LOF.require_even_sampling">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_even_sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.lof.LOF.require_even_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the model assumes that training data is sampled at a fixed frequency</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="merlion.models.anomaly.lof.LOF.require_univariate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">require_univariate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#merlion.models.anomaly.lof.LOF.require_univariate" title="Permalink to this definition"></a></dt>
 <dd><p>Whether the model only works with univariate time series.</p>
 </dd></dl>
 
