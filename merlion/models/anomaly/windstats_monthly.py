@@ -22,7 +22,7 @@ from merlion.utils import UnivariateTimeSeries, TimeSeries
 logger = logging.getLogger(__name__)
 
 
-class WindStatsConfig(DetectorConfig):
+class MonthlyWindStatsConfig(DetectorConfig):
     """
     Config class for `WindStats`.
     """
@@ -61,15 +61,15 @@ class MonthlyWindStats(DetectorBase):
     minimum of the scores is returned.
     """
 
-    config_class = WindStatsConfig
+    config_class = MonthlyWindStatsConfig
 
-    def __init__(self, config: WindStatsConfig = None):
+    def __init__(self, config: MonthlyWindStatsConfig = None):
         """
         config.wind_sz: the window size in minutes, default is 30 minute window
         config.max_days: maximum number of days stored in memory (only mean and std of each window are stored), default is 4 days
         here the days are first bucketized and then bucketized by window id.
         """
-        super().__init__(WindStatsConfig() if config is None else config)
+        super().__init__(MonthlyWindStatsConfig() if config is None else config)
         self.table = {}
 
     @property
