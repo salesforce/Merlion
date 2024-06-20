@@ -191,5 +191,14 @@
     "post_rule_train_config": {
       "default": {"unsup_quantile": 0.95}
     }
+  },
+  "LocalOutlierFactor": {"alias": "LocalOutlierFactor"},
+  "LocalOutlierFactor": {
+    "config": {
+      "default": {}
+    },
+    "post_rule_train_config": {
+      "default": {"unsup_quantile": 0.95}
+    }
   }
 }
