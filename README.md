@@ -108,7 +108,7 @@ Note the following external dependencies:
 1. Some of our forecasting models depend on OpenMP. If using ``conda``, please ``conda install -c conda-forge lightgbm``
    before installing our package. This will ensure that OpenMP is configured to work with the ``lightgbm`` package
    (one of our dependencies) in your ``conda`` environment. If using Mac, please install [Homebrew](https://brew.sh/)
-   and call ``brew install libomp`` so that the OpenMP libary is available for the model.
+   and call ``brew install libomp`` so that the OpenMP library is available for the model.
 
 2. Some of our anomaly detection models depend on the Java Development Kit (JDK). For Ubuntu, call
    ``sudo apt-get install openjdk-11-jdk``. For Mac OS, install [Homebrew](<https://brew.sh/>) and call
