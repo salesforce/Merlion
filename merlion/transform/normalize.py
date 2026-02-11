@@ -200,7 +200,7 @@ class BoxCoxTransform(InvertibleTransformBase):
         new_vars = []
         for name, var in time_series.items():
             lmbda = self.lmbda[name]
-            if lmbda > 0:
+            if lmbda != 0:
                 var = (lmbda * var + 1) ** (1 / lmbda)
                 nanvals = var.isna()
                 if nanvals.any():
