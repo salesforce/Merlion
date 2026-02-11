@@ -88,7 +88,9 @@ class ConjPrior(ABC):
             setattr(ret, k, copy.deepcopy(v))
         return ret
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         return self.__copy__()
 
     @staticmethod

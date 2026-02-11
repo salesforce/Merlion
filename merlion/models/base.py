@@ -103,7 +103,9 @@ class Config(object, metaclass=ModelConfigMeta):
     def __copy__(self):
         return self.from_dict(self.to_dict())
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         return self.__copy__()
 
     def get_unused_kwargs(self, **kwargs):
@@ -467,7 +469,9 @@ class ModelBase(metaclass=AutodocABCMeta):
         new_model.__setstate__(state_dict)
         return new_model
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         new_model = self.__class__(config=copy.deepcopy(self.config))
         state_dict = self.__getstate__()
         state_dict.pop("config", None)

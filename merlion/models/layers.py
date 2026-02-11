@@ -129,7 +129,9 @@ class LayeredModelConfig(Config):
         config_dict["model"] = self.model
         return self.from_dict(config_dict)
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         config_dict = super().to_dict(_skipped_keys={"model"})
         config_dict["model"] = copy.deepcopy(self.model)
         return self.from_dict(config_dict)
