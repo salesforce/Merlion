@@ -83,7 +83,9 @@ class CombinerBase(metaclass=AutodocABCMeta):
     def __copy__(self):
         return self.from_dict(self.to_dict())
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         return self.__copy__()
 
     @abstractmethod

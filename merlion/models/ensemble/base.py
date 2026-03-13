@@ -71,7 +71,9 @@ class EnsembleConfig(Config):
         config_dict["models"] = self.models
         return self.from_dict(config_dict)
 
-    def __deepcopy__(self, memodict={}):
+    def __deepcopy__(self, memodict=None):
+        if memodict is None:
+            memodict = {}
         copied = copy.copy(self)
         copied.models = copy.deepcopy(self.models)
         return copied
