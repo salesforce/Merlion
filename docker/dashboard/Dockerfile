@@ -11,5 +11,5 @@ RUN rm -rf /var/lib/apt/lists/* && \
 COPY *.md ./
 COPY setup.py ./
 COPY merlion merlion
-RUN pip install gunicorn "./[dashboard]"
+RUN pip install --no-cache-dir gunicorn "./[dashboard]"
 CMD gunicorn -b 0.0.0.0:80 merlion.dashboard.server:server

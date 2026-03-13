@@ -9,7 +9,7 @@ ENV PYTHONPATH="${SPARK_HOME}/python/lib/pyspark.zip:${SPARK_HOME}/python/lib/py
 COPY *.md ./
 COPY setup.py ./
 COPY merlion merlion
-RUN pip install pyarrow "./"
+RUN pip install --no-cache-dir pyarrow "./"
 
 # Copy Merlion pyspark apps
 COPY spark_apps /opt/spark/apps

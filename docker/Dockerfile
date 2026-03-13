@@ -11,4 +11,4 @@ RUN rm -rf /var/lib/apt/lists/* && \
 COPY *.md ./
 COPY setup.py ./
 COPY merlion merlion
-RUN pip install "./"
+RUN pip install --no-cache-dir "./"
